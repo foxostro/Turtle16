@@ -12,27 +12,30 @@ import TurtleCore
 public final class CompilerPassForIn: CompilerPass {
     public override func visit(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(forIn: node0) as! ForIn
-        
+
         let sequence = Identifier(
             sourceAnchor: node1.sourceAnchor,
-            identifier: symbols!.tempName(prefix: "__sequence"))
+            identifier: symbols!.tempName(prefix: "__sequence")
+        )
         let index = Identifier(
             sourceAnchor: node1.sourceAnchor,
-            identifier: symbols!.tempName(prefix: "__index"))
+            identifier: symbols!.tempName(prefix: "__index")
+        )
         let limit = Identifier(
             sourceAnchor: node1.sourceAnchor,
-            identifier: symbols!.tempName(prefix: "__limit"))
+            identifier: symbols!.tempName(prefix: "__limit")
+        )
         let count = Identifier(sourceAnchor: node1.sourceAnchor, identifier: "count")
-        let usize = PrimitiveType(.u16) // TODO: This should use `usize' instead of assuming `u16'.
+        let usize = PrimitiveType(.u16)  // TODO: This should use `usize' instead of assuming `u16'.
         let zero = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 0)
         let one = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 1)
-        
+
         let grandparent = Env(parent: symbols)
         let parent = Env(parent: grandparent)
         let inner = Env(parent: parent)
-        
+
         let body = node1.body.withSymbols(inner)
-        
+
         let ast = Block(
             sourceAnchor: node1.sourceAnchor,
             symbols: grandparent,
@@ -43,23 +46,27 @@ public final class CompilerPassForIn: CompilerPass {
                     explicitType: nil,
                     expression: node1.sequenceExpr,
                     storage: .automaticStorage,
-                    isMutable: false),
+                    isMutable: false
+                ),
                 VarDeclaration(
                     sourceAnchor: node1.sourceAnchor,
                     identifier: index,
                     explicitType: usize,
                     expression: zero,
                     storage: .automaticStorage,
-                    isMutable: true),
+                    isMutable: true
+                ),
                 VarDeclaration(
                     sourceAnchor: node1.sourceAnchor,
                     identifier: limit,
                     explicitType: usize,
                     expression: Get(
                         expr: sequence,
-                        member: count),
+                        member: count
+                    ),
                     storage: .automaticStorage,
-                    isMutable: false),
+                    isMutable: false
+                ),
                 VarDeclaration(
                     sourceAnchor: node1.sourceAnchor,
                     identifier: node1.identifier,
@@ -70,18 +77,23 @@ public final class CompilerPassForIn: CompilerPass {
                             typ: Subscript(
                                 sourceAnchor: node1.sourceAnchor,
                                 subscriptable: sequence,
-                                argument: zero))),
+                                argument: zero
+                            )
+                        )
+                    ),
                     expression: nil,
                     storage: .automaticStorage,
-                    isMutable: true),
+                    isMutable: true
+                ),
                 While(
                     sourceAnchor: node1.sourceAnchor,
                     condition: Binary(
                         sourceAnchor: node1.sourceAnchor,
                         op: .ne,
                         left: index,
-                        right: limit),
-                      body: Block(
+                        right: limit
+                    ),
+                    body: Block(
                         sourceAnchor: node1.sourceAnchor,
                         symbols: parent,
                         children: [
@@ -91,7 +103,9 @@ public final class CompilerPassForIn: CompilerPass {
                                 rexpr: Subscript(
                                     sourceAnchor: node1.sourceAnchor,
                                     subscriptable: sequence,
-                                    argument: index)),
+                                    argument: index
+                                )
+                            ),
                             body,
                             Assignment(
                                 sourceAnchor: node1.sourceAnchor,
@@ -99,10 +113,15 @@ public final class CompilerPassForIn: CompilerPass {
                                 rexpr: Binary(
                                     op: .plus,
                                     left: index,
-                                    right: one)),
-                        ]))
-        ])
-        
+                                    right: one
+                                )
+                            ),
+                        ]
+                    )
+                ),
+            ]
+        )
+
         return ast.reconnect(parent: symbols)
     }
 }

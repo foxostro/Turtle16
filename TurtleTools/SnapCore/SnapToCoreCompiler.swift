@@ -17,39 +17,44 @@ import TurtleCore
 /// accepted by the next stage of the compiler.
 public final class SnapToCoreCompiler {
     public private(set) var testNames: [String] = []
-    
+
     private let shouldRunSpecificTest: String?
     private let isUsingStandardLibrary: Bool
     private let runtimeSupport: String?
     private let sandboxAccessManager: SandboxAccessManager?
     private let injectModules: [(String, String)]
-    
-    public init(shouldRunSpecificTest: String? = nil,
-                injectModules: [(String, String)] = [],
-                isUsingStandardLibrary: Bool = false,
-                runtimeSupport: String? = nil,
-                sandboxAccessManager: SandboxAccessManager? = nil) {
+
+    public init(
+        shouldRunSpecificTest: String? = nil,
+        injectModules: [(String, String)] = [],
+        isUsingStandardLibrary: Bool = false,
+        runtimeSupport: String? = nil,
+        sandboxAccessManager: SandboxAccessManager? = nil
+    ) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
         self.runtimeSupport = runtimeSupport
         self.sandboxAccessManager = sandboxAccessManager
     }
-    
+
     public func run(_ root: AbstractSyntaxTreeNode) throws -> (Block, testNames: [String]) {
         let core = try root
             .withImplicitImport(moduleName: standardLibraryName)?
             .withImplicitImport(
                 moduleName: runtimeSupport,
-                intoGlobalNamespace: true)?
+                intoGlobalNamespace: true
+            )?
             .replaceTopLevelWithBlock()
             .reconnect(parent: nil)
             .desugarTestDeclarations(
                 testNames: &testNames,
-                shouldRunSpecificTest: shouldRunSpecificTest)?
+                shouldRunSpecificTest: shouldRunSpecificTest
+            )?
             .importPass(
                 injectModules: injectModules,
-                runtimeSupport: runtimeSupport)?
+                runtimeSupport: runtimeSupport
+            )?
             .forInPass()?
             .genericsPass()?
             .vtablesPass()?
@@ -65,11 +70,14 @@ public final class SnapToCoreCompiler {
             .lowerVarDeclPass()?
             .flatten()
         guard let block = core as? Block else {
-            throw CompilerError(message: "internal compiler error: expected Block after lowering Snap to the core language representation")
+            throw CompilerError(
+                message:
+                    "internal compiler error: expected Block after lowering Snap to the core language representation"
+            )
         }
         return (block, testNames)
     }
-    
+
     private var standardLibraryName: String? {
         isUsingStandardLibrary
             ? kStandardLibraryModuleName
@@ -82,12 +90,14 @@ extension AbstractSyntaxTreeNode {
     /// should be replaced by a Block node.
     public func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
         guard let top = self as? TopLevel else { return self }
-        let block = Block(sourceAnchor: top.sourceAnchor,
-                          symbols: Env(),
-                          children: top.children)
+        let block = Block(
+            sourceAnchor: top.sourceAnchor,
+            symbols: Env(),
+            children: top.children
+        )
         return block
     }
-    
+
     /// Insert an import statement for an implicit import
     public func withImplicitImport(
         moduleName: String?,
@@ -95,19 +105,20 @@ extension AbstractSyntaxTreeNode {
     ) -> AbstractSyntaxTreeNode? {
         guard let moduleName else { return self }
         let importStmt = Import(moduleName: moduleName, intoGlobalNamespace: global)
-        let result = switch self {
-        case let top as TopLevel:
-            top.inserting(children: [importStmt], at: 0)
-        case let block as Block:
-            block.inserting(children: [importStmt], at: 0)
-        case let module as Module:
-            module.inserting(children: [importStmt], at: 0)
-        default:
-            self
-        }
+        let result =
+            switch self {
+            case let top as TopLevel:
+                top.inserting(children: [importStmt], at: 0)
+            case let block as Block:
+                block.inserting(children: [importStmt], at: 0)
+            case let module as Module:
+                module.inserting(children: [importStmt], at: 0)
+            default:
+                self
+            }
         return result
     }
-    
+
     /// Lower a Snap program to an equivalent representation which uses only a small core of the language
     public func snapToCore(
         shouldRunSpecificTest: String? = nil,
@@ -121,7 +132,8 @@ extension AbstractSyntaxTreeNode {
             injectModules: injectModules,
             isUsingStandardLibrary: isUsingStandardLibrary,
             runtimeSupport: runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager)
+            sandboxAccessManager: sandboxAccessManager
+        )
         return try compiler.run(self)
     }
 }

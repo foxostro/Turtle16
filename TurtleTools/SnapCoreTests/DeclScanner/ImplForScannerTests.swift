@@ -6,49 +6,56 @@
 //  Copyright © 2024 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import SnapCore
 import TurtleCore
+import XCTest
 
 final class ImplForScannerTests: XCTestCase {
     fileprivate func scanSerialTrait(_ symbols: Env) throws {
-        
+
         let traitDecl = TraitDeclaration(
             identifier: Identifier("Serial"),
             members: [
                 TraitDeclaration.Member(
                     name: "puts",
-                    type:  PointerType(FunctionType(
-                        name: nil,
-                        returnType: PrimitiveType(.void),
-                        arguments: [
-                            PointerType(Identifier("Serial")),
-                            DynamicArrayType(PrimitiveType(.u8))
-                        ])))
+                    type: PointerType(
+                        FunctionType(
+                            name: nil,
+                            returnType: PrimitiveType(.void),
+                            arguments: [
+                                PointerType(Identifier("Serial")),
+                                DynamicArrayType(PrimitiveType(.u8)),
+                            ]
+                        )
+                    )
+                )
             ],
-            visibility: .privateVisibility)
-        
+            visibility: .privateVisibility
+        )
+
         let scanner = TraitScanner(symbols: symbols)
         try scanner.scan(trait: traitDecl)
     }
-    
+
     fileprivate func scanSerialFake(_ symbols: Env) throws {
-        
+
         let fake = StructDeclaration(
             identifier: Identifier("SerialFake"),
-            members: [])
+            members: []
+        )
         try StructScanner(
             symbols: symbols,
-            memoryLayoutStrategy: MemoryLayoutStrategyNull())
+            memoryLayoutStrategy: MemoryLayoutStrategyNull()
+        )
         .compile(fake)
     }
-    
+
     func testScanImplForTrait() throws {
         let symbols = Env()
-        
+
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
-        
+
         let ast = ImplFor(
             typeArguments: [],
             traitTypeExpr: Identifier("Serial"),
@@ -61,20 +68,25 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.void),
                         arguments: [
                             PointerType(
-                                Identifier("Serial")),
-                            DynamicArrayType(PrimitiveType(.u8))
-                        ]),
+                                Identifier("Serial")
+                            ),
+                            DynamicArrayType(PrimitiveType(.u8)),
+                        ]
+                    ),
                     argumentNames: ["self", "s"],
-                    body: Block())
-            ])
-            .reconnect(parent: nil)
-        
+                    body: Block()
+                )
+            ]
+        )
+        .reconnect(parent: nil)
+
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
-            symbols: symbols)
+            symbols: symbols
+        )
         try scanner.scan(implFor: ast)
-        
+
         // Let's examine, for correctness, the vtable symbol
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
         let vtableInstance = try symbols.resolve(identifier: nameOfVtableInstance)
@@ -82,40 +94,55 @@ final class ImplForScannerTests: XCTestCase {
         XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionTypeInfo(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
+        XCTAssertEqual(
+            putsSymbol.type,
+            .pointer(
+                .function(
+                    FunctionTypeInfo(
+                        returnType: .void,
+                        arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]
+                    )
+                )
+            )
+        )
         XCTAssertEqual(putsSymbol.storage, .automaticStorage(offset: 0))
     }
-    
+
     func testFailToScanImplForTraitBecauseMethodsAreMissing() throws {
         let symbols = Env()
-        
+
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
-        
+
         let ast = ImplFor(
             typeArguments: [],
             traitTypeExpr: Identifier("Serial"),
             structTypeExpr: Identifier("SerialFake"),
-            children: [])
-        
+            children: []
+        )
+
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
-            symbols: symbols)
-        
+            symbols: symbols
+        )
+
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "`SerialFake' does not implement all trait methods; missing `puts'.")
+            XCTAssertEqual(
+                compilerError?.message,
+                "`SerialFake' does not implement all trait methods; missing `puts'."
+            )
         }
     }
-    
+
     func testFailToScanImplForTraitBecauseMethodHasIncorrectNumberOfParameters() throws {
         let symbols = Env()
-        
+
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
-        
+
         let ast = ImplFor(
             typeArguments: [],
             traitTypeExpr: Identifier("Serial"),
@@ -128,30 +155,37 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.void),
                         arguments: [
                             PointerType(Identifier("SerialFake"))
-                        ]),
+                        ]
+                    ),
                     argumentNames: ["self"],
-                    body: Block())
-            ])
-            .reconnect(parent: nil)
-        
+                    body: Block()
+                )
+            ]
+        )
+        .reconnect(parent: nil)
+
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
-            symbols: symbols)
-        
+            symbols: symbols
+        )
+
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
+            XCTAssertEqual(
+                compilerError?.message,
+                "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2."
+            )
         }
     }
-    
+
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectParameterTypes() throws {
         let symbols = Env()
-        
+
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
-        
+
         let ast = ImplFor(
             typeArguments: [],
             traitTypeExpr: Identifier("Serial"),
@@ -164,31 +198,38 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.void),
                         arguments: [
                             PointerType(Identifier("SerialFake")),
-                                                      PrimitiveType(.u8)
-                        ]),
+                            PrimitiveType(.u8),
+                        ]
+                    ),
                     argumentNames: ["self", "s"],
-                    body: Block())
-            ])
-            .reconnect(parent: nil)
-        
+                    body: Block()
+                )
+            ]
+        )
+        .reconnect(parent: nil)
+
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
-            symbols: symbols)
-        
+            symbols: symbols
+        )
+
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `[]u8' argument, got `u8' instead")
+            XCTAssertEqual(
+                compilerError?.message,
+                "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `[]u8' argument, got `u8' instead"
+            )
         }
     }
-    
+
     func testFailToScanImplForTraitBecauseMethodHasIncorrectSelfParameterTypes() throws {
         let symbols = Env()
-        
+
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
-        
+
         let ast = ImplFor(
             typeArguments: [],
             traitTypeExpr: Identifier("Serial"),
@@ -201,31 +242,38 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.void),
                         arguments: [
                             PrimitiveType(.u8),
-                            DynamicArrayType(PrimitiveType(.u8))
-                        ]),
+                            DynamicArrayType(PrimitiveType(.u8)),
+                        ]
+                    ),
                     argumentNames: ["self", "s"],
-                    body: Block())
-            ])
-            .reconnect(parent: nil)
-        
+                    body: Block()
+                )
+            ]
+        )
+        .reconnect(parent: nil)
+
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
-            symbols: symbols)
-        
+            symbols: symbols
+        )
+
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `*SerialFake' argument, got `u8' instead")
+            XCTAssertEqual(
+                compilerError?.message,
+                "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `*SerialFake' argument, got `u8' instead"
+            )
         }
     }
-    
+
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectReturnType() throws {
         let symbols = Env()
-        
+
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
-        
+
         let ast = ImplFor(
             typeArguments: [],
             traitTypeExpr: Identifier("Serial"),
@@ -238,24 +286,31 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.bool),
                         arguments: [
                             PointerType(Identifier("SerialFake")),
-                            DynamicArrayType(PrimitiveType(.u8))
-                        ]),
+                            DynamicArrayType(PrimitiveType(.u8)),
+                        ]
+                    ),
                     argumentNames: ["self", "s"],
                     body: Block(children: [
                         Return(LiteralBool(false))
-                    ]))
-            ])
-            .reconnect(parent: nil)
-        
+                    ])
+                )
+            ]
+        )
+        .reconnect(parent: nil)
+
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
-            symbols: symbols)
-        
+            symbols: symbols
+        )
+
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `void' return value, got `bool' instead")
+            XCTAssertEqual(
+                compilerError?.message,
+                "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `void' return value, got `bool' instead"
+            )
         }
     }
 }

@@ -6,9 +6,9 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import SnapCore
 import TurtleCore
+import XCTest
 
 final class CompilerPassFlattenSeqTests: XCTestCase {
     func testRemoveEmptySeqStatements() throws {
@@ -17,7 +17,7 @@ final class CompilerPassFlattenSeqTests: XCTestCase {
         let actual = try? compiler.visit(input)
         XCTAssertNil(actual)
     }
-    
+
     func testSingleStatementSeqIsFlattened() throws {
         let input = Seq(children: [
             CommentNode(string: "")
@@ -27,55 +27,55 @@ final class CompilerPassFlattenSeqTests: XCTestCase {
         let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testNestedSeqStatementsAreFlattened() throws {
         let input = Seq(children: [
             Seq(children: [
                 CommentNode(string: "a"),
-                CommentNode(string: "b")
+                CommentNode(string: "b"),
             ]),
-            CommentNode(string: "c")
+            CommentNode(string: "c"),
         ])
         let expected = Seq(children: [
             CommentNode(string: "a"),
             CommentNode(string: "b"),
-            CommentNode(string: "c")
+            CommentNode(string: "c"),
         ])
         let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testNestedSeqStatementsAreFlattened_InBlock() throws {
         let input = Block(children: [
             Seq(children: [
                 CommentNode(string: "a"),
-                CommentNode(string: "b")
+                CommentNode(string: "b"),
             ]),
-            CommentNode(string: "c")
+            CommentNode(string: "c"),
         ])
         let expected = Block(children: [
             CommentNode(string: "a"),
             CommentNode(string: "b"),
-            CommentNode(string: "c")
+            CommentNode(string: "c"),
         ])
         let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testNestedSeqStatementsAreFlattened_InTopLevel() throws {
         let input = TopLevel(children: [
             Seq(children: [
                 CommentNode(string: "a"),
-                CommentNode(string: "b")
+                CommentNode(string: "b"),
             ]),
-            CommentNode(string: "c")
+            CommentNode(string: "c"),
         ])
         let expected = TopLevel(children: [
             CommentNode(string: "a"),
             CommentNode(string: "b"),
-            CommentNode(string: "c")
+            CommentNode(string: "c"),
         ])
         let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)

@@ -9,45 +9,48 @@
 open class CompilerError: Error {
     public let sourceAnchor: SourceAnchor?
     public let message: String
-    
+
     public convenience init(message: String) {
         self.init(sourceAnchor: nil, message: message)
     }
-    
+
     public init(sourceAnchor: SourceAnchor?, message: String) {
         self.sourceAnchor = sourceAnchor
         self.message = message
     }
-    
+
     public convenience init(sourceAnchor: SourceAnchor?, format: String, _ args: CVarArg...) {
-        self.init(sourceAnchor: sourceAnchor,
-                  message: String(format:format, arguments:args))
+        self.init(
+            sourceAnchor: sourceAnchor,
+            message: String(format: format, arguments: args)
+        )
     }
-    
+
     private var lineNumberPrefix: String? {
-        return sourceAnchor?.lineNumberPrefix ?? nil
+        sourceAnchor?.lineNumberPrefix ?? nil
     }
-    
+
     public var context: String? {
-        return sourceAnchor?.context ?? nil
+        sourceAnchor?.context ?? nil
     }
-    
+
     public var localizedDescription: String {
-        return message
+        message
     }
-    
+
     public var debugDescription: String {
-        return localizedDescription
+        localizedDescription
     }
-    
+
     public var description: String {
         localizedDescription
     }
-    
-    public static func makeOmnibusError(fileName: String?, errors: [CompilerError]) -> CompilerError {
+
+    public static func makeOmnibusError(fileName: String?, errors: [CompilerError]) -> CompilerError
+    {
         var sourceAnchor: SourceAnchor? = errors.first?.sourceAnchor
         var message = ""
-        
+
         for error in errors {
             sourceAnchor = sourceAnchor?.union(error.sourceAnchor)
             var didIncludeAnyPrefix = false
@@ -67,18 +70,18 @@ open class CompilerError: Error {
                 message += "\(context)\n"
             }
         }
-        
+
         if errors.count == 1 {
             message += "1 error generated\n"
         } else {
             message += "\(errors.count) errors generated\n"
         }
-        
+
         return CompilerError(sourceAnchor: sourceAnchor, message: message)
     }
 }
 
-public func ==(lhs: CompilerError, rhs: CompilerError) -> Bool {
+public func == (lhs: CompilerError, rhs: CompilerError) -> Bool {
     guard lhs.sourceAnchor == rhs.sourceAnchor else { return false }
     guard lhs.message == rhs.message else { return false }
     return true

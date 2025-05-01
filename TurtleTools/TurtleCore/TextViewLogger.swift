@@ -9,27 +9,27 @@
 import Cocoa
 
 public class TextViewLogger: Logger {
-    let textView:NSTextView
-    let viewUpdateQueue:ThrottledQueue
+    let textView: NSTextView
+    let viewUpdateQueue: ThrottledQueue
     let queue = DispatchQueue(label: "com.foxostro.TextViewLogger")
-    var pendingLines:[String] = []
+    var pendingLines: [String] = []
     public var appendTrailingNewline = true
-    
-    public init(textView:NSTextView) {
+
+    public init(textView: NSTextView) {
         self.textView = textView
         viewUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
     }
-    
+
     public func append(_ format: String, _ args: CVarArg...) {
         queue.sync {
-            let line = String(format:format, arguments:args)
+            let line = String(format: format, arguments: args)
             pendingLines.append(line)
             viewUpdateQueue.async {
                 self.updateView()
             }
         }
     }
-    
+
     private func updateView() {
         if let textStorage = textView.textStorage {
             textStorage.beginEditing()
@@ -47,7 +47,7 @@ public class TextViewLogger: Logger {
             textView.scrollToEndOfDocument(self)
         }
     }
-    
+
     public func clear() {
         queue.sync {
             self.pendingLines = []

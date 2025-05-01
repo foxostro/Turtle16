@@ -10,18 +10,18 @@ open class Parser {
     public let lineMapper: SourceLineRangeMapper!
     public var tokens: [Token] = []
     public private(set) var previous: Token? = nil
-    
+
     public private(set) var errors: [CompilerError] = []
-    public var hasError:Bool {
-        return errors.count != 0
+    public var hasError: Bool {
+        errors.count != 0
     }
     public private(set) var syntaxTree: TopLevel? = nil
-    
+
     public init(tokens: [Token] = [], lineMapper: SourceLineRangeMapper! = nil) {
         self.tokens = tokens
         self.lineMapper = lineMapper
     }
-    
+
     public func parse() {
         var statements: [AbstractSyntaxTreeNode] = []
         while !tokens.isEmpty {
@@ -30,7 +30,7 @@ open class Parser {
             } catch let e {
                 let error = e as! CompilerError
                 errors.append(error)
-                
+
                 // recover by skipping to the next line
                 advanceToNewline()
                 advance()
@@ -39,34 +39,37 @@ open class Parser {
         if hasError {
             syntaxTree = nil
         } else {
-            let sourceAnchor = statements.map({$0.sourceAnchor}).reduce(statements.first?.sourceAnchor, { $0?.union($1) })
+            let sourceAnchor = statements.map({ $0.sourceAnchor }).reduce(
+                statements.first?.sourceAnchor,
+                { $0?.union($1) }
+            )
             syntaxTree = TopLevel(sourceAnchor: sourceAnchor, children: statements)
         }
     }
-    
+
     public func advance() {
         previous = peek()
         if !tokens.isEmpty {
             tokens.removeFirst()
         }
     }
-    
+
     public struct Checkpoint {
         let previous: Token?
         let tokens: [Token]
         let errors: [CompilerError]
     }
-    
+
     public func checkpoint() -> Checkpoint {
-        return Checkpoint(previous: previous, tokens: tokens, errors: errors)
+        Checkpoint(previous: previous, tokens: tokens, errors: errors)
     }
-    
+
     public func restore(checkpoint: Checkpoint) {
         previous = checkpoint.previous
         tokens = checkpoint.tokens
         errors = checkpoint.errors
     }
-    
+
     public func advanceToNewline() {
         while let token = peek() {
             let tokenType = type(of: token)
@@ -77,20 +80,21 @@ open class Parser {
             }
         }
     }
-    
+
     public func peek(_ howMany: Int = 0) -> Token? {
-        if howMany < tokens.count {
-            return tokens[howMany]
-        } else {
+        guard howMany < tokens.count else {
             return nil
         }
+        return tokens[howMany]
     }
-    
+
     public func accept(_ typeInQuestion: AnyClass) -> Token? {
-        return accept(typeInQuestion: typeInQuestion,
-                      shouldIgnoreNewlines: typeInQuestion != TokenNewline.self)
+        accept(
+            typeInQuestion: typeInQuestion,
+            shouldIgnoreNewlines: typeInQuestion != TokenNewline.self
+        )
     }
-    
+
     private func accept(typeInQuestion: AnyClass, shouldIgnoreNewlines: Bool) -> Token? {
         var stepsToAdvance = 0
         while shouldIgnoreNewlines && (nil != (peek(stepsToAdvance) as? TokenNewline)) {
@@ -106,7 +110,7 @@ open class Parser {
         }
         return nil
     }
-    
+
     public func accept(_ anyOfTheseTypes: [AnyClass]) -> Token? {
         var shouldIgnoreNewlines = true
         for typ in anyOfTheseTypes {
@@ -121,11 +125,11 @@ open class Parser {
         }
         return nil
     }
-    
+
     public func accept(operator op: TokenOperator.Operator) -> TokenOperator? {
-        return accept(operators: [op])
+        accept(operators: [op])
     }
-    
+
     public func accept(operators ops: [TokenOperator.Operator]) -> TokenOperator? {
         var stepsToAdvance = 0
         while nil != (peek(stepsToAdvance) as? TokenNewline) {
@@ -141,7 +145,7 @@ open class Parser {
         }
         return nil
     }
-    
+
     @discardableResult public func expect(type: AnyClass, error: Error) throws -> Token {
         let result = accept(type)
         if nil == result {
@@ -149,7 +153,7 @@ open class Parser {
         }
         return result!
     }
-    
+
     @discardableResult public func expect(types: [AnyClass], error: Error) throws -> Token {
         for type in types {
             let result = accept(type)
@@ -159,17 +163,16 @@ open class Parser {
         }
         throw error
     }
-    
+
     open func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         throw CompilerError(message: "override consumeStatement() in a child class")
     }
-    
+
     public func unexpectedEndOfInputError() -> CompilerError {
         let message = "unexpected end of input"
-        if let token = peek() {
-            return CompilerError(sourceAnchor: token.sourceAnchor, message: message)
-        } else {
+        guard let token = peek() else {
             return CompilerError(sourceAnchor: previous?.sourceAnchor, message: message)
         }
+        return CompilerError(sourceAnchor: token.sourceAnchor, message: message)
     }
 }

@@ -22,27 +22,31 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
             body: try visitFunctionBody(func: node),
             visibility: node.visibility,
             symbols: node.symbols,
-            id: node.id)
+            id: node.id
+        )
     }
-    
+
     private func visitFunctionBody(func fn: FunctionDeclaration) throws -> Block {
         try expectFunctionReturnExpressionIsCorrectType(fn)
         let body0 = fn.body
         let body1 = try super.visit(block: body0) as! Block
-        let body2 = if try shouldSynthesizeTerminalReturnStatement(fn) {
-            body1.appending(children: [
-                Return(
-                    sourceAnchor: body1.sourceAnchor,
-                    expression: nil)
-            ])
-        } else {
-            body1
-        }
+        let body2 =
+            if try shouldSynthesizeTerminalReturnStatement(fn) {
+                body1.appending(children: [
+                    Return(
+                        sourceAnchor: body1.sourceAnchor,
+                        expression: nil
+                    )
+                ])
+            } else {
+                body1
+            }
         return body2
     }
-    
+
     private func expectFunctionReturnExpressionIsCorrectType(_ node: FunctionDeclaration) throws {
-        let functionType = try typeContext
+        let functionType =
+            try typeContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType != .void else { return }
@@ -50,17 +54,21 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
             if trace.last != .Return {
                 throw CompilerError(
                     sourceAnchor: node.identifier.sourceAnchor,
-                    message: "missing return in a function expected to return `\(functionType.returnType)'")
+                    message:
+                        "missing return in a function expected to return `\(functionType.returnType)'"
+                )
             }
         }
     }
-    
+
     private func trace(_ node: FunctionDeclaration) throws -> [StatementTracer.Trace] {
         try StatementTracer(symbols: symbols!).trace(ast: node.body)
     }
-    
-    private func shouldSynthesizeTerminalReturnStatement(_ node: FunctionDeclaration) throws -> Bool {
-        let functionType = try typeContext
+
+    private func shouldSynthesizeTerminalReturnStatement(_ node: FunctionDeclaration) throws -> Bool
+    {
+        let functionType =
+            try typeContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType == .void else { return false }

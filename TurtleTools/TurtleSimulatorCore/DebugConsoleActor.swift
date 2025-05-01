@@ -10,9 +10,11 @@ import Combine
 import Foundation
 import TurtleCore
 
-public extension Notification.Name {
-    static let debuggerStateDidChange = Notification.Name("debuggerStateDidChange")
-    static let debuggerIsFreeRunningDidChange = Notification.Name("debuggerIsFreeRunningDidChange")
+extension Notification.Name {
+    public static let debuggerStateDidChange = Notification.Name("debuggerStateDidChange")
+    public static let debuggerIsFreeRunningDidChange = Notification.Name(
+        "debuggerIsFreeRunningDidChange"
+    )
 }
 
 // TODO: I may try rewriting `DebugConsoleActor` using Swift's new actors
@@ -24,9 +26,9 @@ public final class DebugConsoleActor {
         case textCommand(String, completionHandler: (DebugConsole) -> Void)
         case compiledCommand(DebugConsoleInstruction)
     }
-    private var commandQueue = Array<Command>()
+    private var commandQueue = [Command]()
     private var subscriptions = Set<AnyCancellable>()
-    
+
     private let snapshotLock = NSLock()
     private var internalLatestSnapshot: TurtleComputer?
     public var latestSnapshot: TurtleComputer? {
@@ -34,7 +36,7 @@ public final class DebugConsoleActor {
             internalLatestSnapshot
         }
     }
-    
+
     public var logger: Logger {
         set(value) {
             withLock { debugConsole in
@@ -47,7 +49,7 @@ public final class DebugConsoleActor {
             }
         }
     }
-    
+
     public var isFreeRunning: Bool {
         set(newValue) {
             debugConsole.isFreeRunning = newValue
@@ -56,11 +58,11 @@ public final class DebugConsoleActor {
             debugConsole.isFreeRunning
         }
     }
-    
+
     public init(debugConsole: DebugConsole) {
         self.debugConsole = debugConsole
         internalLatestSnapshot = try? TurtleComputer.decode(from: debugConsole.computer.snapshot())
-            
+
         NotificationCenter.default
             .publisher(for: .computerStateDidChange)
             .sink { [weak self] _ in
@@ -71,44 +73,47 @@ public final class DebugConsoleActor {
                 }
                 NotificationCenter.default.post(
                     name: .debuggerStateDidChange,
-                    object: self)
+                    object: self
+                )
             }
             .store(in: &subscriptions)
-        
+
         NotificationCenter.default
             .publisher(for: .computerIsFreeRunningDidChange, object: debugConsole.computer)
             .sink { [weak self] _ in
                 guard let self else { return }
                 NotificationCenter.default.post(
                     name: .debuggerIsFreeRunningDidChange,
-                    object: self)
+                    object: self
+                )
             }
             .store(in: &subscriptions)
-        
+
         worker = Thread { [weak self] in
             self?.processCommandQueue()
         }
         worker.start()
     }
-    
+
     public func withLock<R>(_ body: (DebugConsole) throws -> R) rethrows -> R {
         try lock.withLock {
             try body(debugConsole)
         }
     }
-    
-    public func eval(_ text: String, completionHandler: @escaping (DebugConsole) -> Void = {_ in}) {
+
+    public func eval(_ text: String, completionHandler: @escaping (DebugConsole) -> Void = { _ in })
+    {
         let command = Command.textCommand(text, completionHandler: completionHandler)
         lock.withLock {
             commandQueue.insert(command, at: 0)
             lock.signal()
         }
     }
-    
+
     public func pause() {
         debugConsole.pause()
     }
-    
+
     public func run(instruction: DebugConsoleInstruction) {
         let command = Command.compiledCommand(instruction)
         lock.withLock {
@@ -116,7 +121,7 @@ public final class DebugConsoleActor {
             lock.signal()
         }
     }
-    
+
     private func processCommandQueue() {
         while true {
             lock.withLock {
@@ -127,7 +132,7 @@ public final class DebugConsoleActor {
             }
         }
     }
-    
+
     private func processCommand(_ command: Command?) {
         switch command {
         case .textCommand(let text, let completionHandler):
@@ -135,10 +140,10 @@ public final class DebugConsoleActor {
             DispatchQueue.main.async { [debugConsole] in
                 completionHandler(debugConsole)
             }
-            
+
         case .compiledCommand(let instruction):
             debugConsole.interpreter.runOne(instruction: instruction)
-        
+
         case .none:
             break
         }

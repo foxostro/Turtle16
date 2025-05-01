@@ -14,36 +14,39 @@ import TurtleSimulatorCore
 class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate {
     @IBOutlet var debuggerOutput: NSTextView!
     @IBOutlet var debuggerInput: NSTextField!
-    
+
     let debugger: DebugConsoleActor
     var history: [String] = []
     var cursor = 0
     var subscriptions = Set<AnyCancellable>()
-    
+
     public required init(debugger: DebugConsoleActor) {
         self.debugger = debugger
-        super.init(nibName: NSNib.Name("DebugConsoleViewController"), bundle: Bundle(for: type(of: self)))
+        super.init(
+            nibName: NSNib.Name("DebugConsoleViewController"),
+            bundle: Bundle(for: type(of: self))
+        )
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         let logger = TextViewLogger(textView: debuggerOutput)
         logger.appendTrailingNewline = false
         debugger.logger = logger
-        
+
         debuggerOutput.string = "\n"
         debuggerOutput.font = debuggerInput.font
-        
+
         debuggerInput.becomeFirstResponder()
-        
+
         subscribe()
     }
-    
+
     private func subscribe() {
         NotificationCenter.default
             .publisher(for: NSWindow.didBecomeKeyNotification, object: self.view.window)
@@ -53,7 +56,7 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
                 self.debuggerInput.becomeFirstResponder()
             }
             .store(in: &subscriptions)
-    
+
         NotificationCenter.default
             .publisher(for: .debuggerIsFreeRunningDidChange, object: debugger)
             .receive(on: DispatchQueue.main)
@@ -67,11 +70,11 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
             }
             .store(in: &subscriptions)
     }
-    
+
     @objc func windowDidBecomeKey(notification: Notification) {
         debuggerInput.becomeFirstResponder()
     }
-    
+
     @IBAction func submitCommandLine(_ sender: Any) {
         let command: String
         if debuggerInput.stringValue == "" {
@@ -91,8 +94,12 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
             debuggerInput.becomeFirstResponder()
         }
     }
-    
-    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+
+    func control(
+        _ control: NSControl,
+        textView: NSTextView,
+        doCommandBy commandSelector: Selector
+    ) -> Bool {
         if !history.isEmpty, control === debuggerInput {
             if commandSelector == #selector(moveUp(_:)) {
                 debuggerInput.stringValue = history[cursor]

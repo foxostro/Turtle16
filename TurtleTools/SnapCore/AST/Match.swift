@@ -15,41 +15,47 @@ public final class Match: AbstractSyntaxTreeNode {
         public let valueIdentifier: Identifier
         public let valueType: Expression
         public let block: Block
-        
-        public init(sourceAnchor: SourceAnchor? = nil,
-                    valueIdentifier: Identifier,
-                    valueType: Expression,
-                    block: Block) {
+
+        public init(
+            sourceAnchor: SourceAnchor? = nil,
+            valueIdentifier: Identifier,
+            valueType: Expression,
+            block: Block
+        ) {
             self.sourceAnchor = sourceAnchor
             self.valueIdentifier = valueIdentifier
             self.valueType = valueType
             self.block = block
         }
     }
-    
+
     public let expr: Expression
     public let clauses: [Clause]
     public let elseClause: Block?
-    
-    public init(sourceAnchor: SourceAnchor? = nil,
-                expr: Expression,
-                clauses: [Clause],
-                elseClause: Block?,
-                id: ID = ID()) {
+
+    public init(
+        sourceAnchor: SourceAnchor? = nil,
+        expr: Expression,
+        clauses: [Clause],
+        elseClause: Block?,
+        id: ID = ID()
+    ) {
         self.expr = expr
         self.clauses = clauses
         self.elseClause = elseClause
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Match {
-        Match(sourceAnchor: sourceAnchor,
-              expr: expr,
-              clauses: clauses,
-              elseClause: elseClause,
-              id: id)
+        Match(
+            sourceAnchor: sourceAnchor,
+            expr: expr,
+            clauses: clauses,
+            elseClause: elseClause,
+            id: id
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
@@ -59,7 +65,7 @@ public final class Match: AbstractSyntaxTreeNode {
         guard elseClause == rhs.elseClause else { return false }
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(sourceAnchor)
@@ -67,11 +73,15 @@ public final class Match: AbstractSyntaxTreeNode {
         hasher.combine(clauses)
         hasher.combine(elseClause)
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let indent1 = makeIndent(depth: depth+1)
-        let elseDesc = elseClause==nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1)
+        let indent1 = makeIndent(depth: depth + 1)
+        let elseDesc =
+            elseClause == nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
             \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
@@ -79,7 +89,7 @@ public final class Match: AbstractSyntaxTreeNode {
             \(indent1)elseClause: \(elseDesc)
             """
     }
-    
+
     private func makeClausesDescription(depth: Int) -> String {
         var result = ""
         for clause in clauses {

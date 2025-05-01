@@ -11,23 +11,23 @@ import TurtleSimulatorCore
 
 public final class SnapSubcompilerSubroutine: CompilerPass {
     var subroutines: [Subroutine] = []
-    
+
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         var children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try visit($0) }
-        
+
         children += [
             InstructionNode(instruction: kNOP),
-            InstructionNode(instruction: kHLT)
+            InstructionNode(instruction: kHLT),
         ]
-        
+
         for subroutine in subroutines {
             children.append(LabelDeclaration(identifier: subroutine.identifier))
             children += subroutine.children
         }
-        
+
         return node.withChildren(children)
     }
-    
+
     public override func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
         subroutines.append(node)
         return nil

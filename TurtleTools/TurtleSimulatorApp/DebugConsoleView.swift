@@ -13,13 +13,13 @@ struct DebugConsoleView: NSViewControllerRepresentable {
     // SwiftUI's TextEditor is pretty undercooked so let's wrap and bring in
     // DebugConsoleViewController, the implementation from the old Simulator app
     // which uses AppKit's NSTextView.
-    
+
     @StateObject var viewModel: ViewModel
-    
+
     func makeNSViewController(context: Context) -> DebugConsoleViewController {
         DebugConsoleViewController(debugger: viewModel.document.debugger)
     }
-    
+
     func updateNSViewController(_ uiViewController: DebugConsoleViewController, context: Context) {
         // nothing to do
     }
@@ -28,7 +28,7 @@ struct DebugConsoleView: NSViewControllerRepresentable {
 extension DebugConsoleView {
     @MainActor class ViewModel: ObservableObject {
         @Published var document: TurtleSimulatorDocument
-        
+
         init(document: TurtleSimulatorDocument) {
             self.document = document
         }

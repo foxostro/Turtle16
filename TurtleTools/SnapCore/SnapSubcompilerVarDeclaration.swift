@@ -12,33 +12,37 @@ public struct SnapSubcompilerVarDeclaration {
     private let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
-    
-    public init(symbols: Env,
-                staticStorageFrame: Frame = Frame(),
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
+
+    public init(
+        symbols: Env,
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
+    ) {
         self.symbols = symbols
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
-    
+
     public func compile(_ node: VarDeclaration) throws -> InitialAssignment? {
         let sourceAnchor = node.identifier.sourceAnchor
         let ident = node.identifier.identifier
-        
+
         guard !symbols.exists(identifier: ident, maxDepth: 0) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
-                message: "\(variable) redefines existing symbol: `\(ident)'")
+                message: "\(variable) redefines existing symbol: `\(ident)'"
+            )
         }
-        
+
         guard !symbols.existsAsType(identifier: ident, maxDepth: 0) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
-                message: "\(variable) redefines existing type: `\(ident)'")
+                message: "\(variable) redefines existing type: `\(ident)'"
+            )
         }
-        
+
         let result: InitialAssignment?
 
         // If the variable declaration provided an explicit type expression then
@@ -48,8 +52,9 @@ public struct SnapSubcompilerVarDeclaration {
             explicitType = try TypeContextTypeChecker(
                 symbols: symbols,
                 staticStorageFrame: staticStorageFrame,
-                memoryLayoutStrategy: memoryLayoutStrategy)
-                .check(expression: explicitTypeExpr)
+                memoryLayoutStrategy: memoryLayoutStrategy
+            )
+            .check(expression: explicitTypeExpr)
         } else {
             explicitType = nil
         }
@@ -60,16 +65,19 @@ public struct SnapSubcompilerVarDeclaration {
             let expressionResultType = try RvalueExpressionTypeChecker(
                 symbols: symbols,
                 staticStorageFrame: staticStorageFrame,
-                memoryLayoutStrategy: memoryLayoutStrategy)
-                .check(expression: varDeclExpr)
+                memoryLayoutStrategy: memoryLayoutStrategy
+            )
+            .check(expression: varDeclExpr)
 
             // An explicit array type does not specify the number of array elements.
             // If the explicit type is an array type then we must examine the
             // expression result type to determine the array length.
             var symbolType: SymbolType
             switch (expressionResultType, explicitType) {
-            case (.array(count: let count, elementType: _),
-                  .array(count: _, elementType: let elementType)):
+            case (
+                .array(count: let count, elementType: _),
+                .array(count: _, elementType: let elementType)
+            ):
                 symbolType = .array(count: count, elementType: elementType)
             default:
                 if let explicitType = explicitType {
@@ -97,19 +105,23 @@ public struct SnapSubcompilerVarDeclaration {
                 sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,
                 explicitType: symbolType,
                 storage: node.storage,
-                visibility: node.visibility)
+                visibility: node.visibility
+            )
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
-            result = InitialAssignment(sourceAnchor: node.sourceAnchor,
-                                                  lexpr: node.identifier,
-                                                  rexpr: varDeclExpr)
+            result = InitialAssignment(
+                sourceAnchor: node.sourceAnchor,
+                lexpr: node.identifier,
+                rexpr: varDeclExpr
+            )
         } else if let explicitType = explicitType {
             let symbolType = node.isMutable ? explicitType : explicitType.correspondingConstType
             let symbol = try makeSymbolWithExplicitType(
                 sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,
                 explicitType: symbolType,
                 storage: node.storage,
-                visibility: node.visibility)
+                visibility: node.visibility
+            )
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
             result = nil
@@ -118,7 +130,8 @@ public struct SnapSubcompilerVarDeclaration {
                 sourceAnchor: sourceAnchor,
                 format: "unable to deduce type of %@ `%@'",
                 node.isMutable ? "variable" : "constant",
-                node.identifier.identifier)
+                node.identifier.identifier
+            )
         }
 
         return result
@@ -130,42 +143,52 @@ public struct SnapSubcompilerVarDeclaration {
         storage: StorageQualifier,
         visibility: SymbolVisibility
     ) throws -> Symbol {
-        
+
         guard try explicitType.hasModule(symbols) == false else {
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
-                message: "invalid use of module type")
+                message: "invalid use of module type"
+            )
         }
-        let qualifier: StorageQualifier = (symbols.frame==nil) ? .staticStorage : storage
+        let qualifier: StorageQualifier = (symbols.frame == nil) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, qualifier)
-        let symbol = Symbol(type: explicitType, offset: offset, qualifier: qualifier, visibility: visibility)
+        let symbol = Symbol(
+            type: explicitType,
+            offset: offset,
+            qualifier: qualifier,
+            visibility: visibility
+        )
         return symbol
     }
 
     func bumpStoragePointer(_ symbolType: SymbolType, _ storage: StorageQualifier) -> Int {
         let size = memoryLayoutStrategy.sizeof(type: symbolType)
-        let frame = switch storage {
-        case .staticStorage:
-            staticStorageFrame
-            
-        case .automaticStorage:
-            symbols.frame!
-        }
+        let frame =
+            switch storage {
+            case .staticStorage:
+                staticStorageFrame
+
+            case .automaticStorage:
+                symbols.frame!
+            }
         let offset = frame.allocate(size: size)
         return offset
     }
-    
+
     func attachToFrame(identifier: String, symbol: Symbol) {
-        let frame = switch symbol.storage {
-        case .staticStorage:
-            staticStorageFrame
-            
-        case .automaticStorage:
-            symbols.frame!
-            
-        case .registerStorage:
-            fatalError("symbol with register storage cannot be attached to a frame: \(identifier)")
-        }
+        let frame =
+            switch symbol.storage {
+            case .staticStorage:
+                staticStorageFrame
+
+            case .automaticStorage:
+                symbols.frame!
+
+            case .registerStorage:
+                fatalError(
+                    "symbol with register storage cannot be attached to a frame: \(identifier)"
+                )
+            }
         frame.add(identifier: identifier, symbol: symbol)
     }
 }

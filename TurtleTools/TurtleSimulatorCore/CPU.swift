@@ -16,7 +16,7 @@ public struct PipelineStageInfo {
 
 public struct MemoryAddress: Equatable {
     public let value: Int
-    
+
     public init(_ value: UInt16) {
         self.value = Int(value)
     }
@@ -31,22 +31,22 @@ public protocol CPU: NSObject, NSSecureCoding {
     var pc: UInt16 { get set }
     var instructions: [UInt16] { get set }
     var decoder: InstructionDecoder { get set }
-    
+
     var n: UInt { get }
     var c: UInt { get }
     var z: UInt { get }
     var v: UInt { get }
-    
+
     var load: (MemoryAddress) -> UInt16 { get set }
     var store: (UInt16, MemoryAddress) -> Void { get set }
-    
+
     var numberOfRegisters: Int { get }
     func setRegister(_ idx: Int, _ val: UInt16)
     func getRegister(_ idx: Int) -> UInt16
-    
+
     var numberOfPipelineStages: Int { get }
     func getPipelineStageInfo(_ idx: Int) -> PipelineStageInfo
-    
+
     func reset()
     func run()
     func run(until date: Date) -> Bool

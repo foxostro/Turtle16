@@ -15,10 +15,10 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     public typealias Count = Int
     public typealias Offset = Int
     public typealias Imm = Int
-    
+
     public enum RegisterType: Hashable, CustomStringConvertible {
         case p, w, b, o
-        
+
         public var description: String {
             switch self {
             case .p: "p"
@@ -28,14 +28,14 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
             }
         }
     }
-    
+
     public enum Register: Hashable, CustomStringConvertible {
         case p(RegisterPointer), w(Register16), b(Register8), o(RegisterBoolean)
-        
+
         public static let sp: Register = .p(.sp)
         public static let fp: Register = .p(.fp)
         public static let ra: Register = .p(.ra)
-        
+
         public var type: RegisterType {
             switch self {
             case .p: .p
@@ -44,32 +44,32 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
             case .o: .o
             }
         }
-        
+
         public var unwrapPointer: RegisterPointer? {
             switch self {
             case .p(let p): p
-            default:        nil
+            default: nil
             }
         }
-        
+
         public var unwrap16: Register16? {
             switch self {
             case .w(let w): w
-            default:        nil
+            default: nil
             }
         }
-        
+
         public var unwrap8: Register8? {
             switch self {
             case .b(let b): b
-            default:        nil
+            default: nil
             }
         }
-        
+
         public var unwrapBool: RegisterBoolean? {
             switch self {
             case .o(let o): o
-            default:        nil
+            default: nil
             }
         }
 
@@ -82,10 +82,10 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
             }
         }
     }
-    
+
     public enum RegisterPointer: Hashable, CustomStringConvertible {
         case sp, fp, ra, p(Int)
-        
+
         public var description: String {
             switch self {
             case .sp: "sp"
@@ -95,37 +95,37 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
             }
         }
     }
-    
+
     public enum Register16: Hashable, CustomStringConvertible {
         case w(Int)
-        
+
         public var description: String {
             switch self {
             case .w(let i): "w\(i)"
             }
         }
     }
-    
+
     public enum RegisterBoolean: Hashable, CustomStringConvertible {
         case o(Int)
-        
+
         public var description: String {
             switch self {
             case .o(let i): "o\(i)"
             }
         }
     }
-    
+
     public enum Register8: Hashable, CustomStringConvertible {
         case b(Int)
-        
+
         public var description: String {
             switch self {
             case .b(let i): "b\(i)"
             }
         }
     }
-    
+
     case nop
     case hlt
     case call(Label)
@@ -140,8 +140,8 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     case alloca(RegisterPointer, Count)
     case free(Count)
     case inlineAssembly(String)
-    case syscall(RegisterPointer, RegisterPointer) // first register is the address in memory where the syscall number is stored, second is a pointer to the arguments structure
-    
+    case syscall(RegisterPointer, RegisterPointer)  // first register is the address in memory where the syscall number is stored, second is a pointer to the arguments structure
+
     case bz(RegisterBoolean, Label)
     case bnz(RegisterBoolean, Label)
     case not(RegisterBoolean, RegisterBoolean)
@@ -150,7 +150,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     case lio(RegisterBoolean, Bool)
     case lo(RegisterBoolean, RegisterPointer, Offset)
     case so(RegisterBoolean, RegisterPointer, Offset)
-    
+
     case eqp(RegisterBoolean, RegisterPointer, RegisterPointer)
     case nep(RegisterBoolean, RegisterPointer, RegisterPointer)
     case lip(RegisterPointer, Int)
@@ -159,11 +159,11 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     case addpw(RegisterPointer, RegisterPointer, Register16)
     case lp(RegisterPointer, RegisterPointer, Offset)
     case sp(RegisterPointer, RegisterPointer, Offset)
-    
+
     case lw(Register16, RegisterPointer, Offset)
     case sw(Register16, RegisterPointer, Offset)
     case bzw(Register16, Label)
-    case andiw(Register16, Register16, Imm) // TODO: consider changing imm instruction mnemonic to andwi because the w operand is to the left of the i operand. This applies generally to many other Tack instructions too.
+    case andiw(Register16, Register16, Imm)  // TODO: consider changing imm instruction mnemonic to andwi because the w operand is to the left of the i operand. This applies generally to many other Tack instructions too.
     case addiw(Register16, Register16, Imm)
     case subiw(Register16, Register16, Imm)
     case muliw(Register16, Register16, Imm)
@@ -191,7 +191,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     case geuw(RegisterBoolean, Register16, Register16)
     case leuw(RegisterBoolean, Register16, Register16)
     case gtuw(RegisterBoolean, Register16, Register16)
-    
+
     case lb(Register8, RegisterPointer, Offset)
     case sb(Register8, RegisterPointer, Offset)
     case lib(Register8, Int)
@@ -218,13 +218,13 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     case geub(RegisterBoolean, Register8, Register8)
     case leub(RegisterBoolean, Register8, Register8)
     case gtub(RegisterBoolean, Register8, Register8)
-    
-    case movsbw(Register8, Register16) // Move a signed sixteen-bit register to a signed eight-bit register
-    case movswb(Register16, Register8) // Move an eight-bit register to a sixteen-bit register, sign-extending to fill the upper bits.
-    case movzwb(Register16, Register8) // Move an eight-bit register to a sixteen-bit register, zero-extending to fill the upper bits.
-    case movzbw(Register8, Register16) // Move an unsigned sixteen-bit register to an unsigned eight-bit register
-    case bitcast(Register, Register) // Reinterpret the bit pattern of the source register as a new value in a desitnation register of a different type, with architecture-specific results.
-    
+
+    case movsbw(Register8, Register16)  // Move a signed sixteen-bit register to a signed eight-bit register
+    case movswb(Register16, Register8)  // Move an eight-bit register to a sixteen-bit register, sign-extending to fill the upper bits.
+    case movzwb(Register16, Register8)  // Move an eight-bit register to a sixteen-bit register, zero-extending to fill the upper bits.
+    case movzbw(Register8, Register16)  // Move an unsigned sixteen-bit register to an unsigned eight-bit register
+    case bitcast(Register, Register)  // Reinterpret the bit pattern of the source register as a new value in a desitnation register of a different type, with architecture-specific results.
+
     public var description: String {
         switch self {
         case .nop: "NOP"
@@ -242,7 +242,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         case .free(let count): "FREE \(count)"
         case .inlineAssembly(let asm): "ASM \(makeInlineAssemblyDescription(asm))"
         case .syscall(let n, let ptr): "SYSCALL \(n), \(ptr)"
-        
+
         case .bz(let test, let target): "BZ \(test) \(target)"
         case .bnz(let test, let target): "BNZ \(test) \(target)"
         case .not(let dst, let src): "NOT \(dst), \(src)"
@@ -251,7 +251,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         case .lio(let dst, let imm): "LIO \(dst), \(imm)"
         case .lo(let dst, let addr, let offset): "LO \(dst), \(addr), \(offset)"
         case .so(let src, let addr, let offset): "SO \(src), \(addr), \(offset)"
-            
+
         case .eqp(let c, let a, let b): "EQP \(c), \(a), \(b)"
         case .nep(let c, let a, let b): "NEP \(c), \(a), \(b)"
         case .lip(let dst, let imm): "LIP \(dst), \(imm)"
@@ -260,7 +260,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         case .addpw(let c, let a, let b): "ADDPW \(c), \(a), \(b)"
         case .lp(let dst, let addr, let offset): "LP \(dst), \(addr), \(offset)"
         case .sp(let src, let addr, let offset): "SP \(src), \(addr), \(offset)"
-        
+
         case .lw(let dst, let addr, let offset): "LW \(dst), \(addr), \(offset)"
         case .sw(let src, let addr, let offset): "SW \(src), \(addr), \(offset)"
         case .bzw(let test, let target): "BZW \(test) \(target)"
@@ -292,7 +292,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         case .geuw(let c, let a, let b): "GEUW \(c), \(a), \(b)"
         case .leuw(let c, let a, let b): "LEUW \(c), \(a), \(b)"
         case .gtuw(let c, let a, let b): "GTUW \(c), \(a), \(b)"
-        
+
         case .lb(let dst, let addr, let offset): "LB \(dst), \(addr), \(offset)"
         case .sb(let src, let addr, let offset): "SB \(src), \(addr), \(offset)"
         case .lib(let dst, let imm): "LIB \(dst), \(imm)"
@@ -326,20 +326,18 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         case .bitcast(let dst, let src): "BITCAST \(dst), \(src)"
         }
     }
-    
+
     private func makeInlineAssemblyDescription(_ asm: String) -> String {
         if asm == "" {
             return "\"\""
         }
-        
+
         let lines = asm.split(separator: "\n")
-        if lines.count == 1 {
-            return "\"\(lines.first!)\""
-        }
-        else {
-            let formatted = lines.map{"\t\($0)"}.joined(separator: "\n")
+        guard lines.count == 1 else {
+            let formatted = lines.map { "\t\($0)" }.joined(separator: "\n")
             return "\"\"\"\n\(formatted)\t\"\"\""
         }
+        return "\"\(lines.first!)\""
     }
 }
 
@@ -347,62 +345,73 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
 public final class TackInstructionNode: AbstractSyntaxTreeNode {
     public let instruction: TackInstruction
     public let symbols: Env?
-    
+
     public convenience init(_ instruction: TackInstruction) {
-        self.init(instruction: instruction,
-                  sourceAnchor: nil,
-                  symbols: nil)
+        self.init(
+            instruction: instruction,
+            sourceAnchor: nil,
+            symbols: nil
+        )
     }
-    
-    public init(instruction: TackInstruction,
-                sourceAnchor: SourceAnchor?,
-                symbols: Env?,
-                id: ID = ID()) {
+
+    public init(
+        instruction: TackInstruction,
+        sourceAnchor: SourceAnchor?,
+        symbols: Env?,
+        id: ID = ID()
+    ) {
         self.instruction = instruction
         self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public func withSymbols(_ symbols: Env?) -> TackInstructionNode {
         TackInstructionNode(
             instruction: instruction,
             sourceAnchor: sourceAnchor,
             symbols: symbols,
-            id: id)
+            id: id
+        )
     }
-    
+
     public func withInstruction(_ instruction: TackInstruction) -> TackInstructionNode {
         TackInstructionNode(
             instruction: instruction,
             sourceAnchor: sourceAnchor,
             symbols: symbols,
-            id: id)
+            id: id
+        )
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TackInstructionNode {
-        TackInstructionNode(instruction: instruction,
-                            sourceAnchor: sourceAnchor,
-                            symbols: symbols,
-                            id: id)
+        TackInstructionNode(
+            instruction: instruction,
+            sourceAnchor: sourceAnchor,
+            symbols: symbols,
+            id: id
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
         guard instruction == rhs.instruction else { return false }
-        
+
         // Symbol tables do not affect equality.
-        
+
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(instruction)
         // Symbol tables do not affect the hash.
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let result = "\(indent)\(instruction)"
         return result
@@ -417,46 +426,45 @@ public struct TackProgram: Equatable {
     public let sourceAnchor: [SourceAnchor?]
     public let symbols: [Env?]
     public let subroutines: [String?]
-    public let labels: [String : Int]
+    public let labels: [String: Int]
     public let ast: AbstractSyntaxTreeNode
-    
-    public init(instructions: [TackInstruction] = [],
-                sourceAnchor: [SourceAnchor?]? = nil,
-                symbols: [Env?]? = nil,
-                subroutines: [String?]? = nil,
-                labels: [String : Int] = [:],
-                ast: AbstractSyntaxTreeNode = Seq()) {
+
+    public init(
+        instructions: [TackInstruction] = [],
+        sourceAnchor: [SourceAnchor?]? = nil,
+        symbols: [Env?]? = nil,
+        subroutines: [String?]? = nil,
+        labels: [String: Int] = [:],
+        ast: AbstractSyntaxTreeNode = Seq()
+    ) {
         self.instructions = instructions
         self.labels = labels
         self.ast = ast
-        
+
         if let sourceAnchor {
             assert(sourceAnchor.count == instructions.count)
             self.sourceAnchor = sourceAnchor
+        } else {
+            self.sourceAnchor = [SourceAnchor?](repeating: nil, count: instructions.count)
         }
-        else {
-            self.sourceAnchor = Array<SourceAnchor?>(repeating: nil, count: instructions.count)
-        }
-        
+
         if let symbols {
             assert(symbols.count == instructions.count)
             self.symbols = symbols
+        } else {
+            self.symbols = [Env?](repeating: nil, count: instructions.count)
         }
-        else {
-            self.symbols = Array<Env?>(repeating: nil, count: instructions.count)
-        }
-        
+
         if let subroutines {
             assert(subroutines.count == instructions.count)
             self.subroutines = subroutines
-        }
-        else {
-            self.subroutines = Array<String?>(repeating: nil, count: instructions.count)
+        } else {
+            self.subroutines = [String?](repeating: nil, count: instructions.count)
         }
     }
-    
+
     public var listing: String {
-        var rowToLabel: [Int : String] = [:]
+        var rowToLabel: [Int: String] = [:]
         for key in labels.keys {
             if let row = labels[key] {
                 rowToLabel[row] = key
@@ -471,7 +479,7 @@ public struct TackProgram: Equatable {
         var longestLabelLength = 0
         for (_, label, _) in rows {
             if let label {
-                longestLabelLength = max(longestLabelLength, label.count+2)
+                longestLabelLength = max(longestLabelLength, label.count + 2)
             }
         }
         var lines: [String] = []
@@ -479,10 +487,12 @@ public struct TackProgram: Equatable {
             let labelCol: String
             if let label {
                 let formattedLabelPart = "\(label): "
-                let pad = String(repeating: " ", count: longestLabelLength-formattedLabelPart.count)
+                let pad = String(
+                    repeating: " ",
+                    count: longestLabelLength - formattedLabelPart.count
+                )
                 labelCol = pad + formattedLabelPart
-            }
-            else {
+            } else {
                 labelCol = String(repeating: " ", count: longestLabelLength)
             }
             let addrCol = addr.hexadecimalString
@@ -498,36 +508,36 @@ extension SymbolType {
         switch self {
         case .booleanType:
             return .o
-            
+
         case .void:
             return .w
-            
+
         case .pointer, .constPointer:
             return .p
-            
+
         case .arithmeticType(.mutableInt(let intClass)),
-             .arithmeticType(.immutableInt(let intClass)):
+            .arithmeticType(.immutableInt(let intClass)):
             switch intClass {
             case .u16, .i16: return .w
-            case .u8, .i8:   return .b
+            case .u8, .i8: return .b
             }
-            
+
         case .arithmeticType(.compTimeInt(let v)):
             let intClass = IntClass.smallestClassContaining(value: v)
             switch intClass {
             case .u16, .i16: return .w
-            case .u8, .i8:   return .b
-            case .none:      return nil
+            case .u8, .i8: return .b
+            case .none: return nil
             }
-        
+
         default:
             return nil
         }
     }
 }
 
-fileprivate extension Int {
-    var hexadecimalString: String {
+extension Int {
+    fileprivate var hexadecimalString: String {
         String(format: "%04x", self)
     }
 }

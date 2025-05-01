@@ -6,8 +6,8 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import TurtleCore
+import XCTest
 
 final class TokenEOFTests: XCTestCase {
     func testTokenDescription() {

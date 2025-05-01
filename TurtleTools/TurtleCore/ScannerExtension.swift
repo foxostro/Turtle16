@@ -6,8 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public extension Scanner {
-    func scanBinaryInt(_ result: inout Int) -> Bool {
+extension Scanner {
+    public func scanBinaryInt(_ result: inout Int) -> Bool {
         _ = scanString("0b")
         let binaryDigits: CharacterSet = CharacterSet.init(charactersIn: "01")
         guard let string = scanCharacters(from: binaryDigits) else {
@@ -23,7 +23,7 @@ public extension Scanner {
                 accum = partialValue
             }
             if digit == "1" {
-                accum = accum + 1 // cannot overflow here
+                accum = accum + 1  // cannot overflow here
             }
         }
         result = accum

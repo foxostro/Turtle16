@@ -10,35 +10,41 @@ import TurtleCore
 
 public struct SnapSubcompilerIf {
     public init() {}
-    
+
     public func compile(if node: If, symbols: Env) throws -> Seq {
         let s = node.sourceAnchor
         var children: [AbstractSyntaxTreeNode] = []
-        let condition = As(sourceAnchor: node.condition.sourceAnchor,
-                                              expr: node.condition,
-                                      targetType: PrimitiveType(.bool))
+        let condition = As(
+            sourceAnchor: node.condition.sourceAnchor,
+            expr: node.condition,
+            targetType: PrimitiveType(.bool)
+        )
         try RvalueExpressionTypeChecker(symbols: symbols).check(expression: condition)
         if let elseBranch = node.elseBranch {
             let labelElse = symbols.nextLabel()
             let labelTail = symbols.nextLabel()
             children += [
-                GotoIfFalse(sourceAnchor: s,
-                            condition: condition,
-                            target: labelElse),
+                GotoIfFalse(
+                    sourceAnchor: s,
+                    condition: condition,
+                    target: labelElse
+                ),
                 node.thenBranch,
                 Goto(sourceAnchor: s, target: labelTail),
                 LabelDeclaration(sourceAnchor: s, identifier: labelElse),
                 elseBranch,
-                LabelDeclaration(sourceAnchor: s, identifier: labelTail)
+                LabelDeclaration(sourceAnchor: s, identifier: labelTail),
             ]
         } else {
             let labelTail = symbols.nextLabel()
             children += [
-                GotoIfFalse(sourceAnchor: s,
-                            condition: condition,
-                            target: labelTail),
+                GotoIfFalse(
+                    sourceAnchor: s,
+                    condition: condition,
+                    target: labelTail
+                ),
                 node.thenBranch,
-                LabelDeclaration(sourceAnchor: s, identifier: labelTail)
+                LabelDeclaration(sourceAnchor: s, identifier: labelTail),
             ]
         }
         return Seq(sourceAnchor: s, children: children)

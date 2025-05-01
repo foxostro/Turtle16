@@ -6,8 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import TurtleAssemblerCore
+import XCTest
 
 class TurtleAssemblerCoreTests: XCTestCase {
 

@@ -6,9 +6,9 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import SnapCore
 import TurtleCore
+import XCTest
 
 final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testFunctionRedefinesExistingSymbol() throws {
@@ -19,14 +19,15 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
             identifier: Identifier("foo"),
             functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
             argumentNames: [],
-            body: Block(children: []))
-            .reconnect(parent: nil)
+            body: Block(children: [])
+        )
+        .reconnect(parent: nil)
         XCTAssertThrowsError(try compiler.compile(symbols: symbols, node: input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `foo\'")
         }
     }
-    
+
     func testFunctionBodyMissingReturn() throws {
         let symbols = Env()
         let compiler = SnapSubcompilerFunctionDeclaration()
@@ -34,38 +35,51 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
             identifier: Identifier("foo"),
             functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
             argumentNames: [],
-            body: Block(children: []))
-            .reconnect(parent: nil)
+            body: Block(children: [])
+        )
+        .reconnect(parent: nil)
         XCTAssertThrowsError(try compiler.compile(symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "missing return in a function expected to return `u8'")
+            XCTAssertEqual(
+                compilerError?.message,
+                "missing return in a function expected to return `u8'"
+            )
         }
     }
-    
+
     func testDeclareFunction() throws {
         let symbols = Env()
         let originalBody = Block(children: [])
         let expectedRewrittenBody = Block(children: [Return()])
         let input = FunctionDeclaration(
             identifier: Identifier("foo"),
-            functionType: FunctionType(name: "foo", returnType: PrimitiveType(.void), arguments: []),
+            functionType: FunctionType(
+                name: "foo",
+                returnType: PrimitiveType(.void),
+                arguments: []
+            ),
             argumentNames: [],
-            body: originalBody)
-            .reconnect(parent: nil)
-        let functionType = FunctionTypeInfo(name: "foo",
-                                        mangledName: "foo",
-                                        returnType: .void,
-                                        arguments: [],
-                                        ast: input.withBody(expectedRewrittenBody))
-        let expected = Symbol(type: .function(functionType),
-                              offset: 0,
-                              qualifier: .automaticStorage)
+            body: originalBody
+        )
+        .reconnect(parent: nil)
+        let functionType = FunctionTypeInfo(
+            name: "foo",
+            mangledName: "foo",
+            returnType: .void,
+            arguments: [],
+            ast: input.withBody(expectedRewrittenBody)
+        )
+        let expected = Symbol(
+            type: .function(functionType),
+            offset: 0,
+            qualifier: .automaticStorage
+        )
         try SnapSubcompilerFunctionDeclaration().compile(symbols: symbols, node: input)
         let actual = try symbols.resolve(identifier: "foo")
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
         let symbols = Env()
         let compiler = SnapSubcompilerFunctionDeclaration()
@@ -75,20 +89,23 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
             argumentNames: [],
             body: Block(children: [
                 Return(LiteralBool(true)),
-                LiteralBool(false)
-            ]))
-            .reconnect(parent: nil)
+                LiteralBool(false),
+            ])
+        )
+        .reconnect(parent: nil)
         XCTAssertThrowsError(try compiler.compile(symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "code after return will never be executed")
         }
     }
-    
+
     func testDeclareGenericFunction() throws {
-        let functionType = FunctionType(name: "foo",
-                                                   returnType: Identifier("T"),
-                                                   arguments: [Identifier("T")])
+        let functionType = FunctionType(
+            name: "foo",
+            returnType: Identifier("T"),
+            arguments: [Identifier("T")]
+        )
         let input = FunctionDeclaration(
             identifier: Identifier("foo"),
             functionType: functionType,
@@ -98,8 +115,9 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                 Return(Identifier("a"))
             ]),
             visibility: .privateVisibility,
-            symbols: Env())
-            .reconnect(parent: nil)
+            symbols: Env()
+        )
+        .reconnect(parent: nil)
         let symbols = Env()
         try SnapSubcompilerFunctionDeclaration().compile(symbols: symbols, node: input)
         let actualSymbol = try symbols.resolve(identifier: "foo")

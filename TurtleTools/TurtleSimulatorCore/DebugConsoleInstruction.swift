@@ -16,7 +16,7 @@ public enum DebugConsoleInstruction: Equatable {
         case identifier(String)
         case identifierCount(String, UInt)
     }
-    
+
     case help(DebugConsoleHelpTopic?)
     case quit
     case reset(type: ResetType)
@@ -31,7 +31,7 @@ public enum DebugConsoleInstruction: Equatable {
     case load(String, URL)
     case save(String, URL)
     case disassemble(DisassembleMode)
-    
+
     public var actionName: String {
         switch self {
         case .help: "Help"
@@ -50,7 +50,7 @@ public enum DebugConsoleInstruction: Equatable {
         case .disassemble: "Disassemble"
         }
     }
-    
+
     public var undoable: Bool {
         switch self {
         case .help: false

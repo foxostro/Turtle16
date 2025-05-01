@@ -10,17 +10,17 @@ import Foundation
 
 public class MEM_Output: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
-    
+
     public let y: UInt16
     public let storeOp: UInt16
     public let selC: UInt
     public let ctl: UInt
     public let associatedPC: UInt16?
-    
+
     public override var description: String {
         "y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), selC: \(selC), ctl: \(String(format: "%x", ctl))"
     }
-    
+
     public init(y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt, associatedPC: UInt16? = nil) {
         self.y = y
         self.storeOp = storeOp
@@ -28,13 +28,14 @@ public class MEM_Output: NSObject, NSSecureCoding {
         self.ctl = ctl
         self.associatedPC = associatedPC
     }
-    
+
     public required init?(coder: NSCoder) {
         guard let y = coder.decodeObject(forKey: "y") as? UInt16,
-              let storeOp = coder.decodeObject(forKey: "storeOp") as? UInt16,
-              let selC = coder.decodeObject(forKey: "selC") as? UInt,
-              let ctl = coder.decodeObject(forKey: "ctl") as? UInt,
-              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
+            let storeOp = coder.decodeObject(forKey: "storeOp") as? UInt16,
+            let selC = coder.decodeObject(forKey: "selC") as? UInt,
+            let ctl = coder.decodeObject(forKey: "ctl") as? UInt,
+            let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
+        else {
             return nil
         }
         self.y = y
@@ -43,7 +44,7 @@ public class MEM_Output: NSObject, NSSecureCoding {
         self.ctl = ctl
         self.associatedPC = associatedPC
     }
-    
+
     public func encode(with coder: NSCoder) {
         coder.encode(y, forKey: "y")
         coder.encode(storeOp, forKey: "storeOp")
@@ -51,11 +52,11 @@ public class MEM_Output: NSObject, NSSecureCoding {
         coder.encode(ctl, forKey: "ctl")
         coder.encode(associatedPC, forKey: "associatedPC")
     }
-    
-    public static func ==(lhs: MEM_Output, rhs: MEM_Output) -> Bool {
+
+    public static func == (lhs: MEM_Output, rhs: MEM_Output) -> Bool {
         lhs.isEqual(rhs)
     }
-    
+
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false
@@ -64,15 +65,16 @@ public class MEM_Output: NSObject, NSSecureCoding {
             return false
         }
         guard y == rhs.y,
-              storeOp == rhs.storeOp,
-              selC == rhs.selC,
-              ctl == rhs.ctl,
-              associatedPC == rhs.associatedPC else {
+            storeOp == rhs.storeOp,
+            selC == rhs.selC,
+            ctl == rhs.ctl,
+            associatedPC == rhs.associatedPC
+        else {
             return false
         }
         return true
     }
-    
+
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(y)
@@ -90,9 +92,9 @@ public class MEM_Output: NSObject, NSSecureCoding {
 // following naming conventions and organization that matches the schematics.
 public class MEM: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
-    
+
     public var associatedPC: UInt16? = nil
-    
+
     public struct Input: Hashable {
         public let rdy: UInt
         public let y: UInt16
@@ -100,8 +102,15 @@ public class MEM: NSObject, NSSecureCoding {
         public let selC: UInt
         public let ctl: UInt
         public let associatedPC: UInt16?
-        
-        public init(rdy: UInt, y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt, associatedPC: UInt16? = nil) {
+
+        public init(
+            rdy: UInt,
+            y: UInt16,
+            storeOp: UInt16,
+            selC: UInt,
+            ctl: UInt,
+            associatedPC: UInt16? = nil
+        ) {
             self.rdy = rdy
             self.y = y
             self.storeOp = storeOp
@@ -110,15 +119,15 @@ public class MEM: NSObject, NSSecureCoding {
             self.associatedPC = associatedPC
         }
     }
-    
-    public var load: (MemoryAddress) -> UInt16 = {(addr: MemoryAddress) in
-        return 0 // do nothing
+
+    public var load: (MemoryAddress) -> UInt16 = { (addr: MemoryAddress) in
+        return 0  // do nothing
     }
-    
-    public var store: (UInt16, MemoryAddress) -> Void = {(value: UInt16, addr: MemoryAddress) in
+
+    public var store: (UInt16, MemoryAddress) -> Void = { (value: UInt16, addr: MemoryAddress) in
         // do nothing
     }
-    
+
     public func step(input: Input) -> MEM_Output {
         var storeOp: UInt16 = 0
         if input.rdy == 0 {
@@ -137,41 +146,49 @@ public class MEM: NSObject, NSSecureCoding {
             }
         }
         associatedPC = input.associatedPC
-        return MEM_Output(y: input.y, storeOp: storeOp, selC: input.selC, ctl: input.ctl, associatedPC: associatedPC)
+        return MEM_Output(
+            y: input.y,
+            storeOp: storeOp,
+            selC: input.selC,
+            ctl: input.ctl,
+            associatedPC: associatedPC
+        )
     }
-    
+
     public required override init() {
     }
-    
+
     public required init?(coder: NSCoder) {
         guard let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
             return nil
         }
         self.associatedPC = associatedPC
     }
-    
+
     public func encode(with coder: NSCoder) {
         coder.encode(associatedPC, forKey: "associatedPC")
     }
-    
+
     public static func decode(from data: Data) throws -> MEM {
         var decodedObject: MEM? = nil
         let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
         unarchiver.requiresSecureCoding = false
         decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
         if let error = unarchiver.error {
-            fatalError("Error occured while attempting to decode \(self) from data: \(error.localizedDescription)")
+            fatalError(
+                "Error occured while attempting to decode \(self) from data: \(error.localizedDescription)"
+            )
         }
         guard let decodedObject else {
             fatalError("Failed to decode \(self) from data.")
         }
         return decodedObject
     }
-    
-    public static func ==(lhs: MEM, rhs: MEM) -> Bool {
+
+    public static func == (lhs: MEM, rhs: MEM) -> Bool {
         lhs.isEqual(rhs)
     }
-    
+
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false
@@ -184,7 +201,7 @@ public class MEM: NSObject, NSSecureCoding {
         }
         return true
     }
-    
+
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(associatedPC)

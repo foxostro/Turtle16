@@ -51,20 +51,20 @@ public let kBREAK = "BREAK"
 
 public final class AssemblerCompiler {
     private let codeGenerator = AssemblerCodeGenerator()
-    
+
     public var hasError: Bool { !errors.isEmpty }
     public private(set) var errors: [CompilerError] = []
     public private(set) var instructions: [UInt16] = []
-    
+
     public init() {}
-    
+
     public func compile(_ topLevel: TopLevel) {
         compile(ast: topLevel.children)
     }
-    
+
     public func compile(ast: [AbstractSyntaxTreeNode]) {
         codeGenerator.begin()
-        
+
         for node in ast {
             do {
                 try compileNode(node)
@@ -74,7 +74,7 @@ public final class AssemblerCompiler {
                 errors.append(errorUnknown(node.sourceAnchor))
             }
         }
-        
+
         do {
             try codeGenerator.end()
             instructions = codeGenerator.instructions
@@ -84,96 +84,96 @@ public final class AssemblerCompiler {
             errors.append(errorUnknown(nil))
         }
     }
-    
+
     fileprivate func compileNode(_ node: AbstractSyntaxTreeNode) throws {
         switch node {
         case let instructionNode as InstructionNode:
             try compileInstruction(instructionNode)
-            
+
         case let labelDeclarationNode as LabelDeclaration:
             try codeGenerator.label(labelDeclarationNode.identifier)
-            
+
         default:
             throw errorUnknown(node.sourceAnchor)
         }
     }
-    
+
     fileprivate func compileInstruction(_ node: InstructionNode) throws {
         codeGenerator.sourceAnchor = node.sourceAnchor
-        
+
         switch node.instruction {
         case kNOP:
             try compileNOP(node)
-            
+
         case kHLT, kBREAK:
             try compileHLT(node)
-            
+
         case kLOAD:
             try compileLOAD(node)
-            
+
         case kSTORE:
             try compileSTORE(node)
-            
+
         case kLI:
             try compileLI(node)
-            
+
         case kLUI:
             try compileLUI(node)
-            
+
         case kCMP:
             try compileCMP(node)
-            
+
         case kADD:
             try compileADD(node)
-            
+
         case kSUB:
             try compileSUB(node)
-            
+
         case kAND:
             try compileAND(node)
-            
+
         case kOR:
             try compileOR(node)
-            
+
         case kXOR:
             try compileXOR(node)
-            
+
         case kNOT:
             try compileNOT(node)
-            
+
         case kCMPI:
             try compileCMPI(node)
-            
+
         case kADDI:
             try compileADDI(node)
-            
+
         case kSUBI:
             try compileSUBI(node)
-            
+
         case kANDI:
             try compileANDI(node)
-            
+
         case kORI:
             try compileORI(node)
-            
+
         case kXORI:
             try compileXORI(node)
-            
+
         case kJMP:
             try compileJMP(node)
-            
+
         case kJR:
             try compileJR(node)
-            
+
         case kJALR:
             try compileJALR(node)
-            
+
         case kBEQ:
             try compileBEQ(node)
-            
+
         case kBNE:
             try compileBNE(node)
-            
+
         case kBLT:
             try compileBLT(node)
 
@@ -185,50 +185,50 @@ public final class AssemblerCompiler {
 
         case kBGTU:
             try compileBGTU(node)
-            
+
         case kADC:
             try compileADC(node)
 
         case kSBC:
             try compileSBC(node)
-            
+
         case kLA:
             try compileLA(node)
-            
+
         case kCALL:
             try compileCALL(node)
-            
+
         case kCALLPTR:
             try compileCALLPTR(node)
-            
+
         case kENTER:
             try compileENTER(node)
-            
+
         case kLEAVE:
             try compileLEAVE(node)
-            
+
         case kRET:
             try compileRET(node)
-            
+
         default:
             throw errorUnknownInstruction(node)
         }
     }
-    
+
     fileprivate func compileNOP(_ node: InstructionNode) throws {
         guard node.parameters.count == 0 else {
             throw errorExpectsZeroOperands(node)
         }
         codeGenerator.nop()
     }
-    
+
     fileprivate func compileHLT(_ node: InstructionNode) throws {
         guard node.parameters.count == 0 else {
             throw errorExpectsZeroOperands(node)
         }
         codeGenerator.hlt()
     }
-    
+
     fileprivate func compileLOAD(_ node: InstructionNode) throws {
         guard (2...3).contains(node.parameters.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
@@ -250,7 +250,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.load(destination, sourceAddress, offset)
     }
-    
+
     fileprivate func compileSTORE(_ node: InstructionNode) throws {
         guard (2...3).contains(node.parameters.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
@@ -272,7 +272,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.store(source, destinationAddress, offset)
     }
-    
+
     fileprivate func compileLI(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
@@ -285,7 +285,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.li(destination, immediate)
     }
-    
+
     fileprivate func compileLUI(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
@@ -298,7 +298,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.lui(destination, immediate)
     }
-    
+
     fileprivate func compileCMP(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
@@ -311,7 +311,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.cmp(left, right)
     }
-    
+
     fileprivate func compileADD(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -327,7 +327,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.add(destination, left, right)
     }
-    
+
     fileprivate func compileSUB(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -343,7 +343,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.sub(destination, left, right)
     }
-    
+
     fileprivate func compileAND(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -359,7 +359,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.and(destination, left, right)
     }
-    
+
     fileprivate func compileOR(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -375,7 +375,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.or(destination, left, right)
     }
-    
+
     fileprivate func compileXOR(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -391,7 +391,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.xor(destination, left, right)
     }
-    
+
     fileprivate func compileNOT(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
@@ -404,7 +404,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.not(destination, source)
     }
-    
+
     fileprivate func compileCMPI(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
@@ -417,7 +417,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.cmpi(left, right)
     }
-    
+
     fileprivate func compileADDI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -433,7 +433,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.addi(destination, left, right)
     }
-    
+
     fileprivate func compileSUBI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -449,7 +449,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.subi(destination, left, right)
     }
-    
+
     fileprivate func compileANDI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -465,7 +465,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.andi(destination, left, right)
     }
-    
+
     fileprivate func compileORI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -481,7 +481,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.ori(destination, left, right)
     }
-    
+
     fileprivate func compileXORI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -497,7 +497,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.xori(destination, left, right)
     }
-    
+
     fileprivate func compileJMP(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
@@ -510,7 +510,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.jmp(name)
     }
-    
+
     fileprivate func compileJR(_ node: InstructionNode) throws {
         guard (1...2).contains(node.parameters.count) else {
             throw errorExpectsOneOrTwoOperands(node)
@@ -524,13 +524,12 @@ public final class AssemblerCompiler {
                 throw errorExpectsOptionalSecondOperandToBeAnImmediateValue(node)
             }
             offset = offset_
-        }
-        else {
+        } else {
             offset = 0
         }
         try codeGenerator.jr(destination, offset)
     }
-    
+
     fileprivate func compileJALR(_ node: InstructionNode) throws {
         guard (2...3).contains(node.parameters.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
@@ -547,13 +546,12 @@ public final class AssemblerCompiler {
                 throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
             }
             offset = offset_
-        }
-        else {
+        } else {
             offset = 0
         }
         try codeGenerator.jalr(link, destination, offset)
     }
-    
+
     fileprivate func compileBEQ(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
@@ -566,7 +564,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.beq(name)
     }
-    
+
     fileprivate func compileBNE(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
@@ -579,7 +577,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.bne(name)
     }
-    
+
     fileprivate func compileBLT(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
@@ -592,7 +590,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.blt(name)
     }
-    
+
     fileprivate func compileBGT(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
@@ -605,7 +603,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.bgt(name)
     }
-    
+
     fileprivate func compileBLTU(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
@@ -618,7 +616,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.bltu(name)
     }
-    
+
     fileprivate func compileBGTU(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
@@ -631,7 +629,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.bgtu(name)
     }
-    
+
     fileprivate func compileADC(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -647,7 +645,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.adc(destination, left, right)
     }
-    
+
     fileprivate func compileSBC(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
@@ -663,7 +661,7 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.sbc(destination, left, right)
     }
-    
+
     fileprivate func compileLA(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
@@ -676,33 +674,42 @@ public final class AssemblerCompiler {
         }
         try codeGenerator.la(destination, name)
     }
-    
+
     fileprivate func compileCALL(_ node: InstructionNode) throws {
         try compileNodes([
-            InstructionNode(instruction: kLA, parameters: [
-                ParameterIdentifier("ra"),
-                node.parameters[0]
-            ]),
-            InstructionNode(instruction: kJALR, parameters: [
-                ParameterIdentifier("ra"),
-                ParameterIdentifier("ra"),
-                ParameterNumber(0)
-            ])
+            InstructionNode(
+                instruction: kLA,
+                parameters: [
+                    ParameterIdentifier("ra"),
+                    node.parameters[0],
+                ]
+            ),
+            InstructionNode(
+                instruction: kJALR,
+                parameters: [
+                    ParameterIdentifier("ra"),
+                    ParameterIdentifier("ra"),
+                    ParameterNumber(0),
+                ]
+            ),
         ])
     }
-    
+
     fileprivate func compileCALLPTR(_ node: InstructionNode) throws {
         try compileNodes([
-            InstructionNode(instruction: kJALR, parameters: [
-                ParameterIdentifier("ra"),
-                node.parameters[0],
-                ParameterNumber(0)
-            ])
+            InstructionNode(
+                instruction: kJALR,
+                parameters: [
+                    ParameterIdentifier("ra"),
+                    node.parameters[0],
+                    ParameterNumber(0),
+                ]
+            )
         ])
     }
-    
+
     fileprivate let kSizeOfSavedRegisters = 7
-    
+
     fileprivate func compileENTER(_ node: InstructionNode) throws {
         // The ENTER instructions pushes physical registers on the stack and
         // then establishes a new stack frame by `fp <- sp ; sp <- sp - size`.
@@ -720,151 +727,219 @@ public final class AssemblerCompiler {
             size = sizeArg.value
         }
         var instructions: [InstructionNode] = [
-            InstructionNode(instruction: kSUBI, parameters: [
-                ParameterIdentifier("sp"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(kSizeOfSavedRegisters)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(6)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(5)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(4)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(3)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("r4"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(2)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("ra"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(1)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("fp"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kADDI, parameters: [
-                ParameterIdentifier("fp"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(0)
-            ])
+            InstructionNode(
+                instruction: kSUBI,
+                parameters: [
+                    ParameterIdentifier("sp"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(kSizeOfSavedRegisters),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(6),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(5),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(4),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(3),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("r4"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(2),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("ra"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(1),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("fp"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADDI,
+                parameters: [
+                    ParameterIdentifier("fp"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(0),
+                ]
+            ),
         ]
         if size != 0 {
             if size >= 15 {
                 instructions += [
-                    InstructionNode(instruction: kLI, parameters:[
-                        ParameterIdentifier("r0"),
-                        ParameterNumber(Int(size & 0x00ff))
-                    ]),
-                    InstructionNode(instruction: kLUI, parameters:[
-                        ParameterIdentifier("r0"),
-                        ParameterNumber(Int((size & 0xff00) >> 8))
-                    ]),
-                    InstructionNode(instruction: kSUB, parameters: [
-                        ParameterIdentifier("sp"),
-                        ParameterIdentifier("sp"),
-                        ParameterIdentifier("r0")
-                    ])
+                    InstructionNode(
+                        instruction: kLI,
+                        parameters: [
+                            ParameterIdentifier("r0"),
+                            ParameterNumber(Int(size & 0x00ff)),
+                        ]
+                    ),
+                    InstructionNode(
+                        instruction: kLUI,
+                        parameters: [
+                            ParameterIdentifier("r0"),
+                            ParameterNumber(Int((size & 0xff00) >> 8)),
+                        ]
+                    ),
+                    InstructionNode(
+                        instruction: kSUB,
+                        parameters: [
+                            ParameterIdentifier("sp"),
+                            ParameterIdentifier("sp"),
+                            ParameterIdentifier("r0"),
+                        ]
+                    ),
                 ]
-            }
-            else {
+            } else {
                 instructions += [
-                    InstructionNode(instruction: kSUBI, parameters: [
-                        ParameterIdentifier("sp"),
-                        ParameterIdentifier("sp"),
-                        ParameterNumber(size)
-                    ])
+                    InstructionNode(
+                        instruction: kSUBI,
+                        parameters: [
+                            ParameterIdentifier("sp"),
+                            ParameterIdentifier("sp"),
+                            ParameterNumber(size),
+                        ]
+                    )
                 ]
             }
         }
         try compileNodes(instructions)
     }
-    
+
     fileprivate func compileLEAVE(_ node: InstructionNode) throws {
         // The LEAVE instructions tears down the stack frame by doing
         // `sp <- fp` and then restores physical register values by popping
         // them off the stack.
         try compileNodes([
-            InstructionNode(instruction: kADDI, parameters: [
-                ParameterIdentifier("sp"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(6)
-            ]),
-            InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(5)
-            ]),
-            InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(4)
-            ]),
-            InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(3)
-            ]),
-            InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("r4"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(2)
-            ]),
-            InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("ra"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(1)
-            ]),
-            InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("fp"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kADDI, parameters: [
-                ParameterIdentifier("sp"),
-                ParameterIdentifier("sp"),
-                ParameterNumber(kSizeOfSavedRegisters)
-            ])
+            InstructionNode(
+                instruction: kADDI,
+                parameters: [
+                    ParameterIdentifier("sp"),
+                    ParameterIdentifier("fp"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(6),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(5),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(4),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(3),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("r4"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(2),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("ra"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(1),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("fp"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADDI,
+                parameters: [
+                    ParameterIdentifier("sp"),
+                    ParameterIdentifier("sp"),
+                    ParameterNumber(kSizeOfSavedRegisters),
+                ]
+            ),
         ])
     }
-    
+
     fileprivate func compileRET(_ node: InstructionNode) throws {
         try compileNodes([
-            InstructionNode(instruction: kJR, parameters: [
-                ParameterIdentifier("ra"),
-                ParameterNumber(-1)
-            ])
+            InstructionNode(
+                instruction: kJR,
+                parameters: [
+                    ParameterIdentifier("ra"),
+                    ParameterNumber(-1),
+                ]
+            )
         ])
     }
-    
+
     fileprivate func compileNodes(_ nodes: [InstructionNode]) throws {
         for ins in nodes {
             try compileNode(ins)
         }
     }
-    
+
     fileprivate func lookupRegister(_ parameter: Parameter) -> AssemblerCodeGenerator.Register? {
         guard let identifier = (parameter as? ParameterIdentifier)?.value else {
             return nil
@@ -872,138 +947,263 @@ public final class AssemblerCompiler {
         switch identifier {
         case "r0":
             return .r0
-            
+
         case "r1":
             return .r1
-            
+
         case "r2":
             return .r2
-            
+
         case "r3":
             return .r3
-            
+
         case "r4":
             return .r4
-            
+
         case "r5", "ra":
             return .r5
-            
+
         case "r6", "sp":
             return .r6
-            
+
         case "r7", "fp":
             return .r7
-            
+
         default:
             return nil
         }
     }
-    
+
     fileprivate func errorUnknown(_ sourceAnchor: SourceAnchor?) -> CompilerError {
-        return CompilerError(sourceAnchor: sourceAnchor, message: "unknown error")
+        CompilerError(sourceAnchor: sourceAnchor, message: "unknown error")
     }
-    
+
     fileprivate func errorUnknownInstruction(_ node: AbstractSyntaxTreeNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "unknown instruction")
+        CompilerError(sourceAnchor: node.sourceAnchor, message: "unknown instruction")
     }
-    
+
     fileprivate func errorExpectsZeroOperands(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects zero operands: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects zero operands: `\(node.instruction)'"
+        )
     }
-    
+
     fileprivate func errorExpectsOneOperand(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects one operand: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects one operand: `\(node.instruction)'"
+        )
     }
-    
+
     fileprivate func errorExpectsZeroOrOneOperands(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects zero or one operands: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects zero or one operands: `\(node.instruction)'"
+        )
     }
-    
+
     fileprivate func errorExpectsOneOrTwoOperands(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects one or two operands: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects one or two operands: `\(node.instruction)'"
+        )
     }
-    
+
     fileprivate func errorExpectsTwoOperands(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects two operands: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects two operands: `\(node.instruction)'"
+        )
     }
-    
+
     fileprivate func errorExpectsTwoOrThreeOperands(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects two or three operands: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects two or three operands: `\(node.instruction)'"
+        )
     }
-    
+
     fileprivate func errorExpectsThreeOperands(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects three operands: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects three operands: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsFirstOperandToBeLabelIdentifier(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be a label identifier: `\(node.instruction)'")
+
+    fileprivate func errorExpectsFirstOperandToBeLabelIdentifier(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the first operand to be a label identifier: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsSecondOperandToBeLabelIdentifier(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be a label identifier: `\(node.instruction)'")
+
+    fileprivate func errorExpectsSecondOperandToBeLabelIdentifier(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the second operand to be a label identifier: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsFirstOperandToBeTheLinkRegister(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be the link register: `\(node.instruction)'")
+
+    fileprivate func errorExpectsFirstOperandToBeTheLinkRegister(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the first operand to be the link register: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsFirstOperandToBeTheDestination(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be the destination register: `\(node.instruction)'")
+
+    fileprivate func errorExpectsFirstOperandToBeTheDestination(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the first operand to be the destination register: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsFirstOperandToBeTheDestinationAddress(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be the register containing the destination address: `\(node.instruction)'")
+
+    fileprivate func errorExpectsFirstOperandToBeTheDestinationAddress(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the first operand to be the register containing the destination address: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsFirstOperandToBeTheLeftOperand(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be a register containing the left operand: `\(node.instruction)'")
+
+    fileprivate func errorExpectsFirstOperandToBeTheLeftOperand(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the first operand to be a register containing the left operand: `\(node.instruction)'"
+        )
     }
-    
+
     fileprivate func errorExpectsFirstOperandToBeTheSize(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the operand to be the size: `\(node.instruction)'")
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "instruction expects the operand to be the size: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsFirstOperandToBeTheSource(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be the source register: `\(node.instruction)'")
+
+    fileprivate func errorExpectsFirstOperandToBeTheSource(_ node: InstructionNode) -> CompilerError
+    {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the first operand to be the source register: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsSecondOperandToBeTheSource(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be the source register: `\(node.instruction)'")
+
+    fileprivate func errorExpectsSecondOperandToBeTheSource(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the second operand to be the source register: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsSecondOperandToBeTheSourceAddress(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be the register containing the source address: `\(node.instruction)'")
+
+    fileprivate func errorExpectsSecondOperandToBeTheSourceAddress(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the second operand to be the register containing the source address: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsSecondOperandToBeTheDestinationAddress(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be the register containing the destination address: `\(node.instruction)'")
+
+    fileprivate func errorExpectsSecondOperandToBeTheDestinationAddress(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the second operand to be the register containing the destination address: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsSecondOperandToBeTheLeftOperand(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be a register containing the left operand: `\(node.instruction)'")
+
+    fileprivate func errorExpectsSecondOperandToBeTheLeftOperand(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the second operand to be a register containing the left operand: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsSecondOperandToBeTheRightOperand(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be a register containing the right operand: `\(node.instruction)'")
+
+    fileprivate func errorExpectsSecondOperandToBeTheRightOperand(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the second operand to be a register containing the right operand: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsSecondOperandToBeAnImmediateValue(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be an immediate value: `\(node.instruction)'")
+
+    fileprivate func errorExpectsSecondOperandToBeAnImmediateValue(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the second operand to be an immediate value: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsOptionalSecondOperandToBeAnImmediateValue(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the optional second operand to be an immediate value: `\(node.instruction)'")
+
+    fileprivate func errorExpectsOptionalSecondOperandToBeAnImmediateValue(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the optional second operand to be an immediate value: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsThirdOperandToBeAnImmediateValue(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the third operand to be an immediate value: `\(node.instruction)'")
+
+    fileprivate func errorExpectsThirdOperandToBeAnImmediateValue(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the third operand to be an immediate value: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsThirdOperandToBeAnImmediateValueOffset(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the optional third operand to be an immediate value offset: `\(node.instruction)'")
+
+    fileprivate func errorExpectsThirdOperandToBeAnImmediateValueOffset(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the optional third operand to be an immediate value offset: `\(node.instruction)'"
+        )
     }
-    
-    fileprivate func errorExpectsThirdOperandToBeTheRightOperand(_ node: InstructionNode) -> CompilerError {
-        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the third operand to be a register containing the right operand: `\(node.instruction)'")
+
+    fileprivate func errorExpectsThirdOperandToBeTheRightOperand(
+        _ node: InstructionNode
+    ) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message:
+                "instruction expects the third operand to be a register containing the right operand: `\(node.instruction)'"
+        )
     }
 }

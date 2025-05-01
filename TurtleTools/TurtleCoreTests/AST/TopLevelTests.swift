@@ -6,27 +6,35 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import TurtleCore
+import XCTest
 
 final class TopLevelTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(TopLevel(children: []),
-                          CommentNode(string: ""))
+        XCTAssertNotEqual(
+            TopLevel(children: []),
+            CommentNode(string: "")
+        )
     }
-    
+
     func testDoesNotEqualNodeWithDifferentChildren() {
-        XCTAssertNotEqual(TopLevel(children: []),
-                          TopLevel(children: [CommentNode(string: "")]))
+        XCTAssertNotEqual(
+            TopLevel(children: []),
+            TopLevel(children: [CommentNode(string: "")])
+        )
     }
-    
+
     func testSame() {
-        XCTAssertEqual(TopLevel(children: [CommentNode(string: "")]),
-                       TopLevel(children: [CommentNode(string: "")]))
+        XCTAssertEqual(
+            TopLevel(children: [CommentNode(string: "")]),
+            TopLevel(children: [CommentNode(string: "")])
+        )
     }
-    
+
     func testHash() {
-        XCTAssertEqual(TopLevel(children: [CommentNode(string: "")]).hashValue,
-                       TopLevel(children: [CommentNode(string: "")]).hashValue)
+        XCTAssertEqual(
+            TopLevel(children: [CommentNode(string: "")]).hashValue,
+            TopLevel(children: [CommentNode(string: "")]).hashValue
+        )
     }
 }

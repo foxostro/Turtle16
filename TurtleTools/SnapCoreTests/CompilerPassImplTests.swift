@@ -6,15 +6,15 @@
 //  Copyright © 2024 Andrew Fox. All rights reserved.
 //
 
-import XCTest
-import TurtleCore
 import SnapCore
+import TurtleCore
+import XCTest
 
 final class CompilerPassImplTests: XCTestCase {
     private func parse(_ text: String) -> TopLevel {
         try! SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
     }
-    
+
     func testEraseImpl() throws {
         let ast0 = Block(children: [
             StructDeclaration(
@@ -22,9 +22,11 @@ final class CompilerPassImplTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(.i16))
+                        type: PrimitiveType(.i16)
+                    )
                 ],
-                visibility: .privateVisibility),
+                visibility: .privateVisibility
+            ),
             Impl(
                 typeArguments: [],
                 structTypeExpr: Identifier("Foo"),
@@ -36,27 +38,32 @@ final class CompilerPassImplTests: XCTestCase {
                             returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
-                            ]),
+                            ]
+                        ),
                         argumentNames: ["baz"],
                         typeArguments: [],
                         body: Block(children: [
                             Return(LiteralInt(0))
-                        ]))
-                ]),
+                        ])
+                    )
+                ]
+            ),
             Get(expr: Identifier("Foo"), member: Identifier("val")),
-            Get(expr: Identifier("Foo"), member: Identifier("bar"))
+            Get(expr: Identifier("Foo"), member: Identifier("bar")),
         ])
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(children: [
             StructDeclaration(
                 identifier: Identifier("Foo"),
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(.i16))
+                        type: PrimitiveType(.i16)
+                    )
                 ],
-                visibility: .privateVisibility),
+                visibility: .privateVisibility
+            ),
             FunctionDeclaration(
                 identifier: Identifier("Foo::bar"),
                 functionType: FunctionType(
@@ -64,24 +71,26 @@ final class CompilerPassImplTests: XCTestCase {
                     returnType: PrimitiveType(.u8),
                     arguments: [
                         PointerType(Identifier("Foo"))
-                    ]),
+                    ]
+                ),
                 argumentNames: ["baz"],
                 typeArguments: [],
                 body: Block(children: [
                     Return(LiteralInt(0))
-                ])),
+                ])
+            ),
             Get(expr: Identifier("Foo"), member: Identifier("val")),
-            Identifier("Foo::bar")
+            Identifier("Foo::bar"),
         ])
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try ast0
             .eraseImplPass()?
             .flatten()
-        
+
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testImplInsideFunctionBody() throws {
         let ast0 = Block(children: [
             StructDeclaration(
@@ -89,15 +98,18 @@ final class CompilerPassImplTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(.i16))
+                        type: PrimitiveType(.i16)
+                    )
                 ],
-                visibility: .privateVisibility),
+                visibility: .privateVisibility
+            ),
             FunctionDeclaration(
                 identifier: Identifier("myFunc"),
                 functionType: FunctionType(
                     name: "myFunc",
                     returnType: PrimitiveType(.void),
-                    arguments: []),
+                    arguments: []
+                ),
                 argumentNames: [],
                 typeArguments: [],
                 body: Block(children: [
@@ -112,33 +124,40 @@ final class CompilerPassImplTests: XCTestCase {
                                     returnType: PrimitiveType(.u8),
                                     arguments: [
                                         PointerType(Identifier("Foo"))
-                                    ]),
+                                    ]
+                                ),
                                 argumentNames: ["baz"],
                                 typeArguments: [],
                                 body: Block(children: [
                                     Return(LiteralInt(0))
-                                ]))
-                        ])
+                                ])
+                            )
+                        ]
+                    )
                 ]),
-                visibility: .privateVisibility)
+                visibility: .privateVisibility
+            ),
         ])
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(children: [
             StructDeclaration(
                 identifier: Identifier("Foo"),
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(.i16))
+                        type: PrimitiveType(.i16)
+                    )
                 ],
-                visibility: .privateVisibility),
+                visibility: .privateVisibility
+            ),
             FunctionDeclaration(
                 identifier: Identifier("myFunc"),
                 functionType: FunctionType(
                     name: "myFunc",
                     returnType: PrimitiveType(.void),
-                    arguments: []),
+                    arguments: []
+                ),
                 argumentNames: [],
                 typeArguments: [],
                 body: Block(children: [
@@ -149,26 +168,30 @@ final class CompilerPassImplTests: XCTestCase {
                             returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
-                            ]),
+                            ]
+                        ),
                         argumentNames: ["baz"],
                         typeArguments: [],
                         body: Block(children: [
                             Return(LiteralInt(0))
-                        ]))
+                        ])
+                    )
                 ]),
-                visibility: .privateVisibility)
+                visibility: .privateVisibility
+            ),
         ])
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try ast0
             .eraseImplPass()?
             .flatten()
-        
+
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testGenericStructImplForWithinAFunction() throws {
-        let actual = try parse("""
+        let actual = try parse(
+            """
             func myFunction() -> u16 {
                 trait Incrementer {
                     func increment(self: *Incrementer)
@@ -190,25 +213,27 @@ final class CompilerPassImplTests: XCTestCase {
                 return realIncrementer.val
             }
             let p = myFunction()
-            """)
-            .replaceTopLevelWithBlock()
-            .reconnect(parent: nil)
-            .genericsPass()?
-            .vtablesPass()?
-            .implForPass()?
-            .eraseMethodCalls()?
-            .synthesizeTerminalReturnStatements()?
-            .eraseImplPass()?
-            .flatten()?
-            .eraseSourceAnchors() // aids in comparing against `expected`
-        
+            """
+        )
+        .replaceTopLevelWithBlock()
+        .reconnect(parent: nil)
+        .genericsPass()?
+        .vtablesPass()?
+        .implForPass()?
+        .eraseMethodCalls()?
+        .synthesizeTerminalReturnStatements()?
+        .eraseImplPass()?
+        .flatten()?
+        .eraseSourceAnchors()  // aids in comparing against `expected`
+
         let expected = Block(children: [
             FunctionDeclaration(
                 identifier: Identifier("myFunction"),
                 functionType: FunctionType(
                     name: "myFunction",
                     returnType: PrimitiveType(.u16),
-                    arguments: []),
+                    arguments: []
+                ),
                 argumentNames: [],
                 typeArguments: [],
                 body: Block(children: [
@@ -218,37 +243,49 @@ final class CompilerPassImplTests: XCTestCase {
                         members: [
                             StructDeclaration.Member(
                                 name: "increment",
-                                type: PointerType(FunctionType(
-                                    name: nil,
-                                    returnType: PrimitiveType(.void),
-                                    arguments: [
-                                        PointerType(PrimitiveType(.void))
-                                    ])))
+                                type: PointerType(
+                                    FunctionType(
+                                        name: nil,
+                                        returnType: PrimitiveType(.void),
+                                        arguments: [
+                                            PointerType(PrimitiveType(.void))
+                                        ]
+                                    )
+                                )
+                            )
                         ],
                         visibility: .privateVisibility,
                         isConst: false,
-                        associatedTraitType: nil),
+                        associatedTraitType: nil
+                    ),
                     StructDeclaration(
                         identifier: Identifier("__Incrementer_object"),
                         typeArguments: [],
                         members: [
                             StructDeclaration.Member(
                                 name: "object",
-                                type: PointerType(PrimitiveType(.void))),
+                                type: PointerType(PrimitiveType(.void))
+                            ),
                             StructDeclaration.Member(
                                 name: "vtable",
-                                type: PointerType(ConstType(
-                                    Identifier("__Incrementer_vtable"))))
+                                type: PointerType(
+                                    ConstType(
+                                        Identifier("__Incrementer_vtable")
+                                    )
+                                )
+                            ),
                         ],
                         visibility: .privateVisibility,
                         isConst: false,
-                        associatedTraitType: "Incrementer"),
+                        associatedTraitType: "Incrementer"
+                    ),
                     FunctionDeclaration(
                         identifier: Identifier("myFunction::__Incrementer_object::increment"),
                         functionType: FunctionType(
                             name: "myFunction::__Incrementer_object::increment",
                             returnType: PrimitiveType(.void),
-                            arguments: [PointerType(Identifier("__Incrementer_object"))]),
+                            arguments: [PointerType(Identifier("__Incrementer_object"))]
+                        ),
                         argumentNames: ["self"],
                         typeArguments: [],
                         body: Block(children: [
@@ -256,25 +293,32 @@ final class CompilerPassImplTests: XCTestCase {
                                 callee: Get(
                                     expr: Get(
                                         expr: Identifier("self"),
-                                        member: Identifier("vtable")),
-                                    member: Identifier("increment")),
+                                        member: Identifier("vtable")
+                                    ),
+                                    member: Identifier("increment")
+                                ),
                                 arguments: [
                                     Get(
                                         expr: Identifier("self"),
-                                        member: Identifier("object"))
-                                ]),
-                            Return()
-                        ])),
+                                        member: Identifier("object")
+                                    )
+                                ]
+                            ),
+                            Return(),
+                        ])
+                    ),
                     StructDeclaration(
                         identifier: Identifier("RealIncrementer[u16]"),
                         typeArguments: [],
                         members: [
                             StructDeclaration.Member(
                                 name: "val",
-                                type: PrimitiveType(.u16))
+                                type: PrimitiveType(.u16)
+                            )
                         ],
                         visibility: .privateVisibility,
-                        isConst: false),
+                        isConst: false
+                    ),
                     FunctionDeclaration(
                         identifier: Identifier("myFunction::RealIncrementer[u16]::increment"),
                         functionType: FunctionType(
@@ -282,25 +326,33 @@ final class CompilerPassImplTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("RealIncrementer[u16]"))
-                            ]),
+                            ]
+                        ),
                         argumentNames: ["self"],
                         typeArguments: [],
                         body: Block(children: [
                             Assignment(
                                 lexpr: Get(
                                     expr: Identifier("self"),
-                                    member: Identifier("val")),
+                                    member: Identifier("val")
+                                ),
                                 rexpr: Binary(
                                     op: .plus,
                                     left: Get(
                                         expr: Identifier("self"),
-                                        member: Identifier("val")),
-                                    right: LiteralInt(1))),
-                            Return()
+                                        member: Identifier("val")
+                                    ),
+                                    right: LiteralInt(1)
+                                )
+                            ),
+                            Return(),
                         ]),
-                        visibility: .privateVisibility),
+                        visibility: .privateVisibility
+                    ),
                     VarDeclaration(
-                        identifier: Identifier("__Incrementer_RealIncrementer[u16]_vtable_instance"),
+                        identifier: Identifier(
+                            "__Incrementer_RealIncrementer[u16]_vtable_instance"
+                        ),
                         explicitType: Identifier("__Incrementer_vtable"),
                         expression: StructInitializer(
                             expr: Identifier("__Incrementer_vtable"),
@@ -310,19 +362,32 @@ final class CompilerPassImplTests: XCTestCase {
                                     expr: Bitcast(
                                         expr: Unary(
                                             op: .ampersand,
-                                            expression: Identifier("myFunction::RealIncrementer[u16]::increment")),
+                                            expression: Identifier(
+                                                "myFunction::RealIncrementer[u16]::increment"
+                                            )
+                                        ),
                                         targetType: PrimitiveType(
-                                            .pointer(.function(FunctionTypeInfo(
-                                                name: nil,
-                                                mangledName: nil,
-                                                returnType: .void,
-                                                arguments: [
-                                                    .pointer(.void)
-                                                ]))))))
-                            ]),
+                                            .pointer(
+                                                .function(
+                                                    FunctionTypeInfo(
+                                                        name: nil,
+                                                        mangledName: nil,
+                                                        returnType: .void,
+                                                        arguments: [
+                                                            .pointer(.void)
+                                                        ]
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            ]
+                        ),
                         storage: .staticStorage,
                         isMutable: false,
-                        visibility: .privateVisibility),
+                        visibility: .privateVisibility
+                    ),
                     VarDeclaration(
                         identifier: Identifier("realIncrementer"),
                         explicitType: nil,
@@ -331,11 +396,14 @@ final class CompilerPassImplTests: XCTestCase {
                             arguments: [
                                 StructInitializer.Argument(
                                     name: "val",
-                                    expr: LiteralInt(41))
-                            ]),
+                                    expr: LiteralInt(41)
+                                )
+                            ]
+                        ),
                         storage: .automaticStorage,
                         isMutable: true,
-                        visibility: .privateVisibility),
+                        visibility: .privateVisibility
+                    ),
                     VarDeclaration(
                         identifier: Identifier("incrementer"),
                         explicitType: Identifier("__Incrementer_object"),
@@ -347,37 +415,52 @@ final class CompilerPassImplTests: XCTestCase {
                                     expr: Bitcast(
                                         expr: Unary(
                                             op: .ampersand,
-                                            expression: Identifier("realIncrementer")),
-                                        targetType: PointerType(PrimitiveType(.void)))),
+                                            expression: Identifier("realIncrementer")
+                                        ),
+                                        targetType: PointerType(PrimitiveType(.void))
+                                    )
+                                ),
                                 StructInitializer.Argument(
                                     name: "vtable",
-                                    expr: Identifier("__Incrementer_RealIncrementer[u16]_vtable_instance"))
-                            ]),
+                                    expr: Identifier(
+                                        "__Incrementer_RealIncrementer[u16]_vtable_instance"
+                                    )
+                                ),
+                            ]
+                        ),
                         storage: .automaticStorage,
                         isMutable: false,
-                        visibility: .privateVisibility),
+                        visibility: .privateVisibility
+                    ),
                     Call(
                         callee: Identifier("myFunction::__Incrementer_object::increment"),
                         arguments: [
                             Identifier("incrementer")
-                        ]),
-                    Return(Get(
-                        expr: Identifier("realIncrementer"),
-                        member: Identifier("val")))
+                        ]
+                    ),
+                    Return(
+                        Get(
+                            expr: Identifier("realIncrementer"),
+                            member: Identifier("val")
+                        )
+                    ),
                 ]),
-                visibility: .privateVisibility),
-                VarDeclaration(
-                    identifier: Identifier("p"),
-                    explicitType: nil,
-                    expression: Call(
-                        callee: Identifier("myFunction"),
-                        arguments: []),
-                    storage: .automaticStorage,
-                    isMutable: false,
-                    visibility: .privateVisibility)
-            ])
-            .reconnect(parent: nil)
-        
+                visibility: .privateVisibility
+            ),
+            VarDeclaration(
+                identifier: Identifier("p"),
+                explicitType: nil,
+                expression: Call(
+                    callee: Identifier("myFunction"),
+                    arguments: []
+                ),
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility
+            ),
+        ])
+        .reconnect(parent: nil)
+
         XCTAssertEqual(actual, expected)
     }
 }

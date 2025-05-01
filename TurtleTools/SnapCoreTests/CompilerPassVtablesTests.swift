@@ -6,55 +6,62 @@
 //  Copyright © 2024 Andrew Fox. All rights reserved.
 //
 
-import XCTest
-import TurtleCore
 import SnapCore
+import TurtleCore
+import XCTest
 
 final class CompilerPassVtablesTests: XCTestCase {
-    
+
     func testEmptyTrait() throws {
         let traitIdent = Identifier("Foo")
         let traitObjectIdent = Identifier("__Foo_object")
         let vtableIdent = Identifier("__Foo_vtable")
         let vtableType = PointerType(ConstType(vtableIdent))
         let objectType = PointerType(PrimitiveType(.void))
-        
+
         let expected = Block(children: [
             Seq(children: [
                 StructDeclaration(
                     identifier: vtableIdent,
                     members: [],
-                    isConst: false),
+                    isConst: false
+                ),
                 StructDeclaration(
                     identifier: traitObjectIdent,
                     members: [
                         StructDeclaration.Member(
                             name: "object",
-                            type: objectType),
+                            type: objectType
+                        ),
                         StructDeclaration.Member(
                             name: "vtable",
-                            type: vtableType)
+                            type: vtableType
+                        ),
                     ],
                     isConst: false,
-                    associatedTraitType: traitIdent.identifier),
+                    associatedTraitType: traitIdent.identifier
+                ),
                 TraitDeclaration(
                     identifier: traitIdent,
-                    members: [])
+                    members: []
+                ),
             ])
         ])
-        
+
         let input = Block(
             children: [
                 TraitDeclaration(
                     identifier: traitIdent,
-                    members: [])
+                    members: []
+                )
             ],
-            id: expected.id)
-        
+            id: expected.id
+        )
+
         let actual = try input.vtablesPass()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSimpleConcreteTrait() throws {
         let traitIdent = Identifier("Serial")
         let traitObjectIdent = Identifier("__Serial_object")
@@ -69,9 +76,13 @@ final class CompilerPassVtablesTests: XCTestCase {
                     PointerType(Identifier("Serial")),
                     DynamicArrayType(
                         PrimitiveType(
-                            .u8))
-                ]))
-        
+                            .u8
+                        )
+                    ),
+                ]
+            )
+        )
+
         let expected = Block(children: [
             Seq(children: [
                 StructDeclaration(
@@ -84,27 +95,35 @@ final class CompilerPassVtablesTests: XCTestCase {
                                     returnType: PrimitiveType(.void),
                                     arguments: [
                                         PointerType(PrimitiveType(.void)),
-                                        DynamicArrayType(PrimitiveType(.u8))
-                                    ])))
+                                        DynamicArrayType(PrimitiveType(.u8)),
+                                    ]
+                                )
+                            )
+                        )
                     ],
-                    isConst: false),
+                    isConst: false
+                ),
                 StructDeclaration(
                     identifier: traitObjectIdent,
                     members: [
                         StructDeclaration.Member(
                             name: "object",
-                            type: objectType),
+                            type: objectType
+                        ),
                         StructDeclaration.Member(
                             name: "vtable",
-                            type: vtableType)
+                            type: vtableType
+                        ),
                     ],
                     isConst: false,
-                    associatedTraitType: traitIdent.identifier),
+                    associatedTraitType: traitIdent.identifier
+                ),
                 TraitDeclaration(
                     identifier: traitIdent,
                     members: [
                         TraitDeclaration.Member(name: "puts", type: putsFnType)
-                    ]),
+                    ]
+                ),
                 Impl(
                     typeArguments: [],
                     structTypeExpr: traitObjectIdent,
@@ -116,40 +135,52 @@ final class CompilerPassVtablesTests: XCTestCase {
                                 returnType: PrimitiveType(.void),
                                 arguments: [
                                     PointerType(
-                                        Identifier("__Serial_object")),
+                                        Identifier("__Serial_object")
+                                    ),
                                     DynamicArrayType(
                                         PrimitiveType(
-                                            .u8))
-                                ]),
+                                            .u8
+                                        )
+                                    ),
+                                ]
+                            ),
                             argumentNames: ["self", "arg1"],
                             body: Block(children: [
                                 Call(
                                     callee: Get(
                                         expr: Get(
                                             expr: Identifier("self"),
-                                            member: Identifier("vtable")),
-                                        member: Identifier("puts")),
+                                            member: Identifier("vtable")
+                                        ),
+                                        member: Identifier("puts")
+                                    ),
                                     arguments: [
                                         Get(
                                             expr: Identifier("self"),
-                                            member: Identifier("object")),
-                                        Identifier("arg1")
-                                    ])
-                            ]))
-                    ])
+                                            member: Identifier("object")
+                                        ),
+                                        Identifier("arg1"),
+                                    ]
+                                )
+                            ])
+                        )
+                    ]
+                ),
             ])
         ])
-        
+
         let input = Block(
             children: [
                 TraitDeclaration(
                     identifier: traitIdent,
                     members: [
                         TraitDeclaration.Member(name: "puts", type: putsFnType)
-                    ])
+                    ]
+                )
             ],
-            id: expected.id)
-        
+            id: expected.id
+        )
+
         let actual = try input.vtablesPass()
         XCTAssertEqual(actual, expected)
     }

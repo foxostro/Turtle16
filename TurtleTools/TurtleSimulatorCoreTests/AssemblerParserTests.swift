@@ -6,19 +6,19 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import TurtleCore
 import TurtleSimulatorCore
+import XCTest
 
 final class AssemblerParserTests: XCTestCase {
     override func setUp() {
         AbstractSyntaxTreeNode.equalityMode = .ignoreSourceAnchors
     }
-    
+
     override func tearDown() {
         AbstractSyntaxTreeNode.equalityMode = .defaultEqualityMode
     }
-    
+
     func parse(_ text: String) -> AssemblerParser {
         let tokenizer = AssemblerLexer(text)
         tokenizer.scanTokens()
@@ -26,7 +26,7 @@ final class AssemblerParserTests: XCTestCase {
         parser.parse()
         return parser
     }
-    
+
     func testEmptyProgramYieldsEmptyAST1() {
         let parser = parse("")
         XCTAssertFalse(parser.hasError)
@@ -36,7 +36,7 @@ final class AssemblerParserTests: XCTestCase {
         }
         XCTAssertEqual(ast.children.count, 0)
     }
-    
+
     func testEmptyProgramYieldsEmptyAST2() {
         let parser = parse("\n")
         XCTAssertFalse(parser.hasError)
@@ -46,7 +46,7 @@ final class AssemblerParserTests: XCTestCase {
         }
         XCTAssertEqual(ast.children.count, 0)
     }
-    
+
     func testParseExtraneousColon() {
         let parser = parse(":")
         XCTAssertTrue(parser.hasError)
@@ -54,7 +54,7 @@ final class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 1))
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
-    
+
     func testExtraneousComma() {
         let parser = parse(",")
         XCTAssertTrue(parser.hasError)
@@ -62,7 +62,7 @@ final class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(0, 1))
         XCTAssertEqual(parser.errors.first?.message, "unexpected end of input")
     }
-    
+
     func testParseOpcodeWithNoParameters() {
         let parser = parse("NOP\nHLT\n")
         XCTAssertFalse(parser.hasError)
@@ -74,7 +74,7 @@ final class AssemblerParserTests: XCTestCase {
         XCTAssertEqual(ast.children[0], InstructionNode(instruction: "NOP", parameters: []))
         XCTAssertEqual(ast.children[1], InstructionNode(instruction: "HLT", parameters: []))
     }
-    
+
     func testParseOpcodeWithOneParameter1() {
         let parser = parse("NOP $ffff")
         XCTAssertFalse(parser.hasError)
@@ -83,11 +83,17 @@ final class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
-            ParameterNumber(0xffff)
-        ]))
+        XCTAssertEqual(
+            ast.children.first,
+            InstructionNode(
+                instruction: "NOP",
+                parameters: [
+                    ParameterNumber(0xffff)
+                ]
+            )
+        )
     }
-    
+
     func testParseOpcodeWithOneParameter2() {
         let parser = parse("NOP $ffff\n")
         XCTAssertFalse(parser.hasError)
@@ -96,11 +102,17 @@ final class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
-            ParameterNumber(0xffff)
-        ]))
+        XCTAssertEqual(
+            ast.children.first,
+            InstructionNode(
+                instruction: "NOP",
+                parameters: [
+                    ParameterNumber(0xffff)
+                ]
+            )
+        )
     }
-    
+
     func testParseOpcodeWithThreeParameters() {
         let parser = parse("NOP 1, 2, foo")
         XCTAssertFalse(parser.hasError)
@@ -109,27 +121,33 @@ final class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
-            ParameterNumber(1),
-            ParameterNumber(2),
-            ParameterIdentifier("foo")
-        ]))
+        XCTAssertEqual(
+            ast.children.first,
+            InstructionNode(
+                instruction: "NOP",
+                parameters: [
+                    ParameterNumber(1),
+                    ParameterNumber(2),
+                    ParameterIdentifier("foo"),
+                ]
+            )
+        )
     }
-    
+
     func testParseOpcodeWithExtraneousComma1() {
         let parser = parse("NOP 1,")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "extraneous comma")
     }
-    
+
     func testParseOpcodeWithExtraneousComma2() {
         let parser = parse("NOP 1,\n")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.message, "extraneous comma")
     }
-    
+
     func testParseAddressParameter() {
         let parser = parse("JR 1(r1)")
         XCTAssertFalse(parser.hasError)
@@ -138,11 +156,20 @@ final class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: [
-            ParameterAddress(offset: ParameterNumber(1), identifier: ParameterIdentifier("r1"))
-        ]))
+        XCTAssertEqual(
+            ast.children.first,
+            InstructionNode(
+                instruction: "JR",
+                parameters: [
+                    ParameterAddress(
+                        offset: ParameterNumber(1),
+                        identifier: ParameterIdentifier("r1")
+                    )
+                ]
+            )
+        )
     }
-    
+
     func testParseAddressParameterNegative() {
         let parser = parse("JR -1(r1)")
         XCTAssertFalse(parser.hasError)
@@ -151,11 +178,20 @@ final class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: [
-            ParameterAddress(offset: ParameterNumber(-1), identifier: ParameterIdentifier("r1"))
-        ]))
+        XCTAssertEqual(
+            ast.children.first,
+            InstructionNode(
+                instruction: "JR",
+                parameters: [
+                    ParameterAddress(
+                        offset: ParameterNumber(-1),
+                        identifier: ParameterIdentifier("r1")
+                    )
+                ]
+            )
+        )
     }
-    
+
     func testParseLabel() {
         let parser = parse("foo:")
         XCTAssertFalse(parser.hasError)

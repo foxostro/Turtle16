@@ -6,9 +6,9 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import SnapCore
 import TurtleCore
+import XCTest
 
 final class CompilerPassAssertTests: XCTestCase {
     func testTransformAssert() throws {
@@ -16,13 +16,16 @@ final class CompilerPassAssertTests: XCTestCase {
             condition: Binary(
                 op: .eq,
                 left: LiteralBool(false),
-                right: LiteralBool(false)),
+                right: LiteralBool(false)
+            ),
             then: Block(
                 children: [
                     Call(
                         callee: Identifier("__panic"),
-                        arguments: [ LiteralString("false") ])
-                ]))
+                        arguments: [LiteralString("false")]
+                    )
+                ])
+        )
         let input = Assert(condition: LiteralBool(false), message: "false")
         let actual = try input.assertPass()
         XCTAssertEqual(actual, expected)

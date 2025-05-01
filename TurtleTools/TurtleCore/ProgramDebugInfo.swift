@@ -9,7 +9,7 @@
 open class ProgramDebugInfo {
     public var lineMapper: SourceLineRangeMapper!
     private var mapProgramCounterToSource: [SourceAnchor?] = []
-    
+
     public func bind(pc: Int, sourceAnchor: SourceAnchor?) {
         assert(pc >= 0 && pc < 65536)
         if pc < mapProgramCounterToSource.count {
@@ -22,7 +22,7 @@ open class ProgramDebugInfo {
             mapProgramCounterToSource.append(sourceAnchor)
         }
     }
-    
+
     public func lookupSourceAnchor(pc: Int) -> SourceAnchor? {
         assert(pc >= 0 && pc < 65536)
         guard pc < mapProgramCounterToSource.count else {

@@ -11,10 +11,10 @@ import TurtleCompilerToolbox
 public class Parser: NSObject {
     public struct Production {
         public typealias Generator = (Token) throws -> [AbstractSyntaxTreeNode]?
-        
+
         let symbol: Token.Type
         let generator: Generator
-        
+
         public init(symbol: Token.Type, generator: @escaping Generator) {
             self.symbol = symbol
             self.generator = generator
@@ -22,13 +22,13 @@ public class Parser: NSObject {
     }
     public var productions: [Production] = []
     public var tokens: [Token] = []
-    
+
     public private(set) var errors: [CompilerError] = []
-    public var hasError:Bool {
-        return errors.count != 0
+    public var hasError: Bool {
+        errors.count != 0
     }
     public private(set) var syntaxTree: AbstractSyntaxTreeNode? = nil
-    
+
     public func parse() {
         var statements: [AbstractSyntaxTreeNode] = []
         while tokens.count > 0 {
@@ -36,13 +36,19 @@ public class Parser: NSObject {
                 statements += try consumeStatement()
             } catch let error as CompilerError {
                 errors.append(error)
-                advanceToNewline() // recover by skipping to the next line
+                advanceToNewline()  // recover by skipping to the next line
             } catch {
                 // This catch block should be unreachable because
                 // consumeStatement() only throws CompilerError. Regardless,
                 // we need it to satisfy the compiler.
                 let lineNumber = peek()?.lineNumber ?? 1
-                errors.append(CompilerError(line: lineNumber, format: "unrecoverable error: %@", error.localizedDescription))
+                errors.append(
+                    CompilerError(
+                        line: lineNumber,
+                        format: "unrecoverable error: %@",
+                        error.localizedDescription
+                    )
+                )
                 return
             }
         }
@@ -52,11 +58,11 @@ public class Parser: NSObject {
             syntaxTree = AbstractSyntaxTreeNode(children: statements)
         }
     }
-    
+
     func advance() {
         tokens.removeFirst()
     }
-    
+
     func advanceToNewline() {
         while let token = peek() {
             let tokenType = type(of: token)
@@ -67,11 +73,11 @@ public class Parser: NSObject {
             }
         }
     }
-    
+
     func peek() -> Token? {
-        return tokens.first
+        tokens.first
     }
-    
+
     func accept(_ typeInQuestion: AnyClass) -> Token? {
         if let token = peek() {
             if typeInQuestion == type(of: token) {
@@ -81,7 +87,7 @@ public class Parser: NSObject {
         }
         return nil
     }
-    
+
     @discardableResult func expect(type: AnyClass, error: Error) throws -> Token {
         let result = accept(type)
         if nil == result {
@@ -89,7 +95,7 @@ public class Parser: NSObject {
         }
         return result!
     }
-    
+
     @discardableResult func expect(types: [AnyClass], error: Error) throws -> Token {
         for type in types {
             let result = accept(type)
@@ -99,7 +105,7 @@ public class Parser: NSObject {
         }
         throw error
     }
-    
+
     func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         for production in productions {
             guard let symbol = accept(production.symbol) else { continue }

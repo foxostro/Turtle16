@@ -7,4 +7,4 @@
 //
 
 // Map symbol name to value.
-public typealias SymbolTable = [String:Int]
+public typealias SymbolTable = [String: Int]

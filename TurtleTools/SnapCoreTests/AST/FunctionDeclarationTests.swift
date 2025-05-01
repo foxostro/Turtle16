@@ -6,82 +6,174 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import SnapCore
 import TurtleCore
+import XCTest
 
 final class FunctionDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                              argumentNames: [],
-                                              body: Block()),
-                          CommentNode(string: ""))
+        XCTAssertNotEqual(
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block()
+            ),
+            CommentNode(string: "")
+        )
     }
-    
+
     func testDoesNotEqualNodeWithDifferentBody() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                              argumentNames: [],
-                                              body: Block()),
-                          FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                              argumentNames: [],
-                                              body: Block(children: [LiteralInt(1)])))
+        XCTAssertNotEqual(
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block()
+            ),
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(children: [LiteralInt(1)])
+            )
+        )
     }
-    
+
     func testDoesNotEqualNodeWithDifferentReturnType() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                              argumentNames: [],
-                                              body: Block(sourceAnchor: nil)),
-                          FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.bool), arguments: []),
-                                              argumentNames: [],
-                                              body: Block(sourceAnchor: nil)))
+        XCTAssertNotEqual(
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(sourceAnchor: nil)
+            ),
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.bool),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(sourceAnchor: nil)
+            )
+        )
     }
-    
+
     func testDoesNotEqualNodeWithDifferentArguments() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: [PrimitiveType(.u8)]),
-                                              argumentNames: ["foo"],
-                                              body: Block(sourceAnchor: nil)),
-                          FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: [PrimitiveType(.u8)]),
-                                              argumentNames: ["bar"],
-                                              body: Block(sourceAnchor: nil)))
+        XCTAssertNotEqual(
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: [PrimitiveType(.u8)]
+                ),
+                argumentNames: ["foo"],
+                body: Block(sourceAnchor: nil)
+            ),
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: [PrimitiveType(.u8)]
+                ),
+                argumentNames: ["bar"],
+                body: Block(sourceAnchor: nil)
+            )
+        )
     }
-    
+
     func testDoesNotEqualNodeWithDifferentIdentifier() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                              argumentNames: [],
-                                              body: Block(children: [LiteralInt(1)])),
-                          FunctionDeclaration(identifier: Identifier("bar"),
-                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                              argumentNames: [],
-                                              body: Block(children: [LiteralInt(1)])))
+        XCTAssertNotEqual(
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(children: [LiteralInt(1)])
+            ),
+            FunctionDeclaration(
+                identifier: Identifier("bar"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(children: [LiteralInt(1)])
+            )
+        )
     }
-    
+
     func testSame() {
-        XCTAssertEqual(FunctionDeclaration(identifier: Identifier("foo"),
-                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                           argumentNames: [],
-                                           body: Block(children: [LiteralInt(1)])),
-                       FunctionDeclaration(identifier: Identifier("foo"),
-                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                           argumentNames: [],
-                                           body: Block(children: [LiteralInt(1)])))
+        XCTAssertEqual(
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(children: [LiteralInt(1)])
+            ),
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(children: [LiteralInt(1)])
+            )
+        )
     }
-    
+
     func testHash() {
-        XCTAssertEqual(FunctionDeclaration(identifier: Identifier("foo"),
-                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                           argumentNames: [],
-                                           body: Block(children: [LiteralInt(1)])).hashValue,
-                       FunctionDeclaration(identifier: Identifier("foo"),
-                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
-                                           argumentNames: [],
-                                           body: Block(children: [LiteralInt(1)])).hashValue)
+        XCTAssertEqual(
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(children: [LiteralInt(1)])
+            ).hashValue,
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
+                    name: "foo",
+                    returnType: PrimitiveType(.u8),
+                    arguments: []
+                ),
+                argumentNames: [],
+                body: Block(children: [LiteralInt(1)])
+            ).hashValue
+        )
     }
 }

@@ -24,7 +24,7 @@ public class DebugConsoleCommandLineLexer: Lexer {
             makeHexadecimalNumberRule(),
             makeBinaryNumberRule(),
             makeQuotedCharacterRule(),
-            makeWhitespaceRule()
+            makeWhitespaceRule(),
         ]
     }
 }

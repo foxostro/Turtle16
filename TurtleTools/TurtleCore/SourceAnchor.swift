@@ -9,19 +9,19 @@
 public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
     public let range: Range<String.Index>
     public let lineMapper: SourceLineRangeMapper
-    
+
     public var url: URL? {
         lineMapper.url
     }
-    
+
     public var text: Substring {
         lineMapper.text[range]
     }
-    
+
     public var lineNumbers: Range<Int>? {
         lineMapper.lineNumbers(for: range)
     }
-    
+
     public var description: String {
         var str = ""
         if let fileName = url?.lastPathComponent {
@@ -33,7 +33,7 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         str += text
         return str
     }
-    
+
     public var debugDescription: String {
         var begin = 0
         var index = lineMapper.text.startIndex
@@ -49,7 +49,7 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         }
         return "\(begin)..\(end) --> \(text)"
     }
-    
+
     public var lineNumberPrefix: String? {
         var result: String? = nil
         if let lineNumbers = lineNumbers {
@@ -61,7 +61,7 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         }
         return result
     }
-    
+
     public var context: String {
         let text = lineMapper.text
         let lineRange = text.lineRange(for: range)
@@ -86,12 +86,12 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         }
         return result
     }
-    
+
     public init(range: Range<String.Index>, lineMapper: SourceLineRangeMapper) {
         self.range = range
         self.lineMapper = lineMapper
     }
-    
+
     public func union(_ sourceAnchor: SourceAnchor?) -> SourceAnchor {
         guard let sourceAnchor = sourceAnchor else {
             return self
@@ -101,7 +101,7 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         let combinedRange = lowerBound..<upperBound
         return SourceAnchor(range: combinedRange, lineMapper: lineMapper)
     }
-    
+
     public func split() -> [SourceAnchor] {
         let text = lineMapper.text[range]
         var index = range.lowerBound
@@ -110,8 +110,8 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
                 let lowerRange = (range.lowerBound)..<(index)
                 text.formIndex(after: &index)
                 let upperRange = (index)..<(range.upperBound)
-                return SourceAnchor(range: lowerRange, lineMapper: lineMapper).split() +
-                       SourceAnchor(range: upperRange, lineMapper: lineMapper).split()
+                return SourceAnchor(range: lowerRange, lineMapper: lineMapper).split()
+                    + SourceAnchor(range: upperRange, lineMapper: lineMapper).split()
             } else {
                 text.formIndex(after: &index)
             }

@@ -11,13 +11,13 @@ import SwiftUI
 
 struct RegistersView: View {
     @StateObject var viewModel: ViewModel
-    
+
     struct RegisterValueView: View {
         enum DisplayValueAs: CaseIterable, Identifiable, CustomStringConvertible {
             case hex, binary, unsignedDecimal, signedDecimal
-            
+
             var id: Self { self }
-            
+
             var description: String {
                 switch self {
                 case .hex: "Hexadecimal"
@@ -27,10 +27,10 @@ struct RegistersView: View {
                 }
             }
         }
-        
+
         @State var displayValueAs: DisplayValueAs = .hex
         @State var value: UInt16
-        
+
         var body: some View {
             Text(formattedValue)
                 .contextMenu {
@@ -41,24 +41,24 @@ struct RegistersView: View {
                     }
                 }
         }
-        
+
         var formattedValue: String {
             switch displayValueAs {
             case .hex:
                 value.hexadecimalString
-                
+
             case .binary:
                 value.binaryString
-                
+
             case .unsignedDecimal:
                 "\(value)"
-                
+
             case .signedDecimal:
                 value.signedDecimalString
             }
         }
     }
-    
+
     var body: some View {
         Table($viewModel.registers) {
             TableColumn("Register") { register in
@@ -68,14 +68,14 @@ struct RegistersView: View {
                 }
             }
             .width(Constant.registerColumnWidth)
-            
+
             TableColumn("Value") { register in
                 RegisterValueView(value: register.wrappedValue.value)
             }
             .width(min: Constant.valueColumnMinWidth)
         }
     }
-    
+
     enum Constant {
         static let registerColumnWidth = 50.0
         static let valueColumnMinWidth = 50.0
@@ -85,16 +85,16 @@ struct RegistersView: View {
 extension RegistersView {
     @MainActor class ViewModel: ObservableObject {
         private var subscriptions = Set<AnyCancellable>()
-        
+
         struct Register: Identifiable {
             let id = UUID()
             let name: String
             let value: UInt16
         }
-        
+
         @Published var document: TurtleSimulatorDocument
         @Published var registers: [Register] = []
-        
+
         init(document: TurtleSimulatorDocument) {
             self.document = document
             self.document.objectWillChange
@@ -105,7 +105,7 @@ extension RegistersView {
                 .store(in: &subscriptions)
             reloadData()
         }
-        
+
         func reloadData() {
             guard let computer = document.debugger.latestSnapshot else { return }
             let gpr = (0..<computer.numberOfRegisters).map { i in
@@ -121,7 +121,7 @@ extension UInt16 {
     var hexadecimalString: String {
         String(format: "$%04x", self)
     }
-    
+
     var binaryString: String {
         var result = String(self, radix: 2)
         if result.count < 16 {
@@ -129,16 +129,15 @@ extension UInt16 {
         }
         return "0b" + result
     }
-    
+
     var signedDecimalValue: Int {
         if self & 0x8000 == 0 {
             Int(self)
-        }
-        else {
+        } else {
             Int(self) - Int(Self.max) - 1
         }
     }
-    
+
     var signedDecimalString: String {
         "\(signedDecimalValue)"
     }

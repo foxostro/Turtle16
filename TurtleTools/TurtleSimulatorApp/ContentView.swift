@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var document: TurtleSimulatorDocument
-    
+
     var body: some View {
         VSplitView {
             upperDeckView
@@ -28,8 +28,7 @@ struct ContentView: View {
                     } label: {
                         Image(systemName: "pause.fill")
                     }
-                }
-                else {
+                } else {
                     Button {
                         document.run()
                     } label: {
@@ -39,9 +38,11 @@ struct ContentView: View {
             }
         }
     }
-    
+
     @ViewBuilder var upperDeckView: some View {
-        if document.isShowingRegisters || document.isShowingPipeline || document.isShowingDisassembly || document.isShowingMemory {
+        if document.isShowingRegisters || document.isShowingPipeline
+            || document.isShowingDisassembly || document.isShowingMemory
+        {
             HSplitView {
                 if document.isShowingRegisters {
                     RegistersView(viewModel: RegistersView.ViewModel(document: document))
@@ -63,7 +64,7 @@ struct ContentView: View {
             .frame(minHeight: Constant.upperDeckViewMinHeight)
         }
     }
-    
+
     enum Constant {
         static let lowerDeckViewMinHeight = 100.0
         static let upperDeckViewMinHeight = 260.0

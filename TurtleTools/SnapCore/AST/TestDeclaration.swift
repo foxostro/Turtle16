@@ -12,30 +12,36 @@ import TurtleCore
 public final class TestDeclaration: AbstractSyntaxTreeNode {
     public let name: String
     public let body: Block
-    
-    public init(sourceAnchor: SourceAnchor? = nil,
-                name: String,
-                body: Block,
-                id: ID = ID()) {
+
+    public init(
+        sourceAnchor: SourceAnchor? = nil,
+        name: String,
+        body: Block,
+        id: ID = ID()
+    ) {
         self.name = name
-        self.body = body.withSourceAnchor(sourceAnchor) // TODO: I don't think I should remap the source anchor here. Remove this.
+        self.body = body.withSourceAnchor(sourceAnchor)  // TODO: I don't think I should remap the source anchor here. Remove this.
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TestDeclaration {
-        TestDeclaration(sourceAnchor: sourceAnchor,
-                        name: name,
-                        body: body,
-                        id: id)
+        TestDeclaration(
+            sourceAnchor: sourceAnchor,
+            name: name,
+            body: body,
+            id: id
+        )
     }
-    
+
     public func withBody(_ body: Block) -> TestDeclaration {
-        TestDeclaration(sourceAnchor: sourceAnchor,
-                        name: name,
-                        body: body,
-                        id: id)
+        TestDeclaration(
+            sourceAnchor: sourceAnchor,
+            name: name,
+            body: body,
+            id: id
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
@@ -43,14 +49,17 @@ public final class TestDeclaration: AbstractSyntaxTreeNode {
         guard body == rhs.body else { return false }
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(name)
         hasher.combine(body)
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
         return """

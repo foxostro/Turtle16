@@ -11,18 +11,18 @@ import Cocoa
 public class ThrottledQueue {
     let queue: DispatchQueue
     let maxInterval: Double
-    
+
     var job: DispatchWorkItem = DispatchWorkItem(block: {})
     var previousRun: Date = Date.distantPast
-    
+
     public init(queue: DispatchQueue, maxInterval: Double) {
         self.queue = queue
         self.maxInterval = maxInterval
     }
-    
-    public func async(block: @escaping () -> ()) {
+
+    public func async(block: @escaping () -> Void) {
         job.cancel()
-        job = DispatchWorkItem(){ [weak self] in
+        job = DispatchWorkItem { [weak self] in
             self?.previousRun = Date()
             block()
         }

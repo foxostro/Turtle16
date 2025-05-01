@@ -17,20 +17,22 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let body: Block
     public let visibility: SymbolVisibility
     public let symbols: Env
-    
+
     public var isGeneric: Bool {
         !typeArguments.isEmpty
     }
-    
-    public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Identifier,
-                functionType: FunctionType,
-                argumentNames: [String],
-                typeArguments: [GenericTypeArgument] = [],
-                body: Block,
-                visibility: SymbolVisibility = .privateVisibility,
-                symbols: Env = Env(),
-                id: ID = ID()) {
+
+    public init(
+        sourceAnchor: SourceAnchor? = nil,
+        identifier: Identifier,
+        functionType: FunctionType,
+        argumentNames: [String],
+        typeArguments: [GenericTypeArgument] = [],
+        body: Block,
+        visibility: SymbolVisibility = .privateVisibility,
+        symbols: Env = Env(),
+        id: ID = ID()
+    ) {
         self.identifier = identifier
         self.functionType = functionType
         self.argumentNames = argumentNames
@@ -40,71 +42,81 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> FunctionDeclaration {
-        FunctionDeclaration(sourceAnchor: sourceAnchor,
-                            identifier: identifier,
-                            functionType: functionType,
-                            argumentNames: argumentNames,
-                            typeArguments: typeArguments,
-                            body: body,
-                            visibility: visibility,
-                            symbols: symbols,
-                            id: id)
+        FunctionDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            functionType: functionType,
+            argumentNames: argumentNames,
+            typeArguments: typeArguments,
+            body: body,
+            visibility: visibility,
+            symbols: symbols,
+            id: id
+        )
     }
-    
+
     public func withBody(_ body: Block) -> FunctionDeclaration {
-        FunctionDeclaration(sourceAnchor: sourceAnchor,
-                            identifier: identifier,
-                            functionType: functionType,
-                            argumentNames: argumentNames,
-                            typeArguments: typeArguments,
-                            body: body,
-                            visibility: visibility,
-                            symbols: symbols,
-                            id: id)
+        FunctionDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            functionType: functionType,
+            argumentNames: argumentNames,
+            typeArguments: typeArguments,
+            body: body,
+            visibility: visibility,
+            symbols: symbols,
+            id: id
+        )
     }
-    
+
     public func withFunctionType(_ functionType: FunctionType) -> FunctionDeclaration {
-        FunctionDeclaration(sourceAnchor: sourceAnchor,
-                            identifier: identifier,
-                            functionType: functionType,
-                            argumentNames: argumentNames,
-                            typeArguments: typeArguments,
-                            body: body,
-                            visibility: visibility,
-                            symbols: symbols,
-                            id: id)
+        FunctionDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            functionType: functionType,
+            argumentNames: argumentNames,
+            typeArguments: typeArguments,
+            body: body,
+            visibility: visibility,
+            symbols: symbols,
+            id: id
+        )
     }
-    
+
     public func withIdentifier(_ name: String) -> FunctionDeclaration {
-        FunctionDeclaration(sourceAnchor: sourceAnchor,
-                            identifier: identifier.withIdentifier(name),
-                            functionType: functionType,
-                            argumentNames: argumentNames,
-                            typeArguments: typeArguments,
-                            body: body,
-                            visibility: visibility,
-                            symbols: symbols,
-                            id: id)
+        FunctionDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier.withIdentifier(name),
+            functionType: functionType,
+            argumentNames: argumentNames,
+            typeArguments: typeArguments,
+            body: body,
+            visibility: visibility,
+            symbols: symbols,
+            id: id
+        )
     }
-    
+
     public func eraseTypeArguments() -> FunctionDeclaration {
         withTypeArguments([])
     }
-    
+
     public func withTypeArguments(_ typeArguments: [GenericTypeArgument]) -> FunctionDeclaration {
-        FunctionDeclaration(sourceAnchor: sourceAnchor,
-                            identifier: identifier,
-                            functionType: functionType,
-                            argumentNames: argumentNames,
-                            typeArguments: typeArguments,
-                            body: body,
-                            visibility: visibility,
-                            symbols: symbols,
-                            id: id)
+        FunctionDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            functionType: functionType,
+            argumentNames: argumentNames,
+            typeArguments: typeArguments,
+            body: body,
+            visibility: visibility,
+            symbols: symbols,
+            id: id
+        )
     }
-    
+
     public func clone() -> FunctionDeclaration {
         FunctionDeclaration(
             sourceAnchor: sourceAnchor,
@@ -115,9 +127,10 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
             body: body.clone(),
             visibility: visibility,
             symbols: symbols.clone(),
-            id: ID())
+            id: ID()
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
@@ -129,7 +142,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         guard visibility == rhs.visibility else { return false }
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(identifier)
@@ -139,15 +152,19 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(body)
         hasher.combine(visibility)
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let indent1 = makeIndent(depth: depth+1)
-        let parentStr = if let parent = symbols.parent {
-            "\(parent)"
-        } else {
-            "nil"
-        }
+        let indent1 = makeIndent(depth: depth + 1)
+        let parentStr =
+            if let parent = symbols.parent {
+                "\(parent)"
+            } else {
+                "nil"
+            }
         return """
             \(indent0)\(selfDesc)(symbols=\(symbols); parent=\(parentStr))
             \(indent1)identifier: \(identifier.makeIndentedDescription(depth: depth + 1))
@@ -158,7 +175,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
             \(indent1)body: \(body.makeIndentedDescription(depth: depth + 1))
             """
     }
-    
+
     fileprivate func makeArgumentsDescription(depth: Int) -> String {
         var result: String = ""
         if argumentNames.isEmpty {
@@ -173,7 +190,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         }
         return result
     }
-    
+
     fileprivate func makeTypeArgumentsDescription(depth: Int) -> String {
         var result: String = ""
         if typeArguments.isEmpty {

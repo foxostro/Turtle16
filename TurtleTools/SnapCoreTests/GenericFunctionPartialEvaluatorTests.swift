@@ -6,11 +6,11 @@
 //  Copyright © 2024 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import SnapCore
+import XCTest
 
 final class GenericFunctionPartialEvaluatorTests: XCTestCase {
-    
+
     func testExample() throws {
         _ = GenericsPartialEvaluator(symbols: nil, map: [:])
     }

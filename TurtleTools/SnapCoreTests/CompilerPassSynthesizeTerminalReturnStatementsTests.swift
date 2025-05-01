@@ -6,9 +6,9 @@
 //  Copyright © 2024 Andrew Fox. All rights reserved.
 //
 
-import XCTest
-import TurtleCore
 import SnapCore
+import TurtleCore
+import XCTest
 
 final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
     func testFunctionBodyMissingReturn() throws {
@@ -18,23 +18,28 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
                 functionType: FunctionType(
                     name: "foo",
                     returnType: PrimitiveType(.u8),
-                    arguments: []),
+                    arguments: []
+                ),
                 argumentNames: [],
-                body: Block(children: []))
+                body: Block(children: [])
+            )
         ])
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         XCTAssertThrowsError(try ast.synthesizeTerminalReturnStatements()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "missing return in a function expected to return `u8'")
+            XCTAssertEqual(
+                compilerError?.message,
+                "missing return in a function expected to return `u8'"
+            )
         }
     }
-    
+
     func testSynthesizeTerminalReturnStatementInSimpleFunctionBody() throws {
         let outerBlockId = AbstractSyntaxTreeNode.ID()
         let fnBodyId = AbstractSyntaxTreeNode.ID()
-        
+
         let ast0 = Block(
             children: [
                 FunctionDeclaration(
@@ -42,13 +47,16 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
                     functionType: FunctionType(
                         name: "foo",
                         returnType: PrimitiveType(.void),
-                        arguments: []),
+                        arguments: []
+                    ),
                     argumentNames: [],
-                    body: Block(children: [], id: fnBodyId))
+                    body: Block(children: [], id: fnBodyId)
+                )
             ],
-            id: outerBlockId)
-            .reconnect(parent: nil)
-        
+            id: outerBlockId
+        )
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: [
                 FunctionDeclaration(
@@ -56,19 +64,23 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
                     functionType: FunctionType(
                         name: "foo",
                         returnType: PrimitiveType(.void),
-                        arguments: []),
+                        arguments: []
+                    ),
                     argumentNames: [],
                     body: Block(
                         children: [
                             Return()
                         ],
-                        id: fnBodyId))
+                        id: fnBodyId
+                    )
+                )
             ],
-            id: outerBlockId)
-            .reconnect(parent: nil)
-        
+            id: outerBlockId
+        )
+        .reconnect(parent: nil)
+
         let ast1 = try ast0.synthesizeTerminalReturnStatements()
-        
+
         XCTAssertEqual(ast1, expected)
     }
 }

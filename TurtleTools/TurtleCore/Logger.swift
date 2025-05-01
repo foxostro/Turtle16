@@ -10,5 +10,5 @@ import Foundation
 
 // Provides an interface for logging simulation progress.
 public protocol Logger {
-    func append(_ format: String, _ args: CVarArg...) -> Void
+    func append(_ format: String, _ args: CVarArg...)
 }

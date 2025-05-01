@@ -19,11 +19,11 @@ public struct JEDECFuseFileParser {
     private let fieldIdentifierF: Character = "F"
     private let fieldIdentifierL: Character = "L"
     private let fieldIdentifierQ: Character = "Q"
-    
+
     public init(_ maker: FuseListMaker) {
         self.maker = maker
     }
-    
+
     public func parse(_ text: String) {
         let scanner = Scanner(string: text)
         while !scanner.isAtEnd {
@@ -36,15 +36,15 @@ public struct JEDECFuseFileParser {
                     if scanner.scanCharacter() == fieldIdentifierF {
                         maker.numberOfFuses = scanner.scanInt()!
                     }
-                    
+
                 case fieldIdentifierL:
                     let begin = scanner.scanInt()!
                     _ = scanner.scanCharacters(from: CharacterSet.whitespacesAndNewlines)
                     let bitmap = scanner.scanCharacters(from: binaryDigits)!
                     maker.set(begin: begin, bitmap: bitmap)
-                
+
                 default:
-                    break // ignore unimplemented
+                    break  // ignore unimplemented
                 }
             }
         }

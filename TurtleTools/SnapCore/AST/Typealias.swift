@@ -13,26 +13,30 @@ public final class Typealias: AbstractSyntaxTreeNode {
     public let lexpr: Identifier
     public let rexpr: Expression
     public let visibility: SymbolVisibility
-    
-    public init(sourceAnchor: SourceAnchor? = nil,
-                lexpr: Identifier,
-                rexpr: Expression,
-                visibility: SymbolVisibility = .privateVisibility,
-                id: ID = ID()) {
+
+    public init(
+        sourceAnchor: SourceAnchor? = nil,
+        lexpr: Identifier,
+        rexpr: Expression,
+        visibility: SymbolVisibility = .privateVisibility,
+        id: ID = ID()
+    ) {
         self.lexpr = lexpr
         self.rexpr = rexpr
         self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Typealias {
-        Typealias(sourceAnchor: sourceAnchor,
-                  lexpr: lexpr,
-                  rexpr: rexpr,
-                  visibility: visibility,
-                  id: id)
+        Typealias(
+            sourceAnchor: sourceAnchor,
+            lexpr: lexpr,
+            rexpr: rexpr,
+            visibility: visibility,
+            id: id
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
@@ -41,15 +45,18 @@ public final class Typealias: AbstractSyntaxTreeNode {
         guard visibility == rhs.visibility else { return false }
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(lexpr)
         hasher.combine(rexpr)
         hasher.combine(visibility)
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
         return """

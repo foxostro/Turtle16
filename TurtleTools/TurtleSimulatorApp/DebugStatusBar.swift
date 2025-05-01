@@ -11,7 +11,7 @@ import SwiftUI
 
 struct DebugStatusBar: View {
     @StateObject var viewModel: ViewModel
-    
+
     var body: some View {
         ZStack {
             HStack {
@@ -40,7 +40,7 @@ struct DebugStatusBar: View {
         }
         .font(.caption)
     }
-    
+
     enum Constant {
         static let statusBarPadding = 12.0
         static let disabledLabelOpacity = 0.3
@@ -50,7 +50,7 @@ struct DebugStatusBar: View {
 extension DebugStatusBar {
     @MainActor class ViewModel: ObservableObject {
         private var subscriptions = Set<AnyCancellable>()
-        
+
         @Published var document: TurtleSimulatorDocument
         @Published var isHalted = false
         @Published var isResetting = false
@@ -60,7 +60,7 @@ extension DebugStatusBar {
         @Published var isOverflowFlagSet = false
         @Published var isNegativeFlagSet = false
         @Published var timeStamp = ""
-        
+
         init(document: TurtleSimulatorDocument) {
             self.document = document
             self.document.objectWillChange
@@ -71,7 +71,7 @@ extension DebugStatusBar {
                 .store(in: &subscriptions)
             reloadData()
         }
-        
+
         private func reloadData() {
             guard let computer = document.debugger.latestSnapshot else { return }
             isHalted = computer.isHalted

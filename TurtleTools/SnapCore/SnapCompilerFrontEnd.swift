@@ -15,13 +15,15 @@ public final class SnapCompilerFrontEnd {
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
-        public let injectedModules: [String : String]
-        
-        public init(isBoundsCheckEnabled: Bool = false,
-                    isUsingStandardLibrary: Bool = false,
-                    runtimeSupport: String? = nil,
-                    shouldRunSpecificTest: String? = nil,
-                    injectedModules: [String : String] = [:]) {
+        public let injectedModules: [String: String]
+
+        public init(
+            isBoundsCheckEnabled: Bool = false,
+            isUsingStandardLibrary: Bool = false,
+            runtimeSupport: String? = nil,
+            shouldRunSpecificTest: String? = nil,
+            injectedModules: [String: String] = [:]
+        ) {
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
             self.isUsingStandardLibrary = isUsingStandardLibrary
             self.runtimeSupport = runtimeSupport
@@ -29,22 +31,24 @@ public final class SnapCompilerFrontEnd {
             self.injectedModules = injectedModules
         }
     }
-    
+
     let options: Options
     let memoryLayoutStrategy: MemoryLayoutStrategy
-    
+
     public private(set) var testNames: [String] = []
     public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil
     public private(set) var symbolsOfTopLevelScope: Env! = nil
-    
+
     public var sandboxAccessManager: SandboxAccessManager? = nil
-    
-    public init(options: Options = Options(),
-                memoryLayoutStrategy: MemoryLayoutStrategy) {
+
+    public init(
+        options: Options = Options(),
+        memoryLayoutStrategy: MemoryLayoutStrategy
+    ) {
         self.options = options
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
-    
+
     public func collectTestNames(
         program text: String,
         url: URL? = nil
@@ -56,10 +60,11 @@ public final class SnapCompilerFrontEnd {
             injectModules: Array(options.injectedModules),
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager)
+            sandboxAccessManager: sandboxAccessManager
+        )
         return testNames
     }
-    
+
     public func compile(
         program text: String,
         base: Int = 0,
@@ -72,18 +77,20 @@ public final class SnapCompilerFrontEnd {
             injectModules: Array(options.injectedModules),
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager)
+            sandboxAccessManager: sandboxAccessManager
+        )
         let tackProgram = try ast1.coreToTack(
             memoryLayoutStrategy: memoryLayoutStrategy,
-            options: options)
-        
+            options: options
+        )
+
         self.syntaxTree = ast0
         self.symbolsOfTopLevelScope = ast1.symbols
         self.testNames = testNames
-        
+
         return tackProgram
     }
-    
+
     private func lex(_ text: String, _ url: URL?) throws -> [Token] {
         let lexer = SnapLexer(text, url)
         lexer.scanTokens()
@@ -92,7 +99,7 @@ public final class SnapCompilerFrontEnd {
         }
         return lexer.tokens
     }
-    
+
     private func parse(_ tokens: [Token]) throws -> TopLevel {
         let parser = SnapParser(tokens: tokens)
         parser.parse()

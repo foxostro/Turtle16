@@ -14,19 +14,19 @@ open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible 
     public enum EqualityMode {
         /// Consider all fields of the two AST nodes
         case defaultEqualityMode
-        
+
         /// Ignore source anchors on the two AST nodes
         case ignoreSourceAnchors
     }
-    
+
     /// Control the behavior when determining equality of two AST nodes
     public static var equalityMode: EqualityMode = .defaultEqualityMode
-    
+
     /// Source anchor connects the AST node to an exercept of the original
     /// source code from which it was derived. This is useful for producing
     /// diagnostic messages for the user.
     public let sourceAnchor: SourceAnchor?
-    
+
     public struct CountingID: Hashable, CustomStringConvertible, Sendable {
         private static var counter: Int = 0
         private static func next() -> Int {
@@ -38,39 +38,39 @@ open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible 
             return result
         }
         private let val: Int
-        
+
         public init() {
             self.val = CountingID.next()
         }
-        
+
         public var description: String {
             "ID(\(val))"
         }
     }
     public typealias ID = CountingID
-    
+
     /// Each AST node has a unique identifier, preserved across transformations
     /// As each node is immutable, a change to the AST requires rewriting
     public let id: ID
-    
+
     public init(sourceAnchor: SourceAnchor? = nil, id: ID = ID()) {
         self.sourceAnchor = sourceAnchor
         self.id = id
     }
-    
+
     open func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> AbstractSyntaxTreeNode {
         fatalError("unimplemented")
     }
-    
+
     public static func == (lhs: AbstractSyntaxTreeNode, rhs: AbstractSyntaxTreeNode) -> Bool {
         lhs.isEqual(rhs)
     }
-    
+
     open func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard type(of: self) == type(of: rhs) else { return false }
         if AbstractSyntaxTreeNode.equalityMode != .ignoreSourceAnchors {
             guard sourceAnchor == rhs.sourceAnchor else {
-                if let _ = NSClassFromString("XCTest") {
+                if NSClassFromString("XCTest") != nil {
                     print("lhs sourceAnchor: \(String(describing: sourceAnchor))")
                     print("rhs sourceAnchor: \(String(describing: rhs.sourceAnchor))")
                 }
@@ -79,23 +79,23 @@ open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible 
         }
         return true
     }
-    
+
     open func hash(into hasher: inout Hasher) {
         hasher.combine(sourceAnchor)
     }
-    
+
     public var description: String {
         makeIndentedDescription(depth: 0)
     }
-    
+
     open func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let result = "\(indent)\(selfDesc)"
         return result
     }
-    
+
     public var selfDesc: String { String(describing: type(of: self)) }
-    
+
     public func makeIndent(depth: Int) -> String {
         String(repeating: "\t", count: depth)
     }

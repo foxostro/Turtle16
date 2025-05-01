@@ -16,12 +16,12 @@ import Foundation
 public final class HazardControlGAL: HazardControl {
     public let stageOneGAL: ATF22V10
     public let stageTwoGAL: ATF22V10
-    
+
     public override init() {
         self.stageOneGAL = HazardControlGAL.makeGAL("HazardControl1")
         self.stageTwoGAL = HazardControlGAL.makeGAL("HazardControl2")
     }
-    
+
     public static func makeGAL(_ name: String) -> ATF22V10 {
         let path = Bundle(for: self).path(forResource: name, ofType: "jed")!
         let jedecText = try! String(contentsOfFile: path)
@@ -32,8 +32,10 @@ public final class HazardControlGAL: HazardControl {
         let gal = ATF22V10(fuseList: fuseList)
         return gal
     }
-    
-    public override func generatedHazardControlSignalsStageOne(input: StageOneInput) -> StageOneOutput {
+
+    public override func generatedHazardControlSignalsStageOne(
+        input: StageOneInput
+    ) -> StageOneOutput {
         let outputs = stageOneGAL.step(inputs: [
             0,
             0,
@@ -60,7 +62,7 @@ public final class HazardControlGAL: HazardControl {
             nil,
             nil,
         ])
-        
+
         let fwd_mem_to_a: UInt = outputs[0]!
         let fwd_ex_to_a: UInt = outputs[1]!
         let fwd_a: UInt = outputs[2]!
@@ -71,25 +73,29 @@ public final class HazardControlGAL: HazardControl {
         let need_to_forward_storeOp_MEM_to_a: UInt = outputs[7]!
         let need_to_forward_storeOp_EX_to_b: UInt = outputs[8]!
         let need_to_forward_storeOp_MEM_to_b: UInt = outputs[9]!
-        
-        let result = StageOneOutput(fwd_a: fwd_a & 1,
-                                    fwd_b: fwd_b & 1,
-                                    fwd_ex_to_a: fwd_ex_to_a & 1,
-                                    fwd_ex_to_b: fwd_ex_to_b & 1,
-                                    fwd_mem_to_a: fwd_mem_to_a & 1,
-                                    fwd_mem_to_b: fwd_mem_to_b & 1,
-                                    need_to_forward_storeOp_EX_to_a: need_to_forward_storeOp_EX_to_a & 1,
-                                    need_to_forward_storeOp_MEM_to_a: need_to_forward_storeOp_MEM_to_a & 1,
-                                    need_to_forward_storeOp_EX_to_b: need_to_forward_storeOp_EX_to_b & 1,
-                                    need_to_forward_storeOp_MEM_to_b: need_to_forward_storeOp_MEM_to_b & 1)
-        
+
+        let result = StageOneOutput(
+            fwd_a: fwd_a & 1,
+            fwd_b: fwd_b & 1,
+            fwd_ex_to_a: fwd_ex_to_a & 1,
+            fwd_ex_to_b: fwd_ex_to_b & 1,
+            fwd_mem_to_a: fwd_mem_to_a & 1,
+            fwd_mem_to_b: fwd_mem_to_b & 1,
+            need_to_forward_storeOp_EX_to_a: need_to_forward_storeOp_EX_to_a & 1,
+            need_to_forward_storeOp_MEM_to_a: need_to_forward_storeOp_MEM_to_a & 1,
+            need_to_forward_storeOp_EX_to_b: need_to_forward_storeOp_EX_to_b & 1,
+            need_to_forward_storeOp_MEM_to_b: need_to_forward_storeOp_MEM_to_b & 1
+        )
+
         assert(result.fwd_a + result.fwd_ex_to_a + result.fwd_mem_to_a == 2)
         assert(result.fwd_b + result.fwd_ex_to_b + result.fwd_mem_to_b == 2)
-        
+
         return result
     }
-    
-    public override func generatedHazardControlSignalsStageTwo(input: StageTwoInput) -> StageTwoOutput {
+
+    public override func generatedHazardControlSignalsStageTwo(
+        input: StageTwoInput
+    ) -> StageTwoOutput {
         let outputs = stageTwoGAL.step(inputs: [
             0,
             0,
@@ -116,11 +122,13 @@ public final class HazardControlGAL: HazardControl {
             nil,
             nil,
         ])
-        
+
         let stall: UInt = outputs[0]!
         let flush: UInt = outputs[1]!
-        
-        return StageTwoOutput(flush: flush & 1,
-                              stall: stall & 1)
+
+        return StageTwoOutput(
+            flush: flush & 1,
+            stall: stall & 1
+        )
     }
 }

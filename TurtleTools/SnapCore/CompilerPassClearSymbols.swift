@@ -15,7 +15,7 @@ public final class CompilerPassClearSymbols: CompilerPass {
         block1.symbols.clear()
         return block1
     }
-    
+
     public override func visit(func func0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         let func1 = try super.visit(func: func0) as! FunctionDeclaration
         func1.symbols.clear()

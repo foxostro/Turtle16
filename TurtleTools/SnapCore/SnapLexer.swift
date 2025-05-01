@@ -18,7 +18,7 @@ public class SnapLexer: Lexer {
             Rule(pattern: "\n") {
                 TokenNewline(sourceAnchor: $0)
             },
-            Rule(pattern: "((#)|(//))") {[weak self] _ in
+            Rule(pattern: "((#)|(//))") { [weak self] _ in
                 self!.advanceToNewline()
                 return nil
             },
@@ -232,11 +232,18 @@ public class SnapLexer: Lexer {
             Rule(pattern: "sizeof\\b") {
                 TokenSizeof(sourceAnchor: $0)
             },
-            Rule(pattern: "\"\"\"((?!\"\"\").)*\"\"\"", options: [.dotMatchesLineSeparators]) {[weak self] in
-                TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedStringMultiline(lexeme: String($0.text)))
+            Rule(pattern: "\"\"\"((?!\"\"\").)*\"\"\"", options: [.dotMatchesLineSeparators]) {
+                [weak self] in
+                TokenLiteralString(
+                    sourceAnchor: $0,
+                    literal: self!.interpretQuotedStringMultiline(lexeme: String($0.text))
+                )
             },
-            Rule(pattern: "\".*\"") {[weak self] in 
-                TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))
+            Rule(pattern: "\".*\"") { [weak self] in
+                TokenLiteralString(
+                    sourceAnchor: $0,
+                    literal: self!.interpretQuotedString(lexeme: String($0.text))
+                )
             },
             Rule(pattern: "[a-zA-Z_][a-zA-Z0-9_]*") {
                 TokenIdentifier(sourceAnchor: $0)
@@ -270,74 +277,80 @@ public class SnapLexer: Lexer {
                 return TokenNumber(sourceAnchor: $0, literal: number)
             },
             Rule(pattern: "'.'") {
-                let number = Int(String($0.text).split(separator: "'").first!.unicodeScalars.first!.value)
+                let number = Int(
+                    String($0.text).split(separator: "'").first!.unicodeScalars.first!.value
+                )
                 return TokenNumber(sourceAnchor: $0, literal: number)
             },
-            Rule(pattern: "'\\\\.'") {[weak self] in
+            Rule(pattern: "'\\\\.'") { [weak self] in
                 let string = self!.interpretQuotedString(lexeme: String($0.text))
                 let number = Int(string.split(separator: "'").first!.unicodeScalars.first!.value)
                 return TokenNumber(sourceAnchor: $0, literal: number)
             },
-            Rule(pattern: "[ \t]+") {_ in
+            Rule(pattern: "[ \t]+") { _ in
                 nil
-            }
+            },
         ]
     }
-    
+
     func interpretQuotedString(lexeme: String) -> String {
         let str0 = String(lexeme.dropFirst().dropLast())
         let str1 = mapEntities(str0)
         return str1
     }
-    
+
     func interpretQuotedStringMultiline(lexeme: String) -> String {
         let lines = lexeme.split(separator: "\n")
-        
+
         guard lines.count > 1 else {
             let str0 = String(lexeme.dropFirst(3).dropLast(3))
             let str1 = mapEntities(str0)
             return str1
         }
-        
+
         guard lines[0] == "\"\"\"" else {
-            fatalError("invalid multiline string and lexer interface has no way to raise a proper error here: a multiline string must begin with a newline")
+            fatalError(
+                "invalid multiline string and lexer interface has no way to raise a proper error here: a multiline string must begin with a newline"
+            )
         }
-        
+
         let lastLine = lines.last!
         let regex = try! NSRegularExpression(pattern: "^(?<leadingWhitespace>[ \t]*).*$")
-        
+
         let leadingWhitespace: String
-        if let match = regex.firstMatch(in: String(lastLine), range: NSRange(lastLine.startIndex..., in: lastLine)) {
+        if let match = regex.firstMatch(
+            in: String(lastLine),
+            range: NSRange(lastLine.startIndex..., in: lastLine)
+        ) {
             let nsRange = match.range(withName: "leadingWhitespace")
             let range = Range(nsRange, in: lastLine)!
             leadingWhitespace = String(lastLine[range])
-        }
-        else {
+        } else {
             leadingWhitespace = ""
         }
-        
-        let str0 = lines[1..<lines.count-1].map { line in
-            if line.hasPrefix(leadingWhitespace) {
-                return line.dropFirst(leadingWhitespace.count)
-            }
-            else {
+
+        let str0 = lines[1..<lines.count - 1].map { line in
+            guard line.hasPrefix(leadingWhitespace) else {
                 return line
             }
+            return line.dropFirst(leadingWhitespace.count)
         }.joined(separator: "\n")
-        
+
         let str1 = mapEntities(str0)
         return str1
     }
-    
+
     fileprivate func mapEntities(_ str: String) -> String {
         var result = str
-        let map = ["\0" : "\\0",
-                   "\t" : "\\t",
-                   "\n" : "\\n",
-                   "\r" : "\\r",
-                   "\"" : "\\\"",
-                   "\'" : "\\\'",
-                   "\\" : "\\\\"]
+        let map = [
+            "\0": "\\0",
+            "\t": "\\t",
+            "\n": "\\n",
+            "\r": "\\r",
+            "\"": "\\\"",
+            "\'": "\\\'",
+            "\\": "\\\\",
+        ]
         for (entity, description) in map {
             result = result.replacingOccurrences(of: description, with: entity)
         }

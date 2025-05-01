@@ -12,9 +12,11 @@ public enum ResetType {
     case soft, hard
 }
 
-public extension Notification.Name {
-    static let computerStateDidChange = Notification.Name("computerStateDidChange")
-    static let computerIsFreeRunningDidChange = Notification.Name("computerIsFreeRunningDidChange")
+extension Notification.Name {
+    public static let computerStateDidChange = Notification.Name("computerStateDidChange")
+    public static let computerIsFreeRunningDidChange = Notification.Name(
+        "computerIsFreeRunningDidChange"
+    )
 }
 
 // Models the Turtle16 Computer as a whole.
@@ -31,33 +33,36 @@ public class TurtleComputer: NSObject, NSSecureCoding {
             cpu.decoder
         }
     }
-    
+
     public var timeStamp: UInt {
         cpu.timeStamp
     }
-    
+
     public var isHalted: Bool {
         cpu.isHalted
     }
-    
+
     public var isResetting: Bool {
         cpu.isResetting
     }
-    
+
     public var isStalling: Bool {
         cpu.isStalling
     }
-    
+
     let isFreeRunningLock = NSLock()
     var isFreeRunningInternal = false
-    
+
     public var isFreeRunning: Bool {
-        set (newValue) {
+        set(newValue) {
             isFreeRunningLock.withLock {
                 isFreeRunningInternal = newValue
                 DispatchQueue.global().async { [weak self] in
                     guard let self else { return }
-                    NotificationCenter.default.post(name: .computerIsFreeRunningDidChange, object: self)
+                    NotificationCenter.default.post(
+                        name: .computerIsFreeRunningDidChange,
+                        object: self
+                    )
                 }
             }
         }
@@ -67,7 +72,7 @@ public class TurtleComputer: NSObject, NSSecureCoding {
             }
         }
     }
-    
+
     public var pc: UInt16 {
         set(pc) {
             cpu.pc = pc
@@ -76,7 +81,7 @@ public class TurtleComputer: NSObject, NSSecureCoding {
             cpu.pc
         }
     }
-    
+
     public var instructions: [UInt16] {
         set(instructions) {
             cpu.instructions = instructions
@@ -86,34 +91,34 @@ public class TurtleComputer: NSObject, NSSecureCoding {
             cpu.instructions
         }
     }
-    
+
     public var n: UInt {
         cpu.n
     }
-    
+
     public var c: UInt {
         cpu.c
     }
-    
+
     public var z: UInt {
         cpu.z
     }
-    
+
     public var v: UInt {
         cpu.v
     }
-    
+
     public var numberOfRegisters: Int {
         cpu.numberOfRegisters
     }
-    
+
     public private(set) var bank = 0 {
         didSet {
             assert(bank >= 0 && bank <= 7)
             cachedDisassembly = nil
         }
     }
-    
+
     public required init(cpu: CPU, ram: [UInt16], isFreeRunning: Bool = false) {
         self.ram = ram
         self.cpu = cpu
@@ -128,28 +133,29 @@ public class TurtleComputer: NSObject, NSSecureCoding {
             return self.load(address: $0)
         }
     }
-    
+
     public let bankRegisterAddress = MemoryAddress(0xffff)
-    
+
     private func store(value: UInt16, address: MemoryAddress) {
         if address == bankRegisterAddress {
             bank = Int(value & 0b111)
         }
-        
+
         ram[address.value] = value
     }
-    
+
     private func load(address: MemoryAddress) -> UInt16 {
         ram[address.value]
     }
-    
+
     public convenience init(_ cpu: CPU) {
-        self.init(cpu: cpu, ram: Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1))
+        self.init(cpu: cpu, ram: [UInt16](repeating: 0, count: Int(UInt16.max) + 1))
     }
-    
+
     public required convenience init?(coder: NSCoder) {
         guard let cpu = coder.decodeObject(of: SchematicLevelCPUModel.self, forKey: "cpu"),
-              let ram = coder.decodeObject(forKey: "ram") as? [UInt16] else {
+            let ram = coder.decodeObject(forKey: "ram") as? [UInt16]
+        else {
             return nil
         }
         let isFreeRunning = coder.decodeBool(forKey: "isFreeRunning")
@@ -161,64 +167,66 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         coder.encode(ram, forKey: "ram")
         coder.encode(isFreeRunning, forKey: "isFreeRunning")
     }
-    
+
     public static func decode(from data: Data) throws -> TurtleComputer {
         var decodedObject: TurtleComputer? = nil
         let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
         unarchiver.requiresSecureCoding = false
         decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
         if let error = unarchiver.error {
-            fatalError("Error occured while attempting to decode \(self) from data: \(error.localizedDescription)")
+            fatalError(
+                "Error occured while attempting to decode \(self) from data: \(error.localizedDescription)"
+            )
         }
         guard let decodedObject else {
             fatalError("Failed to decode \(self) from data.")
         }
         return decodedObject
     }
-    
+
     public func setRegister(_ idx: Int, _ val: UInt16) {
         cpu.setRegister(idx, val)
     }
-    
+
     public func getRegister(_ idx: Int) -> UInt16 {
         cpu.getRegister(idx)
     }
-    
+
     public func reset(_ type: ResetType = .soft) {
         bank = 0
-        
+
         switch type {
         case .soft:
             cpu.reset()
-            
+
         case .hard:
             cpu.reset()
             for i in 0..<numberOfRegisters {
                 setRegister(i, 0)
             }
-            ram = Array<UInt16>(repeating: 0, count: ram.count)
+            ram = [UInt16](repeating: 0, count: ram.count)
         }
     }
-    
+
     public func run() {
         _ = cpu.run(until: Date.distantFuture)
     }
-    
+
     public func run(until date: Date = Date.distantFuture) -> Bool {
         cpu.run(until: date)
     }
-    
+
     public func step() {
         cpu.step()
     }
-    
+
     public struct Disassembly {
-        public let labels: [Int : String]
+        public let labels: [Int: String]
         public let entries: [Disassembler.Entry]
     }
-    
+
     fileprivate var cachedDisassembly: Disassembly? = nil
-    
+
     public var disassembly: Disassembly {
         if nil == cachedDisassembly {
             let disassembler = Disassembler()
@@ -228,44 +236,54 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         }
         return cachedDisassembly!
     }
-    
-    public static func ==(lhs: TurtleComputer, rhs: TurtleComputer) -> Bool {
+
+    public static func == (lhs: TurtleComputer, rhs: TurtleComputer) -> Bool {
         lhs.isEqual(rhs)
     }
-    
+
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? TurtleComputer,
-              ram == rhs.ram,
-              cpu == rhs.cpu else {
+            ram == rhs.ram,
+            cpu == rhs.cpu
+        else {
             return false
         }
         return true
     }
-    
+
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(cpu.hash)
         hasher.combine(ram)
         return hasher.finalize()
     }
-    
+
     public func snapshot() -> Data {
-        let snapshot = try! NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+        let snapshot = try! NSKeyedArchiver.archivedData(
+            withRootObject: self,
+            requiringSecureCoding: false
+        )
         return snapshot
     }
-    
+
     public func restore(from snapshot: Data) {
         var decodedComputer: TurtleComputer? = nil
         do {
             let unarchiver = try NSKeyedUnarchiver(forReadingFrom: snapshot)
             unarchiver.requiresSecureCoding = false
-            decodedComputer = unarchiver.decodeObject(of: TurtleComputer.self, forKey: NSKeyedArchiveRootObjectKey)
+            decodedComputer = unarchiver.decodeObject(
+                of: TurtleComputer.self,
+                forKey: NSKeyedArchiveRootObjectKey
+            )
             if let error = unarchiver.error {
-                fatalError("Error occured while attempting to restore computer state from snapshot: \(error.localizedDescription)")
+                fatalError(
+                    "Error occured while attempting to restore computer state from snapshot: \(error.localizedDescription)"
+                )
             }
-        }
-        catch {
-            fatalError("Exception occured while attempting to restore computer state from snapshot: \(error.localizedDescription)")
+        } catch {
+            fatalError(
+                "Exception occured while attempting to restore computer state from snapshot: \(error.localizedDescription)"
+            )
         }
         guard let decodedComputer else {
             fatalError("Failed to restore computer state from snapshot.")

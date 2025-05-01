@@ -8,7 +8,7 @@
 
 public struct MemoryLayoutStrategyTurtle16: MemoryLayoutStrategy {
     public init() {}
-    
+
     public func sizeof(type: SymbolType) -> Int {
         switch type {
         case .void, .function, .genericFunction, .genericStructType, .genericTraitType, .label:
@@ -24,7 +24,7 @@ public struct MemoryLayoutStrategyTurtle16: MemoryLayoutStrategy {
             switch arithmeticType {
             case .compTimeInt:
                 0
-                
+
             case .mutableInt(let width), .immutableInt(let width):
                 switch width {
                 case .i8, .u8:
@@ -35,9 +35,10 @@ public struct MemoryLayoutStrategyTurtle16: MemoryLayoutStrategy {
             }
         case .constPointer, .pointer:
             1
-        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .constTraitType(_), .traitType(_):
+        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .constTraitType(_),
+            .traitType(_):
             2
-        case .array(count: let count, elementType: let elementType):
+        case .array(let count, let elementType):
             (count ?? 0) * sizeof(type: elementType)
         case .constStructType(let typ), .structType(let typ):
             sizeof(struct: typ)
@@ -45,6 +46,6 @@ public struct MemoryLayoutStrategyTurtle16: MemoryLayoutStrategy {
             sizeof(union: typ)
         }
     }
-    
+
     public var sizeOfSaveArea: Int { 7 }
 }

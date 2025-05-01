@@ -10,16 +10,18 @@ import TurtleCore
 
 /// Compiler pass to emit vtable and such for traits
 public final class CompilerPassVtables: CompilerPassWithDeclScan {
-    public override func visit(trait traitDecl0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(trait traitDecl0: TraitDeclaration) throws -> AbstractSyntaxTreeNode?
+    {
         assert(!traitDecl0.isGeneric)
         let traitDecl1 = try super.visit(trait: traitDecl0) as! TraitDeclaration
         let decls = try TraitObjectDeclarationsBuilder().declarations(
             for: traitDecl1,
-            symbols: symbols!)
+            symbols: symbols!
+        )
         var children: [AbstractSyntaxTreeNode] = [
             decls.vtableDecl,
             decls.traitObjectDecl,
-            traitDecl1
+            traitDecl1,
         ]
         if let traitObjectImpl = decls.traitObjectImpl {
             children.append(traitObjectImpl)

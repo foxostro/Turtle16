@@ -16,28 +16,35 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
         let condition = As(
             sourceAnchor: node0.condition.sourceAnchor,
             expr: node0.condition,
-            targetType: PrimitiveType(.bool))
+            targetType: PrimitiveType(.bool)
+        )
         try rvalueContext.check(expression: condition)
         let labelHead = symbols.nextLabel()
         let labelTail = symbols.nextLabel()
-        let node1 = Seq(sourceAnchor: s, children: [
-            LabelDeclaration(sourceAnchor: s, identifier: labelHead),
-            GotoIfFalse(sourceAnchor: s,
-                        condition: condition,
-                        target: labelTail),
-            node0.body,
-            Goto(sourceAnchor: s, target: labelHead),
-            LabelDeclaration(sourceAnchor: s, identifier: labelTail)
-        ])
+        let node1 = Seq(
+            sourceAnchor: s,
+            children: [
+                LabelDeclaration(sourceAnchor: s, identifier: labelHead),
+                GotoIfFalse(
+                    sourceAnchor: s,
+                    condition: condition,
+                    target: labelTail
+                ),
+                node0.body,
+                Goto(sourceAnchor: s, target: labelHead),
+                LabelDeclaration(sourceAnchor: s, identifier: labelTail),
+            ]
+        )
         let node2 = try super.visit(node1)
         return node2
     }
-    
+
     private func rvalueContext() -> RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
     }
 }
 

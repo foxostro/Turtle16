@@ -6,10 +6,10 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import SnapCore
 import TurtleCore
 import TurtleSimulatorCore
+import XCTest
 
 final class TackToTurtle16CompilerTests: XCTestCase {
     fileprivate func makeDebugger(assembly: AbstractSyntaxTreeNode?) -> DebugConsole {
@@ -17,7 +17,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             InstructionNode(instruction: kNOP),
             assembly!,
             InstructionNode(instruction: kNOP),
-            InstructionNode(instruction: kHLT)
+            InstructionNode(instruction: kHLT),
         ])
         let topLevel1 = try! CompilerPassFlattenSeq().visit(topLevel0)! as! TopLevel
         let assembler = AssemblerCompiler()
@@ -26,12 +26,12 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             XCTFail()
         }
         let cpu = SchematicLevelCPUModel()
-        var ram = Array<UInt16>(repeating: 0, count: 65536)
-        cpu.store = {(value: UInt16, addr: MemoryAddress) in
+        var ram = [UInt16](repeating: 0, count: 65536)
+        cpu.store = { (value: UInt16, addr: MemoryAddress) in
             ram[addr.value] = value
         }
-        cpu.load = {(addr: MemoryAddress) in
-            return ram[addr.value]
+        cpu.load = { (addr: MemoryAddress) in
+            ram[addr.value]
         }
         let computer = TurtleComputer(cpu)
         computer.instructions = assembler.instructions
@@ -39,7 +39,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = DebugConsole(computer: computer)
         return debugger
     }
-    
+
     func compile(_ input: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         let compiler = TackToTurtle16Compiler()
         let registerAllocator = RegisterAllocatorNaive()
@@ -47,7 +47,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let stage1 = try registerAllocator.visit(stage0)
         return stage1
     }
-    
+
     func testCompileEmptyProgram() throws {
         let compiler = TackToTurtle16Compiler()
         let input = Seq(children: [])
@@ -55,7 +55,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCompileUnknownInstruction() throws {
         let compiler = TackToTurtle16Compiler()
         let input = InstructionNode(instruction: "")
@@ -63,84 +63,105 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testNOP() throws {
         let input = TackInstructionNode(.nop)
         let expected = InstructionNode(instruction: kNOP)
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testADD16() throws {
         let input = TackInstructionNode(.addw(.w(2), .w(1), .w(0)))
-        let expected = InstructionNode(instruction: kADD, parameters:[
-            ParameterIdentifier("r2"),
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kADD,
+            parameters: [
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testSUB16() throws {
         let input = TackInstructionNode(.subw(.w(2), .w(1), .w(0)))
-        let expected = InstructionNode(instruction: kSUB, parameters:[
-            ParameterIdentifier("r2"),
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kSUB,
+            parameters: [
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testNEG16() throws {
         let input = TackInstructionNode(.negw(.w(1), .w(0)))
-        let expected = InstructionNode(instruction: kNOT, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kNOT,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testXOR16() throws {
         let input = TackInstructionNode(.xorw(.w(2), .w(1), .w(0)))
-        let expected = InstructionNode(instruction: kXOR, parameters:[
-            ParameterIdentifier("r2"),
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kXOR,
+            parameters: [
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testOR16() throws {
         let input = TackInstructionNode(.orw(.w(2), .w(1), .w(0)))
-        let expected = InstructionNode(instruction: kOR, parameters:[
-            ParameterIdentifier("r2"),
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kOR,
+            parameters: [
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testAND16() throws {
         let input = TackInstructionNode(.andw(.w(2), .w(1), .w(0)))
-        let expected = InstructionNode(instruction: kAND, parameters:[
-            ParameterIdentifier("r2"),
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kAND,
+            parameters: [
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testJMP() throws {
         let input = TackInstructionNode(.jmp("foo"))
-        let expected = InstructionNode(instruction: kJMP, parameters:[
-            ParameterIdentifier("foo")
-        ])
+        let expected = InstructionNode(
+            instruction: kJMP,
+            parameters: [
+                ParameterIdentifier("foo")
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -169,15 +190,21 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testNOT() throws {
         let input = TackInstructionNode(.not(.o(1), .o(0)))
         let expected = Seq(children: [
-            InstructionNode(instruction: kNOT, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kANDI, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ])
+            InstructionNode(
+                instruction: kNOT,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kANDI,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(1),
+                ]
+            ),
         ])
         let compiler = TackToTurtle16Compiler()
         let actual = try compiler.visit(input)
@@ -186,28 +213,37 @@ final class TackToTurtle16CompilerTests: XCTestCase {
 
     func testLA() throws {
         let input = TackInstructionNode(.la(.p(1), "foo"))
-        let expected = InstructionNode(instruction: kLA, parameters:[
-            ParameterIdentifier("r0"),
-            ParameterIdentifier("foo")
-        ])
+        let expected = InstructionNode(
+            instruction: kLA,
+            parameters: [
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("foo"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testCALL() throws {
         let input = TackInstructionNode(.call("foo"))
-        let expected = InstructionNode(instruction: kCALL, parameters:[
-            ParameterIdentifier("foo")
-        ])
+        let expected = InstructionNode(
+            instruction: kCALL,
+            parameters: [
+                ParameterIdentifier("foo")
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testCALLPTR() throws {
         let input = TackInstructionNode(.callptr(.p(0)))
-        let expected = InstructionNode(instruction: kCALLPTR, parameters:[
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kCALLPTR,
+            parameters: [
+                ParameterIdentifier("r0")
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -215,13 +251,19 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testBZ() throws {
         let input = TackInstructionNode(.bz(.o(0), "foo"))
         let expected = Seq(children: [
-            InstructionNode(instruction: kCMPI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kBEQ, parameters:[
-                ParameterIdentifier("foo")
-            ])
+            InstructionNode(
+                instruction: kCMPI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kBEQ,
+                parameters: [
+                    ParameterIdentifier("foo")
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -230,36 +272,48 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testBNZ() throws {
         let input = TackInstructionNode(.bnz(.o(0), "foo"))
         let expected = Seq(children: [
-            InstructionNode(instruction: kCMPI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kBNE, parameters:[
-                ParameterIdentifier("foo")
-            ])
+            InstructionNode(
+                instruction: kCMPI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kBNE,
+                parameters: [
+                    ParameterIdentifier("foo")
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLOAD16_small_offset_pos() throws {
         let input = TackInstructionNode(.lw(.w(1), .p(0), 15))
-        let expected = InstructionNode(instruction: kLOAD, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(15)
-        ])
+        let expected = InstructionNode(
+            instruction: kLOAD,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(15),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testLOAD16_small_offset_neg() throws {
         let input = TackInstructionNode(.lw(.w(1), .p(0), -16))
-        let expected = InstructionNode(instruction: kLOAD, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(-16)
-        ])
+        let expected = InstructionNode(
+            instruction: kLOAD,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(-16),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -267,23 +321,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLOAD16_large_offset_pos() throws {
         let input = TackInstructionNode(.lw(.w(1), .p(0), 16))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(16)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kLOAD, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(16),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -292,23 +358,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLOAD16_large_offset_neg() throws {
         let input = TackInstructionNode(.lw(.w(1), .p(0), -17))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kLOAD, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -316,22 +394,28 @@ final class TackToTurtle16CompilerTests: XCTestCase {
 
     func testSTORE16_small_offset_pos() throws {
         let input = TackInstructionNode(.sw(.w(1), .p(0), 15))
-        let expected = InstructionNode(instruction: kSTORE, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(15)
-        ])
+        let expected = InstructionNode(
+            instruction: kSTORE,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(15),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testSTORE16_small_offset_neg() throws {
         let input = TackInstructionNode(.sw(.w(1), .p(0), -16))
-        let expected = InstructionNode(instruction: kSTORE, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(-16)
-        ])
+        let expected = InstructionNode(
+            instruction: kSTORE,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(-16),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -339,23 +423,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testSTORE16_large_offset_pos() throws {
         let input = TackInstructionNode(.sw(.w(1), .p(0), 16))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(16)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kSTORE, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(16),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -364,23 +460,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testSTORE16_large_offset_neg() throws {
         let input = TackInstructionNode(.sw(.w(1), .p(0), -17))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kSTORE, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -388,22 +496,28 @@ final class TackToTurtle16CompilerTests: XCTestCase {
 
     func testLOAD8_small_offset_pos() throws {
         let input = TackInstructionNode(.lb(.b(1), .p(0), 15))
-        let expected = InstructionNode(instruction: kLOAD, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(15)
-        ])
+        let expected = InstructionNode(
+            instruction: kLOAD,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(15),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testLOAD8_small_offset_neg() throws {
         let input = TackInstructionNode(.lb(.b(1), .p(0), -16))
-        let expected = InstructionNode(instruction: kLOAD, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(-16)
-        ])
+        let expected = InstructionNode(
+            instruction: kLOAD,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(-16),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -411,23 +525,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLOAD8_large_offset_pos() throws {
         let input = TackInstructionNode(.lb(.b(1), .p(0), 16))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(16)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kLOAD, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(16),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -436,23 +562,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLOAD8_large_offset_neg() throws {
         let input = TackInstructionNode(.lb(.b(1), .p(0), -17))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kLOAD, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLOAD,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -460,22 +598,28 @@ final class TackToTurtle16CompilerTests: XCTestCase {
 
     func testSTORE8_small_offset_pos() throws {
         let input = TackInstructionNode(.sb(.b(1), .p(0), 15))
-        let expected = InstructionNode(instruction: kSTORE, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(15)
-        ])
+        let expected = InstructionNode(
+            instruction: kSTORE,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(15),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testSTORE8_small_offset_neg() throws {
         let input = TackInstructionNode(.sb(.b(1), .p(0), -16))
-        let expected = InstructionNode(instruction: kSTORE, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(-16)
-        ])
+        let expected = InstructionNode(
+            instruction: kSTORE,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(-16),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -483,23 +627,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testSTORE8_large_offset_pos() throws {
         let input = TackInstructionNode(.sb(.b(1), .p(0), 16))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(16)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kSTORE, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(16),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -508,23 +664,35 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testSTORE8_large_offset_neg() throws {
         let input = TackInstructionNode(.sb(.b(1), .p(0), -17))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kSTORE, parameters:[
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSTORE,
+                parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2"),
+                ]
+            ),
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -586,16 +754,22 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let input = TackInstructionNode(.alloca(.p(0), 2))
         let sp = "r6"
         let expected = Seq(children: [
-            InstructionNode(instruction: kSUBI, parameters:[
-                ParameterIdentifier(sp),
-                ParameterIdentifier(sp),
-                ParameterNumber(2)
-            ]),
-            InstructionNode(instruction: kADDI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterIdentifier(sp),
-                ParameterNumber(0)
-            ])
+            InstructionNode(
+                instruction: kSUBI,
+                parameters: [
+                    ParameterIdentifier(sp),
+                    ParameterIdentifier(sp),
+                    ParameterNumber(2),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADDI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier(sp),
+                    ParameterNumber(0),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -605,24 +779,36 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let input = TackInstructionNode(.alloca(.p(0), 0xabcd))
         let sp = "r6"
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0xcd)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0xab)
-            ]),
-            InstructionNode(instruction: kSUB, parameters:[
-                ParameterIdentifier(sp),
-                ParameterIdentifier(sp),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADDI, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier(sp),
-                ParameterNumber(0)
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0xcd),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0xab),
+                ]
+            ),
+            InstructionNode(
+                instruction: kSUB,
+                parameters: [
+                    ParameterIdentifier(sp),
+                    ParameterIdentifier(sp),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADDI,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier(sp),
+                    ParameterNumber(0),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -631,11 +817,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testFREE() throws {
         let input = TackInstructionNode(.free(2))
         let sp = "r6"
-        let expected = InstructionNode(instruction: kADDI, parameters:[
-            ParameterIdentifier(sp),
-            ParameterIdentifier(sp),
-            ParameterNumber(2)
-        ])
+        let expected = InstructionNode(
+            instruction: kADDI,
+            parameters: [
+                ParameterIdentifier(sp),
+                ParameterIdentifier(sp),
+                ParameterNumber(2),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -644,19 +833,28 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let sp = "r6"
         let input = TackInstructionNode(.free(0xabcd))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0xcd)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0xab)
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier(sp),
-                ParameterIdentifier(sp),
-                ParameterIdentifier("r0")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0xcd),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0xab),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier(sp),
+                    ParameterIdentifier(sp),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -664,22 +862,28 @@ final class TackToTurtle16CompilerTests: XCTestCase {
 
     func testADDI16_small_imm_pos() throws {
         let input = TackInstructionNode(.addiw(.w(1), .w(0), 15))
-        let expected = InstructionNode(instruction: kADDI, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(15)
-        ])
+        let expected = InstructionNode(
+            instruction: kADDI,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(15),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testADDI16_small_imm_neg() throws {
         let input = TackInstructionNode(.addiw(.w(1), .w(0), -16))
-        let expected = InstructionNode(instruction: kADDI, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(-16)
-        ])
+        let expected = InstructionNode(
+            instruction: kADDI,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(-16),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -687,19 +891,28 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testADDI16_large_imm_pos() throws {
         let input = TackInstructionNode(.addiw(.w(1), .w(0), 16))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterNumber(16)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r1")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterNumber(16),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterNumber(0),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -708,19 +921,28 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testADDI16_large_imm_neg() throws {
         let input = TackInstructionNode(.addiw(.w(1), .w(0), -17))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r1")
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -728,54 +950,69 @@ final class TackToTurtle16CompilerTests: XCTestCase {
 
     func testSUBI16() throws {
         let input = TackInstructionNode(.subiw(.w(1), .w(0), 15))
-        let expected = InstructionNode(instruction: kSUBI, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(15)
-        ])
+        let expected = InstructionNode(
+            instruction: kSUBI,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(15),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testANDI16() throws {
         let input = TackInstructionNode(.andiw(.w(1), .w(0), 15))
-        let expected = InstructionNode(instruction: kANDI, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(15)
-        ])
+        let expected = InstructionNode(
+            instruction: kANDI,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(15),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testMULI16_zero() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 0))
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterNumber(0)
-        ])
+        let expected = InstructionNode(
+            instruction: kLI,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterNumber(0),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testMULI16_pos_one() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 1))
-        let expected = InstructionNode(instruction: kADDI, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterNumber(0)
-        ])
+        let expected = InstructionNode(
+            instruction: kADDI,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterNumber(0),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testMULI16_pos_two() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 2))
-        let expected = InstructionNode(instruction: kADD, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterIdentifier("r0"),
-            ParameterIdentifier("r0")
-        ])
+        let expected = InstructionNode(
+            instruction: kADD,
+            parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0"),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -783,16 +1020,22 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_pos_three() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 3))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0")
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -801,16 +1044,22 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_pos_four() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 4))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -819,21 +1068,30 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_pos_five() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 5))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0")
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -842,26 +1100,38 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_pos_six() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 6))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r2")
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r2"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -870,31 +1140,46 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_pos_seven() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 7))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r2")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("r0")
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r2"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -903,21 +1188,30 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_pos_eight() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 8))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -926,15 +1220,21 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_neg_one() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), -1))
         let expected = Seq(children: [
-            InstructionNode(instruction: kNOT, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADDI, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r1"),
-                ParameterNumber(1)
-            ])
+            InstructionNode(
+                instruction: kNOT,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADDI,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r1"),
+                    ParameterNumber(1),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -943,20 +1243,29 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_neg_two() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), -2))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kNOT, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r1")
-            ]),
-            InstructionNode(instruction: kADDI, parameters:[
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("r2"),
-                ParameterNumber(1)
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kNOT,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADDI,
+                parameters: [
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r2"),
+                    ParameterNumber(1),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -965,46 +1274,70 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testMULI16_three_element_sum() throws {
         let input = TackInstructionNode(.muliw(.w(1), .w(0), 14))
         let expected = Seq(children: [
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r1")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r2"),
-                ParameterIdentifier("r2")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r3"),
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r0")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r4"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r2")
-            ]),
-            InstructionNode(instruction: kADD, parameters:[
-                ParameterIdentifier("r4"),
-                ParameterIdentifier("r4"),
-                ParameterIdentifier("r3")
-            ])
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r2"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r4"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r2"),
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r4"),
+                    ParameterIdentifier("r4"),
+                    ParameterIdentifier("r3"),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1012,30 +1345,39 @@ final class TackToTurtle16CompilerTests: XCTestCase {
 
     func testLI16_small_pos() throws {
         let input = TackInstructionNode(.liw(.w(0), 127))
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r0"),
-            ParameterNumber(127)
-        ])
+        let expected = InstructionNode(
+            instruction: kLI,
+            parameters: [
+                ParameterIdentifier("r0"),
+                ParameterNumber(127),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testLI16_small_neg() throws {
         let input = TackInstructionNode(.liw(.w(0), -128))
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r0"),
-            ParameterNumber(-128)
-        ])
+        let expected = InstructionNode(
+            instruction: kLI,
+            parameters: [
+                ParameterIdentifier("r0"),
+                ParameterNumber(-128),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
 
     func testLI16_med_pos() throws {
         let input = TackInstructionNode(.liw(.w(0), 127))
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r0"),
-            ParameterNumber(127)
-        ])
+        let expected = InstructionNode(
+            instruction: kLI,
+            parameters: [
+                ParameterIdentifier("r0"),
+                ParameterNumber(127),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
@@ -1043,14 +1385,20 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLI16_large_pos_1() throws {
         let input = TackInstructionNode(.liw(.w(0), 255))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(255)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0)
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(255),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1059,14 +1407,20 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLI16_large_pos_2() throws {
         let input = TackInstructionNode(.liw(.w(0), 0x7fff))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0xff)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0x7f)
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0xff),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0x7f),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1075,14 +1429,20 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLIU16_small_pos() throws {
         let input = TackInstructionNode(.liuw(.w(0), 255))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0xff)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0x00)
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0xff),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0x00),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1091,14 +1451,20 @@ final class TackToTurtle16CompilerTests: XCTestCase {
     func testLIU16_large_pos() throws {
         let input = TackInstructionNode(.liuw(.w(0), 0x8000))
         let expected = Seq(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0x00)
-            ]),
-            InstructionNode(instruction: kLUI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(0x80)
-            ])
+            InstructionNode(
+                instruction: kLI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0x00),
+                ]
+            ),
+            InstructionNode(
+                instruction: kLUI,
+                parameters: [
+                    ParameterIdentifier("r0"),
+                    ParameterNumber(0x80),
+                ]
+            ),
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1144,12 +1510,12 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.setRegister(1, 0)
         debugger.computer.setRegister(2, 0xabcd)
         debugger.computer.run()
-//        while !debugger.computer.isHalted {
-//            print("---")
-//            debugger.computer.step()
-//            debugger.interpreter.runOne(instruction: .disassemble(.baseCount(debugger.computer.cpu.getPipelineStageInfo(2).pc ?? 0, 1)))
-//            debugger.interpreter.runOne(instruction: .reg)
-//        }
+        //        while !debugger.computer.isHalted {
+        //            print("---")
+        //            debugger.computer.step()
+        //            debugger.interpreter.runOne(instruction: .disassemble(.baseCount(debugger.computer.cpu.getPipelineStageInfo(2).pc ?? 0, 1)))
+        //            debugger.interpreter.runOne(instruction: .reg)
+        //        }
         XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
 
@@ -1163,9 +1529,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     fileprivate let minusOne = UInt16(0) &- UInt16(1)
-    
+
     func testDIVW_minus1_div_1() throws {
         let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
@@ -1176,7 +1542,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), minusOne)
     }
-    
+
     func testDIVW_1_div_minus1() throws {
         let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
@@ -1187,7 +1553,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), minusOne)
     }
-    
+
     func testDIVW_minus1_div_minus1() throws {
         let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
@@ -1209,7 +1575,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 3)
     }
-    
+
     func testDIVUW_0_div_0() throws {
         let input = TackInstructionNode(.divuw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
@@ -1219,12 +1585,12 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.setRegister(2, 100)
         debugger.computer.setRegister(3, 100)
         debugger.computer.run()
-//        while !debugger.computer.isHalted {
-//            print("---")
-//            debugger.computer.step()
-//            debugger.interpreter.runOne(instruction: .disassemble(.baseCount(debugger.computer.cpu.getPipelineStageInfo(2).pc ?? 0, 1)))
-//            debugger.interpreter.runOne(instruction: .reg)
-//        }
+        //        while !debugger.computer.isHalted {
+        //            print("---")
+        //            debugger.computer.step()
+        //            debugger.interpreter.runOne(instruction: .disassemble(.baseCount(debugger.computer.cpu.getPipelineStageInfo(2).pc ?? 0, 1)))
+        //            debugger.interpreter.runOne(instruction: .reg)
+        //        }
         XCTAssertEqual(debugger.computer.getRegister(3), 0)
     }
 
@@ -1313,7 +1679,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         var mask1 = 1
         var mask2 = 1 << n
         var i = 0
-        while i < N-n {
+        while i < N - n {
             if (a & mask1) != 0 {
                 b |= mask2
             }
@@ -1357,7 +1723,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         var mask1 = 1
         var mask2 = 1 << n
         var i = 0
-        while i < N-n {
+        while i < N - n {
             if (a & mask2) != 0 {
                 b |= mask1
             }
@@ -1912,7 +2278,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), UInt16(0) &- UInt16(3))
     }
-    
+
     func testDIVUB() throws {
         let input = TackInstructionNode(.divub(.b(2), .b(1), .b(0)))
         let debugger = makeDebugger(assembly: try compile(input))
@@ -2117,7 +2483,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testMOVSBW() throws {
         let input = TackInstructionNode(.movsbw(.b(1), .w(0)))
         let assembly = try compile(input)
@@ -2128,7 +2494,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(1), 0xffff)
     }
-    
+
     func testMOVSWB() throws {
         let input = TackInstructionNode(.movswb(.w(1), .b(0)))
         let assembly = try compile(input)
@@ -2139,7 +2505,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(1), 0xffff)
     }
-    
+
     func testMOVZWB() throws {
         let input = TackInstructionNode(.movzwb(.w(1), .b(0)))
         let assembly = try compile(input)
@@ -2150,7 +2516,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(1), 0x00ff)
     }
-    
+
     func testMOVZBW() throws {
         let input = TackInstructionNode(.movzbw(.b(1), .w(0)))
         let assembly = try compile(input)
@@ -2161,23 +2527,29 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(1), 0x00ff)
     }
-    
+
     func testLIO_true() throws {
         let input = TackInstructionNode(.lio(.o(0), true))
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r0"),
-            ParameterNumber(1)
-        ])
+        let expected = InstructionNode(
+            instruction: kLI,
+            parameters: [
+                ParameterIdentifier("r0"),
+                ParameterNumber(1),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLIO_false() throws {
         let input = TackInstructionNode(.lio(.o(0), false))
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r0"),
-            ParameterNumber(0)
-        ])
+        let expected = InstructionNode(
+            instruction: kLI,
+            parameters: [
+                ParameterIdentifier("r0"),
+                ParameterNumber(0),
+            ]
+        )
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }

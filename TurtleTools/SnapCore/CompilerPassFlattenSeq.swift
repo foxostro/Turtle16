@@ -12,24 +12,23 @@ public final class CompilerPassFlattenSeq: CompilerPass {
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         node.withChildren(flatten(node.children))
     }
-    
+
     public override func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
         node.withChildren(flatten(node.children))
     }
-    
+
     public override func visit(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
         let flatChildren = flatten(node.children)
-        if flatChildren.count < 2 {
-            return flatChildren.first
-        } else {
+        guard flatChildren.count < 2 else {
             return node.withChildren(flatChildren)
         }
+        return flatChildren.first
     }
-    
+
     public override func visit(block node: Block) throws -> AbstractSyntaxTreeNode? {
         node.withChildren(flatten(node.children))
     }
-    
+
     func flatten(_ children0: [AbstractSyntaxTreeNode]) -> [AbstractSyntaxTreeNode] {
         let children1: [AbstractSyntaxTreeNode] = try! children0.compactMap { try visit($0) }
         var children2: [AbstractSyntaxTreeNode] = []
@@ -50,4 +49,3 @@ extension AbstractSyntaxTreeNode {
         try CompilerPassFlattenSeq().visit(self)
     }
 }
-

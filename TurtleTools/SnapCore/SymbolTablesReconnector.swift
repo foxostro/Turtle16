@@ -11,12 +11,12 @@ import TurtleCore
 public final class SymbolTablesReconnector {
     var symbols: Env? = nil
     let onlyCheck: Bool
-    
+
     public init(_ symbols: Env? = nil, onlyCheck: Bool = false) {
         self.symbols = symbols
         self.onlyCheck = onlyCheck
     }
-    
+
     public func reconnect(_ genericNode: AbstractSyntaxTreeNode?) {
         switch genericNode {
         case let node as If:
@@ -47,91 +47,89 @@ public final class SymbolTablesReconnector {
             break
         }
     }
-    
+
     func reconnect(if node: If) {
         reconnect(node.thenBranch)
         reconnect(node.elseBranch)
     }
-    
+
     func reconnect(while node: While) {
         reconnect(node.body)
     }
-    
+
     func reconnect(forIn node: ForIn) {
         reconnect(node.body)
     }
-    
+
     func reconnect(topLevel node: TopLevel) {
         for child in node.children {
             reconnect(child)
         }
     }
-    
+
     func reconnect(seq node: Seq) {
         for child in node.children {
             reconnect(child)
         }
     }
-    
+
     func reconnect(block node: Block) {
         let parent = symbols
-        
+
         if onlyCheck {
             assert(node.symbols.parent === parent)
             assert(node.symbols.frameLookupMode == .inherit)
-        }
-        else {
+        } else {
             node.symbols.parent = parent
         }
-        
+
         symbols = node.symbols
         for child in node.children {
             reconnect(child)
         }
         symbols = parent
     }
-    
+
     func reconnect(func node: FunctionDeclaration) {
         let parent = symbols
-        
+
         if onlyCheck {
             assert(node.symbols.parent === parent)
             assert(node.symbols.frameLookupMode == .set(Frame(growthDirection: .down)))
             assert(node.symbols.frame == Frame(growthDirection: .down))
-        }
-        else {
+        } else {
             node.symbols.parent = parent
             node.symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         }
-        
+
         symbols = node.symbols
         reconnect(node.body)
         symbols = parent
     }
-    
+
     func reconnect(impl node: Impl) {
         for child in node.children {
             reconnect(child)
         }
     }
-    
+
     func reconnect(implFor node: ImplFor) {
         for child in node.children {
             reconnect(child)
         }
     }
-    
+
     func reconnect(match node: Match) {
         for clause in node.clauses {
             reconnect(clause.block)
         }
         reconnect(node.elseClause)
     }
-    
+
     func reconnect(testDecl node: TestDeclaration) {
         reconnect(node.body)
     }
-    
+
     func reconnect(module node: Module) {
         let oldSymbols = symbols
         symbols = nil

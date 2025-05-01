@@ -6,8 +6,8 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import TurtleSimulatorCore
+import XCTest
 
 final class HazardControlGALTests: HazardControlMockupTests {
     public override func makeHazardControl() -> HazardControl {

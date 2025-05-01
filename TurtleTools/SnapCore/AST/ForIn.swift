@@ -13,26 +13,30 @@ public final class ForIn: AbstractSyntaxTreeNode {
     public let identifier: Identifier
     public let sequenceExpr: Expression
     public let body: Block
-    
-    public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Identifier,
-                sequenceExpr: Expression,
-                body: Block,
-                id: ID = ID()) {
+
+    public init(
+        sourceAnchor: SourceAnchor? = nil,
+        identifier: Identifier,
+        sequenceExpr: Expression,
+        body: Block,
+        id: ID = ID()
+    ) {
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
         self.sequenceExpr = sequenceExpr.withSourceAnchor(sourceAnchor)
         self.body = body.withSourceAnchor(sourceAnchor)
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ForIn {
-        ForIn(sourceAnchor: sourceAnchor,
-              identifier: identifier,
-              sequenceExpr: sequenceExpr,
-              body: body,
-              id: id)
+        ForIn(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            sequenceExpr: sequenceExpr,
+            body: body,
+            id: id
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
@@ -41,17 +45,20 @@ public final class ForIn: AbstractSyntaxTreeNode {
         guard body == rhs.body else { return false }
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(sequenceExpr)
         hasher.combine(body)
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let indent1 = makeIndent(depth: depth+1)
+        let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
             \(indent0)identifier: \(identifier.makeIndentedDescription(depth: depth+1))

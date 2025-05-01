@@ -13,27 +13,31 @@ public final class If: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let thenBranch: AbstractSyntaxTreeNode
     public let elseBranch: AbstractSyntaxTreeNode?
-    
-    public required init(sourceAnchor: SourceAnchor? = nil,
-                         condition: Expression,
-                         then thenBranch: AbstractSyntaxTreeNode,
-                         else elseBranch: AbstractSyntaxTreeNode? = nil,
-                         id: ID = ID()) {
+
+    public required init(
+        sourceAnchor: SourceAnchor? = nil,
+        condition: Expression,
+        then thenBranch: AbstractSyntaxTreeNode,
+        else elseBranch: AbstractSyntaxTreeNode? = nil,
+        id: ID = ID()
+    ) {
         // TODO: There's no good reason to modify the source anchors here in `If'
         self.condition = condition.withSourceAnchor(sourceAnchor)
         self.thenBranch = thenBranch.withSourceAnchor(sourceAnchor)
         self.elseBranch = elseBranch?.withSourceAnchor(sourceAnchor)
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> If {
-        If(sourceAnchor: sourceAnchor,
-           condition: condition,
-           then: thenBranch,
-           else: elseBranch,
-           id: id)
+        If(
+            sourceAnchor: sourceAnchor,
+            condition: condition,
+            then: thenBranch,
+            else: elseBranch,
+            id: id
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? If else { return false }
@@ -42,17 +46,20 @@ public final class If: AbstractSyntaxTreeNode {
         guard elseBranch == rhs.elseBranch else { return false }
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(condition)
         hasher.combine(thenBranch)
         hasher.combine(elseBranch)
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let indent1 = makeIndent(depth: depth+1)
+        let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
             \(indent1)condition: \(condition.makeIndentedDescription(depth: depth + 1))

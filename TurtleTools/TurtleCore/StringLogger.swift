@@ -10,11 +10,11 @@ import Foundation
 
 public class StringLogger: Logger {
     public var stringValue = ""
-    
+
     public init() {}
-    
+
     public func append(_ format: String, _ args: CVarArg...) {
-        let message = String(format:format, arguments:args)
+        let message = String(format: format, arguments: args)
         stringValue += message
     }
 }

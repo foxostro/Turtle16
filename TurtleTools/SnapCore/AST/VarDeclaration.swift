@@ -16,15 +16,17 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
     public let storage: StorageQualifier
     public let isMutable: Bool
     public let visibility: SymbolVisibility
-    
-    public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Identifier,
-                explicitType: Expression?,
-                expression: Expression?,
-                storage: StorageQualifier,
-                isMutable: Bool,
-                visibility: SymbolVisibility = .privateVisibility,
-                id: ID = ID()) {
+
+    public init(
+        sourceAnchor: SourceAnchor? = nil,
+        identifier: Identifier,
+        explicitType: Expression?,
+        expression: Expression?,
+        storage: StorageQualifier,
+        isMutable: Bool,
+        visibility: SymbolVisibility = .privateVisibility,
+        id: ID = ID()
+    ) {
         self.identifier = identifier
         self.explicitType = explicitType
         self.expression = expression
@@ -33,40 +35,46 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
         self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
-    
+
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> VarDeclaration {
-        VarDeclaration(sourceAnchor: sourceAnchor,
-                       identifier: identifier,
-                       explicitType: explicitType,
-                       expression: expression,
-                       storage: storage,
-                       isMutable: isMutable,
-                       visibility: visibility,
-                       id: id)
+        VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: visibility,
+            id: id
+        )
     }
-    
+
     public func withExpression(_ expression: Expression?) -> VarDeclaration {
-        VarDeclaration(sourceAnchor: sourceAnchor,
-                       identifier: identifier,
-                       explicitType: explicitType,
-                       expression: expression,
-                       storage: storage,
-                       isMutable: isMutable,
-                       visibility: visibility,
-                       id: id)
+        VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: visibility,
+            id: id
+        )
     }
-    
+
     public func withExplicitType(_ explicitType: Expression?) -> VarDeclaration {
-        VarDeclaration(sourceAnchor: sourceAnchor,
-                       identifier: identifier,
-                       explicitType: explicitType,
-                       expression: expression,
-                       storage: storage,
-                       isMutable: isMutable,
-                       visibility: visibility,
-                       id: id)
+        VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: visibility,
+            id: id
+        )
     }
-    
+
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
@@ -78,7 +86,7 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
         guard visibility == rhs.visibility else { return false }
         return true
     }
-    
+
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
         hasher.combine(identifier)
@@ -88,10 +96,13 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(expression)
         hasher.combine(visibility)
     }
-    
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+
+    public override func makeIndentedDescription(
+        depth: Int,
+        wantsLeadingWhitespace: Bool = false
+    ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let indent1 = makeIndent(depth: depth+1)
+        let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
             \(indent1)identifier: \(identifier.makeIndentedDescription(depth: depth + 1))

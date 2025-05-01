@@ -12,14 +12,14 @@ import TurtleCore
 public final class Assembler {
     public var instructions: [UInt16] = []
     public private(set) var errors: [CompilerError] = []
-    public var hasError:Bool { errors.count != 0 }
-    
+    public var hasError: Bool { errors.count != 0 }
+
     public init() {}
-    
+
     public func compile(_ text: String) {
         instructions = []
         errors = []
-        
+
         // Lexer pass
         let lexer = AssemblerLexer(text)
         lexer.scanTokens()
@@ -27,7 +27,7 @@ public final class Assembler {
             errors = lexer.errors
             return
         }
-        
+
         // Compile to an abstract syntax tree
         let parser = AssemblerParser(tokens: lexer.tokens, lineMapper: lexer.lineMapper)
         parser.parse()
@@ -36,7 +36,7 @@ public final class Assembler {
             return
         }
         let syntaxTree = parser.syntaxTree!
-        
+
         // Compile the AST to machine code
         let compiler = AssemblerCompiler()
         compiler.compile(syntaxTree)

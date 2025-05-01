@@ -20,20 +20,20 @@ public final class AssemblerCommandLineArgumentParser {
         case quiet
     }
     public private(set) var options: [Option] = []
-    
+
     public init(args: [String]) {
         self.args = args
     }
-    
+
     public func parse() throws {
-        try advance() // strip off the program name
+        try advance()  // strip off the program name
         try parseOptions()
         try parseInputFilenames()
         if options.isEmpty {
             throw AssemblerCommandLineParserError.unexpectedEndOfInput
         }
     }
-    
+
     private func parseOptions() throws {
         while !args.isEmpty {
             let option = try peek()
@@ -43,23 +43,20 @@ public final class AssemblerCommandLineArgumentParser {
             if option == "-h" {
                 try advance()
                 options.append(.printHelp)
-            }
-            else if option == "-o" {
+            } else if option == "-o" {
                 try advance()
                 let fileName = try peek()
                 try advance()
                 options.append(.outputFileName(fileName))
-            }
-            else if option == "-q" {
+            } else if option == "-q" {
                 try advance()
                 options.append(.quiet)
-            }
-            else {
+            } else {
                 throw AssemblerCommandLineParserError.unknownOption(option)
             }
         }
     }
-    
+
     private func parseInputFilenames() throws {
         while !args.isEmpty {
             let fileName = try peek()
@@ -67,11 +64,11 @@ public final class AssemblerCommandLineArgumentParser {
             try advance()
         }
     }
-    
+
     private func peek() throws -> String {
-        return args.first!
+        args.first!
     }
-    
+
     private func advance() throws {
         guard !args.isEmpty else {
             throw AssemblerCommandLineParserError.unexpectedEndOfInput

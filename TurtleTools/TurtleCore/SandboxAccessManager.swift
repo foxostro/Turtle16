@@ -14,22 +14,31 @@ public protocol SandboxAccessManager {
 
 public class ConcreteSandboxAccessManager: SandboxAccessManager {
     let kBookmarksKey = "bookmarks"
-    var bookmarks: [URL : Data] = [:]
-    
+    var bookmarks: [URL: Data] = [:]
+
     deinit {
         for (url, _) in bookmarks {
             url.stopAccessingSecurityScopedResource()
         }
     }
-    
+
     public init() {
         do {
             let maybeBookmarksData = UserDefaults.standard.object(forKey: kBookmarksKey) as? Data
             if let bookmarksData = maybeBookmarksData {
-                bookmarks = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSDictionary.self, NSURL.self, NSData.self], from: bookmarksData) as! [URL: Data]
+                bookmarks =
+                    try NSKeyedUnarchiver.unarchivedObject(
+                        ofClasses: [NSDictionary.self, NSURL.self, NSData.self],
+                        from: bookmarksData
+                    ) as! [URL: Data]
                 for bookmark in bookmarks {
                     var isStale = false
-                    let url = try URL.init(resolvingBookmarkData: bookmark.value, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+                    let url = try URL.init(
+                        resolvingBookmarkData: bookmark.value,
+                        options: NSURL.BookmarkResolutionOptions.withSecurityScope,
+                        relativeTo: nil,
+                        bookmarkDataIsStale: &isStale
+                    )
                     _ = url.startAccessingSecurityScopedResource()
                 }
             }
@@ -37,21 +46,28 @@ public class ConcreteSandboxAccessManager: SandboxAccessManager {
             NSLog("failed to restore bookmarks: \(error)")
         }
     }
-    
+
     public func requestAccess(url: URL?) {
         if let url = url {
             do {
                 try tryRequestAccess(url: url)
             } catch let error {
-                NSLog("failed to grant the requested access to url\n\turl: \(url)\n\terror: \(error)")
+                NSLog(
+                    "failed to grant the requested access to url\n\turl: \(url)\n\terror: \(error)"
+                )
             }
         }
     }
-    
+
     func tryRequestAccess(url: URL) throws {
         if let data = bookmarks[url] {
             var isStale = false
-            let decodedUrl = try URL.init(resolvingBookmarkData: data, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+            let decodedUrl = try URL.init(
+                resolvingBookmarkData: data,
+                options: NSURL.BookmarkResolutionOptions.withSecurityScope,
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            )
             _ = decodedUrl.startAccessingSecurityScopedResource()
             return
         }
@@ -67,9 +83,16 @@ public class ConcreteSandboxAccessManager: SandboxAccessManager {
         let result = openPanel.runModal()
         if result == NSApplication.ModalResponse.OK {
             if let url = openPanel.url {
-                let data = try url.bookmarkData(options: NSURL.BookmarkCreationOptions.withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                let data = try url.bookmarkData(
+                    options: NSURL.BookmarkCreationOptions.withSecurityScope,
+                    includingResourceValuesForKeys: nil,
+                    relativeTo: nil
+                )
                 bookmarks[url] = data
-                let bookmarksData = try NSKeyedArchiver.archivedData(withRootObject: bookmarks, requiringSecureCoding: true)
+                let bookmarksData = try NSKeyedArchiver.archivedData(
+                    withRootObject: bookmarks,
+                    requiringSecureCoding: true
+                )
                 UserDefaults.standard.setValue(bookmarksData, forKey: kBookmarksKey)
             }
         }

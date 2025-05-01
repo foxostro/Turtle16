@@ -8,7 +8,7 @@
 
 public struct MemoryLayoutStrategyTurtleTTL: MemoryLayoutStrategy {
     public init() {}
-    
+
     public func sizeof(type: SymbolType) -> Int {
         switch type {
         case .void, .function, .genericFunction, .genericStructType, .genericTraitType, .label:
@@ -34,9 +34,10 @@ public struct MemoryLayoutStrategyTurtleTTL: MemoryLayoutStrategy {
             }
         case .constPointer, .pointer:
             2
-        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .constTraitType(_), .traitType(_):
+        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .constTraitType(_),
+            .traitType(_):
             4
-        case .array(count: let count, elementType: let elementType):
+        case .array(let count, let elementType):
             (count ?? 0) * sizeof(type: elementType)
         case .constStructType(let typ), .structType(let typ):
             sizeof(struct: typ)
@@ -44,6 +45,6 @@ public struct MemoryLayoutStrategyTurtleTTL: MemoryLayoutStrategy {
             sizeof(union: typ)
         }
     }
-    
+
     public var sizeOfSaveArea: Int { 4 }
 }

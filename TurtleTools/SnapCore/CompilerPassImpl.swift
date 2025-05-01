@@ -14,22 +14,30 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
         RvalueExpressionTypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
     }
-    
+
     public override func visit(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
         assert(!node0.isGeneric)
         let node1 = try super.visit(impl: node0) as! Impl
-        guard let typ = try typeChecker.check(expression: node1.structTypeExpr).maybeUnwrapStructType() else {
+        guard
+            let typ = try typeChecker.check(expression: node1.structTypeExpr)
+                .maybeUnwrapStructType()
+        else {
             throw CompilerError(
                 sourceAnchor: node1.sourceAnchor,
-                message: "unsupported expression: \(node1)")
+                message: "unsupported expression: \(node1)"
+            )
         }
         let children1 = node1.children
-        let children2 = try children1
+        let children2 =
+            try children1
             .map { child0 in
-                let mangledName = try typ.symbols.resolve(identifier: child0.identifier.identifier).type.unwrapFunctionType().mangledName!
-                let child1 = child0
+                let mangledName = try typ.symbols.resolve(identifier: child0.identifier.identifier)
+                    .type.unwrapFunctionType().mangledName!
+                let child1 =
+                    child0
                     .withIdentifier(mangledName)
                     .withFunctionType(child0.functionType.withName(mangledName))
                 return child1
@@ -39,30 +47,34 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
                 try FunctionScanner(
                     memoryLayoutStrategy: memoryLayoutStrategy,
                     symbols: symbols!,
-                    enclosingImplId: nil)
+                    enclosingImplId: nil
+                )
                 .scan(func: child)
             }
         let node2 = Seq(sourceAnchor: node1.sourceAnchor, children: children2)
         return node2
     }
-    
+
     public override func visit(get node0: Get) throws -> Expression? {
         // If the object is the name of a struct type, and the member is one of
         // the struct's methods, then return a direct reference to the function
         // through the mangled function identifier.
         guard let objectIdent = node0.expr as? Identifier,
-              let objectType = symbols!.maybeResolveType(
-                identifier: objectIdent.identifier),
-              let structType = objectType.maybeUnwrapStructType(),
-              !structType.isModule,
-              node0.member is Identifier,
-              let functionType = try typeChecker.check(expression: node0).maybeUnwrapFunctionType(),
-              let mangledName = functionType.mangledName else {
+            let objectType = symbols!.maybeResolveType(
+                identifier: objectIdent.identifier
+            ),
+            let structType = objectType.maybeUnwrapStructType(),
+            !structType.isModule,
+            node0.member is Identifier,
+            let functionType = try typeChecker.check(expression: node0).maybeUnwrapFunctionType(),
+            let mangledName = functionType.mangledName
+        else {
             return node0
         }
         return Identifier(
             sourceAnchor: node0.sourceAnchor,
-            identifier: mangledName)
+            identifier: mangledName
+        )
     }
 }
 

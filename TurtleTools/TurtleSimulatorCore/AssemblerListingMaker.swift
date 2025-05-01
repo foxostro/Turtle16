@@ -10,7 +10,7 @@ import TurtleCore
 
 public struct AssemblerListingMaker {
     public init() {}
-    
+
     public func makeListing(_ node: AbstractSyntaxTreeNode) -> String {
         switch node {
         case let node as TopLevel:
@@ -18,22 +18,22 @@ public struct AssemblerListingMaker {
 
         case let node as InstructionNode:
             makeListing(instruction: node)
-            
+
         case let node as LabelDeclaration:
             makeListing(label: node)
-            
+
         case let node as CommentNode:
             makeListing(comment: node)
-        
+
         default:
             fatalError("unimplemented node: \(node)")
         }
     }
-    
+
     public func makeListing(topLevel node: TopLevel) -> String {
         node.children.map { makeListing($0) }.joined(separator: "\n")
     }
-    
+
     public func makeListing(instruction node: InstructionNode) -> String {
         if node.parameters.count > 0 {
             node.instruction + " " + makeListing(parameterList: node.parameters)
@@ -41,11 +41,11 @@ public struct AssemblerListingMaker {
             node.instruction
         }
     }
-    
+
     public func makeListing(parameterList: [Parameter]) -> String {
         parameterList.map { makeListing(parameter: $0) }.joined(separator: ", ")
     }
-    
+
     public func makeListing(parameter node: Parameter) -> String {
         switch node {
         case let node as ParameterIdentifier:
@@ -53,17 +53,17 @@ public struct AssemblerListingMaker {
 
         case let node as ParameterNumber:
             "\(node.value)"
-        
+
         default:
             fatalError("unimplemented node: \(node)")
         }
     }
-    
+
     public func makeListing(label node: LabelDeclaration) -> String {
         "\(node.identifier):"
     }
-    
+
     public func makeListing(comment node: CommentNode) -> String {
-        node.string.split(separator: "\n").map({"# \($0)"}).joined(separator: "\n")
+        node.string.split(separator: "\n").map({ "# \($0)" }).joined(separator: "\n")
     }
 }

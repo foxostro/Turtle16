@@ -14,16 +14,16 @@ import TurtleSimulatorCore
 public final class SnapCommandLineDriver {
     public struct SnapCommandLineDriverError: Error {
         public let message: String
-        
+
         public init(_ message: String) {
             self.message = message
         }
     }
-    
+
     public enum Verb {
         case run, test, compile
     }
-    
+
     public var status: Int32 = 1
     public var stdout: TextOutputStream = String()
     public var stderr: TextOutputStream = String()
@@ -42,11 +42,11 @@ public final class SnapCommandLineDriver {
     public var shouldEnableOptimizations = true
     let kRuntime = "runtime_Turtle16"
     let kMemoryMappedSerialOutputPort = MemoryAddress(0x0001)
-    
+
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
     }
-    
+
     public func run() {
         do {
             try tryRun()
@@ -58,21 +58,23 @@ public final class SnapCommandLineDriver {
             reportError(withMessage: error.localizedDescription)
         }
     }
-    
+
     func reportError(withMessage message: String) {
         if !shouldBeQuiet {
             stderr.write("Error: " + message)
         }
     }
-    
+
     func tryRun() throws {
         try parseArguments()
-        
+
         if shouldListTests {
             let fileName = inputFileName!.relativePath
             let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
             guard let text = maybeText else {
-                throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
+                throw SnapCommandLineDriverError(
+                    "failed to read input file as UTF-8 text: \(fileName)"
+                )
             }
             let testNames = try collectNamesOfTests(text, fileName)
             stdout.write("Unit Tests:\n")
@@ -82,34 +84,36 @@ public final class SnapCommandLineDriver {
             status = 0
             return
         }
-        
+
         switch verb {
         case .test:
             try doVerbTest()
-            
+
         case .run:
             try doVerbRun()
-            
+
         case .compile:
             try doVerbCompile()
         }
     }
-    
+
     fileprivate func reportInfoMessage(_ message: String) {
         if !shouldBeQuiet {
             self.stdout.write(message)
         }
     }
-    
+
     fileprivate func printNumberOfInstructionWordsUsed(_ program: TurtleProgram) {
         let numberOfInstructions = program.instructions.count
         if numberOfInstructions > 32767 {
-            reportInfoMessage("WARNING: generated code exceeds 32768 instruction memory words: \(numberOfInstructions) words used\n")
+            reportInfoMessage(
+                "WARNING: generated code exceeds 32768 instruction memory words: \(numberOfInstructions) words used\n"
+            )
         } else {
             reportInfoMessage("instruction words used: \(numberOfInstructions)\n")
         }
     }
-    
+
     func doVerbTest() throws {
         let fileName = inputFileName!.relativePath
         let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
@@ -126,7 +130,7 @@ public final class SnapCommandLineDriver {
         }
         status = 0
     }
-    
+
     fileprivate func collectNamesOfTests(_ text: String, _ fileName: String) throws -> [String] {
         let testNames: [String]
         do {
@@ -136,20 +140,23 @@ public final class SnapCommandLineDriver {
                 options: SnapToTurtle16Compiler.Options(
                     isBoundsCheckEnabled: true,
                     isUsingStandardLibrary: false,
-                    runtimeSupport: kRuntime))
-        }
-        catch let error as CompilerError {
+                    runtimeSupport: kRuntime
+                )
+            )
+        } catch let error as CompilerError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: [error])
         }
         return testNames
     }
-    
-    fileprivate func runSpecificTest(_ testName: String, _ text: String, _ fileName: String) throws {
+
+    fileprivate func runSpecificTest(_ testName: String, _ text: String, _ fileName: String) throws
+    {
         reportInfoMessage("Running test \"\(testName)\"...\n")
         let program = try compile(program: text, shouldRunSpecificTest: testName)
         printNumberOfInstructionWordsUsed(program)
         let directory: URL = inputFileName!.deletingPathExtension().deletingLastPathComponent()
-        let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent + " -- \(testName)"
+        let baseName: String =
+            inputFileName!.deletingPathExtension().lastPathComponent + " -- \(testName)"
         irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
         asmOutputFileName = URL(fileURLWithPath: baseName + ".asm", relativeTo: directory)
         if shouldOutputIR {
@@ -158,7 +165,7 @@ public final class SnapCommandLineDriver {
         if shouldOutputAssembly {
             try writeAssemblyToFile(assembly: program.assembly)
         }
-        
+
         var serialOutput: [UInt8] = []
         let onSerialOutput = { (value: UInt16) in
             let oldStr = String(bytes: serialOutput, encoding: .utf8)
@@ -182,36 +189,35 @@ public final class SnapCommandLineDriver {
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if addr == self.kMemoryMappedSerialOutputPort {
                 onSerialOutput(value)
-            }
-            else {
+            } else {
                 computer.ram[addr.value] = value
             }
         }
         computer.cpu.load = { (addr: MemoryAddress) in
-            return computer.ram[addr.value]
+            computer.ram[addr.value]
         }
         computer.instructions = program.instructions
         computer.reset()
-        
+
         let debugger = SnapDebugConsole(computer: computer)
         debugger.logger = PrintLogger()
         debugger.symbols = program.symbolsOfTopLevelScope
         debugger.interpreter.runOne(instruction: .run)
-        
+
         reportInfoMessage("\n\n")
     }
-    
+
     func doVerbRun() throws {
         let fileName = inputFileName!.relativePath
         let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
-        
+
         let program = try compile(program: text)
-        
+
         printNumberOfInstructionWordsUsed(program)
-        
+
         let directory: URL = inputFileName!.deletingPathExtension().deletingLastPathComponent()
         let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent
         irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
@@ -222,7 +228,7 @@ public final class SnapCommandLineDriver {
         if shouldOutputAssembly {
             try writeAssemblyToFile(assembly: program.assembly)
         }
-        
+
         var serialOutput: [UInt8] = []
         let onSerialOutput = { (value: UInt16) in
             let oldStr = String(bytes: serialOutput, encoding: .utf8)
@@ -246,56 +252,55 @@ public final class SnapCommandLineDriver {
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if addr == self.kMemoryMappedSerialOutputPort {
                 onSerialOutput(value)
-            }
-            else {
+            } else {
                 computer.ram[addr.value] = value
             }
         }
         computer.cpu.load = { (addr: MemoryAddress) in
-            return computer.ram[addr.value]
+            computer.ram[addr.value]
         }
         computer.instructions = program.instructions
         computer.reset()
-        
+
         let debugger = SnapDebugConsole(computer: computer)
         debugger.logger = PrintLogger()
         debugger.symbols = program.symbolsOfTopLevelScope
         debugger.interpreter.runOne(instruction: .run)
-        
+
         reportInfoMessage("\n\n")
-        
+
         status = 0
     }
-    
+
     func doVerbCompile() throws {
         let fileName = inputFileName!.relativePath
         let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
-        
+
         let program = try compile(program: text)
-        
+
         printNumberOfInstructionWordsUsed(program)
-        
+
         if shouldDoASTDump {
             stdout.write("\(program.syntaxTree)")
             stdout.write("\n")
         }
-        
+
         if shouldOutputAssembly {
             try writeAssemblyToFile(assembly: program.assembly)
         }
-        
+
         if shouldOutputIR {
             try writeToFile(ir: program.tackProgram)
         }
-        
+
         try writeToFile(instructions: program.instructions)
-        
+
         status = 0
     }
-    
+
     func compile(
         program text: String,
         shouldRunSpecificTest testName: String? = nil
@@ -309,25 +314,26 @@ public final class SnapCommandLineDriver {
                     isBoundsCheckEnabled: true,
                     isUsingStandardLibrary: false,
                     runtimeSupport: kRuntime,
-                    shouldRunSpecificTest: testName))
-        }
-        catch let error as CompilerError {
+                    shouldRunSpecificTest: testName
+                )
+            )
+        } catch let error as CompilerError {
             let fileName = inputFileName!.relativePath
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: [error])
         }
         return program
     }
-    
+
     func writeToFile(ir: TackProgram) throws {
         let string = ir.listing
         try string.write(to: irOutputFileName!, atomically: true, encoding: .utf8)
     }
-    
+
     func writeAssemblyToFile(assembly: AbstractSyntaxTreeNode) throws {
         let text = AssemblerListingMaker().makeListing(assembly)
         try text.write(to: asmOutputFileName!, atomically: true, encoding: .utf8)
     }
-    
+
     func writeToFile(instructions: [UInt16]) throws {
         guard let programOutputFileName else { return }
         let computer = TurtleComputer(SchematicLevelCPUModel())
@@ -335,7 +341,7 @@ public final class SnapCommandLineDriver {
         let debugger = SnapDebugConsole(computer: computer)
         debugger.interpreter.runOne(instruction: .save("program", programOutputFileName))
     }
-    
+
     public func parseArguments() throws {
         let argParser = SnapCommandLineArgumentParser(args: arguments)
         do {
@@ -345,120 +351,135 @@ public final class SnapCommandLineDriver {
             case .unexpectedEndOfInput:
                 throw SnapCommandLineDriverError(makeUsageMessage())
             case .unknownOption(let option):
-                throw SnapCommandLineDriverError("unknown option `\(option)'\n\n\(makeUsageMessage())")
+                throw SnapCommandLineDriverError(
+                    "unknown option `\(option)'\n\n\(makeUsageMessage())"
+                )
             }
         }
         let options = argParser.options
-        
+
         if options.contains(.printHelp) {
             stdout.write(makeUsageMessage())
             exit(0)
         }
-            
+
         for option in options {
             switch option {
             case .printHelp:
-                break // do nothing
-                
+                break  // do nothing
+
             case .inputFileName(let fileName):
                 try parseInputFileName(fileName)
-                
+
             case .outputFileName(let fileName):
                 try parseOutputFileName(fileName)
-                
+
             case .S:
                 shouldOutputAssembly = true
-                
+
             case .ir:
                 shouldOutputIR = true
-                
+
             case .astDump:
                 shouldDoASTDump = true
-                
+
             case .test:
                 verb = .test
-                
+
             case .run:
                 verb = .run
-                
+
             case .listTests:
                 shouldListTests = true
-                
+
             case .chooseSpecificTest(let testName):
                 chooseSpecificTest = testName
-                
+
             case .quiet:
                 shouldBeQuiet = true
-                
+
             case .unoptimized:
                 shouldEnableOptimizations = false
             }
         }
-        
+
         if verb != .test && inputFileName == nil {
             throw SnapCommandLineDriverError("expected input filename")
         }
-        
+
         let baseName: URL = inputFileName!.deletingPathExtension()
-        
+
         if programOutputFileName == nil {
             programOutputFileName = baseName.appendingPathExtension("program")
         }
-        
+
         if irOutputFileName == nil {
             irOutputFileName = baseName.appendingPathExtension("ir")
         }
-        
+
         if asmOutputFileName == nil {
             asmOutputFileName = baseName.appendingPathExtension("asm")
         }
     }
-    
+
     func makeUsageMessage() -> String {
-        return """
-OVERVIEW: compiler for the Snap programming language
+        """
+        OVERVIEW: compiler for the Snap programming language
 
-USAGE:
-\(arguments[0]) [test|run] [options] file...
-            
-OPTIONS:
-\trun        Compile the program and run immediately in a VM.
-\ttest       Compile the program for testing and run immediately in a VM.
-\t-t <test>  The test suite only runs the specified test
-\t-h         Display available options
-\t-o <file>  Specify the output filename
-\t-S         Output assembly code
-\t-ir        Output intermediate representation
-\t-ast-dump  Print the abstract syntax tree to stdout
-\t-q         Quiet. Do not print progress to stdout
-\t-O0        Disable optimizations
+        USAGE:
+        \(arguments[0]) [test|run] [options] file...
+                    
+        OPTIONS:
+        \trun        Compile the program and run immediately in a VM.
+        \ttest       Compile the program for testing and run immediately in a VM.
+        \t-t <test>  The test suite only runs the specified test
+        \t-h         Display available options
+        \t-o <file>  Specify the output filename
+        \t-S         Output assembly code
+        \t-ir        Output intermediate representation
+        \t-ast-dump  Print the abstract syntax tree to stdout
+        \t-q         Quiet. Do not print progress to stdout
+        \t-O0        Disable optimizations
 
-"""
+        """
     }
 
     func parseInputFileName(_ fileName: String) throws {
         if inputFileName != nil {
-            throw SnapCommandLineDriverError("compiler currently only supports one input file at a time.")
+            throw SnapCommandLineDriverError(
+                "compiler currently only supports one input file at a time."
+            )
         }
         inputFileName = URL(fileURLWithPath: fileName)
         var isDirectory: ObjCBool = false
-        if !FileManager.default.fileExists(atPath: inputFileName!.relativePath, isDirectory: &isDirectory) {
-            throw SnapCommandLineDriverError("input file does not exist: \(inputFileName!.relativePath)")
+        if !FileManager.default.fileExists(
+            atPath: inputFileName!.relativePath,
+            isDirectory: &isDirectory
+        ) {
+            throw SnapCommandLineDriverError(
+                "input file does not exist: \(inputFileName!.relativePath)"
+            )
         }
-        if (isDirectory.boolValue) {
-            throw SnapCommandLineDriverError("input file is a directory: \(inputFileName!.relativePath)")
+        if isDirectory.boolValue {
+            throw SnapCommandLineDriverError(
+                "input file is a directory: \(inputFileName!.relativePath)"
+            )
         }
         if !FileManager.default.isReadableFile(atPath: inputFileName!.relativePath) {
-            throw SnapCommandLineDriverError("input file is not readable: \(inputFileName!.relativePath)")
+            throw SnapCommandLineDriverError(
+                "input file is not readable: \(inputFileName!.relativePath)"
+            )
         }
     }
-    
+
     func parseOutputFileName(_ fileName: String) throws {
         if programOutputFileName != nil {
             throw SnapCommandLineDriverError("output filename can only be specified one time.")
         }
         programOutputFileName = URL(fileURLWithPath: fileName)
-        if !FileManager.default.fileExists(atPath: programOutputFileName!.deletingLastPathComponent().relativePath) {
+        if !FileManager.default.fileExists(
+            atPath: programOutputFileName!.deletingLastPathComponent().relativePath
+        ) {
             let name = programOutputFileName!.deletingLastPathComponent().relativePath
             throw SnapCommandLineDriverError("specified output directory does not exist: \(name)")
         }
@@ -470,4 +491,3 @@ OPTIONS:
         }
     }
 }
-

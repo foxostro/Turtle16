@@ -10,11 +10,11 @@ public struct SourceLineRangeMapper: Hashable {
     public let url: URL?
     public let text: String
     let lineRanges: [Range<String.Index>]
-    
+
     public init(text: String) {
         self.init(url: nil, text: text)
     }
-    
+
     public init(url: URL?, text: String) {
         self.url = url
         self.text = text
@@ -27,7 +27,7 @@ public struct SourceLineRangeMapper: Hashable {
         }
         self.lineRanges = lineRanges
     }
-    
+
     public func lineNumbers(for range: Range<String.Index>) -> Range<Int>? {
         var lowerBound: Int? = nil
         var upperBound: Int? = nil
@@ -41,19 +41,29 @@ public struct SourceLineRangeMapper: Hashable {
             }
         }
         if nil == lowerBound {
-            return (lineRanges.count-1)..<lineRanges.count
+            return (lineRanges.count - 1)..<lineRanges.count
         }
         if nil == upperBound {
-            return (lineRanges.count-1)..<lineRanges.count
+            return (lineRanges.count - 1)..<lineRanges.count
         }
-        return lowerBound!..<(upperBound!+1)
+        return lowerBound!..<(upperBound! + 1)
     }
-    
+
     public func anchor(_ begin: Int, _ end: Int) -> SourceAnchor {
         assert(begin <= end)
-        assert(text.distance(from: text.startIndex, to: text.endIndex) >= end, "Anchor has bad end index of \(end) when largest valid index is \(text.distance(from: text.startIndex, to: text.endIndex))")
-        assert(text.distance(from: text.startIndex, to: text.endIndex) >= begin, "Anchor has bad begin index of \(begin) when largest valid index is \(text.distance(from: text.startIndex, to: text.endIndex))")
-        let range = text.index(text.startIndex, offsetBy: begin) ..< text.index(text.startIndex, offsetBy: end)
+        assert(
+            text.distance(from: text.startIndex, to: text.endIndex) >= end,
+            "Anchor has bad end index of \(end) when largest valid index is \(text.distance(from: text.startIndex, to: text.endIndex))"
+        )
+        assert(
+            text.distance(from: text.startIndex, to: text.endIndex) >= begin,
+            "Anchor has bad begin index of \(begin) when largest valid index is \(text.distance(from: text.startIndex, to: text.endIndex))"
+        )
+        let range =
+            text.index(
+                text.startIndex,
+                offsetBy: begin
+            )..<text.index(text.startIndex, offsetBy: end)
         return SourceAnchor(range: range, lineMapper: self)
     }
 }

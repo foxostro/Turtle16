@@ -13,7 +13,7 @@ public final class LvalueExpressionTypeChecker {
     private let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
-    
+
     public init(
         symbols: Env = Env(),
         staticStorageFrame: Frame = Frame(),
@@ -23,14 +23,15 @@ public final class LvalueExpressionTypeChecker {
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
-        
+
     func rvalueContext() -> RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
     }
-    
+
     @discardableResult public func check(expression: Expression) throws -> SymbolType? {
         switch expression {
         case let identifier as Identifier:
@@ -40,13 +41,11 @@ public final class LvalueExpressionTypeChecker {
         case let expr as Get:
             return try check(get: expr)
         case let expr as Bitcast:
-            if let _ = try check(expression: expr.expr) {
-                let result = try rvalueContext().check(expression: expr.targetType)
-                return result
-            }
-            else {
+            guard (try check(expression: expr.expr)) != nil else {
                 return nil
             }
+            let result = try rvalueContext().check(expression: expr.targetType)
+            return result
         case let expr as GenericTypeApplication:
             return try check(genericTypeApplication: expr)
         case let expr as Eseq:
@@ -55,27 +54,28 @@ public final class LvalueExpressionTypeChecker {
             return nil
         }
     }
-        
+
     public func check(identifier expr: Identifier) throws -> SymbolType? {
-        return try rvalueContext().check(identifier: expr)
+        try rvalueContext().check(identifier: expr)
     }
-    
+
     public func check(subscript expr: Subscript) throws -> SymbolType? {
-        return try rvalueContext().check(subscript: expr)
+        try rvalueContext().check(subscript: expr)
     }
-    
+
     public func check(get expr: Get) throws -> SymbolType? {
-        if let _ = expr.member as? Identifier {
+        if expr.member as? Identifier != nil {
             return try check(getIdent: expr)
-        }
-        else if let _ = expr.member as? GenericTypeApplication {
+        } else if expr.member as? GenericTypeApplication != nil {
             return nil
-        }
-        else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "unsupported get expression `\(expr)'")
+        } else {
+            throw CompilerError(
+                sourceAnchor: expr.sourceAnchor,
+                message: "unsupported get expression `\(expr)'"
+            )
         }
     }
-    
+
     private func check(getIdent expr: Get) throws -> SymbolType? {
         let member = expr.member as! Identifier
         let name = member.identifier
@@ -117,13 +117,16 @@ public final class LvalueExpressionTypeChecker {
         default:
             break
         }
-        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
+        throw CompilerError(
+            sourceAnchor: expr.sourceAnchor,
+            message: "value of type `\(resultType)' has no member `\(name)'"
+        )
     }
-    
+
     public func check(genericTypeApplication expr: GenericTypeApplication) throws -> SymbolType? {
-        return try rvalueContext().check(genericTypeApplication: expr)
+        try rvalueContext().check(genericTypeApplication: expr)
     }
-    
+
     public func check(eseq: Eseq) throws -> SymbolType? {
         guard let expr = eseq.children.last else {
             return nil

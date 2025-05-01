@@ -6,8 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import TurtleSimulatorCore
+import XCTest
 
 final class MEMTests: XCTestCase {
     func testRDYisHigh() {
@@ -19,16 +19,16 @@ final class MEMTests: XCTestCase {
         XCTAssertEqual(output.selC, input.selC)
         XCTAssertEqual(output.ctl, input.ctl)
     }
-    
+
     func testStore() {
         let mem = MEM()
         var storeValue: UInt16? = nil
         var storeAddress: MemoryAddress? = nil
-        mem.store = {(value: UInt16, addr: MemoryAddress) in
+        mem.store = { (value: UInt16, addr: MemoryAddress) in
             storeValue = value
             storeAddress = addr
         }
-        let ctl = ~UInt((1<<15) | (1<<16))
+        let ctl = ~UInt((1 << 15) | (1 << 16))
         let input = MEM.Input(rdy: 0, y: 0xabab, storeOp: 0xcdcd, selC: 3, ctl: ctl)
         let output = mem.step(input: input)
         XCTAssertEqual(output.y, input.y)
@@ -38,13 +38,13 @@ final class MEMTests: XCTestCase {
         XCTAssertEqual(storeValue, 0xcdcd)
         XCTAssertEqual(storeAddress?.value, 0xabab)
     }
-    
+
     func testLoad() {
         let mem = MEM()
-        mem.load = {(addr: MemoryAddress) in
-            return ~UInt16(addr.value)
+        mem.load = { (addr: MemoryAddress) in
+            ~UInt16(addr.value)
         }
-        let ctl = ~UInt(1<<14)
+        let ctl = ~UInt(1 << 14)
         let input = MEM.Input(rdy: 0, y: 0xabab, storeOp: 0xcdcd, selC: 3, ctl: ctl)
         let output = mem.step(input: input)
         XCTAssertEqual(output.y, input.y)
@@ -52,35 +52,40 @@ final class MEMTests: XCTestCase {
         XCTAssertEqual(output.selC, input.selC)
         XCTAssertEqual(output.ctl, input.ctl)
     }
-    
+
     func testEquality_Equal() throws {
         let stage1 = MEM()
         stage1.associatedPC = 1
-        
+
         let stage2 = MEM()
         stage2.associatedPC = 1
-        
+
         XCTAssertEqual(stage1, stage2)
         XCTAssertEqual(stage1.hash, stage2.hash)
     }
-    
+
     func testEquality_NotEqual() throws {
         let stage1 = MEM()
         stage1.associatedPC = 1
-        
+
         let stage2 = MEM()
         stage2.associatedPC = 2
-        
+
         XCTAssertNotEqual(stage1, stage2)
         XCTAssertNotEqual(stage1.hash, stage2.hash)
     }
-    
+
     func testEncodeDecodeRoundTrip() throws {
         let stage1 = MEM()
         stage1.associatedPC = 1
-        
+
         var data: Data! = nil
-        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: stage1, requiringSecureCoding: true))
+        XCTAssertNoThrow(
+            data = try NSKeyedArchiver.archivedData(
+                withRootObject: stage1,
+                requiringSecureCoding: true
+            )
+        )
         if data == nil {
             XCTFail()
             return

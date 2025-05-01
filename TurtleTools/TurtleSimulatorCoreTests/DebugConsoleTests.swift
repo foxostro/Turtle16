@@ -6,8 +6,8 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import XCTest
 import TurtleSimulatorCore
+import XCTest
 
 final class DebugConsoleTests: XCTestCase {
     func testRunProgram() throws {
@@ -17,7 +17,7 @@ final class DebugConsoleTests: XCTestCase {
         debugConsole.eval("c")
         XCTAssertTrue(debugConsole.computer.isHalted)
     }
-    
+
     func testUndo() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
         let debugConsole = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
@@ -30,48 +30,53 @@ final class DebugConsoleTests: XCTestCase {
         let computer2 = debugConsole.computer
         XCTAssertEqual(computer1, computer2)
     }
-    
+
     func testEquality_Equal() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
-        
+
         let debugConsole1 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole1.undoManager = UndoManager()
         debugConsole1.eval("load program \"\(path)\"")
-        
+
         let debugConsole2 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole2.undoManager = UndoManager()
         debugConsole2.eval("load program \"\(path)\"")
-        
+
         XCTAssertEqual(debugConsole1, debugConsole2)
         XCTAssertEqual(debugConsole1.hash, debugConsole2.hash)
     }
-    
+
     func testEquality_NotEqual() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
-        
+
         let debugConsole1 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole1.undoManager = UndoManager()
         debugConsole1.eval("load program \"\(path)\"")
         debugConsole1.eval("c")
-        
+
         let debugConsole2 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole2.undoManager = UndoManager()
         debugConsole2.eval("load program \"\(path)\"")
-        
+
         XCTAssertNotEqual(debugConsole1, debugConsole2)
         XCTAssertNotEqual(debugConsole1.hash, debugConsole2.hash)
     }
-    
+
     func testEncodeDecodeRoundTrip() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
-        
+
         let debugConsole1 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole1.undoManager = UndoManager()
         debugConsole1.eval("load program \"\(path)\"")
         debugConsole1.eval("r")
-        
+
         var data: Data! = nil
-        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: debugConsole1, requiringSecureCoding: true))
+        XCTAssertNoThrow(
+            data = try NSKeyedArchiver.archivedData(
+                withRootObject: debugConsole1,
+                requiringSecureCoding: true
+            )
+        )
         if data == nil {
             XCTFail()
             return

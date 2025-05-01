@@ -85,7 +85,8 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
                 )
             )
             stmts.append(compileMatchClause(node1, node1.clauses, outer))
-        } else if let elseClause = node1.elseClause {
+        }
+        else if let elseClause = node1.elseClause {
             let rewrittenElseClause = Block(
                 sourceAnchor: elseClause.sourceAnchor,
                 symbols: Env(parent: outer),
@@ -140,7 +141,8 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
         let clauseElseBlock: Block?
         if match.elseClause == nil {
             clauseElseBlock = nil
-        } else {
+        }
+        else {
             clauseElseBlock = Block(
                 sourceAnchor: match.elseClause!.sourceAnchor,
                 symbols: Env(parent: symbols),

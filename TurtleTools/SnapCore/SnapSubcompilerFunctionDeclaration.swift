@@ -40,7 +40,8 @@ public struct SnapSubcompilerFunctionDeclaration {
 
         if node.isGeneric {
             try doGeneric(symbols: symbols, node: node)
-        } else {
+        }
+        else {
             try doNonGeneric(symbols: symbols, node: node)
         }
     }
@@ -106,7 +107,8 @@ public struct SnapSubcompilerFunctionDeclaration {
         ) {
             let ret = Return(sourceAnchor: node0.sourceAnchor, expression: nil)
             body = node0.body.appending(children: [ret])
-        } else {
+        }
+        else {
             body = node0.body
         }
 
@@ -188,7 +190,8 @@ public struct SnapSubcompilerFunctionDeclaration {
                         throw makeErrorForMissingReturn(symbols, functionType, node)
                     }
                 }
-            } else if functionType.returnType != .void {
+            }
+            else if functionType.returnType != .void {
                 throw makeErrorForMissingReturn(symbols, functionType, node)
             }
         }
@@ -222,7 +225,8 @@ public struct SnapSubcompilerFunctionDeclaration {
                 default:
                     allTracesEndInReturnStatement = false
                 }
-            } else {
+            }
+            else {
                 allTracesEndInReturnStatement = false
             }
         }

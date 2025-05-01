@@ -77,7 +77,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedLabel(let target) = error {
                 XCTAssertEqual(target, "foo")
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -98,7 +99,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedLabel(let target) = error {
                 XCTAssertEqual(target, "foo")
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -131,7 +133,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedLabel(let target) = error {
                 XCTAssertEqual(target, "foo")
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -184,7 +187,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedLabel(let target) = error {
                 XCTAssertEqual(target, "foo")
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -237,7 +241,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedLabel(let target) = error {
                 XCTAssertEqual(target, "foo")
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -273,7 +278,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedRegister(let reg) = error {
                 XCTAssertEqual(reg, .ra)
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -339,7 +345,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // good
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -362,7 +369,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedRegister(let reg) = error {
                 XCTAssertEqual(reg, .w(.w(0)))
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -385,7 +393,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .undefinedRegister(let reg) = error {
                 XCTAssertEqual(reg, .ra)
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -439,7 +448,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .underflowRegisterStack = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -658,7 +668,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -696,7 +707,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -745,7 +757,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -797,7 +810,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -933,7 +947,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -954,7 +969,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -975,7 +991,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -996,7 +1013,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1156,7 +1174,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .divideByZero = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1193,7 +1212,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .divideByZero = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1230,7 +1250,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .divideByZero = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1611,7 +1632,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1632,7 +1654,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1653,7 +1676,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1674,7 +1698,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .invalidArgument = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1834,7 +1859,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .divideByZero = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -1871,7 +1897,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .divideByZero = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }
@@ -2322,7 +2349,8 @@ final class TackVirtualMachineTests: XCTestCase {
             }
             if case .inlineAssemblyNotSupported = error {
                 // nothing to do
-            } else {
+            }
+            else {
                 XCTFail("unexpected error: \($0)")
             }
         }

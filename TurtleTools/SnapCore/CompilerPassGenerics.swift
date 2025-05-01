@@ -99,7 +99,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         {
             if node.isGeneric {
                 nil
-            } else {
+            }
+            else {
                 try super.visit(func: node)
             }
         }
@@ -108,7 +109,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         {
             if node.isGeneric {
                 nil
-            } else {
+            }
+            else {
                 try super.visit(struct: node)
             }
         }
@@ -116,7 +118,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         public override func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
             if node.isGeneric {
                 nil
-            } else {
+            }
+            else {
                 try super.visit(trait: node)
             }
         }
@@ -124,7 +127,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         public override func visit(impl node: Impl) throws -> AbstractSyntaxTreeNode? {
             if node.isGeneric {
                 nil
-            } else {
+            }
+            else {
                 try super.visit(impl: node)
             }
         }
@@ -132,7 +136,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         public override func visit(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
             if node.isGeneric {
                 nil
-            } else {
+            }
+            else {
                 try super.visit(implFor: node)
             }
         }
@@ -161,7 +166,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         if node.isGeneric {
             node
-        } else {
+        }
+        else {
             try super.visit(func: node) as! FunctionDeclaration
         }
     }
@@ -169,7 +175,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     public override func visit(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
         if node.isGeneric {
             node
-        } else {
+        }
+        else {
             try super.visit(struct: node) as! StructDeclaration
         }
     }
@@ -177,7 +184,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     public override func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
         if node.isGeneric {
             node
-        } else {
+        }
+        else {
             try super.visit(trait: node) as! TraitDeclaration
         }
     }
@@ -185,7 +193,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     public override func visit(impl node: Impl) throws -> AbstractSyntaxTreeNode? {
         if node.isGeneric {
             node
-        } else {
+        }
+        else {
             try super.visit(impl: node) as! Impl
         }
     }
@@ -193,7 +202,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     public override func visit(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
         if node.isGeneric {
             node
-        } else {
+        }
+        else {
             try super.visit(implFor: node) as! ImplFor
         }
     }
@@ -454,7 +464,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
                 sourceAnchor: identifier.sourceAnchor,
                 identifier: identifier.identifier
             )
-        } else {
+        }
+        else {
             calleeType = try typeCheck(rexpr: expr0.callee)
         }
 

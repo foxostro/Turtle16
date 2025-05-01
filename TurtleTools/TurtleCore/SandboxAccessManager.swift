@@ -42,7 +42,8 @@ public class ConcreteSandboxAccessManager: SandboxAccessManager {
                     _ = url.startAccessingSecurityScopedResource()
                 }
             }
-        } catch let error {
+        }
+        catch let error {
             NSLog("failed to restore bookmarks: \(error)")
         }
     }
@@ -51,7 +52,8 @@ public class ConcreteSandboxAccessManager: SandboxAccessManager {
         if let url = url {
             do {
                 try tryRequestAccess(url: url)
-            } catch let error {
+            }
+            catch let error {
                 NSLog(
                     "failed to grant the requested access to url\n\turl: \(url)\n\terror: \(error)"
                 )

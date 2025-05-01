@@ -79,7 +79,8 @@ public final class SymbolTablesReconnector {
         if onlyCheck {
             assert(node.symbols.parent === parent)
             assert(node.symbols.frameLookupMode == .inherit)
-        } else {
+        }
+        else {
             node.symbols.parent = parent
         }
 
@@ -97,7 +98,8 @@ public final class SymbolTablesReconnector {
             assert(node.symbols.parent === parent)
             assert(node.symbols.frameLookupMode == .set(Frame(growthDirection: .down)))
             assert(node.symbols.frame == Frame(growthDirection: .down))
-        } else {
+        }
+        else {
             node.symbols.parent = parent
             node.symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         }

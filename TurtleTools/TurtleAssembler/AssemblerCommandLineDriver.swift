@@ -36,11 +36,14 @@ public final class AssemblerCommandLineDriver {
     public func run() {
         do {
             try tryRun()
-        } catch let error as AssemblerCommandLineDriverError {
+        }
+        catch let error as AssemblerCommandLineDriverError {
             reportError(withMessage: error.message)
-        } catch let error as CompilerError {
+        }
+        catch let error as CompilerError {
             reportError(withMessage: error.message)
-        } catch {
+        }
+        catch {
             reportError(withMessage: error.localizedDescription)
         }
     }
@@ -87,7 +90,8 @@ public final class AssemblerCommandLineDriver {
         let argParser = AssemblerCommandLineArgumentParser(args: arguments)
         do {
             try argParser.parse()
-        } catch let error as AssemblerCommandLineParserError {
+        }
+        catch let error as AssemblerCommandLineParserError {
             switch error {
             case .unexpectedEndOfInput:
                 throw AssemblerCommandLineDriverError(makeUsageMessage())

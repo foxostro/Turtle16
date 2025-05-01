@@ -94,20 +94,23 @@ public final class CompilerPassImport: CompilerPass {
             do {
                 let text = try String(contentsOf: url, encoding: String.Encoding.utf8)
                 return (text, url)
-            } catch {
+            }
+            catch {
                 throw CompilerError(
                     sourceAnchor: sourceAnchor,
                     message: "failed to read module `\(moduleName)' from file `\(url)'"
                 )
             }
-        } else if let url = Bundle(for: type(of: self)).url(
+        }
+        else if let url = Bundle(for: type(of: self)).url(
             forResource: moduleName,
             withExtension: "snap"
         ) {  // Try retrieving the module from bundle resources.
             do {
                 let text = try String(contentsOf: url)
                 return (text, url)
-            } catch {
+            }
+            catch {
                 throw CompilerError(
                     sourceAnchor: sourceAnchor,
                     message: "failed to read module `\(moduleName)' from file `\(url)'"

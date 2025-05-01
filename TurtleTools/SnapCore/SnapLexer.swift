@@ -325,7 +325,8 @@ public class SnapLexer: Lexer {
             let nsRange = match.range(withName: "leadingWhitespace")
             let range = Range(nsRange, in: lastLine)!
             leadingWhitespace = String(lastLine[range])
-        } else {
+        }
+        else {
             leadingWhitespace = ""
         }
 

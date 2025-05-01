@@ -28,7 +28,8 @@ struct ContentView: View {
                     } label: {
                         Image(systemName: "pause.fill")
                     }
-                } else {
+                }
+                else {
                     Button {
                         document.run()
                     } label: {

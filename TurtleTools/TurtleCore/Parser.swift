@@ -27,7 +27,8 @@ open class Parser {
         while !tokens.isEmpty {
             do {
                 statements += try consumeStatement()
-            } catch let e {
+            }
+            catch let e {
                 let error = e as! CompilerError
                 errors.append(error)
 
@@ -38,7 +39,8 @@ open class Parser {
         }
         if hasError {
             syntaxTree = nil
-        } else {
+        }
+        else {
             let sourceAnchor = statements.map({ $0.sourceAnchor }).reduce(
                 statements.first?.sourceAnchor,
                 { $0?.union($1) }
@@ -75,7 +77,8 @@ open class Parser {
             let tokenType = type(of: token)
             if (tokenType == TokenEOF.self) || (tokenType == TokenNewline.self) {
                 break
-            } else {
+            }
+            else {
                 advance()
             }
         }

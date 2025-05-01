@@ -181,7 +181,8 @@ public class RvalueExpressionTypeChecker {
             let operatorString: String
             if let lexeme = unary.sourceAnchor?.text {
                 operatorString = String(lexeme)
-            } else {
+            }
+            else {
                 operatorString = fallbackStringForOperator(unary.op)
             }
             throw CompilerError(
@@ -594,9 +595,11 @@ public class RvalueExpressionTypeChecker {
         case (.unionType(let a), .unionType(let b)):
             if b == a.correspondingConstType {
                 return .acceptable(ltype)
-            } else if b.correspondingConstType == a {
+            }
+            else if b.correspondingConstType == a {
                 return .acceptable(ltype)
-            } else {
+            }
+            else {
                 return .unacceptable(
                     CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible)
                 )
@@ -693,7 +696,8 @@ public class RvalueExpressionTypeChecker {
             (_, .pointer(let b)):
             if rtype.correspondingConstType == b.correspondingConstType {
                 return .acceptable(ltype)
-            } else {
+            }
+            else {
                 switch rtype {
                 case .constTraitType(let a), .traitType(let a):
                     let traitObjectType = try? symbols.resolveType(
@@ -840,7 +844,8 @@ public class RvalueExpressionTypeChecker {
                 sourceAnchor: identifier.sourceAnchor,
                 identifier: identifier.identifier
             )
-        } else {
+        }
+        else {
             calleeType = try check(expression: call.callee)
         }
         return try check(call: call, calleeType: calleeType)
@@ -912,7 +917,8 @@ public class RvalueExpressionTypeChecker {
     private func check(call: Call, typ: FunctionTypeInfo) throws -> SymbolType {
         do {
             return try checkInner(call: call, typ: typ)
-        } catch let err as CompilerError {
+        }
+        catch let err as CompilerError {
             guard let rewritten = try rewriteStructMemberFunctionCallIfPossible(call) else {
                 throw err
             }
@@ -925,7 +931,8 @@ public class RvalueExpressionTypeChecker {
             let message: String
             if let name = typ.name {
                 message = "incorrect number of arguments in call to `\(name)'"
-            } else {
+            }
+            else {
                 message = "incorrect number of arguments in call to function of type `\(typ)'"
             }
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
@@ -938,7 +945,8 @@ public class RvalueExpressionTypeChecker {
             if let name = typ.name {
                 message =
                     "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
-            } else {
+            }
+            else {
                 message =
                     "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to function of type `\(typ)'"
             }
@@ -1093,9 +1101,11 @@ public class RvalueExpressionTypeChecker {
     public func check(get expr: Get) throws -> SymbolType {
         if expr.member as? Identifier != nil {
             return try check(getIdent: expr)
-        } else if expr.member as? GenericTypeApplication != nil {
+        }
+        else if expr.member as? GenericTypeApplication != nil {
             return try check(getApp: expr)
-        } else {
+        }
+        else {
             throw CompilerError(
                 sourceAnchor: expr.sourceAnchor,
                 message: "unsupported get expression `\(expr)'"
@@ -1141,19 +1151,22 @@ public class RvalueExpressionTypeChecker {
             // TODO: The compiler treats Range specially but maybe it shouldn't do this. We could have some way to provide a specific template specialization and do it in stdlib.
             if typ.name == "Range", name == "count" {
                 return .u16
-            } else if let symbol = typ.symbols.maybeResolve(identifier: name) {
+            }
+            else if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type.correspondingConstType
             }
         case .structType(let typ):
             if typ.name == "Range", name == "count" {
                 return .u16
-            } else if let symbol = typ.symbols.maybeResolve(identifier: name) {
+            }
+            else if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type
             }
         case .constPointer(let typ), .pointer(let typ):
             if name == "pointee" {
                 return typ
-            } else {
+            }
+            else {
                 switch typ {
                 case .array, .constDynamicArray, .dynamicArray:
                     if name == "count" {
@@ -1240,7 +1253,8 @@ public class RvalueExpressionTypeChecker {
                         "array count must be a compile time constant, got `\(typeOfCountExpr)' instead"
                 )
             }
-        } else {
+        }
+        else {
             count = nil
         }
         let elementType = try check(expression: expr.elementType)
@@ -1721,7 +1735,8 @@ public class RvalueExpressionTypeChecker {
                     symbols: Env(parent: outer),
                     children: [Call(callee: callee, arguments: arguments)]
                 )
-            } else {
+            }
+            else {
                 fnBody = Block(
                     symbols: Env(parent: outer),
                     children: [Return(Call(callee: callee, arguments: arguments))]

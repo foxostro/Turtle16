@@ -62,7 +62,8 @@ public final class TackDebugger {
             let indicator: String
             if let currentlyExecutingLineNumber, i == currentlyExecutingLineNumber {
                 indicator = "->"
-            } else {
+            }
+            else {
                 indicator = ""
             }
 
@@ -108,7 +109,8 @@ public final class TackDebugger {
             let fp = try! vm.getRegister(p: .fp)
             if offset < 0 {
                 addr = fp &+ UInt(-offset)
-            } else {
+            }
+            else {
                 addr = fp &- UInt(offset)
             }
 

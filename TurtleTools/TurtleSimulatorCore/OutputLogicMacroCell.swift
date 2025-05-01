@@ -73,10 +73,12 @@ public final class OutputLogicMacroCell {
 
         if input.ar == 1 {
             flipFlopState = 0
-        } else if isRisingEdgeOfClock {
+        }
+        else if isRisingEdgeOfClock {
             if input.sp == 1 {
                 flipFlopState = 1
-            } else {
+            }
+            else {
                 flipFlopState = sumTerm
             }
         }
@@ -133,7 +135,8 @@ public final class OutputLogicMacroCell {
             modified[16] = input.feedback[7] & 1
             modified[15] = input.feedback[8] & 1
             modified[14] = input.feedback[9] & 1
-        } else {
+        }
+        else {
             // Combinatorial pin
             modified[23] = input.inputs[23] ?? input.feedback[0]
             modified[22] = input.inputs[22] ?? input.feedback[1]

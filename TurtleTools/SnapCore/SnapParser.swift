@@ -21,50 +21,72 @@ public class SnapParser: Parser {
         if nil != accept(TokenEOF.self) {
             result = []
             shouldExpectEndOfStatement = false
-        } else if let token = accept(TokenStatic.self) as? TokenStatic {
+        }
+        else if let token = accept(TokenStatic.self) as? TokenStatic {
             result = try consumeStatic(token)
-        } else if let token = accept(TokenPublic.self) as? TokenPublic {
+        }
+        else if let token = accept(TokenPublic.self) as? TokenPublic {
             result = try consumePublic(token)
-        } else if let token = accept(TokenPrivate.self) as? TokenPrivate {
+        }
+        else if let token = accept(TokenPrivate.self) as? TokenPrivate {
             result = try consumePrivate(token)
-        } else if let token = accept(TokenLet.self) as? TokenLet {
+        }
+        else if let token = accept(TokenLet.self) as? TokenLet {
             result = try consumeLet(token)
-        } else if let token = accept(TokenVar.self) as? TokenVar {
+        }
+        else if let token = accept(TokenVar.self) as? TokenVar {
             result = try consumeVar(token)
-        } else if let token = accept(TokenIf.self) as? TokenIf {
+        }
+        else if let token = accept(TokenIf.self) as? TokenIf {
             result = try consumeIf(token)
-        } else if let token = accept(TokenWhile.self) as? TokenWhile {
+        }
+        else if let token = accept(TokenWhile.self) as? TokenWhile {
             result = try consumeWhile(token)
-        } else if let token = accept(TokenFor.self) as? TokenFor {
+        }
+        else if let token = accept(TokenFor.self) as? TokenFor {
             result = try consumeForIn(token)
-        } else if let leftBrace = accept(TokenCurlyLeft.self) as? TokenCurlyLeft {
+        }
+        else if let leftBrace = accept(TokenCurlyLeft.self) as? TokenCurlyLeft {
             result = try consumeBlock(leftBrace)
-        } else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
+        }
+        else if (nil != peek(0) as? TokenIdentifier) && (nil != peek(1) as? TokenColon) {
             let sourceAnchor = peek(0)?.sourceAnchor?.union(peek(1)?.sourceAnchor)
             throw CompilerError(sourceAnchor: sourceAnchor, message: "labels are not supported")
-        } else if let token = accept(TokenFunc.self) as? TokenFunc {
+        }
+        else if let token = accept(TokenFunc.self) as? TokenFunc {
             result = try consumeFunc(token)
-        } else if let token = accept(TokenReturn.self) as? TokenReturn {
+        }
+        else if let token = accept(TokenReturn.self) as? TokenReturn {
             result = try consumeReturn(token)
-        } else if let token = accept(TokenStruct.self) as? TokenStruct {
+        }
+        else if let token = accept(TokenStruct.self) as? TokenStruct {
             result = try consumeStruct(token)
-        } else if let token = accept(TokenTrait.self) as? TokenTrait {
+        }
+        else if let token = accept(TokenTrait.self) as? TokenTrait {
             result = try consumeTrait(token)
-        } else if let token = accept(TokenImpl.self) as? TokenImpl {
+        }
+        else if let token = accept(TokenImpl.self) as? TokenImpl {
             result = try consumeImpl(token)
-        } else if let token = accept(TokenTypealias.self) as? TokenTypealias {
+        }
+        else if let token = accept(TokenTypealias.self) as? TokenTypealias {
             result = try consumeTypealias(token)
-        } else if let token = accept(TokenMatch.self) as? TokenMatch {
+        }
+        else if let token = accept(TokenMatch.self) as? TokenMatch {
             result = try consumeMatch(token)
-        } else if let token = accept(TokenAssert.self) as? TokenAssert {
+        }
+        else if let token = accept(TokenAssert.self) as? TokenAssert {
             result = try consumeAssert(token)
-        } else if let token = accept(TokenTest.self) as? TokenTest {
+        }
+        else if let token = accept(TokenTest.self) as? TokenTest {
             result = try consumeTest(token)
-        } else if let token = accept(TokenImport.self) as? TokenImport {
+        }
+        else if let token = accept(TokenImport.self) as? TokenImport {
             result = try consumeImport(token)
-        } else if let token = accept(TokenAsm.self) as? TokenAsm {
+        }
+        else if let token = accept(TokenAsm.self) as? TokenAsm {
             result = try consumeAsm(token)
-        } else {
+        }
+        else {
             result = [try consumeExpression()]
         }
         if shouldExpectEndOfStatement {
@@ -77,9 +99,11 @@ public class SnapParser: Parser {
         let visibility: SymbolVisibility
         if nil != accept(TokenPublic.self) {
             visibility = .publicVisibility
-        } else if nil != accept(TokenPrivate.self) {
+        }
+        else if nil != accept(TokenPrivate.self) {
             visibility = .privateVisibility
-        } else {
+        }
+        else {
             visibility = .privateVisibility
         }
 
@@ -141,29 +165,36 @@ public class SnapParser: Parser {
                 firstSpeciferToken: visibilityToken,
                 visibility: visibility
             )
-        } else if let token = accept(TokenLet.self) as? TokenLet {
+        }
+        else if let token = accept(TokenLet.self) as? TokenLet {
             return try consumeLet(
                 token,
                 storage: .automaticStorage(offset: nil),
                 firstSpeciferToken: visibilityToken,
                 visibility: visibility
             )
-        } else if let token = accept(TokenVar.self) as? TokenVar {
+        }
+        else if let token = accept(TokenVar.self) as? TokenVar {
             return try consumeVar(
                 token,
                 storage: .automaticStorage(offset: nil),
                 firstSpeciferToken: visibilityToken,
                 visibility: visibility
             )
-        } else if accept(TokenFunc.self) as? TokenFunc != nil {
+        }
+        else if accept(TokenFunc.self) as? TokenFunc != nil {
             return try consumeFunc(visibilityToken, visibility)
-        } else if accept(TokenStruct.self) as? TokenStruct != nil {
+        }
+        else if accept(TokenStruct.self) as? TokenStruct != nil {
             return try consumeStruct(visibilityToken, visibility)
-        } else if accept(TokenTrait.self) as? TokenTrait != nil {
+        }
+        else if accept(TokenTrait.self) as? TokenTrait != nil {
             return try consumeTrait(visibilityToken, visibility)
-        } else if accept(TokenTypealias.self) as? TokenTypealias != nil {
+        }
+        else if accept(TokenTypealias.self) as? TokenTypealias != nil {
             return try consumeTypealias(visibilityToken, visibility)
-        } else {
+        }
+        else {
             throw CompilerError(
                 sourceAnchor: peek()?.sourceAnchor,
                 message: "unexpected token following `\(visibilityToken.lexeme)' specifier"
@@ -259,7 +290,8 @@ public class SnapParser: Parser {
         if let token = accept(TokenUndefined.self) {
             expression = nil
             exprSourceAnchor = token.sourceAnchor!
-        } else {
+        }
+        else {
             expression = try consumeExpression()
             exprSourceAnchor = expression!.sourceAnchor!
         }
@@ -328,18 +360,23 @@ public class SnapParser: Parser {
     fileprivate func consumeTypeWithoutRegardForConst() throws -> Expression {
         if let star = accept(operator: .star) {
             return try consumePointerType(star)
-        } else if peek() as? TokenSquareBracketLeft != nil {
+        }
+        else if peek() as? TokenSquareBracketLeft != nil {
             return try consumeArrayType()
-        } else if peek() as? TokenFunc != nil {
+        }
+        else if peek() as? TokenFunc != nil {
             return try consumeFunctionPointerType()
-        } else if let app = try consumeGenericTypeApplication() {
+        }
+        else if let app = try consumeGenericTypeApplication() {
             return app
-        } else if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
+        }
+        else if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Identifier(
                 sourceAnchor: identifier.sourceAnchor,
                 identifier: identifier.lexeme
             )
-        } else {
+        }
+        else {
             return try consumePrimitiveType()
         }
     }
@@ -362,7 +399,8 @@ public class SnapParser: Parser {
             let count: Expression?
             if nil != accept(TokenUnderscore.self) {
                 count = nil
-            } else {
+            }
+            else {
                 count = try consumeExpression()
             }
             try expect(
@@ -417,7 +455,8 @@ public class SnapParser: Parser {
         let returnType: Expression
         if nil == accept(TokenArrow.self) {
             returnType = PrimitiveType(.void)
-        } else {
+        }
+        else {
             returnType = try consumeType()
         }
 
@@ -468,7 +507,8 @@ public class SnapParser: Parser {
                 errorOnMissingCurlyLeft: leftError,
                 errorOnMissingCurlyRight: rightError
             ).first!
-        } else {
+        }
+        else {
             let newline = try expect(
                 type: TokenNewline.self,
                 error: CompilerError(
@@ -501,7 +541,8 @@ public class SnapParser: Parser {
                     errorOnMissingCurlyLeft: leftError,
                     errorOnMissingCurlyRight: rightError
                 ).first!
-            } else {
+            }
+            else {
                 let children = try self.consumeStatement()
                 if children.isEmpty {
                     throw self.unexpectedEndOfInputError()
@@ -515,7 +556,8 @@ public class SnapParser: Parser {
         }
         if nil != peek(0) as? TokenElse {
             try handleElse()
-        } else if (nil != peek(0) as? TokenNewline) && (nil != peek(1) as? TokenElse) {
+        }
+        else if (nil != peek(0) as? TokenNewline) && (nil != peek(1) as? TokenElse) {
             try expect(
                 type: TokenNewline.self,
                 error: CompilerError(
@@ -581,7 +623,8 @@ public class SnapParser: Parser {
                 let sourceAnchor: SourceAnchor?
                 if let lastStatement = statements.last {
                     sourceAnchor = lastStatement.sourceAnchor
-                } else {
+                }
+                else {
                     sourceAnchor = newline.sourceAnchor
                 }
                 throw CompilerError(sourceAnchor: sourceAnchor, message: errorOnMissingCurlyRight)
@@ -617,7 +660,8 @@ public class SnapParser: Parser {
                 errorOnMissingCurlyLeft: leftError,
                 errorOnMissingCurlyRight: rightError
             ).first!
-        } else {
+        }
+        else {
             let newline = try expect(
                 type: TokenNewline.self,
                 error: CompilerError(
@@ -663,7 +707,8 @@ public class SnapParser: Parser {
                     errorOnMissingCurlyLeft: leftError,
                     errorOnMissingCurlyRight: rightError
                 ).first! as! Block
-        } else {
+        }
+        else {
             let newline = try expect(
                 type: TokenNewline.self,
                 error: CompilerError(
@@ -753,7 +798,8 @@ public class SnapParser: Parser {
         let returnType: Expression
         if nil == accept(TokenArrow.self) {
             returnType = PrimitiveType(.void)
-        } else {
+        }
+        else {
             returnType = try consumeType()
         }
 
@@ -1121,7 +1167,8 @@ public class SnapParser: Parser {
         let expr: Expression
         do {
             expr = try consumeExpression()
-        } catch _ as CompilerError {
+        }
+        catch _ as CompilerError {
             expr = try consumeType()  // try again as a type expression
         }
         let rparen = try expect(
@@ -1158,7 +1205,8 @@ public class SnapParser: Parser {
                     callee: expr,
                     arguments: arguments
                 )
-            } else if let dot = accept(TokenDot.self) as? TokenDot {
+            }
+            else if let dot = accept(TokenDot.self) as? TokenDot {
                 let lexeme = dot.sourceAnchor?.text ?? "."
                 let error = CompilerError(
                     sourceAnchor: dot.sourceAnchor,
@@ -1167,7 +1215,8 @@ public class SnapParser: Parser {
                 let member: Expression
                 if let app = try consumeGenericTypeApplication() {
                     member = app
-                } else {
+                }
+                else {
                     let identifierToken = try expect(type: TokenIdentifier.self, error: error)
                     member = Identifier(
                         sourceAnchor: identifierToken.sourceAnchor,
@@ -1180,7 +1229,8 @@ public class SnapParser: Parser {
                     expr: expr,
                     member: member
                 )
-            } else {
+            }
+            else {
                 break
             }
         }
@@ -1281,19 +1331,23 @@ public class SnapParser: Parser {
                 sourceAnchor: numberToken.sourceAnchor,
                 value: numberToken.literal
             )
-        } else if let booleanToken = accept(TokenBoolean.self) as? TokenBoolean {
+        }
+        else if let booleanToken = accept(TokenBoolean.self) as? TokenBoolean {
             return LiteralBool(
                 sourceAnchor: booleanToken.sourceAnchor,
                 value: booleanToken.literal
             )
-        } else if let app = try consumeGenericTypeApplication() {
+        }
+        else if let app = try consumeGenericTypeApplication() {
             return app
-        } else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
+        }
+        else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Identifier(
                 sourceAnchor: identifierToken.sourceAnchor,
                 identifier: identifierToken.lexeme
             )
-        } else if let leftParen = accept(TokenParenLeft.self) as? TokenParenLeft {
+        }
+        else if let leftParen = accept(TokenParenLeft.self) as? TokenParenLeft {
             let expression = try consumeExpression()
             let rightParen = try expect(
                 type: TokenParenRight.self,
@@ -1304,7 +1358,8 @@ public class SnapParser: Parser {
             )
             let sourceAnchor = leftParen.sourceAnchor?.union(rightParen.sourceAnchor)
             return Group(sourceAnchor: sourceAnchor, expression: expression)
-        } else if let squareBracketLeft = peek() as? TokenSquareBracketLeft {
+        }
+        else if let squareBracketLeft = peek() as? TokenSquareBracketLeft {
             let typ = try consumeArrayType()
             try expect(
                 type: TokenCurlyLeft.self,
@@ -1333,17 +1388,20 @@ public class SnapParser: Parser {
                 arrayType: typ,
                 elements: elements
             )
-        } else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
+        }
+        else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
             return LiteralString(
                 sourceAnchor: literalString.sourceAnchor,
                 value: literalString.literal
             )
-        } else if let token = peek() {
+        }
+        else if let token = peek() {
             guard token is TokenEOF else {
                 throw operandTypeMismatchError(token)
             }
             throw unexpectedEndOfInputError()
-        } else {
+        }
+        else {
             throw unexpectedEndOfInputError()
         }
     }
@@ -1532,7 +1590,8 @@ public class SnapParser: Parser {
 
         if let tok = accept(TokenCurlyRight.self) {
             closingBrace = tok
-        } else {
+        }
+        else {
             while true {
                 let tokenFunc = try expect(
                     type: TokenFunc.self,
@@ -1598,7 +1657,8 @@ public class SnapParser: Parser {
                 let returnType: Expression
                 if nil == accept(TokenArrow.self) {
                     returnType = PrimitiveType(.void)
-                } else {
+                }
+                else {
                     returnType = try consumeType()
                 }
 
@@ -1620,7 +1680,8 @@ public class SnapParser: Parser {
                 if let tok = accept(TokenCurlyRight.self) {
                     closingBrace = tok
                     break
-                } else {
+                }
+                else {
                     try expect(
                         type: TokenNewline.self,
                         error: CompilerError(
@@ -1652,7 +1713,8 @@ public class SnapParser: Parser {
         let secondTypeExpr: Expression?
         if nil != accept(TokenFor.self) {
             secondTypeExpr = try consumeTypeWithoutRegardForConst()
-        } else {
+        }
+        else {
             secondTypeExpr = nil
         }
 
@@ -1678,20 +1740,24 @@ public class SnapParser: Parser {
                     sourceAnchor: token.sourceAnchor,
                     message: "`\(token.lexeme)' is not permitted in impl declaration"
                 )
-            } else if let token = accept(TokenCurlyLeft.self) {
+            }
+            else if let token = accept(TokenCurlyLeft.self) {
                 throw CompilerError(
                     sourceAnchor: token.sourceAnchor,
                     message: "block is not permitted in impl declaration"
                 )
-            } else if let token = accept(TokenImpl.self) {
+            }
+            else if let token = accept(TokenImpl.self) {
                 throw CompilerError(
                     sourceAnchor: token.sourceAnchor,
                     message: "impl declarations may not contain other impl declarations"
                 )
-            } else if let token = accept(TokenFunc.self) {
+            }
+            else if let token = accept(TokenFunc.self) {
                 let child = try consumeFunc(token as! TokenFunc)
                 children += child.compactMap({ $0 as? FunctionDeclaration })
-            } else if nil != accept(TokenCurlyRight.self) {
+            }
+            else if nil != accept(TokenCurlyRight.self) {
                 let sourceAnchor = tokenImpl.sourceAnchor?.union(openingCurlyBrace.sourceAnchor)
                 guard let secondTypeExpr else {
                     return [
@@ -1712,7 +1778,8 @@ public class SnapParser: Parser {
                         children: children
                     )
                 ]
-            } else {
+            }
+            else {
                 let expr = try consumeExpression()
                 throw CompilerError(
                     sourceAnchor: expr.sourceAnchor,

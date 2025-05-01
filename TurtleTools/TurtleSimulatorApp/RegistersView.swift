@@ -133,7 +133,8 @@ extension UInt16 {
     var signedDecimalValue: Int {
         if self & 0x8000 == 0 {
             Int(self)
-        } else {
+        }
+        else {
             Int(self) - Int(Self.max) - 1
         }
     }

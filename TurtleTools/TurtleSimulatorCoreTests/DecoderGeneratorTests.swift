@@ -775,7 +775,8 @@ final class DecoderGeneratorTests: XCTestCase {
                         // BLT jumps on N!=V
                         if (n == 0 && v == 1) || (n == 1 && v == 0) {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -814,7 +815,8 @@ final class DecoderGeneratorTests: XCTestCase {
                         // BGT jumps on (Z==0) && (N==V)
                         if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -853,7 +855,8 @@ final class DecoderGeneratorTests: XCTestCase {
                         // BLTU jumps on C==0
                         if c == 0 {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -892,7 +895,8 @@ final class DecoderGeneratorTests: XCTestCase {
                         // BGTU jumps on C==1 && Z==0
                         if c == 1 && z == 0 {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v

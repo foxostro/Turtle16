@@ -117,9 +117,11 @@ public class IF: NSObject, NSSecureCoding {
 
         if input.j == 0 {
             associatedPC = nil
-        } else if input.stall == 1 {
+        }
+        else if input.stall == 1 {
             associatedPC = prevAssociatedPC
-        } else {
+        }
+        else {
             associatedPC = prevPC
         }
 

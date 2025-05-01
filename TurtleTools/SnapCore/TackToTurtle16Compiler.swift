@@ -45,7 +45,8 @@ public final class TackToTurtle16Compiler: CompilerPass {
         case .p(.p(_)), .w(.w(_)), .b(.b(_)), .o(.o(_)):
             if let r = registerMap[tackRegister] {
                 asmRegister = r
-            } else {
+            }
+            else {
                 asmRegister = nextRegister()
                 registerMap[tackRegister] = asmRegister
             }
@@ -1205,7 +1206,8 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     ParameterNumber(0),
                 ]
             )
-        } else if imm == 1 {
+        }
+        else if imm == 1 {
             let src = corresponding(.w(left_))
             let dst = corresponding(.w(dst_))
 
@@ -1223,7 +1225,8 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     )
                 ]
             )
-        } else if imm == -1 {
+        }
+        else if imm == -1 {
             let src = corresponding(.w(left_))
             let intermediate = ParameterIdentifier(nextRegister())
             let dst = corresponding(.w(dst_))
@@ -1308,7 +1311,8 @@ public final class TackToTurtle16Compiler: CompilerPass {
 
         if resultStack.count < 2 {
             sum = resultStack.last!
-        } else {
+        }
+        else {
             sum = ParameterIdentifier(nextRegister())
             children += [
                 InstructionNode(

@@ -2105,7 +2105,8 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let expected: UInt16
         if value >= 0 {
             expected = UInt16(value)
-        } else {
+        }
+        else {
             expected = ~UInt16(-value) + 1
         }
         XCTAssertEqual(debugger.computer.getRegister(0), expected)
@@ -2141,7 +2142,8 @@ final class TackToTurtle16CompilerTests: XCTestCase {
         let expected: UInt16
         if value >= 0 {
             expected = UInt16(value)
-        } else {
+        }
+        else {
             expected = ~UInt16(-value) + 1
         }
         XCTAssertEqual(debugger.computer.getRegister(0), expected)

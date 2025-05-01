@@ -38,7 +38,8 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
                         expression: nil
                     )
                 ])
-            } else {
+            }
+            else {
                 body1
             }
         return body2
@@ -83,7 +84,8 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
                 default:
                     allTracesEndInReturnStatement = false
                 }
-            } else {
+            }
+            else {
                 allTracesEndInReturnStatement = false
             }
         }

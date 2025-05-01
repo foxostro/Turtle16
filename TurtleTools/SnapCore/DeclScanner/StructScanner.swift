@@ -27,7 +27,8 @@ public struct StructScanner {
     ) throws -> SymbolType {
         if node.isGeneric {
             try doGeneric(node)
-        } else {
+        }
+        else {
             try doNonGeneric(node, evaluatedTypeArguments)
         }
     }

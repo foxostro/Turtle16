@@ -115,7 +115,8 @@ public struct RegisterSpiller {
                             InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
                             InstructionNode(instruction: kLOAD, parameters: [tempReg, ra]),
                         ]
-                    } else {
+                    }
+                    else {
                         spillLoadCode = [
                             InstructionNode(
                                 instruction: kLOAD,
@@ -156,7 +157,8 @@ public struct RegisterSpiller {
                             InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
                             InstructionNode(instruction: kSTORE, parameters: [tempReg, ra]),
                         ]
-                    } else {
+                    }
+                    else {
                         spillStoreCode = [
                             InstructionNode(
                                 instruction: kSTORE,

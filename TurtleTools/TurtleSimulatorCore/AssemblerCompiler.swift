@@ -68,9 +68,11 @@ public final class AssemblerCompiler {
         for node in ast {
             do {
                 try compileNode(node)
-            } catch let error as CompilerError {
+            }
+            catch let error as CompilerError {
                 errors.append(error)
-            } catch {
+            }
+            catch {
                 errors.append(errorUnknown(node.sourceAnchor))
             }
         }
@@ -78,9 +80,11 @@ public final class AssemblerCompiler {
         do {
             try codeGenerator.end()
             instructions = codeGenerator.instructions
-        } catch let error as CompilerError {
+        }
+        catch let error as CompilerError {
             errors.append(error)
-        } catch {
+        }
+        catch {
             errors.append(errorUnknown(nil))
         }
     }
@@ -245,7 +249,8 @@ public final class AssemblerCompiler {
                 throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
             }
             offset = offset0
-        } else {
+        }
+        else {
             offset = 0
         }
         try codeGenerator.load(destination, sourceAddress, offset)
@@ -267,7 +272,8 @@ public final class AssemblerCompiler {
                 throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
             }
             offset = offset0
-        } else {
+        }
+        else {
             offset = 0
         }
         try codeGenerator.store(source, destinationAddress, offset)
@@ -524,7 +530,8 @@ public final class AssemblerCompiler {
                 throw errorExpectsOptionalSecondOperandToBeAnImmediateValue(node)
             }
             offset = offset_
-        } else {
+        }
+        else {
             offset = 0
         }
         try codeGenerator.jr(destination, offset)
@@ -546,7 +553,8 @@ public final class AssemblerCompiler {
                 throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
             }
             offset = offset_
-        } else {
+        }
+        else {
             offset = 0
         }
         try codeGenerator.jalr(link, destination, offset)
@@ -720,7 +728,8 @@ public final class AssemblerCompiler {
         let size: Int
         if node.parameters.count == 0 {
             size = 0
-        } else {
+        }
+        else {
             guard let sizeArg = node.parameters[0] as? ParameterNumber else {
                 throw errorExpectsFirstOperandToBeTheSize(node)
             }
@@ -826,7 +835,8 @@ public final class AssemblerCompiler {
                         ]
                     ),
                 ]
-            } else {
+            }
+            else {
                 instructions += [
                     InstructionNode(
                         instruction: kSUBI,

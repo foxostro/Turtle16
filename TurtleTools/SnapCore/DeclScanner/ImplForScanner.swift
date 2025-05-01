@@ -47,7 +47,8 @@ public struct ImplForScanner {
         case let app as GenericTypeApplication:
             if let s = try? typeChecker.check(expression: node.structTypeExpr) {
                 structType = s
-            } else {
+            }
+            else {
                 structType = try symbols.resolveTypeOfIdentifier(
                     sourceAnchor: app.identifier.sourceAnchor,
                     identifier: app.identifier.identifier
@@ -193,7 +194,8 @@ public struct ImplForScanner {
                 identifier: identifier.identifier
             )
             visibility = typeRecord.visibility
-        } else {
+        }
+        else {
             visibility = .privateVisibility
         }
 

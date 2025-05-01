@@ -98,7 +98,8 @@ public struct SnapSubcompilerMatch {
                 )
             )
             stmts.append(compileMatchClause(match, match.clauses, outer))
-        } else if let elseClause = match.elseClause {
+        }
+        else if let elseClause = match.elseClause {
             let rewrittenElseClause = Block(
                 sourceAnchor: elseClause.sourceAnchor,
                 symbols: Env(parent: outer),
@@ -150,7 +151,8 @@ public struct SnapSubcompilerMatch {
         let clauseElseBlock: Block?
         if match.elseClause == nil {
             clauseElseBlock = nil
-        } else {
+        }
+        else {
             clauseElseBlock = Block(
                 sourceAnchor: match.elseClause!.sourceAnchor,
                 symbols: Env(parent: symbols),

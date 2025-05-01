@@ -14,7 +14,8 @@ open class ProgramDebugInfo {
         assert(pc >= 0 && pc < 65536)
         if pc < mapProgramCounterToSource.count {
             mapProgramCounterToSource[pc] = sourceAnchor
-        } else {
+        }
+        else {
             let last = mapProgramCounterToSource.last as? SourceAnchor
             for _ in mapProgramCounterToSource.count..<pc {
                 mapProgramCounterToSource.append(last)

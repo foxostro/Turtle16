@@ -107,7 +107,8 @@ extension TopLevel {
                     ],
                     at: 0
                 )
-            } else {
+            }
+            else {
                 topLevel0
             }
 

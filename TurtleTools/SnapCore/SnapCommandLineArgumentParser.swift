@@ -65,35 +65,44 @@ public final class SnapCommandLineArgumentParser {
             if option == "-h" {
                 try advance()
                 options.append(.printHelp)
-            } else if option == "-o" {
+            }
+            else if option == "-o" {
                 try advance()
                 let fileName = try peek()
                 try advance()
                 options.append(.outputFileName(fileName))
-            } else if option == "-S" {
+            }
+            else if option == "-S" {
                 try advance()
                 options.append(.S)
-            } else if option == "-ast-dump" {
+            }
+            else if option == "-ast-dump" {
                 try advance()
                 options.append(.astDump)
-            } else if option == "-ir" {
+            }
+            else if option == "-ir" {
                 try advance()
                 options.append(.ir)
-            } else if option == "-q" {
+            }
+            else if option == "-q" {
                 try advance()
                 options.append(.quiet)
-            } else if option == "-t" {
+            }
+            else if option == "-t" {
                 try advance()
                 let testName = try peek()
                 try advance()
                 options.append(.chooseSpecificTest(testName))
-            } else if option == "-listTests" {
+            }
+            else if option == "-listTests" {
                 try advance()
                 options.append(.listTests)
-            } else if option == "-O0" {
+            }
+            else if option == "-O0" {
                 try advance()
                 options.append(.unoptimized)
-            } else {
+            }
+            else {
                 throw SnapCommandLineParserError.unknownOption(option)
             }
         }

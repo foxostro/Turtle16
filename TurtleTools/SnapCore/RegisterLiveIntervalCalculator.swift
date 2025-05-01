@@ -28,7 +28,8 @@ public struct RegisterLiveIntervalCalculator {
                         physicalRegisterName: physicalRegisterName,
                         spillSlot: existing.spillSlot
                     )
-                } else {
+                }
+                else {
                     nameToRange[name] = LiveInterval(
                         range: i..<(i + 1),
                         virtualRegisterName: name,

@@ -34,10 +34,12 @@ public class Parser: NSObject {
         while tokens.count > 0 {
             do {
                 statements += try consumeStatement()
-            } catch let error as CompilerError {
+            }
+            catch let error as CompilerError {
                 errors.append(error)
                 advanceToNewline()  // recover by skipping to the next line
-            } catch {
+            }
+            catch {
                 // This catch block should be unreachable because
                 // consumeStatement() only throws CompilerError. Regardless,
                 // we need it to satisfy the compiler.
@@ -54,7 +56,8 @@ public class Parser: NSObject {
         }
         if hasError {
             syntaxTree = nil
-        } else {
+        }
+        else {
             syntaxTree = AbstractSyntaxTreeNode(children: statements)
         }
     }
@@ -68,7 +71,8 @@ public class Parser: NSObject {
             let tokenType = type(of: token)
             if (tokenType == TokenEOF.self) || (tokenType == TokenNewline.self) {
                 break
-            } else {
+            }
+            else {
                 advance()
             }
         }

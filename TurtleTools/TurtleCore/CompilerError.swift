@@ -73,7 +73,8 @@ open class CompilerError: Error {
 
         if errors.count == 1 {
             message += "1 error generated\n"
-        } else {
+        }
+        else {
             message += "\(errors.count) errors generated\n"
         }
 

@@ -194,7 +194,8 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
     private var membersDescription: String {
         if members.isEmpty {
             ""
-        } else {
+        }
+        else {
             "\n"
                 + members
                 .map { "\t\($0)" }

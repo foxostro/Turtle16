@@ -55,7 +55,8 @@ public struct SnapSubcompilerVarDeclaration {
                 memoryLayoutStrategy: memoryLayoutStrategy
             )
             .check(expression: explicitTypeExpr)
-        } else {
+        }
+        else {
             explicitType = nil
         }
 
@@ -82,7 +83,8 @@ public struct SnapSubcompilerVarDeclaration {
             default:
                 if let explicitType = explicitType {
                     symbolType = explicitType
-                } else {
+                }
+                else {
                     // Some expression types cannot be made concrete.
                     // Convert these appropriate convertible types.
                     switch expressionResultType {
@@ -98,7 +100,8 @@ public struct SnapSubcompilerVarDeclaration {
             }
             if node.isMutable {
                 symbolType = symbolType.correspondingMutableType
-            } else {
+            }
+            else {
                 symbolType = symbolType.correspondingConstType
             }
             let symbol = try makeSymbolWithExplicitType(
@@ -114,7 +117,8 @@ public struct SnapSubcompilerVarDeclaration {
                 lexpr: node.identifier,
                 rexpr: varDeclExpr
             )
-        } else if let explicitType = explicitType {
+        }
+        else if let explicitType = explicitType {
             let symbolType = node.isMutable ? explicitType : explicitType.correspondingConstType
             let symbol = try makeSymbolWithExplicitType(
                 sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,
@@ -125,7 +129,8 @@ public struct SnapSubcompilerVarDeclaration {
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
             result = nil
-        } else {
+        }
+        else {
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
                 format: "unable to deduce type of %@ `%@'",
@@ -189,7 +194,8 @@ public struct SnapSubcompilerVarDeclaration {
             let storage1: SymbolStorage =
                 if storage0.isAutomaticStorage && symbols.frame == nil {
                     .staticStorage(offset: offset)
-                } else {
+                }
+                else {
                     storage0.withOffset(offset)
                 }
 

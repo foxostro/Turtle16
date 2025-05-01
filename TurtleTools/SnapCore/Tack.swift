@@ -464,21 +464,24 @@ public struct TackProgram: Equatable {
         if let sourceAnchor {
             assert(sourceAnchor.count == instructions.count)
             self.sourceAnchor = sourceAnchor
-        } else {
+        }
+        else {
             self.sourceAnchor = [SourceAnchor?](repeating: nil, count: instructions.count)
         }
 
         if let symbols {
             assert(symbols.count == instructions.count)
             self.symbols = symbols
-        } else {
+        }
+        else {
             self.symbols = [Env?](repeating: nil, count: instructions.count)
         }
 
         if let subroutines {
             assert(subroutines.count == instructions.count)
             self.subroutines = subroutines
-        } else {
+        }
+        else {
             self.subroutines = [String?](repeating: nil, count: instructions.count)
         }
     }
@@ -512,7 +515,8 @@ public struct TackProgram: Equatable {
                     count: longestLabelLength - formattedLabelPart.count
                 )
                 labelCol = pad + formattedLabelPart
-            } else {
+            }
+            else {
                 labelCol = String(repeating: " ", count: longestLabelLength)
             }
             let addrCol = addr.hexadecimalString

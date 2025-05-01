@@ -50,11 +50,14 @@ public final class SnapCommandLineDriver {
     public func run() {
         do {
             try tryRun()
-        } catch let error as SnapCommandLineDriverError {
+        }
+        catch let error as SnapCommandLineDriverError {
             reportError(withMessage: error.message)
-        } catch let error as CompilerError {
+        }
+        catch let error as CompilerError {
             reportError(withMessage: error.message)
-        } catch {
+        }
+        catch {
             reportError(withMessage: error.localizedDescription)
         }
     }
@@ -109,7 +112,8 @@ public final class SnapCommandLineDriver {
             reportInfoMessage(
                 "WARNING: generated code exceeds 32768 instruction memory words: \(numberOfInstructions) words used\n"
             )
-        } else {
+        }
+        else {
             reportInfoMessage("instruction words used: \(numberOfInstructions)\n")
         }
     }
@@ -123,7 +127,8 @@ public final class SnapCommandLineDriver {
         let testNames = try collectNamesOfTests(text, fileName)
         if let chooseSpecificTest = chooseSpecificTest {
             try runSpecificTest(chooseSpecificTest, text, fileName)
-        } else {
+        }
+        else {
             for testName in testNames {
                 try runSpecificTest(testName, text, fileName)
             }
@@ -143,7 +148,8 @@ public final class SnapCommandLineDriver {
                     runtimeSupport: kRuntime
                 )
             )
-        } catch let error as CompilerError {
+        }
+        catch let error as CompilerError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: [error])
         }
         return testNames
@@ -175,10 +181,12 @@ public final class SnapCommandLineDriver {
             if let n = oldStr?.count {
                 if let newDelta = newStr?.dropFirst(n) {
                     delta = String(newDelta)
-                } else {
+                }
+                else {
                     delta = oldStr!
                 }
-            } else {
+            }
+            else {
                 delta = ""
             }
             if delta.count > 0 {
@@ -189,7 +197,8 @@ public final class SnapCommandLineDriver {
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if addr == self.kMemoryMappedSerialOutputPort {
                 onSerialOutput(value)
-            } else {
+            }
+            else {
                 computer.ram[addr.value] = value
             }
         }
@@ -238,10 +247,12 @@ public final class SnapCommandLineDriver {
             if let n = oldStr?.count {
                 if let newDelta = newStr?.dropFirst(n) {
                     delta = String(newDelta)
-                } else {
+                }
+                else {
                     delta = oldStr!
                 }
-            } else {
+            }
+            else {
                 delta = ""
             }
             if delta.count > 0 {
@@ -252,7 +263,8 @@ public final class SnapCommandLineDriver {
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if addr == self.kMemoryMappedSerialOutputPort {
                 onSerialOutput(value)
-            } else {
+            }
+            else {
                 computer.ram[addr.value] = value
             }
         }
@@ -317,7 +329,8 @@ public final class SnapCommandLineDriver {
                     shouldRunSpecificTest: testName
                 )
             )
-        } catch let error as CompilerError {
+        }
+        catch let error as CompilerError {
             let fileName = inputFileName!.relativePath
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: [error])
         }
@@ -346,7 +359,8 @@ public final class SnapCommandLineDriver {
         let argParser = SnapCommandLineArgumentParser(args: arguments)
         do {
             try argParser.parse()
-        } catch let error as SnapCommandLineParserError {
+        }
+        catch let error as SnapCommandLineParserError {
             switch error {
             case .unexpectedEndOfInput:
                 throw SnapCommandLineDriverError(makeUsageMessage())

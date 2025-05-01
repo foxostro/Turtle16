@@ -582,7 +582,8 @@ public final class Call: Expression {
         var result: String = ""
         if arguments.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<arguments.count {
                 let argument = arguments[i]
                 result += "\n"
@@ -836,7 +837,8 @@ public final class LiteralArray: Expression {
         var result: String = ""
         if elements.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for element in elements {
                 result += "\n"
                 result += element.makeIndentedDescription(
@@ -1138,7 +1140,8 @@ public final class FunctionType: Expression {
         var result: String = ""
         if arguments.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<arguments.count {
                 let argument = arguments[i]
                 result += "\n"
@@ -1288,7 +1291,8 @@ public final class GenericTypeApplication: Expression {
         var result: String = ""
         if arguments.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<arguments.count {
                 let arguments = arguments[i]
                 result += "\n"
@@ -1582,7 +1586,8 @@ public final class UnionType: Expression {
         var result: String = ""
         if members.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for member in members {
                 result += "\n"
                 result += makeIndent(depth: depth + 1)
@@ -1674,7 +1679,8 @@ public final class StructInitializer: Expression {
         var result: String = ""
         if arguments.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<arguments.count {
                 let argument = arguments[i]
                 result += "\n"

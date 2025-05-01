@@ -43,15 +43,18 @@ public final class AssemblerCommandLineArgumentParser {
             if option == "-h" {
                 try advance()
                 options.append(.printHelp)
-            } else if option == "-o" {
+            }
+            else if option == "-o" {
                 try advance()
                 let fileName = try peek()
                 try advance()
                 options.append(.outputFileName(fileName))
-            } else if option == "-q" {
+            }
+            else if option == "-q" {
                 try advance()
                 options.append(.quiet)
-            } else {
+            }
+            else {
                 throw AssemblerCommandLineParserError.unknownOption(option)
             }
         }

@@ -94,11 +94,13 @@ open class DebugConsole: NSObject, NSSecureCoding {
         if compiler.hasError {
             if compiler.errors.count == 1 {
                 logger.append(compiler.errors.first!.message)
-            } else {
+            }
+            else {
                 let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
                 logger.append(error.message + "\n")
             }
-        } else {
+        }
+        else {
             if let keyInstruction = compiler.instructions.first, keyInstruction.undoable {
                 registerUndo(keyInstruction.actionName)
             }

@@ -131,7 +131,8 @@ public final class ImplFor: AbstractSyntaxTreeNode {
         var result: String = ""
         if typeArguments.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<typeArguments.count {
                 let argument = typeArguments[i]
                 result += "\n"

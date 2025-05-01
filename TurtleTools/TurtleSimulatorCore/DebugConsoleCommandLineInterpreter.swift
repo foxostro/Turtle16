@@ -89,7 +89,8 @@ public final class DebugConsoleCommandLineInterpreter {
     fileprivate func printHelp(_ topic: DebugConsoleHelpTopic?) {
         if let topic = topic {
             logger.append(topic.longHelp)
-        } else {
+        }
+        else {
             logger.append("Debugger commands:\n")
             let topics = DebugConsoleHelpTopic.allCases
             let maxLength = topics.map({ $0.name.count }).reduce(0, { max($0, $1) })
@@ -252,13 +253,15 @@ public final class DebugConsoleCommandLineInterpreter {
     fileprivate func loadDataFile(_ url: URL) -> Data? {
         do {
             return try Data(contentsOf: url)
-        } catch let error as NSError {
+        }
+        catch let error as NSError {
             if error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoPermissionError {
                 sandboxAccessManager?.requestAccess(url: url)
                 if let data: Data = try? Data(contentsOf: url) {
                     return data
                 }
-            } else {
+            }
+            else {
                 logger.append("failed to load file: `\(url.relativePath)'\n")
                 logger.append((error.localizedFailureReason ?? "") + "\n")
             }
@@ -323,7 +326,8 @@ public final class DebugConsoleCommandLineInterpreter {
             for i in 0..<decoder.count {
                 if i >= words.count {
                     decoder.opcodeDecodeROM[i] = 0
-                } else {
+                }
+                else {
                     decoder.opcodeDecodeROM[i] =
                         (decoder.opcodeDecodeROM[i] & ~0x0000ff) | UInt(words[i])
                 }
@@ -340,7 +344,8 @@ public final class DebugConsoleCommandLineInterpreter {
             for i in 0..<decoder.count {
                 if i >= words.count {
                     decoder.opcodeDecodeROM[i] = 0
-                } else {
+                }
+                else {
                     decoder.opcodeDecodeROM[i] =
                         (decoder.opcodeDecodeROM[i] & ~0x00ff00) | (UInt(words[i]) << 8)
                 }
@@ -357,7 +362,8 @@ public final class DebugConsoleCommandLineInterpreter {
             for i in 0..<decoder.count {
                 if i >= words.count {
                     decoder.opcodeDecodeROM[i] = 0
-                } else {
+                }
+                else {
                     decoder.opcodeDecodeROM[i] =
                         (decoder.opcodeDecodeROM[i] & ~0xff0000) | (UInt(words[i]) << 16)
                 }
@@ -474,7 +480,8 @@ public final class DebugConsoleCommandLineInterpreter {
                 let strLabel: String
                 if let label = entry.label {
                     strLabel = label + ": "
-                } else {
+                }
+                else {
                     strLabel = ""
                 }
                 let strMnemonic = entry.mnemonic ?? ""
@@ -492,7 +499,8 @@ public final class DebugConsoleCommandLineInterpreter {
         let _ = disassembler.disassemble(computer.instructions)
         if let base = disassembler.labels.first(where: { $1 == identifier })?.key {
             disassemble(base: UInt16(base), count: count)
-        } else {
+        }
+        else {
             logger.append("Use of unresolved identifier: `\(identifier)'\n")
         }
     }

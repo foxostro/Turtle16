@@ -55,7 +55,8 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         if let lineNumbers = lineNumbers {
             if lineNumbers.count == 1 {
                 result = "\(lineNumbers.lowerBound+1):"
-            } else {
+            }
+            else {
                 result = "\(lineNumbers.lowerBound+1)..\(lineNumbers.upperBound):"
             }
         }
@@ -112,7 +113,8 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
                 let upperRange = (index)..<(range.upperBound)
                 return SourceAnchor(range: lowerRange, lineMapper: lineMapper).split()
                     + SourceAnchor(range: upperRange, lineMapper: lineMapper).split()
-            } else {
+            }
+            else {
                 text.formIndex(after: &index)
             }
         }

@@ -125,7 +125,8 @@ public final class Disassembler {
             case 7: "fp"
             default: "\(Register(rawValue: index)!)"
             }
-        } else {
+        }
+        else {
             "\(Register(rawValue: index)!)"
         }
     }
@@ -153,31 +154,40 @@ public final class Disassembler {
 
         if formatX.contains(opcode) {
             return mnemonic
-        } else if formatRRI.contains(opcode) {
+        }
+        else if formatRRI.contains(opcode) {
             return "\(mnemonic) \(regC), \(regA), \(tcImm5_0)"
-        } else if formatIRR.contains(opcode) {
+        }
+        else if formatIRR.contains(opcode) {
             return "\(mnemonic) \(regB), \(regA), \(tcImm10_8_1_0)"
-        } else if formatRII.contains(opcode) {
+        }
+        else if formatRII.contains(opcode) {
             guard opcode == DecoderGenerator.opcodeLui else {
                 return "\(mnemonic) \(regC), \(tcImm7_0)"
             }
             return "\(mnemonic) \(regC), \(imm7_0)"
-        } else if formatRRR.contains(opcode) {
+        }
+        else if formatRRR.contains(opcode) {
             return "\(mnemonic) \(regC), \(regA), \(regB)"
-        } else if formatIII.contains(opcode) {
+        }
+        else if formatIII.contains(opcode) {
             guard let pc = maybeProgramCounter else {
                 return "\(mnemonic) \(tcImm10_0)"
             }
             let target = pc + tcImm10_0 + 2
             let label = labelForTarget(target)
             return "\(mnemonic) \(label)"
-        } else if formatXRI.contains(opcode) {
+        }
+        else if formatXRI.contains(opcode) {
             return "\(mnemonic) \(regA), \(tcImm5_0)"
-        } else if formatXRR.contains(opcode) {
+        }
+        else if formatXRR.contains(opcode) {
             return "\(mnemonic) \(regA), \(regB)"
-        } else if formatXRX.contains(opcode) {
+        }
+        else if formatXRX.contains(opcode) {
             return "\(mnemonic) \(regC), \(regA)"
-        } else {
+        }
+        else {
             fatalError("unimplemented")
         }
     }

@@ -105,7 +105,8 @@ public final class TackVirtualMachine {
         let result: Int
         if word > (Word.max >> 1) {
             result = -Int(~word + 1)
-        } else {
+        }
+        else {
             result = Int(word)
         }
         return result
@@ -116,7 +117,8 @@ public final class TackVirtualMachine {
         let result: Word
         if value < 0 {
             result = Word(0) &- Word(-value)
-        } else {
+        }
+        else {
             result = Word(value)
         }
         return result
@@ -126,7 +128,8 @@ public final class TackVirtualMachine {
         let result: Int
         if u8 > (UInt8.max >> 1) {
             result = -Int(~u8 + 1)
-        } else {
+        }
+        else {
             result = Int(u8)
         }
         return result
@@ -137,7 +140,8 @@ public final class TackVirtualMachine {
         let result: UInt8
         if value < 0 {
             result = UInt8(0) &- UInt8(-value)
-        } else {
+        }
+        else {
             result = UInt8(value)
         }
         return result
@@ -254,7 +258,8 @@ public final class TackVirtualMachine {
         let address: UInt
         if signedOffset >= 0 {
             address = base &+ UInt(signedOffset)
-        } else {
+        }
+        else {
             address = base &- UInt(-signedOffset)
         }
         let pageMask: UInt = kPageSize - 1
@@ -287,13 +292,15 @@ public final class TackVirtualMachine {
         let address: UInt
         if signedOffset >= 0 {
             address = base &+ UInt(signedOffset)
-        } else {
+        }
+        else {
             address = base &- UInt(-signedOffset)
         }
         if address == kMemoryMappedSerialOutputPort {
             let octet = UInt8(value & 0xff)
             onSerialOutput(octet)
-        } else {
+        }
+        else {
             let pageMask: UInt = kPageSize - 1
             let pageIndex: UInt = address & ~pageMask
             let pageOffset: UInt = address & pageMask
@@ -1424,7 +1431,8 @@ public final class TackVirtualMachine {
         let result: UInt
         if right >= 0 {
             result = left &+ UInt(right)
-        } else {
+        }
+        else {
             result = left &- UInt(-right)
         }
         setRegister(dst, p: result)
@@ -1435,7 +1443,8 @@ public final class TackVirtualMachine {
         let result: UInt
         if right >= 0 {
             result = left &- UInt(right)
-        } else {
+        }
+        else {
             result = left &+ UInt(-right)
         }
         setRegister(dst, p: result)

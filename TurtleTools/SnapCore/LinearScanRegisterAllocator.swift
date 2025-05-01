@@ -50,7 +50,8 @@ public struct LinearScanRegisterAllocator {
             guard liveIntervals[i].physicalRegisterName == nil else { continue }
             if active.count == registerPool.count {
                 spillAtInterval(i)
-            } else {
+            }
+            else {
                 registers[i] = allocatePhysicalRegister()!
                 addToActive(i)
             }
@@ -76,7 +77,8 @@ public struct LinearScanRegisterAllocator {
             removeFromActive(spill)
             addToActive(i)
             spillSlots[spill] = getNextSpillSlot()
-        } else {
+        }
+        else {
             registers[i] = nil
             spillSlots[i] = getNextSpillSlot()
         }
@@ -122,9 +124,11 @@ public struct LinearScanRegisterAllocator {
             let physicalRegisterName: String?
             if let name = liveInterval.physicalRegisterName {
                 physicalRegisterName = name
-            } else if let index = (registers[i] ?? nil) {
+            }
+            else if let index = (registers[i] ?? nil) {
                 physicalRegisterName = "r\(index)"
-            } else {
+            }
+            else {
                 physicalRegisterName = nil
             }
             result.append(

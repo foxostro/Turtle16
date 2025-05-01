@@ -6418,7 +6418,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let actualSize: Int?
         if let actual = actual {
             actualSize = memoryLayoutStrategy.sizeof(type: actual)
-        } else {
+        }
+        else {
             actualSize = nil
         }
         XCTAssertEqual(actualSize, 6)
@@ -6448,7 +6449,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let actualSize: Int?
         if let actual = actual {
             actualSize = memoryLayoutStrategy.sizeof(type: actual)
-        } else {
+        }
+        else {
             actualSize = nil
         }
         XCTAssertEqual(actualSize, 6)
@@ -7051,7 +7053,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         do {
             let actual = try typeChecker.check(expression: expr)
             XCTAssertEqual(actual, expected)
-        } catch let err as CompilerError {
+        }
+        catch let err as CompilerError {
             print("\(err)")
             throw err
         }

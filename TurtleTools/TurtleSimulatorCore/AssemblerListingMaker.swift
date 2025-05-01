@@ -37,7 +37,8 @@ public struct AssemblerListingMaker {
     public func makeListing(instruction node: InstructionNode) -> String {
         if node.parameters.count > 0 {
             node.instruction + " " + makeListing(parameterList: node.parameters)
-        } else {
+        }
+        else {
             node.instruction
         }
     }

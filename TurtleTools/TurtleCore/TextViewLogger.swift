@@ -37,7 +37,8 @@ public class TextViewLogger: Logger {
                 for line in pendingLines {
                     if appendTrailingNewline {
                         textStorage.mutableString.append(line + "\n")
-                    } else {
+                    }
+                    else {
                         textStorage.mutableString.append(line)
                     }
                 }

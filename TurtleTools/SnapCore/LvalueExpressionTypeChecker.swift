@@ -66,9 +66,11 @@ public final class LvalueExpressionTypeChecker {
     public func check(get expr: Get) throws -> SymbolType? {
         if expr.member as? Identifier != nil {
             return try check(getIdent: expr)
-        } else if expr.member as? GenericTypeApplication != nil {
+        }
+        else if expr.member as? GenericTypeApplication != nil {
             return nil
-        } else {
+        }
+        else {
             throw CompilerError(
                 sourceAnchor: expr.sourceAnchor,
                 message: "unsupported get expression `\(expr)'"
@@ -96,7 +98,8 @@ public final class LvalueExpressionTypeChecker {
         case .constPointer(let typ), .pointer(let typ):
             if name == "pointee" {
                 return typ
-            } else {
+            }
+            else {
                 switch typ {
                 case .array, .constDynamicArray, .dynamicArray:
                     if name == "count" {

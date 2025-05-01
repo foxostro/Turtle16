@@ -162,7 +162,8 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         let parentStr =
             if let parent = symbols.parent {
                 "\(parent)"
-            } else {
+            }
+            else {
                 "nil"
             }
         return """
@@ -180,7 +181,8 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         var result: String = ""
         if argumentNames.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<argumentNames.count {
                 let argument = argumentNames[i]
                 result += "\n"
@@ -195,7 +197,8 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         var result: String = ""
         if typeArguments.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<typeArguments.count {
                 let typeArgument = typeArguments[i]
                 result += "\n"

@@ -35,7 +35,8 @@ public final class CompilerPassFlattenSeq: CompilerPass {
         for node in children1 {
             if let seq = node as? Seq {
                 children2 += seq.children
-            } else {
+            }
+            else {
                 children2.append(node)
             }
         }

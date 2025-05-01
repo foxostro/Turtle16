@@ -97,7 +97,8 @@ public final class Block: AbstractSyntaxTreeNode {
     public func inserting(seq toInsert: Seq, at index: Int) -> Block {
         if toInsert.children.isEmpty {
             self
-        } else {
+        }
+        else {
             inserting(children: [toInsert], at: index)
         }
     }
@@ -124,7 +125,8 @@ public final class Block: AbstractSyntaxTreeNode {
         let parentStr =
             if let parent = symbols.parent {
                 "\(parent)"
-            } else {
+            }
+            else {
                 "nil"
             }
         let childDesc = makeChildDescriptions(depth: depth + 1)
@@ -136,7 +138,8 @@ public final class Block: AbstractSyntaxTreeNode {
     public func makeChildDescriptions(depth: Int = 0) -> String {
         if children.isEmpty {
             " (empty)"
-        } else {
+        }
+        else {
             "\n"
                 + children
                 .map {

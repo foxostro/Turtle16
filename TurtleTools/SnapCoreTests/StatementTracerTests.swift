@@ -39,7 +39,8 @@ final class StatementTracerTests: XCTestCase {
         XCTAssertThrowsError(try tracer.trace(ast: ast)) {
             if let error = $0 as? CompilerError {
                 XCTAssertEqual(error.message, "code after return will never be executed")
-            } else {
+            }
+            else {
                 XCTFail()
             }
         }

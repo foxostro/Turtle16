@@ -63,7 +63,8 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
                     sourceAnchor: node.sourceAnchor,
                     identifier: identifier.identifier
                 ).visibility
-            } else {
+            }
+            else {
                 SymbolVisibility.privateVisibility
             }
 

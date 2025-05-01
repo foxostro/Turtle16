@@ -71,7 +71,8 @@ private final class CompilerPassRewriteLabel: CompilerPass {
     private func rewrite(_ ident: String) -> String {
         if let index = targets.firstIndex(of: ident) {
             replacements[index]
-        } else {
+        }
+        else {
             ident
         }
     }

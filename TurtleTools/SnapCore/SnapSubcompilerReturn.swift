@@ -55,7 +55,8 @@ public struct SnapSubcompilerReturn {
                     rexpr: expr
                 )
             )
-        } else if .void != enclosingFunctionType.returnType {
+        }
+        else if .void != enclosingFunctionType.returnType {
             throw CompilerError(
                 sourceAnchor: node.sourceAnchor,
                 message: "non-void function should return a value"

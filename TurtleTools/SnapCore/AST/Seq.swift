@@ -67,7 +67,8 @@ public final class Seq: AbstractSyntaxTreeNode {
         let result: String
         if children.isEmpty {
             result = " (empty)"
-        } else {
+        }
+        else {
             result =
                 "\n"
                 + children.map {

@@ -108,7 +108,8 @@ public struct StatementTracer {
                     currentTrace: currentTrace + [.IfElse],
                     genericNode: elseBranch
                 )
-            } else {
+            }
+            else {
                 elseTraces = [currentTrace + [.IfSkipped]]
             }
             return thenTraces + elseTraces

@@ -45,7 +45,8 @@ public struct FunctionScanner {
 
         if node.isGeneric {
             try doGeneric(node: node)
-        } else {
+        }
+        else {
             try doNonGeneric(node: node)
         }
     }

@@ -163,7 +163,8 @@ public final class DebugConsoleCommandLineCompiler {
                     message: "instruction takes no parameters: `\(node.instruction)'"
                 )
             )
-        } else {
+        }
+        else {
             instructions.append(.quit)
         }
     }
@@ -176,7 +177,8 @@ public final class DebugConsoleCommandLineCompiler {
                     message: "instruction takes zero or one parameters: `\(node.instruction)'"
                 )
             )
-        } else {
+        }
+        else {
             if let parameter = node.parameters.first {
                 if let parameterIdentifier = parameter as? ParameterIdentifier {
                     switch parameterIdentifier.value {
@@ -195,7 +197,8 @@ public final class DebugConsoleCommandLineCompiler {
                             )
                         )
                     }
-                } else {
+                }
+                else {
                     errors.append(
                         CompilerError(
                             sourceAnchor: parameter.sourceAnchor,
@@ -204,7 +207,8 @@ public final class DebugConsoleCommandLineCompiler {
                         )
                     )
                 }
-            } else {
+            }
+            else {
                 instructions.append(.reset(type: .soft))
             }
         }
@@ -218,7 +222,8 @@ public final class DebugConsoleCommandLineCompiler {
                     message: "instruction takes no parameters: `\(node.instruction)'"
                 )
             )
-        } else {
+        }
+        else {
             instructions.append(.run)
         }
     }
@@ -226,10 +231,12 @@ public final class DebugConsoleCommandLineCompiler {
     private func acceptStep(_ node: InstructionNode) {
         if node.parameters.count == 0 {
             instructions.append(.step(count: 1))
-        } else if node.parameters.count == 1 {
+        }
+        else if node.parameters.count == 1 {
             if let parameter = node.parameters.first as? ParameterNumber {
                 instructions.append(.step(count: parameter.value))
-            } else {
+            }
+            else {
                 errors.append(
                     CompilerError(
                         sourceAnchor: node.parameters.first?.sourceAnchor,
@@ -237,7 +244,8 @@ public final class DebugConsoleCommandLineCompiler {
                     )
                 )
             }
-        } else {
+        }
+        else {
             errors.append(
                 CompilerError(
                     sourceAnchor: node.parameters[2].sourceAnchor,
@@ -256,7 +264,8 @@ public final class DebugConsoleCommandLineCompiler {
                     message: "instruction takes no parameters: `\(node.instruction)'"
                 )
             )
-        } else {
+        }
+        else {
             instructions.append(.reg)
         }
     }
@@ -265,7 +274,8 @@ public final class DebugConsoleCommandLineCompiler {
         if node.parameters.count < 2 {
             let device = node.parameters.first as? ParameterIdentifier
             instructions.append(.info(device?.value))
-        } else {
+        }
+        else {
             errors.append(
                 CompilerError(
                     sourceAnchor: node.parameters[1].sourceAnchor,
@@ -297,7 +307,8 @@ public final class DebugConsoleCommandLineCompiler {
         if node.parameters.count == 1 {
             if let base = node.parameters.first as? ParameterNumber {
                 return (UInt16(base.value), 1)
-            } else {
+            }
+            else {
                 errors.append(
                     CompilerError(
                         sourceAnchor: node.parameters.first?.sourceAnchor,
@@ -306,7 +317,8 @@ public final class DebugConsoleCommandLineCompiler {
                 )
             }
             return nil
-        } else if node.parameters.count == 2 {
+        }
+        else if node.parameters.count == 2 {
             guard let length = (node.parameters[0] as? ParameterSlashed)?.child as? ParameterNumber
             else {
                 errors.append(
@@ -332,7 +344,8 @@ public final class DebugConsoleCommandLineCompiler {
             }
 
             return (baseAddr, UInt(length.value))
-        } else {
+        }
+        else {
             errors.append(
                 CompilerError(
                     sourceAnchor: node.sourceAnchor,
@@ -361,7 +374,8 @@ public final class DebugConsoleCommandLineCompiler {
         let baseAddr: UInt16
         if param.value < 0 {
             baseAddr = UInt16(bitPattern: Int16(param.value))
-        } else {
+        }
+        else {
             baseAddr = UInt16(param.value)
         }
         return baseAddr
@@ -452,7 +466,8 @@ public final class DebugConsoleCommandLineCompiler {
             let path = NSString(string: parameterPath.value).expandingTildeInPath
             let url = URL(fileURLWithPath: path)
             instructions.append(.load(parameterDestination.value, url))
-        } else {
+        }
+        else {
             let panel = NSOpenPanel()
             let response = panel.runModal()
             if response == NSApplication.ModalResponse.OK {
@@ -498,7 +513,8 @@ public final class DebugConsoleCommandLineCompiler {
             let path = NSString(string: parameterPath.value).expandingTildeInPath
             let url = URL(fileURLWithPath: path)
             instructions.append(.save(parameterDestination.value, url))
-        } else {
+        }
+        else {
             let panel = NSSavePanel()
             let response = panel.runModal()
             if response == NSApplication.ModalResponse.OK {

@@ -280,7 +280,8 @@ public class TurtleComputer: NSObject, NSSecureCoding {
                     "Error occured while attempting to restore computer state from snapshot: \(error.localizedDescription)"
                 )
             }
-        } catch {
+        }
+        catch {
             fatalError(
                 "Exception occured while attempting to restore computer state from snapshot: \(error.localizedDescription)"
             )

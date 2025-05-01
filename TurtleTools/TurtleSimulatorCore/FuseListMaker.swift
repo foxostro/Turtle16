@@ -21,7 +21,8 @@ public final class FuseListMaker {
         set(value) {
             if value > fuseList.count {
                 fuseList += [UInt](repeating: defaultFuseState, count: value - fuseList.count)
-            } else {
+            }
+            else {
                 fuseList.removeLast(fuseList.count - value)
             }
         }

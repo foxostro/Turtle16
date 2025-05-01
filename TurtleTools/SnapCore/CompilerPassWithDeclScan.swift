@@ -171,7 +171,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
             let message =
                 if let existing = modules[name]?.sourceAnchor {
                     "module duplicates existing module \"\(name)\" declared at \(existing)"
-                } else {
+                }
+                else {
                     "module duplicates existing module \"\(name)\""
                 }
             throw CompilerError(sourceAnchor: module1.sourceAnchor, message: message)
@@ -205,7 +206,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
                 moduleName: name,
                 sourceAnchor: sourceAnchor
             )
-        } else {
+        }
+        else {
             let moduleSym = Env()
             let module = SymbolType.structType(
                 StructTypeInfo(

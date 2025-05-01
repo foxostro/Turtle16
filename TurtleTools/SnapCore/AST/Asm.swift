@@ -45,7 +45,8 @@ public final class Asm: AbstractSyntaxTreeNode {
         let indentedAssemblyCode: String =
             if assemblyCode == "" {
                 " (empty)"
-            } else {
+            }
+            else {
                 "\n"
                     + assemblyCode
                     .split(separator: "\n")

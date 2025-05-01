@@ -137,7 +137,8 @@ struct TraitObjectDeclarationsBuilder {
 
         if let primitiveType = expr0 as? PrimitiveType {
             expr = primitiveType.typ.lift
-        } else {
+        }
+        else {
             expr = expr0
         }
 

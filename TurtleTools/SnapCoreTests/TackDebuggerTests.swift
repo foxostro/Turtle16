@@ -58,7 +58,8 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram: TackProgram
         do {
             tackProgram = try compiler.compile(program: program)
-        } catch (let error as CompilerError) {
+        }
+        catch (let error as CompilerError) {
             let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
             print("compile error: \(omnibusError.message)")
             throw error

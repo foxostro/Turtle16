@@ -5,11 +5,11 @@
   "indentation" : {
     "spaces" : 4
   },
-  "indentBlankLines" : false,
+  "indentBlankLines" : true,
   "indentConditionalCompilationBlocks" : true,
   "indentSwitchCaseLabels" : false,
   "lineBreakAroundMultilineExpressionChainComponents" : false,
-  "lineBreakBeforeControlFlowKeywords" : false,
+  "lineBreakBeforeControlFlowKeywords" : true,
   "lineBreakBeforeEachArgument" : true,
   "lineBreakBeforeEachGenericRequirement" : false,
   "lineLength" : 100,

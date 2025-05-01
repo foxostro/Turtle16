@@ -76,7 +76,8 @@ extension PipelineView {
                         let disassembly = computer.disassembly.entries
                         disassembledInstruction =
                             disassembly.first(where: { $0.address == pc })?.mnemonic
-                    } else {
+                    }
+                    else {
                         disassembledInstruction = nil
                     }
 

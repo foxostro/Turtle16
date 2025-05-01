@@ -89,7 +89,8 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
             symbols.maybeResolveType(identifier: ident.identifier) != nil
         {
             true
-        } else {
+        }
+        else {
             false
         }
     }

@@ -13,11 +13,14 @@ public class DebugConsoleCommandLineParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         if nil != accept(TokenEOF.self) {
             return []
-        } else if nil != accept(TokenNewline.self) {
+        }
+        else if nil != accept(TokenNewline.self) {
             return []
-        } else if let token = accept(TokenIdentifier.self) {
+        }
+        else if let token = accept(TokenIdentifier.self) {
             return try consumeIdentifier(token as! TokenIdentifier)
-        } else {
+        }
+        else {
             throw unexpectedEndOfInputError()
         }
     }

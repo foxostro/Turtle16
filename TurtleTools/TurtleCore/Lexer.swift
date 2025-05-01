@@ -109,10 +109,12 @@ open class Lexer {
         while !isAtEnd {
             do {
                 try scanToken()
-            } catch let error as CompilerError {
+            }
+            catch let error as CompilerError {
                 errors.append(error)
                 advanceToNewline()  // recover by skipping to the next line
-            } catch {
+            }
+            catch {
                 // This catch block should be unreachable because scanToken()
                 // only throws CompilerError. Regardless, we need it to satisfy
                 // the compiler.

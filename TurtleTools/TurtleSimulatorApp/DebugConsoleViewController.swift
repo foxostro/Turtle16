@@ -79,7 +79,8 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         let command: String
         if debuggerInput.stringValue == "" {
             command = history.last ?? ""
-        } else {
+        }
+        else {
             command = debuggerInput.stringValue
         }
         debugger.eval(command) { [weak self] debugConsole in
@@ -105,7 +106,8 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
                 debuggerInput.stringValue = history[cursor]
                 cursor = min(cursor + 1, history.count - 1)
                 return true
-            } else if commandSelector == #selector(moveDown(_:)) {
+            }
+            else if commandSelector == #selector(moveDown(_:)) {
                 debuggerInput.stringValue = history[cursor]
                 cursor = max(cursor - 1, 0)
                 return true

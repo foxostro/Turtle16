@@ -91,7 +91,8 @@ public final class Assert: AbstractSyntaxTreeNode {
     public var finalMessage: String {
         if let enclosingTestName = enclosingTestName {
             "\(message) in test \"\(enclosingTestName)\""
-        } else {
+        }
+        else {
             message
         }
     }

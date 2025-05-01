@@ -664,15 +664,18 @@ public struct DecoderGenerator {
             let prev = controlWords[index]
             if let signal = signal_ as? Int {
                 next = prev & ~(1 << signal)
-            } else if let signal = signal_ as? SelStoreOpTag {
+            }
+            else if let signal = signal_ as? SelStoreOpTag {
                 next =
                     (prev & ~(0b11 << DecoderGenerator.SelStoreOpA))
                     | (signal.tag << DecoderGenerator.SelStoreOpA)
-            } else if let signal = signal_ as? SelRightOpTag {
+            }
+            else if let signal = signal_ as? SelRightOpTag {
                 next =
                     (prev & ~(0b11 << DecoderGenerator.SelRightOpA))
                     | (signal.tag << DecoderGenerator.SelRightOpA)
-            } else if let signal = signal_ as? ALUControlTag {
+            }
+            else if let signal = signal_ as? ALUControlTag {
                 next =
                     (prev
                         & ~(0b111 << DecoderGenerator.I0)
@@ -681,11 +684,13 @@ public struct DecoderGenerator {
                     | (signal.i << DecoderGenerator.I0)
                     | (signal.c0 << DecoderGenerator.C0)
                     | (signal.rs << DecoderGenerator.RS0)
-            } else if let signal = signal_ as? WriteBackSrcTag {
+            }
+            else if let signal = signal_ as? WriteBackSrcTag {
                 next =
                     (prev & ~(1 << DecoderGenerator.WriteBackSrcFlag))
                     | (signal.tag << DecoderGenerator.WriteBackSrcFlag)
-            } else {
+            }
+            else {
                 assert(false)
                 abort()
             }

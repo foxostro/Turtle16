@@ -126,7 +126,8 @@ public class IDT7381: NSObject, NSSecureCoding {
         let portF: UInt16?
         if input.oe == 0 {
             portF = fmux(input: input)
-        } else {
+        }
+        else {
             portF = nil
         }
 
@@ -237,7 +238,8 @@ public class IDT7381: NSObject, NSSecureCoding {
         let ovf: UInt
         if (r1 & 0x8000) == (s1 & 0x8000) {
             ovf = ((r1 & 0x8000) != (result & 0x8000)) ? 1 : 0
-        } else {
+        }
+        else {
             ovf = 0
         }
 

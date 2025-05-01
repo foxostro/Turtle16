@@ -68,7 +68,8 @@ public final class Subroutine: AbstractSyntaxTreeNode {
     public func makeChildDescriptions(depth: Int = 0) -> String {
         if children.isEmpty {
             " empty"
-        } else {
+        }
+        else {
             "\n"
                 + children
                 .map {

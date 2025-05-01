@@ -266,7 +266,8 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         case .array(let count, let elementType):
             if let count = count {
                 "[\(count)]\(elementType)"
-            } else {
+            }
+            else {
                 "[_]\(elementType)"
             }
         case .constDynamicArray(let elementType):
@@ -562,7 +563,8 @@ public enum ArithmeticTypeInfo: Hashable, CustomStringConvertible {
     ) -> ArithmeticTypeInfo? {
         if let intClass = IntClass.binaryResultType(left: left.intClass, right: right.intClass) {
             .mutableInt(intClass)
-        } else {
+        }
+        else {
             nil
         }
     }
@@ -1159,7 +1161,8 @@ public final class Env: Hashable {
         public var isSet: Bool {
             if case .set(_) = self {
                 true
-            } else {
+            }
+            else {
                 false
             }
         }
@@ -1224,7 +1227,9 @@ public final class Env: Hashable {
     public var breadcrumb: Breadcrumb? = nil
 
     public var breadcrumbs: [Breadcrumb] {
-        let myBreadcrumb: [Breadcrumb] = if let breadcrumb { [breadcrumb] } else { [] }
+        let myBreadcrumb: [Breadcrumb] =
+            if let breadcrumb { [breadcrumb] }
+            else { [] }
         let trail = (parent?.breadcrumbs ?? []) + myBreadcrumb
         return trail
     }
@@ -1276,9 +1281,11 @@ public final class Env: Hashable {
     public func exists(identifier: String, maxDepth: Int = Int.max) -> Bool {
         if nil != symbolTable[identifier] {
             true
-        } else if maxDepth > 0 {
+        }
+        else if maxDepth > 0 {
             parent?.exists(identifier: identifier, maxDepth: maxDepth - 1) ?? false
-        } else {
+        }
+        else {
             false
         }
     }
@@ -1286,9 +1293,11 @@ public final class Env: Hashable {
     public func existsAsType(identifier: String, maxDepth: Int = Int.max) -> Bool {
         if nil != typeTable[identifier] {
             true
-        } else if maxDepth > 0 {
+        }
+        else if maxDepth > 0 {
             parent?.existsAsType(identifier: identifier, maxDepth: maxDepth - 1) ?? false
-        } else {
+        }
+        else {
             false
         }
     }
@@ -1299,12 +1308,14 @@ public final class Env: Hashable {
     ) -> (SymbolType, Int)? {
         if let symbolType = typeTable[identifier] {
             (symbolType.symbolType, 0)
-        } else if let parentResolution = parent?.maybeResolveTypeWithScopeDepth(
+        }
+        else if let parentResolution = parent?.maybeResolveTypeWithScopeDepth(
             sourceAnchor: sourceAnchor,
             identifier: identifier
         ) {
             (parentResolution.0, parentResolution.1 + 1)
-        } else {
+        }
+        else {
             nil
         }
     }
@@ -1315,7 +1326,8 @@ public final class Env: Hashable {
             let stackFrameDesc: String
             if let frame {
                 stackFrameDesc = "\(frame)"
-            } else {
+            }
+            else {
                 stackFrameDesc = "nil"
             }
             print(
@@ -1381,9 +1393,11 @@ public final class Env: Hashable {
     ) throws -> SymbolType {
         if let resolution = maybeResolve(identifier: identifier) {
             resolution.type
-        } else if let resolution = maybeResolveType(identifier: identifier) {
+        }
+        else if let resolution = maybeResolveType(identifier: identifier) {
             resolution
-        } else {
+        }
+        else {
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
                 message: "use of unresolved identifier: `\(identifier)'"
@@ -1420,7 +1434,8 @@ public final class Env: Hashable {
     ) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             (symbol, stackFrameIndex)
-        } else {
+        }
+        else {
             parent?.maybeResolveWithStackFrameDepth(
                 sourceAnchor: sourceAnchor,
                 identifier: identifier
@@ -1451,10 +1466,11 @@ public final class Env: Hashable {
     private func maybeResolveWithScopeDepth(identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             (symbol, 0)
-        } else if let parentResolution = parent?.maybeResolveWithScopeDepth(identifier: identifier)
-        {
+        }
+        else if let parentResolution = parent?.maybeResolveWithScopeDepth(identifier: identifier) {
             (parentResolution.0, parentResolution.1 + 1)
-        } else {
+        }
+        else {
             nil
         }
     }
@@ -1489,7 +1505,8 @@ public final class Env: Hashable {
     public func lookupScopeEnclosingSymbol(identifier: String) -> Env? {
         if symbolTable[identifier] != nil {
             self
-        } else {
+        }
+        else {
             parent?.lookupScopeEnclosingSymbol(identifier: identifier)
         }
     }
@@ -1498,7 +1515,8 @@ public final class Env: Hashable {
     public func lookupScopeEnclosingType(identifier: String) -> Env? {
         if typeTable[identifier] != nil {
             self
-        } else {
+        }
+        else {
             parent?.lookupScopeEnclosingType(identifier: identifier)
         }
     }
@@ -1540,12 +1558,14 @@ public final class Env: Hashable {
     ) -> (SymbolType, Int)? {
         if let typeRecord = typeTable[identifier] {
             (typeRecord.symbolType, stackFrameIndex)
-        } else if maxDepth > 0 {
+        }
+        else if maxDepth > 0 {
             parent?.maybeResolveTypeWithScopeDepth(
                 identifier: identifier,
                 maxDepth: maxDepth - 1
             )
-        } else {
+        }
+        else {
             nil
         }
     }
@@ -1576,7 +1596,8 @@ public final class Env: Hashable {
     ) -> TypeRecord? {
         if let typeRecord = typeTable[identifier] {
             typeRecord
-        } else {
+        }
+        else {
             parent?.maybeResolveTypeRecord(
                 sourceAnchor: sourceAnchor,
                 identifier: identifier
@@ -1698,7 +1719,8 @@ extension Array where Element: Equatable {
     fileprivate func union(_ newElement: Element) -> [Element] {
         if contains(newElement) {
             self
-        } else {
+        }
+        else {
             self + [newElement]
         }
     }

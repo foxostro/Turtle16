@@ -55,7 +55,8 @@ public final class CompilerPassTestDeclaration: CompilerPass {
                     testRunnerMain,
                     Call(callee: Identifier(kTestMainFunctionName), arguments: []),
                 ]
-            } else {
+            }
+            else {
                 let hasMain =
                     result.children.first(where: {
                         if let functionDeclaration = $0 as? FunctionDeclaration,

@@ -56,11 +56,14 @@ class SnapBenchmarkDriver: NSObject {
     public func run() {
         do {
             try tryRun()
-        } catch let error as SnapBenchmarkDriverError {
+        }
+        catch let error as SnapBenchmarkDriverError {
             reportError(message: error.message)
-        } catch let error as CompilerError {
+        }
+        catch let error as CompilerError {
             reportError(message: error.message)
-        } catch {
+        }
+        catch {
             reportError(message: error.localizedDescription)
         }
     }
@@ -131,7 +134,8 @@ class SnapBenchmarkDriver: NSObject {
             let str: String
             if let actualResult = actualResult {
                 str = "\(actualResult)"
-            } else {
+            }
+            else {
                 str = "nil"
             }
             throw SnapBenchmarkDriverError(

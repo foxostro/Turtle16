@@ -26,7 +26,8 @@ public struct TraitScanner {
     public func scan(trait node: TraitDeclaration) throws -> SymbolType {
         if node.isGeneric {
             try doGeneric(node)
-        } else {
+        }
+        else {
             try doNonGeneric(
                 traitDecl: node,
                 evaluatedTypeArguments: [],

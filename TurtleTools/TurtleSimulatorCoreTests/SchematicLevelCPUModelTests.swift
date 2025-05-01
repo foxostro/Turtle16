@@ -1172,7 +1172,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
 
                         if z == 1 {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -1210,7 +1211,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
 
                         if z == 0 {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -1249,7 +1251,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         // BLT should jump on N!=V
                         if (n == 0 && v == 1) || (n == 1 && v == 0) {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -1288,7 +1291,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         // BGT jumps on (Z==0) && (N==V)
                         if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -1327,7 +1331,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         // BLTU jumps on C==0
                         if c == 0 {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -1366,7 +1371,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         // BGTU jumps on C==1 && Z==0
                         if c == 1 && z == 0 {
                             XCTAssertEqual(1026, cpu.pc)
-                        } else {
+                        }
+                        else {
                             XCTAssertEqual(4, cpu.pc)
                         }
                     }  // v
@@ -1792,7 +1798,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             guard evaluatedCondition else {
                 return false
             }
-        } else {
+        }
+        else {
             guard !evaluatedCondition else {
                 return false
             }

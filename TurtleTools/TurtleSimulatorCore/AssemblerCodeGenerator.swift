@@ -238,7 +238,8 @@ public final class AssemblerCodeGenerator {
         let offset: Int
         if let value = symbols[name] {
             offset = value - instructions.count + kBranchPipelineOffset
-        } else {
+        }
+        else {
             offset = 0
             let action = PatcherAction(
                 index: instructions.count,
@@ -290,7 +291,8 @@ public final class AssemblerCodeGenerator {
         if let value = symbols[name] {
             lo = value & 0x00ff
             hi = (value & 0xff00) >> 8
-        } else {
+        }
+        else {
             lo = 0
             hi = 0
             patcherActions += [

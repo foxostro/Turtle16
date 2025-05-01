@@ -79,7 +79,8 @@ public final class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
         let ltypeExpr1 =
             if ltype0.isArrayType && ltype0.arrayCount == nil {
                 rtypeExpr
-            } else {
+            }
+            else {
                 ltypeExpr0
             }
 
@@ -95,7 +96,8 @@ public final class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
         let type1 =
             if node.isMutable {
                 type0
-            } else {
+            }
+            else {
                 ConstType(
                     sourceAnchor: type0.sourceAnchor,
                     typ: type0

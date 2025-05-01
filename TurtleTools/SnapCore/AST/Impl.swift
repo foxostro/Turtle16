@@ -127,7 +127,8 @@ public final class Impl: AbstractSyntaxTreeNode {
         var result: String = ""
         if typeArguments.isEmpty {
             result = "none"
-        } else {
+        }
+        else {
             for i in 0..<typeArguments.count {
                 let argument = typeArguments[i]
                 result += "\n"

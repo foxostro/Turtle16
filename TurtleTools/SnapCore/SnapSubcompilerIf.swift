@@ -35,7 +35,8 @@ public struct SnapSubcompilerIf {
                 elseBranch,
                 LabelDeclaration(sourceAnchor: s, identifier: labelTail),
             ]
-        } else {
+        }
+        else {
             let labelTail = symbols.nextLabel()
             children += [
                 GotoIfFalse(

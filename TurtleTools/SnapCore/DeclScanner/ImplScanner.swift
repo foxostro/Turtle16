@@ -30,7 +30,8 @@ public struct ImplScanner {
     public func scan(impl node: Impl) throws {
         if node.isGeneric {
             try doGenericCase(node)
-        } else {
+        }
+        else {
             try doNonGenericCase(node)
         }
     }

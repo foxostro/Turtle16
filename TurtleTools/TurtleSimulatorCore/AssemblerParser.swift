@@ -13,7 +13,8 @@ public class AssemblerParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
         if nil != accept(TokenEOF.self) {
             return []
-        } else if let token = accept(TokenIdentifier.self) {
+        }
+        else if let token = accept(TokenIdentifier.self) {
             return try consumeIdentifier(token as! TokenIdentifier)
         }
 
@@ -52,9 +53,11 @@ public class AssemblerParser: Parser {
 
             if nil != (peek() as? TokenEOF) {
                 break
-            } else if nil != (peek() as? TokenNewline) {
+            }
+            else if nil != (peek() as? TokenNewline) {
                 break
-            } else {
+            }
+            else {
                 let err = operandTypeMismatchError(sourceAnchor: peek()?.sourceAnchor)
                 try expect(type: TokenComma.self, error: err)
             }
@@ -105,12 +108,15 @@ public class AssemblerParser: Parser {
                     offset: paramNumber,
                     identifier: paramIdentifier
                 )
-            } else {
+            }
+            else {
                 param = paramNumber
             }
-        } else if let token = accept(TokenIdentifier.self) as? TokenIdentifier {
+        }
+        else if let token = accept(TokenIdentifier.self) as? TokenIdentifier {
             param = ParameterIdentifier(sourceAnchor: token.sourceAnchor, value: token.lexeme)
-        } else {
+        }
+        else {
             throw operandTypeMismatchError(sourceAnchor: peek()?.sourceAnchor)
         }
         return param

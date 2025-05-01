@@ -19,7 +19,8 @@ extension Scanner {
             if overflow {
                 accum = Int.max
                 break
-            } else {
+            }
+            else {
                 accum = partialValue
             }
             if digit == "1" {

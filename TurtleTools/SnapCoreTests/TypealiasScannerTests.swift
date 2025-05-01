@@ -27,8 +27,7 @@ final class TypealiasScannerTests: XCTestCase {
             identifier: "Foo",
             symbol: Symbol(
                 type: .void,
-                offset: nil,
-                qualifier: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 visibility: .privateVisibility
             )
         )

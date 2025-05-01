@@ -71,7 +71,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
             identifier: Identifier(nameOfVtableInstance),
             explicitType: Identifier(vtableType.name),
             expression: initializer,
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: false,
             visibility: visibility
         )

@@ -99,8 +99,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -117,8 +116,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u8)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -143,8 +141,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u8)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -161,8 +158,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -187,8 +183,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -205,8 +200,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.i8)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -231,8 +225,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -249,8 +242,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.i16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -275,8 +267,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -293,8 +284,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .constBool,
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -319,8 +309,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -337,8 +326,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .pointer(.arithmeticType(.immutableInt(.u16))),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -363,8 +351,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -381,8 +368,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -409,8 +395,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -427,8 +412,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u16))),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -455,8 +439,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .arithmeticType(.immutableInt(.u16)),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -473,8 +456,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -501,8 +483,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )
@@ -519,8 +500,7 @@ final class TackDebuggerTests: XCTestCase {
                 "foo",
                 Symbol(
                     type: .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
-                    offset: 100,
-                    qualifier: .staticStorage,
+                    storage: .staticStorage(offset: 100),
                     visibility: .publicVisibility
                 )
             )

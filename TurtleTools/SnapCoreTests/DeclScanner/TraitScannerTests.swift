@@ -73,7 +73,7 @@ final class TraitScannerTests: XCTestCase {
         )
         let sizeOfMemoryType = memoryLayoutStrategy.sizeof(type: memberType)
         let offset = frame.allocate(size: sizeOfMemoryType)
-        let symbol = Symbol(type: memberType, offset: offset, qualifier: .automaticStorage)
+        let symbol = Symbol(type: memberType, storage: .automaticStorage(offset: offset))
         frame.add(identifier: "bar", symbol: symbol)
         members.bind(identifier: "bar", symbol: symbol)
         members.parent = nil

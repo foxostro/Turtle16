@@ -93,7 +93,7 @@ public struct SnapSubcompilerMatch {
                     identifier: Identifier("__index"),
                     explicitType: nil,
                     expression: match.expr,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 )
             )
@@ -134,7 +134,7 @@ public struct SnapSubcompilerMatch {
                             identifier: clause.valueIdentifier,
                             explicitType: nil,
                             expression: As(expr: index, targetType: clause.valueType),
-                            storage: .automaticStorage,
+                            storage: .automaticStorage(offset: nil),
                             isMutable: false
                         ),
                         Block(
@@ -169,7 +169,7 @@ public struct SnapSubcompilerMatch {
                         identifier: clause.valueIdentifier,
                         explicitType: nil,
                         expression: As(expr: index, targetType: clause.valueType),
-                        storage: .automaticStorage,
+                        storage: .automaticStorage(offset: nil),
                         isMutable: false
                     ),
                     Block(

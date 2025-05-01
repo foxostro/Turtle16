@@ -19,7 +19,7 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             CommentNode(string: "")
@@ -35,14 +35,14 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             VarDeclaration(
                 identifier: bar,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             )
         )
@@ -57,14 +57,14 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             VarDeclaration(
                 identifier: bar,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: true
             )
         )
@@ -79,14 +79,14 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             VarDeclaration(
                 identifier: bar,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: false
             )
         )
@@ -101,14 +101,14 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: one,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             VarDeclaration(
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: two,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             )
         )
@@ -121,14 +121,14 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             VarDeclaration(
                 identifier: foo,
                 explicitType: PrimitiveType(.u16),
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             )
         )
@@ -141,14 +141,14 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             VarDeclaration(
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             )
         )
@@ -161,14 +161,14 @@ final class VarDeclarationTests: XCTestCase {
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ).hashValue,
             VarDeclaration(
                 identifier: foo,
                 explicitType: PrimitiveType(.u8),
                 expression: LiteralInt(2),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ).hashValue
         )

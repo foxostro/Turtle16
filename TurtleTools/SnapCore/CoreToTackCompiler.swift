@@ -1343,7 +1343,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             identifier: tempArrayId,
             explicitType: type,
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: true,
             visibility: .privateVisibility
         )

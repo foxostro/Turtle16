@@ -26,8 +26,7 @@ final class StructScannerTests: XCTestCase {
             identifier: "foo",
             symbol: Symbol(
                 type: .void,
-                offset: 0,
-                qualifier: .staticStorage,
+                storage: .staticStorage(offset: 0),
                 visibility: .privateVisibility
             )
         )
@@ -66,8 +65,7 @@ final class StructScannerTests: XCTestCase {
             identifier: "foo",
             symbol: Symbol(
                 type: .void,
-                offset: 0,
-                qualifier: .staticStorage,
+                storage: .staticStorage(offset: 0),
                 visibility: .privateVisibility
             )
         )
@@ -155,8 +153,7 @@ final class StructScannerTests: XCTestCase {
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let bar = Symbol(
             type: .u8,
-            offset: 0,
-            qualifier: .automaticStorage
+            storage: .automaticStorage(offset: 0)
         )
         let expectedStructSymbols = Env(tuples: [
             ("bar", bar)

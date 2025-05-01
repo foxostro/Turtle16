@@ -72,8 +72,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         )
         let expected = Symbol(
             type: .function(functionType),
-            offset: 0,
-            qualifier: .automaticStorage
+            storage: .automaticStorage(offset: 0)
         )
         try SnapSubcompilerFunctionDeclaration().compile(symbols: symbols, node: input)
         let actual = try symbols.resolve(identifier: "foo")

@@ -171,7 +171,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                     identifier: Identifier("__index"),
                     explicitType: nil,
                     expression: Identifier("test"),
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 ),
                 If(
@@ -187,7 +187,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                                 expr: Identifier("__index"),
                                 targetType: PrimitiveType(.u8)
                             ),
-                            storage: .automaticStorage,
+                            storage: .automaticStorage(offset: nil),
                             isMutable: false
                         ),
                         Block(children: [
@@ -274,7 +274,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                     identifier: Identifier("__index"),
                     explicitType: nil,
                     expression: Identifier("test"),
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 ),
                 If(
@@ -290,7 +290,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                                 expr: Identifier("__index"),
                                 targetType: PrimitiveType(.bool)
                             ),
-                            storage: .automaticStorage,
+                            storage: .automaticStorage(offset: nil),
                             isMutable: false
                         ),
                         Block(children: [
@@ -313,7 +313,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                                     expr: Identifier("__index"),
                                     targetType: PrimitiveType(.u8)
                                 ),
-                                storage: .automaticStorage,
+                                storage: .automaticStorage(offset: nil),
                                 isMutable: false
                             ),
                             Block(children: [

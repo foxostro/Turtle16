@@ -1289,7 +1289,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Identifier("T"),  // Shadows the generic type parameter, "T"
                             explicitType: PrimitiveType(.bool),
                             expression: LiteralBool(true),
-                            storage: .automaticStorage,
+                            storage: .automaticStorage(offset: nil),
                             isMutable: false
                         )
                     ])

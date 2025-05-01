@@ -57,7 +57,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
                     identifier: Identifier("serialFake"),
                     explicitType: Identifier("SerialFake"),
                     expression: nil,
-                    storage: .staticStorage,
+                    storage: .staticStorage(offset: nil),
                     isMutable: true
                 ),
                 VarDeclaration(
@@ -67,7 +67,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
                         op: .ampersand,
                         expression: Identifier("serialFake")
                     ),
-                    storage: .staticStorage,
+                    storage: .staticStorage(offset: nil),
                     isMutable: false
                 ),
             ]
@@ -100,7 +100,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
                 identifier: Identifier("__Serial_SerialFake_vtable_instance"),
                 explicitType: Identifier("__Serial_vtable"),
                 expression: nil,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: false
             ),
             InitialAssignment(
@@ -114,14 +114,14 @@ final class SnapToCoreCompilerTests: XCTestCase {
                 identifier: Identifier("serialFake"),
                 explicitType: Identifier("SerialFake"),
                 expression: nil,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             VarDeclaration(
                 identifier: Identifier("serial"),
                 explicitType: Identifier("__Serial_object"),
                 expression: nil,
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: false
             ),
             InitialAssignment(

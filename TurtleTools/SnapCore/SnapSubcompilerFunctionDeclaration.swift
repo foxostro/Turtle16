@@ -56,8 +56,7 @@ public struct SnapSubcompilerFunctionDeclaration {
         )
         let symbol = Symbol(
             type: .genericFunction(typ),
-            offset: 0,
-            qualifier: .automaticStorage,
+            storage: .automaticStorage(offset: 0),
             visibility: node.visibility
         )
         symbols.bind(identifier: name, symbol: symbol)
@@ -76,8 +75,7 @@ public struct SnapSubcompilerFunctionDeclaration {
         let name = node.identifier.identifier
         let symbol = Symbol(
             type: .function(functionType),
-            offset: 0,
-            qualifier: .automaticStorage,
+            storage: .automaticStorage(offset: 0),
             visibility: node.visibility
         )
         symbols.bind(identifier: name, symbol: symbol)
@@ -152,8 +150,7 @@ public struct SnapSubcompilerFunctionDeclaration {
             let argumentName = argumentNames[i]
             let symbol = Symbol(
                 type: argumentType.correspondingConstType,
-                offset: -offset,
-                qualifier: .automaticStorage
+                storage: .automaticStorage(offset: -offset)
             )
             symbols.bind(identifier: argumentName, symbol: symbol)
             let sizeOfArugmentType = memoryLayoutStrategy.sizeof(type: argumentType)
@@ -167,8 +164,7 @@ public struct SnapSubcompilerFunctionDeclaration {
             identifier: kReturnValueIdentifier,
             symbol: Symbol(
                 type: functionType.returnType,
-                offset: -offset,
-                qualifier: .automaticStorage
+                storage: .automaticStorage(offset: -offset)
             )
         )
         let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)

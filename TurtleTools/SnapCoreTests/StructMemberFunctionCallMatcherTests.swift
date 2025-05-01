@@ -27,7 +27,7 @@ final class StructMemberFunctionCallMatcherTests: XCTestCase {
         symbols.bind(identifier: "Foo", symbolType: fooType)
         symbols.bind(
             identifier: "foo",
-            symbol: Symbol(type: fooType, offset: 0x1000, qualifier: .staticStorage)
+            symbol: Symbol(type: fooType, storage: .staticStorage(offset: 0x1000))
         )
 
         let expr = Call(

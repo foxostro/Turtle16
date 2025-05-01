@@ -401,29 +401,6 @@ public enum SymbolStorage: Hashable {
     case automaticStorage(offset: Int?)
     case registerStorage(TackInstruction.Register?)
 
-    public init(_ qualifier: StorageQualifier, _ offset: Int?) {
-        self =
-            switch qualifier {
-            case .automaticStorage: .automaticStorage(offset: offset)
-            case .staticStorage: .staticStorage(offset: offset)
-            }
-    }
-
-    public var qualifier: StorageQualifier {
-        switch self {
-        case .automaticStorage(offset: _):
-            .automaticStorage
-
-        case .staticStorage(offset: _):
-            .staticStorage
-
-        case .registerStorage:
-            fatalError(
-                "There is no storage qualifier associated with a symbol bound to a register: \(self)"
-            )
-        }
-    }
-
     public var offset: Int? {
         switch self {
         case .automaticStorage(let offset),
@@ -434,10 +411,26 @@ public enum SymbolStorage: Hashable {
             nil
         }
     }
-}
 
-public enum StorageQualifier: Hashable {
-    case staticStorage, automaticStorage
+    public var isRegisterStorage: Bool {
+        switch self {
+        case .automaticStorage, .staticStorage: false
+        case .registerStorage: true
+        }
+    }
+
+    public func withOffset(_ offset: Int?) -> SymbolStorage {
+        switch self {
+        case .automaticStorage:
+            .automaticStorage(offset: offset)
+
+        case .staticStorage:
+            .staticStorage(offset: offset)
+
+        case .registerStorage:
+            fatalError("register storage has no associated offset in memory")
+        }
+    }
 }
 
 public enum BooleanTypeInfo: Hashable, CustomStringConvertible {
@@ -1059,12 +1052,11 @@ public struct Symbol: Hashable {
     public init(
         type: SymbolType,
         offset: Int?,
-        qualifier: StorageQualifier = .staticStorage,
         visibility: SymbolVisibility = .privateVisibility
     ) {
         self.init(
             type: type,
-            storage: SymbolStorage(qualifier, offset),
+            storage: .staticStorage(offset: offset),
             visibility: visibility
         )
     }

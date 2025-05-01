@@ -209,7 +209,7 @@ public struct ImplForScanner {
                 identifier: Identifier(traitType.nameOfVtableType),
                 arguments: arguments
             ),
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: false,
             visibility: visibility
         )

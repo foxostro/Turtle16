@@ -48,7 +48,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: Identifier("Foo"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -98,7 +98,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: Identifier("Foo"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -158,7 +158,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: PointerType(Identifier("Foo")),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -208,7 +208,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: PointerType(Identifier("Foo")),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -268,7 +268,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: Identifier("Foo"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -326,7 +326,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: Identifier("Foo"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -374,7 +374,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: Identifier("Foo"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -430,7 +430,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: Identifier("Foo"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -472,7 +472,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 identifier: Identifier("instance"),
                 explicitType: Identifier("Foo"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),

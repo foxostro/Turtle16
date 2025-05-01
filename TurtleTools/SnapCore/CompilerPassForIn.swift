@@ -45,7 +45,7 @@ public final class CompilerPassForIn: CompilerPass {
                     identifier: sequence,
                     explicitType: nil,
                     expression: node1.sequenceExpr,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: false
                 ),
                 VarDeclaration(
@@ -53,7 +53,7 @@ public final class CompilerPassForIn: CompilerPass {
                     identifier: index,
                     explicitType: usize,
                     expression: zero,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 ),
                 VarDeclaration(
@@ -64,7 +64,7 @@ public final class CompilerPassForIn: CompilerPass {
                         expr: sequence,
                         member: count
                     ),
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: false
                 ),
                 VarDeclaration(
@@ -82,7 +82,7 @@ public final class CompilerPassForIn: CompilerPass {
                         )
                     ),
                     expression: nil,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 ),
                 While(

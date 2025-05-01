@@ -1626,7 +1626,7 @@ public class RvalueExpressionTypeChecker {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             let offset = frame.allocate(size: sizeOfMemberType)
-            let symbol = Symbol(type: memberType, offset: offset, qualifier: .automaticStorage)
+            let symbol = Symbol(type: memberType, storage: .automaticStorage(offset: offset))
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             frame.add(identifier: memberDeclaration.name, symbol: symbol)
         }

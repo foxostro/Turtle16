@@ -118,7 +118,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -137,7 +137,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
             explicitType: PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -253,7 +253,7 @@ final class SnapParserTests: XCTestCase {
                 elementType: PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)
             ),
             expression: innerArray,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -287,7 +287,7 @@ final class SnapParserTests: XCTestCase {
                 ),
                 elements: []
             ),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -319,7 +319,7 @@ final class SnapParserTests: XCTestCase {
                     LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1)
                 ]
             ),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -349,7 +349,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
             explicitType: nil,
             expression: arr,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -374,7 +374,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
             explicitType: nil,
             expression: str,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -401,7 +401,7 @@ final class SnapParserTests: XCTestCase {
                 sourceAnchor: parser.lineMapper.anchor(16, 19),
                 identifier: "bar"
             ),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -426,7 +426,7 @@ final class SnapParserTests: XCTestCase {
                 elementType: PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)
             ),
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -483,7 +483,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: true
         )
         let actual = ast.children[0]
@@ -502,7 +502,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
             explicitType: PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: true
         )
         let actual = ast.children[0]
@@ -532,7 +532,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: true
         )
         let actual = ast.children[0]
@@ -554,7 +554,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: false
         )
         let actual = ast.children[0]
@@ -1056,7 +1056,7 @@ final class SnapParserTests: XCTestCase {
                             sourceAnchor: parser.lineMapper.anchor(21, 22),
                             value: 2
                         ),
-                        storage: .automaticStorage,
+                        storage: .automaticStorage(offset: nil),
                         isMutable: true
                     )
                 ]
@@ -1240,7 +1240,7 @@ final class SnapParserTests: XCTestCase {
                                     sourceAnchor: parser.lineMapper.anchor(19, 20),
                                     value: 1
                                 ),
-                                storage: .automaticStorage,
+                                storage: .automaticStorage(offset: nil),
                                 isMutable: false
                             )
                         ]
@@ -1259,7 +1259,7 @@ final class SnapParserTests: XCTestCase {
                                     sourceAnchor: parser.lineMapper.anchor(40, 41),
                                     value: 1
                                 ),
-                                storage: .automaticStorage,
+                                storage: .automaticStorage(offset: nil),
                                 isMutable: false
                             )
                         ]
@@ -1298,7 +1298,7 @@ final class SnapParserTests: XCTestCase {
                                     sourceAnchor: parser.lineMapper.anchor(19, 20),
                                     value: 1
                                 ),
-                                storage: .automaticStorage,
+                                storage: .automaticStorage(offset: nil),
                                 isMutable: false
                             )
                         ]
@@ -1386,7 +1386,7 @@ final class SnapParserTests: XCTestCase {
                                     sourceAnchor: parser.lineMapper.anchor(24, 25),
                                     value: 2
                                 ),
-                                storage: .automaticStorage,
+                                storage: .automaticStorage(offset: nil),
                                 isMutable: true
                             )
                         ]
@@ -1463,7 +1463,7 @@ final class SnapParserTests: XCTestCase {
                                 sourceAnchor: parser.lineMapper.anchor(16, 17),
                                 identifier: "i"
                             ),
-                            storage: .automaticStorage,
+                            storage: .automaticStorage(offset: nil),
                             isMutable: true
                         )
                     ]
@@ -1492,7 +1492,7 @@ final class SnapParserTests: XCTestCase {
                                 sourceAnchor: parser.lineMapper.anchor(11, 12),
                                 identifier: "i"
                             ),
-                            storage: .automaticStorage,
+                            storage: .automaticStorage(offset: nil),
                             isMutable: true
                         )
                     ]
@@ -1543,7 +1543,7 @@ final class SnapParserTests: XCTestCase {
                                         sourceAnchor: parser.lineMapper.anchor(26, 27),
                                         identifier: "i"
                                     ),
-                                    storage: .automaticStorage,
+                                    storage: .automaticStorage(offset: nil),
                                     isMutable: true
                                 )
                             ]
@@ -2632,7 +2632,7 @@ final class SnapParserTests: XCTestCase {
             identifier: foo,
             explicitType: expectedType,
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         XCTAssertEqual(ast.children.first, expected)
@@ -2666,7 +2666,7 @@ final class SnapParserTests: XCTestCase {
             identifier: foo,
             explicitType: expectedType,
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         XCTAssertEqual(ast.children.first, expected)
@@ -2801,7 +2801,7 @@ final class SnapParserTests: XCTestCase {
                                     sourceAnchor: parser.lineMapper.anchor(31, 32),
                                     identifier: "i"
                                 ),
-                                storage: .automaticStorage,
+                                storage: .automaticStorage(offset: nil),
                                 isMutable: true
                             )
                         ]
@@ -3088,7 +3088,7 @@ final class SnapParserTests: XCTestCase {
                     ),
                     explicitType: unionType,
                     expression: nil,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 )
             ]
@@ -3117,7 +3117,7 @@ final class SnapParserTests: XCTestCase {
                     ),
                     explicitType: unionType,
                     expression: nil,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 )
             ]
@@ -3148,7 +3148,7 @@ final class SnapParserTests: XCTestCase {
                     ),
                     explicitType: unionType,
                     expression: nil,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 )
             ]
@@ -3401,7 +3401,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: true,
             visibility: .publicVisibility
         )
@@ -3424,7 +3424,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 1),
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: true,
             visibility: .privateVisibility
         )
@@ -3447,7 +3447,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 1),
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: true,
             visibility: .publicVisibility
         )
@@ -3470,7 +3470,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(25, 26), value: 1),
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: true,
             visibility: .privateVisibility
         )
@@ -3493,7 +3493,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 1),
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: true,
             visibility: .publicVisibility
         )
@@ -3516,7 +3516,7 @@ final class SnapParserTests: XCTestCase {
             ),
             explicitType: nil,
             expression: LiteralInt(sourceAnchor: parser.lineMapper.anchor(25, 26), value: 1),
-            storage: .staticStorage,
+            storage: .staticStorage(offset: nil),
             isMutable: true,
             visibility: .privateVisibility
         )
@@ -3833,7 +3833,7 @@ final class SnapParserTests: XCTestCase {
             identifier: foo,
             explicitType: expectedType,
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         XCTAssertEqual(ast.children.first, expected)
@@ -4432,7 +4432,7 @@ final class SnapParserTests: XCTestCase {
             identifier: a,
             explicitType: app,
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let top = TopLevel(
@@ -4472,7 +4472,7 @@ final class SnapParserTests: XCTestCase {
             identifier: a,
             explicitType: app,
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let top = TopLevel(
@@ -4516,7 +4516,7 @@ final class SnapParserTests: XCTestCase {
             identifier: a,
             explicitType: app,
             expression: nil,
-            storage: .automaticStorage,
+            storage: .automaticStorage(offset: nil),
             isMutable: false
         )
         let top = TopLevel(

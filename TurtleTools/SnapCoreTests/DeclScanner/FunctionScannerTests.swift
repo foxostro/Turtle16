@@ -82,8 +82,7 @@ final class FunctionScannerTests: XCTestCase {
         )
         let expected = Symbol(
             type: .function(functionType),
-            offset: 0,
-            qualifier: .automaticStorage
+            storage: .automaticStorage(offset: 0)
         )
         let scanner = FunctionScanner()
         try scanner.scan(func: input)

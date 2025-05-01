@@ -61,8 +61,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         )
         let expected = Symbol(
             type: .function(expectedFunctionType),
-            offset: 0,
-            qualifier: .automaticStorage
+            storage: .automaticStorage(offset: 0)
         )
 
         let compiler = CompilerPassWithDeclScan()

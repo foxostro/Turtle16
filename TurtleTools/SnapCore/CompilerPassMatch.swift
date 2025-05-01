@@ -80,7 +80,7 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
                     identifier: Identifier("__index"),
                     explicitType: nil,
                     expression: node1.expr,
-                    storage: .automaticStorage,
+                    storage: .automaticStorage(offset: nil),
                     isMutable: true
                 )
             )
@@ -124,7 +124,7 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
                             identifier: clause.valueIdentifier,
                             explicitType: nil,
                             expression: As(expr: index, targetType: clause.valueType),
-                            storage: .automaticStorage,
+                            storage: .automaticStorage(offset: nil),
                             isMutable: false
                         ),
                         Block(
@@ -159,7 +159,7 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
                         identifier: clause.valueIdentifier,
                         explicitType: nil,
                         expression: As(expr: index, targetType: clause.valueType),
-                        storage: .automaticStorage,
+                        storage: .automaticStorage(offset: nil),
                         isMutable: false
                     ),
                     Block(

@@ -105,7 +105,7 @@ final class CompilerPassImplForTests: XCTestCase {
                     identifier: Identifier("SerialFake"),
                     arguments: []
                 ),
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -208,7 +208,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             )
                         ]
                     ),
-                    storage: .staticStorage,
+                    storage: .staticStorage(offset: nil),
                     isMutable: false,
                     visibility: .privateVisibility
                 ),
@@ -220,7 +220,7 @@ final class CompilerPassImplForTests: XCTestCase {
                     identifier: Identifier("SerialFake"),
                     arguments: []
                 ),
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -409,7 +409,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("Serial"),
                 expression: Identifier("serialFake"),
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             )
@@ -437,7 +437,7 @@ final class CompilerPassImplForTests: XCTestCase {
                         ),
                     ]
                 ),
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             )
@@ -457,7 +457,7 @@ final class CompilerPassImplForTests: XCTestCase {
                     op: .ampersand,
                     expression: Identifier("serialFake")
                 ),
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             )
@@ -485,7 +485,7 @@ final class CompilerPassImplForTests: XCTestCase {
                         ),
                     ]
                 ),
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             )
@@ -502,7 +502,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("Serial"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -516,7 +516,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("__Serial_object"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -555,7 +555,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("Serial"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -572,7 +572,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("__Serial_object"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -611,7 +611,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("Serial"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -625,7 +625,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("__Serial_object"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -664,7 +664,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("Serial"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),
@@ -681,7 +681,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 identifier: Identifier("serial"),
                 explicitType: Identifier("__Serial_object"),
                 expression: nil,
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),

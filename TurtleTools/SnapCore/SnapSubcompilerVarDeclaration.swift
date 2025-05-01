@@ -140,7 +140,7 @@ public struct SnapSubcompilerVarDeclaration {
     func makeSymbolWithExplicitType(
         sourceAnchor: SourceAnchor?,
         explicitType: SymbolType,
-        storage: StorageQualifier,
+        storage storage0: SymbolStorage,
         visibility: SymbolVisibility
     ) throws -> Symbol {
 
@@ -150,29 +150,29 @@ public struct SnapSubcompilerVarDeclaration {
                 message: "invalid use of module type"
             )
         }
-        let qualifier: StorageQualifier = (symbols.frame == nil) ? .staticStorage : storage
-        let offset = bumpStoragePointer(explicitType, qualifier)
+        let storage1 = (symbols.frame == nil) ? .staticStorage(offset: nil) : storage0
+        let storage2 = bumpStoragePointer(explicitType, storage1)
         let symbol = Symbol(
             type: explicitType,
-            offset: offset,
-            qualifier: qualifier,
+            storage: storage2,
             visibility: visibility
         )
         return symbol
     }
 
-    func bumpStoragePointer(_ symbolType: SymbolType, _ storage: StorageQualifier) -> Int {
-        let size = memoryLayoutStrategy.sizeof(type: symbolType)
-        let frame =
-            switch storage {
-            case .staticStorage:
-                staticStorageFrame
+    func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> SymbolStorage {
+        precondition(!storage.isRegisterStorage)
+        precondition(storage.offset == nil)
 
-            case .automaticStorage:
-                symbols.frame!
+        let size = memoryLayoutStrategy.sizeof(type: symbolType)
+        let frame: Frame =
+            switch storage {
+            case .staticStorage: staticStorageFrame
+            case .automaticStorage: symbols.frame!
+            case .registerStorage: fatalError("unreachable")
             }
         let offset = frame.allocate(size: size)
-        return offset
+        return storage.withOffset(offset)
     }
 
     func attachToFrame(identifier: String, symbol: Symbol) {

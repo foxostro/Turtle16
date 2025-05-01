@@ -56,8 +56,8 @@ final class MemoryLayoutStrategyTurtle16Tests: XCTestCase {
             StructTypeInfo(
                 name: "Slice",
                 fields: Env(tuples: [
-                    ("base", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage)),
-                    ("count", Symbol(type: .u16, offset: 1, qualifier: .automaticStorage)),
+                    ("base", Symbol(type: .u16, storage: .automaticStorage(offset: 0))),
+                    ("count", Symbol(type: .u16, storage: .automaticStorage(offset: 1))),
                 ])
             )
         )

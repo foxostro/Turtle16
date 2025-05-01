@@ -384,7 +384,7 @@ final class CompilerPassImplTests: XCTestCase {
                                 )
                             ]
                         ),
-                        storage: .staticStorage,
+                        storage: .staticStorage(offset: nil),
                         isMutable: false,
                         visibility: .privateVisibility
                     ),
@@ -400,7 +400,7 @@ final class CompilerPassImplTests: XCTestCase {
                                 )
                             ]
                         ),
-                        storage: .automaticStorage,
+                        storage: .automaticStorage(offset: nil),
                         isMutable: true,
                         visibility: .privateVisibility
                     ),
@@ -428,7 +428,7 @@ final class CompilerPassImplTests: XCTestCase {
                                 ),
                             ]
                         ),
-                        storage: .automaticStorage,
+                        storage: .automaticStorage(offset: nil),
                         isMutable: false,
                         visibility: .privateVisibility
                     ),
@@ -454,7 +454,7 @@ final class CompilerPassImplTests: XCTestCase {
                     callee: Identifier("myFunction"),
                     arguments: []
                 ),
-                storage: .automaticStorage,
+                storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
             ),

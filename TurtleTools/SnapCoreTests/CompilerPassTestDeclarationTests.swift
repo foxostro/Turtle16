@@ -17,7 +17,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             FunctionDeclaration(
@@ -86,7 +86,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             TestDeclaration(name: "bar", body: Block(children: [])),
@@ -96,7 +96,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             )
         ])
@@ -114,7 +114,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             TestDeclaration(name: "bar", body: Block(children: [])),
@@ -136,7 +136,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             FunctionDeclaration(
@@ -166,7 +166,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             TestDeclaration(
@@ -184,7 +184,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             FunctionDeclaration(
@@ -221,7 +221,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             TestDeclaration(
@@ -248,7 +248,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             FunctionDeclaration(
@@ -285,7 +285,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             TestDeclaration(
@@ -324,7 +324,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 identifier: Identifier("foo"),
                 explicitType: nil,
                 expression: LiteralInt(1),
-                storage: .staticStorage,
+                storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
             FunctionDeclaration(

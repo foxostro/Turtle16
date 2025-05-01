@@ -4518,12 +4518,12 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
     }
-    
+
     func testRvalue_Assignment_ToSymbolWithRegisterStorage_p() throws {
         let dst: TackInstruction.Register = .p(.p(1000))
         let symbols = Env(tuples: [
             ("dst", Symbol(type: .pointer(.void), storage: .registerStorage(dst))),
-            ("src", Symbol(type: .pointer(.void), storage: .staticStorage(offset: 0x1000)))
+            ("src", Symbol(type: .pointer(.void), storage: .staticStorage(offset: 0x1000))),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -4532,7 +4532,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 rexpr: Identifier("src")
             )
         )
-        
+
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
@@ -4562,7 +4562,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(t1))
     }
-    
+
     func testRvalue_Assignment_ToSymbolWithRegisterStorage_b() throws {
         let t0: TackInstruction.Register8 = .b(0)
         let t1: TackInstruction.Register8 = .b(1000)
@@ -4583,7 +4583,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(t1))
     }
-    
+
     func testRvalue_Assignment_ToSymbolWithRegisterStorage_o() throws {
         let t0: TackInstruction.RegisterBoolean = .o(0)
         let t1: TackInstruction.RegisterBoolean = .o(1000)
@@ -4604,7 +4604,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(t1))
     }
-    
+
     func testRvalue_ReadSymbolWithRegisterStorage_p() throws {
         let foo: TackInstruction.Register = .p(.p(1000))
         let symbols = Env(tuples: [
@@ -4612,7 +4612,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Identifier("foo"))
-        
+
         XCTAssertEqual(actual, Seq())
         XCTAssertEqual(compiler.registerStack.last, foo)
     }
@@ -4624,11 +4624,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Identifier("foo"))
-        
+
         XCTAssertEqual(actual, Seq())
         XCTAssertEqual(compiler.registerStack.last, foo)
     }
-    
+
     func testRvalue_ReadSymbolWithRegisterStorage_b() throws {
         let foo: TackInstruction.Register = .b(.b(1000))
         let symbols = Env(tuples: [
@@ -4636,11 +4636,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Identifier("foo"))
-        
+
         XCTAssertEqual(actual, Seq())
         XCTAssertEqual(compiler.registerStack.last, foo)
     }
-    
+
     func testRvalue_ReadSymbolWithRegisterStorage_o() throws {
         let foo: TackInstruction.Register = .o(.o(1000))
         let symbols = Env(tuples: [
@@ -4648,11 +4648,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Identifier("foo"))
-        
+
         XCTAssertEqual(actual, Seq())
         XCTAssertEqual(compiler.registerStack.last, foo)
     }
-    
+
     // Symbols with register storage may be used in expressions. The emitted
     // code will assume the value is already stored in the specified register.
     func testRvalue_Binary_addw_RegisterStorage() throws {
@@ -4671,5 +4671,46 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+    }
+
+    // If a symbol has register storage but does not specify which register to
+    // use then attempting to read that value will cause an error.
+    func testRvalue_ReadSymbolWithRegisterStorage_Unbound() throws {
+        let symbols = Env(tuples: [
+            ("foo", Symbol(type: .u16, storage: .registerStorage(nil)))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.rvalue(expr: Identifier("foo"))) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(
+                compilerError?.message,
+                "symbol has register storage with no bound register: foo"
+            )
+        }
+    }
+
+    // If a symbol has register storage but does not specify which register to
+    // use then attempting to store a value to that symbol will cause an error.
+    func testRvalue_Assignment_ToSymbolWithRegisterStorage_Unbound() throws {
+        let symbols = Env(tuples: [
+            ("foo", Symbol(type: .u16, storage: .registerStorage(nil)))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(
+            try compiler.rvalue(
+                expr: Assignment(
+                    lexpr: Identifier("foo"),
+                    rexpr: LiteralInt(1000)
+                )
+            )
+        ) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(
+                compilerError?.message,
+                "symbol has register storage with no bound register: foo"
+            )
+        }
     }
 }

@@ -1401,10 +1401,16 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
     func rvalue(identifier node: Identifier) throws -> AbstractSyntaxTreeNode {
         let symbol = try symbols!.resolve(identifier: node.identifier)
-        
+
         // If the symbol has register storage then the value is already in a
         // register. Push that register onto the stack.
-        if let dst = symbol.storage.register {
+        if symbol.storage.isRegisterStorage {
+            guard let dst = symbol.storage.register else {
+                throw CompilerError(
+                    sourceAnchor: node.sourceAnchor,
+                    message: "symbol has register storage with no bound register: \(node)"
+                )
+            }
             pushRegister(dst)
             return Seq()
         }
@@ -2983,13 +2989,20 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         if ltype.isPrimitive {
             if let lexpr = expr.lexpr as? Identifier,
                 let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
-                let dst = symbol.storage.register
+                symbol.storage.isRegisterStorage
             {
                 // In this case, the destination symbol is of a primitive type
                 // with storage in an explicitly defined register. Instead of
                 // trying fruitlessly to produce the address of the symbol, emit
                 // a sequence of instructions which moves the rvalue into the
                 // destination register.
+
+                guard let dst = symbol.storage.register else {
+                    throw CompilerError(
+                        sourceAnchor: lexpr.sourceAnchor,
+                        message: "symbol has register storage with no bound register: \(lexpr)"
+                    )
+                }
 
                 let rvalueProc = try compileAndConvertExpression(
                     rexpr: expr.rexpr,

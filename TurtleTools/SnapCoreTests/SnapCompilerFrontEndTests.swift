@@ -3370,7 +3370,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             __syscall(0, ptr)
             a = 0
             """)
-        let addr = debugger.addressOfSymbol(try debugger.symbols!.resolve(identifier: "a"))
+        let addr = debugger.addressOfSymbol(try debugger.symbols!.resolve(identifier: "a"))!
         try debugger.vm.run()
         XCTAssertEqual(0xffff, debugger.vm.loadw(address: addr))
     }

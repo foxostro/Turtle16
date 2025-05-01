@@ -2974,34 +2974,82 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let result: Seq
 
         if ltype.isPrimitive {
-            let lvalueProc = try lvalue(expr: expr.lexpr)
-            let dst = popRegister()
-            let rvalueProc = try compileAndConvertExpression(
-                rexpr: expr.rexpr,
-                ltype: ltype,
-                isExplicitCast: false
-            )
-            let src = peekRegister()
+            if let lexpr = expr.lexpr as? Identifier,
+                let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
+                let dst = symbol.storage.register
+            {
+                // In this case, the destination symbol is of a primitive type
+                // with storage in an explicitly defined register. Instead of
+                // trying fruitlessly to produce the address of the symbol, emit
+                // a sequence of instructions which moves the rvalue into the
+                // destination register.
 
-            result = Seq(
-                sourceAnchor: expr.sourceAnchor,
-                children: [
-                    lvalueProc,
-                    rvalueProc,
-                    TackInstructionNode(
-                        instruction: {
-                            switch src {
-                            case .p(let p): return .sp(p, dst.unwrapPointer!, 0)
-                            case .w(let w): return .sw(w, dst.unwrapPointer!, 0)
-                            case .b(let b): return .sb(b, dst.unwrapPointer!, 0)
-                            case .o(let o): return .so(o, dst.unwrapPointer!, 0)
-                            }
-                        }(),
-                        sourceAnchor: expr.sourceAnchor,
-                        symbols: symbols
-                    ),
-                ]
-            )
+                let rvalueProc = try compileAndConvertExpression(
+                    rexpr: expr.rexpr,
+                    ltype: ltype,
+                    isExplicitCast: false
+                )
+                let src = popRegister()
+
+                let mov: TackInstruction? =
+                    switch (dst, src) {
+                    case (.p(let p1), .p(let p0)): .movp(p1, p0)
+                    case (.w(let w1), .w(let w0)): .movw(w1, w0)
+                    case (.b(let b1), .b(let b0)): .movb(b1, b0)
+                    case (.o(let o1), .o(let o0)): .movo(o1, o0)
+                    default: nil
+                    }
+
+                result = Seq(
+                    sourceAnchor: expr.sourceAnchor,
+                    children: [
+                        rvalueProc,
+                        TackInstructionNode(
+                            instruction: mov!,
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols
+                        ),
+                    ]
+                )
+
+                pushRegister(dst)
+            }
+            else {
+                // In this case, the destination symbol is of a primitive type
+                // with storage in memory. Produce the address of the symbol,
+                // and emit a sequence of instructions which store the rvalue
+                // into memory at that location.
+
+                let lvalueProc = try lvalue(expr: expr.lexpr)
+                let dst = popRegister()
+                let rvalueProc = try compileAndConvertExpression(
+                    rexpr: expr.rexpr,
+                    ltype: ltype,
+                    isExplicitCast: false
+                )
+                let src = peekRegister()
+
+                let storeIns: TackInstruction =
+                    switch src {
+                    case .p(let p): .sp(p, dst.unwrapPointer!, 0)
+                    case .w(let w): .sw(w, dst.unwrapPointer!, 0)
+                    case .b(let b): .sb(b, dst.unwrapPointer!, 0)
+                    case .o(let o): .so(o, dst.unwrapPointer!, 0)
+                    }
+
+                result = Seq(
+                    sourceAnchor: expr.sourceAnchor,
+                    children: [
+                        lvalueProc,
+                        rvalueProc,
+                        TackInstructionNode(
+                            instruction: storeIns,
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols
+                        ),
+                    ]
+                )
+            }
         }
         else if size == 0 {
             result = Seq(

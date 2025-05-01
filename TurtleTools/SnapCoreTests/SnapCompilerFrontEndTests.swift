@@ -579,8 +579,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             foo()
             """)
         let symbol = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(symbol?.storage.qualifier, .staticStorage)
-        XCTAssertEqual(symbol?.offset, SnapCompilerMetrics.kStaticStorageStartAddress)
+        XCTAssertEqual(symbol?.storage, .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress))
         XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
         try debugger.vm.run()
     }
@@ -594,8 +593,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             foo()
             """)
         let symbol = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(symbol?.storage.qualifier, .automaticStorage)
-        XCTAssertEqual(symbol?.offset, 1)
+        XCTAssertEqual(symbol?.storage, .automaticStorage(offset: 1))
         XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
         try debugger.vm.run()
     }
@@ -616,18 +614,15 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             """)
         
         let a = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(a?.storage.qualifier, .staticStorage)
-        XCTAssertEqual(a?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+0)
+        XCTAssertEqual(a?.storage, .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress+0))
         XCTAssertEqual(debugger.loadSymbolU8("a"), 0xaa)
         
         let b = try debugger.symbols?.resolve(identifier: "b")
-        XCTAssertEqual(b?.storage.qualifier, .staticStorage)
-        XCTAssertEqual(b?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+1)
+        XCTAssertEqual(b?.storage, .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress+1))
         XCTAssertEqual(debugger.loadSymbolU8("b"), 0xbb)
         
         let c = try debugger.symbols?.resolve(identifier: "c")
-        XCTAssertEqual(c?.storage.qualifier, .staticStorage)
-        XCTAssertEqual(c?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+2)
+        XCTAssertEqual(c?.storage, .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress+2))
         XCTAssertEqual(debugger.loadSymbolU8("c"), 0xcc)
     }
 
@@ -651,18 +646,15 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             """)
         
         let a = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(a?.storage.qualifier, .staticStorage)
-        XCTAssertEqual(a?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+0)
+        XCTAssertEqual(a?.storage, .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress+0))
         XCTAssertEqual(debugger.loadSymbolU8("a"), 0xaa)
         
         let b = try debugger.symbols?.resolve(identifier: "b")
-        XCTAssertEqual(b?.storage.qualifier, .staticStorage)
-        XCTAssertEqual(b?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+1)
+        XCTAssertEqual(b?.storage, .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress+1))
         XCTAssertEqual(debugger.loadSymbolU8("b"), 0xaa)
         
         let c = try debugger.symbols?.resolve(identifier: "c")
-        XCTAssertEqual(c?.storage.qualifier, .staticStorage)
-        XCTAssertEqual(c?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+2)
+        XCTAssertEqual(c?.storage, .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress+2))
         XCTAssertEqual(debugger.loadSymbolU8("c"), 0xaa)
     }
 
@@ -1440,7 +1432,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         
-        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 42)
+        let offset: Int? = switch symbol.storage {
+        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            XCTFail("symbol is missing an expected offset: \(symbol)")
+            return
+        }
+        
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(offset)), 42)
     }
 
     func test_EndToEndIntegration_AssignStructInitializerToStructInstance() throws {
@@ -1456,8 +1457,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"foo\"")
             return
         }
+        let offset: Int? = switch symbol.storage {
+        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            XCTFail("symbol is missing an expected offset: \(symbol)")
+            return
+        }
 
-        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 42)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(offset)), 42)
     }
 
     func test_EndToEndIntegration_ReadStructMembersThroughPointer() throws {
@@ -1473,8 +1482,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"r\"")
             return
         }
+        let offset: Int? = switch symbol.storage {
+        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            XCTFail("symbol is missing an expected offset: \(symbol)")
+            return
+        }
 
-        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 1)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(offset)), 1)
     }
 
     func test_EndToEndIntegration_WriteStructMembersThroughPointer() throws {
@@ -1489,8 +1506,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"foo\"")
             return
         }
+        let offset: Int? = switch symbol.storage {
+        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            XCTFail("symbol is missing an expected offset: \(symbol)")
+            return
+        }
 
-        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 2)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(offset)), 2)
     }
 
     func test_EndToEndIntegration_PassPointerToStructAsFunctionParameter() throws {
@@ -1551,8 +1576,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"bar\"")
             return
         }
+        let offset: Int? = switch symbol.storage {
+        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            XCTFail("symbol is missing an expected offset: \(symbol)")
+            return
+        }
 
-        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 6)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(offset)), 6)
     }
 
     func test_EndToEndIntegration_FunctionReturnsPointerToStruct_Right() throws {
@@ -1583,8 +1616,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"foo\"")
             return
         }
+        let offset: Int? = switch symbol.storage {
+        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            XCTFail("symbol is missing an expected offset: \(symbol)")
+            return
+        }
 
-        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 42)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(offset)), 42)
     }
 
     func test_EndToEndIntegration_GetArrayCountThroughAPointer() throws {
@@ -1779,8 +1820,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"r\"")
             return
         }
+        let offset: Int? = switch symbol.storage {
+        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            XCTFail("symbol is missing an expected offset: \(symbol)")
+            return
+        }
 
-        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset+kUnionPayloadOffset)), 0x2a)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(offset+kUnionPayloadOffset)), 0x2a)
     }
 
     func test_EndToEndIntegration_Match_WithExtraneousClause() {

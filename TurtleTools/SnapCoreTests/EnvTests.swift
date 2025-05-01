@@ -35,7 +35,7 @@ final class EnvTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .u8)
-        XCTAssertEqual(symbol.offset, 0x10)
+        XCTAssertEqual(symbol.storage, .staticStorage(offset: 0x10))
     }
     
     func testExists() {
@@ -50,7 +50,7 @@ final class EnvTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .u8)
-        XCTAssertEqual(symbol.offset, 0x10)
+        XCTAssertEqual(symbol.storage, .staticStorage(offset: 0x10))
     }
 
     func testBindWord_Static_Constant() {
@@ -58,7 +58,7 @@ final class EnvTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .arithmeticType(.immutableInt(.u8)), offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .arithmeticType(.immutableInt(.u8)))
-        XCTAssertEqual(symbol.offset, 0x10)
+        XCTAssertEqual(symbol.storage, .staticStorage(offset: 0x10))
     }
 
     func testBindBoolean_Static_Mutable() {
@@ -66,7 +66,7 @@ final class EnvTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .bool)
-        XCTAssertEqual(symbol.offset, 0x10)
+        XCTAssertEqual(symbol.storage, .staticStorage(offset: 0x10))
     }
 
     func testBindBoolean_Static_Constant() {
@@ -74,7 +74,7 @@ final class EnvTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .constBool)
-        XCTAssertEqual(symbol.offset, 0x10)
+        XCTAssertEqual(symbol.storage, .staticStorage(offset: 0x10))
     }
     
     func testExistsInParentScope() {

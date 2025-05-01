@@ -1017,8 +1017,6 @@ public struct Symbol: Hashable {
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
     
-    public var offset: Int { storage.offset }
-    
     public init(
         type: SymbolType,
         offset: Int?,

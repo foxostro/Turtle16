@@ -825,22 +825,29 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         assert(depth >= 0)
         var children: [AbstractSyntaxTreeNode] = []
         switch symbol.storage {
-        case .staticStorage:
+        case .staticStorage(let offset):
+            guard let offset else {
+                fatalError("symbol is missing an expected offset: \(symbol)")
+            }
             let temp = nextRegister(type: .p)
             pushRegister(temp)
             children += [
                 TackInstructionNode(
-                    instruction: .lip(temp.unwrapPointer!, symbol.offset),
+                    instruction: .lip(temp.unwrapPointer!, offset),
                     sourceAnchor: sourceAnchor,
                     symbols: symbols
                 )
             ]
-        case .automaticStorage:
+        case .automaticStorage(let offset):
+            guard let offset else {
+                fatalError("symbol is missing an expected offset: \(symbol)")
+            }
             children += [
                 computeAddressOfLocalVariable(
                     sourceAnchor: sourceAnchor,
-                    offset: symbol.offset,
-                    depth: depth)
+                    offset: offset,
+                    depth: depth
+                )
             ]
         }
         return Seq(sourceAnchor: sourceAnchor, children: children)
@@ -917,7 +924,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         switch resultType {
         case .constStructType(let typ), .structType(let typ):
             let symbol = try typ.symbols.resolve(identifier: name)
-            
+            let offset: Int? = switch symbol.storage {
+            case .staticStorage(offset: let offset),
+                 .automaticStorage(offset: let offset):
+                offset
+            }
+            guard let offset else {
+                fatalError("symbol is missing an expected offset: \(symbol)")
+            }
             children += [
                 try lvalue(expr: expr.expr)
             ]
@@ -926,7 +940,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             pushRegister(dst)
             children += [
                 TackInstructionNode(
-                    instruction: .addip(dst.unwrapPointer!, tempStructAddress, symbol.offset),
+                    instruction: .addip(dst.unwrapPointer!, tempStructAddress, offset),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -940,6 +954,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 switch typ {
                 case .constStructType(let b), .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
+                    let offset: Int? = switch symbol.storage {
+                    case .staticStorage(offset: let offset),
+                         .automaticStorage(offset: let offset):
+                        offset
+                    }
+                    guard let offset else {
+                        fatalError("symbol is missing an expected offset: \(symbol)")
+                    }
                     
                     children += [
                         try rvalue(expr: expr.expr)
@@ -949,7 +971,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     pushRegister(dst)
                     children += [
                         TackInstructionNode(
-                            instruction: .addip(dst.unwrapPointer!, tempStructAddress, symbol.offset),
+                            instruction: .addip(dst.unwrapPointer!, tempStructAddress, offset),
                             sourceAnchor: expr.sourceAnchor,
                             symbols: symbols)
                     ]
@@ -2670,6 +2692,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             }
             
             let symbol = try typ.symbols.resolve(identifier: name)
+            let offset: Int? = switch symbol.storage {
+            case .staticStorage(offset: let offset),
+                 .automaticStorage(offset: let offset):
+                offset
+            }
+            guard let offset else {
+                fatalError("symbol is missing an expected offset: \(symbol)")
+            }
             
             if let primitiveType = symbol.type.primitiveType {
                 // Read the field in-place
@@ -2683,10 +2713,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     TackInstructionNode(
                         instruction: {
                             switch dst {
-                            case .p(let p): return .lp(p, tempStructAddress, symbol.offset)
-                            case .w(let w): return .lw(w, tempStructAddress, symbol.offset)
-                            case .b(let b): return .lb(b, tempStructAddress, symbol.offset)
-                            case .o(let o): return .lo(o, tempStructAddress, symbol.offset)
+                            case .p(let p): return .lp(p, tempStructAddress, offset)
+                            case .w(let w): return .lw(w, tempStructAddress, offset)
+                            case .b(let b): return .lb(b, tempStructAddress, offset)
+                            case .o(let o): return .lo(o, tempStructAddress, offset)
                             }
                         }(),
                         sourceAnchor: expr.sourceAnchor,
@@ -2755,6 +2785,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     
                 case .constStructType(let b), .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
+                    let offset: Int? = switch symbol.storage {
+                    case .staticStorage(offset: let offset),
+                         .automaticStorage(offset: let offset):
+                        offset
+                    }
+                    guard let offset else {
+                        fatalError("symbol is missing an expected offset: \(symbol)")
+                    }
                     
                     if let primitiveType = symbol.type.primitiveType {
                         // If the field is a primitive then load into a register
@@ -2768,10 +2806,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                             TackInstructionNode(
                                 instruction: {
                                     switch dst {
-                                    case .p(let p): return .lp(p, structAddr, symbol.offset)
-                                    case .w(let w): return .lw(w, structAddr, symbol.offset)
-                                    case .b(let b): return .lb(b, structAddr, symbol.offset)
-                                    case .o(let o): return .lo(o, structAddr, symbol.offset)
+                                    case .p(let p): return .lp(p, structAddr, offset)
+                                    case .w(let w): return .lw(w, structAddr, offset)
+                                    case .b(let b): return .lb(b, structAddr, offset)
+                                    case .o(let o): return .lo(o, structAddr, offset)
                                     }
                                 }(),
                                 sourceAnchor: expr.sourceAnchor,

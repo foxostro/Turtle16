@@ -91,7 +91,15 @@ public final class TackDebugger {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.u8)) else {
             return nil
         }
-        let word = vm.loadb(address: UInt(symbol.offset))
+        let offset: Int? = switch symbol.storage {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            offset
+        }
+        guard let offset else {
+            return nil
+        }
+        let word = vm.loadb(address: UInt(offset))
         let byte = UInt8(word & 0xff)
         return byte
     }
@@ -99,17 +107,19 @@ public final class TackDebugger {
     public func addressOfSymbol(_ symbol: Symbol) -> UInt {
         let addr: UInt
         switch symbol.storage {
-        case .automaticStorage:
+        case .automaticStorage(let offset):
+            guard let offset else { return 0xFFFF } // TODO: addressOfSymbol() should be able to return nil
             let fp = try! vm.getRegister(p: .fp)
-            if symbol.offset < 0 {
-                addr = fp &+ UInt(-symbol.offset)
+            if offset < 0 {
+                addr = fp &+ UInt(-offset)
             }
             else {
-                addr = fp &- UInt(symbol.offset)
+                addr = fp &- UInt(offset)
             }
             
-        case .staticStorage:
-            addr = UInt(symbol.offset)
+        case .staticStorage(let offset):
+            guard let offset else { return 0xFFFF } // TODO: addressOfSymbol() should be able to return nil
+            addr = UInt(offset)
         }
         return addr
     }

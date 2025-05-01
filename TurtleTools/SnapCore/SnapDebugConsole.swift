@@ -19,8 +19,15 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.u8)) else {
             return nil
         }
-        let word = computer.ram[symbol.offset]
-        return UInt8(word & 0x00ff)
+        switch symbol.storage {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            guard let offset else {
+                return nil
+            }
+            let word = computer.ram[offset]
+            return UInt8(word & 0x00ff)
+        }
     }
     
     public func loadSymbolU16(_ identifier: String) -> UInt16? {
@@ -30,8 +37,15 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.u16)) else {
             return nil
         }
-        let word = computer.ram[symbol.offset]
-        return word
+        switch symbol.storage {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            guard let offset else {
+                return nil
+            }
+            let word = computer.ram[offset]
+            return word
+        }
     }
     
     public func loadSymbolI8(_ identifier: String) -> Int8? {
@@ -41,9 +55,16 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.i8)) else {
             return nil
         }
-        let word = UInt8(computer.ram[symbol.offset] & 0x00ff)
-        let value = Int8(bitPattern: word)
-        return value
+        switch symbol.storage {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            guard let offset else {
+                return nil
+            }
+            let word = UInt8(computer.ram[offset] & 0x00ff)
+            let value = Int8(bitPattern: word)
+            return value
+        }
     }
     
     public func loadSymbolI16(_ identifier: String) -> Int16? {
@@ -53,9 +74,16 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.i16)) else {
             return nil
         }
-        let word = UInt16(computer.ram[symbol.offset] & 0xffff)
-        let value = Int16(bitPattern: word)
-        return value
+        switch symbol.storage {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            guard let offset else {
+                return nil
+            }
+            let word = UInt16(computer.ram[offset] & 0xffff)
+            let value = Int16(bitPattern: word)
+            return value
+        }
     }
     
     public func loadSymbolBool(_ identifier: String) -> Bool? {
@@ -65,8 +93,15 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .constBool else {
             return nil
         }
-        let word = computer.ram[symbol.offset]
-        return word != 0
+        switch symbol.storage {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            guard let offset else {
+                return nil
+            }
+            let word = computer.ram[offset]
+            return word != 0
+        }
     }
     
     public func loadSymbolPointer(_ identifier: String) -> UInt16? {
@@ -76,8 +111,15 @@ public class SnapDebugConsole : DebugConsole {
         guard case .constPointer = symbol.type.correspondingConstType else {
             return nil
         }
-        let word = computer.ram[symbol.offset]
-        return word
+        switch symbol.storage {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            guard let offset else {
+                return nil
+            }
+            let word = computer.ram[offset]
+            return word
+        }
     }
     
     public func loadSymbolArrayOfU8(_ count: Int, _ identifier: String) -> [UInt8]? {
@@ -87,9 +129,19 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type == .array(count: count, elementType: .u8) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8))) else {
             return nil
         }
+        
+        let offset: Int? = switch symbol.storage {
+            case .automaticStorage(offset: let offset),
+                 .staticStorage(offset: let offset):
+                offset
+            }
+        guard let offset else {
+            return nil
+        }
+        
         var arr: [UInt8] = []
         for i in 0..<count {
-            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .u8)]
+            let word = computer.ram[offset + i*memoryLayoutStrategy.sizeof(type: .u8)]
             let value = UInt8(word & 0x00ff)
             arr.append(value)
         }
@@ -103,9 +155,19 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type == .array(count: count, elementType: .u16) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16))) else {
             return nil
         }
+        
+        let offset: Int? = switch symbol.storage {
+            case .automaticStorage(offset: let offset),
+                 .staticStorage(offset: let offset):
+                offset
+            }
+        guard let offset else {
+            return nil
+        }
+        
         var arr: [UInt16] = []
         for i in 0..<count {
-            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .u16)]
+            let word = computer.ram[offset + i*memoryLayoutStrategy.sizeof(type: .u16)]
             arr.append(word)
         }
         return arr
@@ -126,9 +188,18 @@ public class SnapDebugConsole : DebugConsole {
             return nil
         }
         
+        let offset: Int? = switch symbol.storage {
+            case .automaticStorage(offset: let offset),
+                 .staticStorage(offset: let offset):
+                offset
+            }
+        guard let offset else {
+            return nil
+        }
+        
         var arr: [UInt8] = []
         for i in 0..<count {
-            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .u8)]
+            let word = computer.ram[offset + i*memoryLayoutStrategy.sizeof(type: .u8)]
             let value = UInt8(word & 0x00ff)
             arr.append(value)
         }
@@ -153,11 +224,20 @@ public class SnapDebugConsole : DebugConsole {
             return nil
         }
         
+        let offset: Int? = switch symbol.storage {
+            case .automaticStorage(offset: let offset),
+                 .staticStorage(offset: let offset):
+                offset
+            }
+        guard let offset else {
+            return nil
+        }
+        
         let kSliceBaseAddressOffset = 0
         let kSliceCountOffset = 1
         
-        let payloadAddr = MemoryAddress(computer.ram[symbol.offset + kSliceBaseAddressOffset])
-        let count = Int(computer.ram[symbol.offset + kSliceCountOffset])
+        let payloadAddr = MemoryAddress(computer.ram[offset + kSliceBaseAddressOffset])
+        let count = Int(computer.ram[offset + kSliceCountOffset])
         
         var arr: [UInt8] = []
         for i in 0..<count {

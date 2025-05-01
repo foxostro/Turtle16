@@ -190,7 +190,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
         XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionTypeInfo(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
-        XCTAssertEqual(putsSymbol.offset, 0)
+        XCTAssertEqual(putsSymbol.storage, .automaticStorage(offset: 0))
     }
     
     func testScanMatchClause() throws {

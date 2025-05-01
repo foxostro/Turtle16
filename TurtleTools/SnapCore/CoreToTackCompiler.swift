@@ -1401,6 +1401,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
     func rvalue(identifier node: Identifier) throws -> AbstractSyntaxTreeNode {
         let symbol = try symbols!.resolve(identifier: node.identifier)
+        
+        // If the symbol has register storage then the value is already in a
+        // register. Push that register onto the stack.
+        if let dst = symbol.storage.register {
+            pushRegister(dst)
+            return Seq()
+        }
 
         var children: [AbstractSyntaxTreeNode] = [
             try lvalue(expr: node)

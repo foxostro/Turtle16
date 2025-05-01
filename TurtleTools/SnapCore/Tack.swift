@@ -238,6 +238,18 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     /// Move an unsigned sixteen-bit register to an unsigned eight-bit register
     case movzbw(Register8, Register16)
 
+    /// Move a pointer value from one register to another
+    case movp(RegisterPointer, RegisterPointer)
+
+    /// Move a sixteen-bit unsigned value from one register to another
+    case movw(Register16, Register16)
+
+    /// Move an eight-bit unsigned value from one register to another
+    case movb(Register8, Register8)
+
+    /// Move a boolean value from one register to another
+    case movo(RegisterBoolean, RegisterBoolean)
+
     /// Reinterpret the bit pattern of the source register as a new value in a
     /// destination register of a different type, with architecture-specific
     /// results.
@@ -343,6 +355,10 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         case .movswb(let dst, let src): "MOVSWB \(dst), \(src)"
         case .movzwb(let dst, let src): "MOVZWB \(dst), \(src)"
         case .movzbw(let dst, let src): "MOVZBW \(dst), \(src)"
+        case .movp(let dst, let src): "MOVP \(dst), \(src)"
+        case .movw(let dst, let src): "MOVW \(dst), \(src)"
+        case .movb(let dst, let src): "MOVB \(dst), \(src)"
+        case .movo(let dst, let src): "MOVO \(dst), \(src)"
         case .bitcast(let dst, let src): "BITCAST \(dst), \(src)"
         }
     }

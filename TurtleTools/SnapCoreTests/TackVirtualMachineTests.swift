@@ -2552,4 +2552,69 @@ final class TackVirtualMachineTests: XCTestCase {
         try vm.step()
         XCTAssertEqual(~0, try vm.getRegister(p: .p(1)))
     }
+
+    func testMOVP() throws {
+        let program = TackProgram(
+            instructions: [
+                .movp(.p(1), .p(0))
+            ],
+            labels: [:]
+        )
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.p(0), p: 0xabcd)
+        try vm.step()
+        XCTAssertEqual(0xabcd, try vm.getRegister(p: .p(1)))
+    }
+
+    func testMOVW() throws {
+        let program = TackProgram(
+            instructions: [
+                .movw(.w(1), .w(0))
+            ],
+            labels: [:]
+        )
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.w(0), w: 0xabcd)
+        try vm.step()
+        XCTAssertEqual(0xabcd, try vm.getRegister(w: .w(1)))
+    }
+
+    func testMOVB() throws {
+        let program = TackProgram(
+            instructions: [
+                .movb(.b(1), .b(0))
+            ],
+            labels: [:]
+        )
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.b(0), b: 0xcc)
+        try vm.step()
+        XCTAssertEqual(0xcc, try vm.getRegister(b: .b(1)))
+    }
+
+    func testMOVO() throws {
+        let program = TackProgram(
+            instructions: [
+                .movo(.o(1), .o(0))
+            ],
+            labels: [:]
+        )
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.o(0), o: true)
+        try vm.step()
+        XCTAssertEqual(true, try vm.getRegister(o: .o(1)))
+    }
+
+    func testBITCAST() throws {
+        let program = TackProgram(
+            instructions: [
+                .bitcast(.w(.w(1)), .b(.b(0)))
+            ],
+            labels: [:]
+        )
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.b(0), b: 0xff)
+        try vm.step()
+        XCTAssertEqual(0xff, try vm.getRegister(w: .w(1)))
+    }
 }

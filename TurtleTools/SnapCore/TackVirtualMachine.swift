@@ -513,6 +513,7 @@ public final class TackVirtualMachine {
             try leu8(dst, left, right)
         case .gtub(let dst, let left, let right):
             try gtu8(dst, left, right)
+
         case .movsbw(let dst, let src):
             try movsbw(dst, src)
         case .movswb(let dst, let src):
@@ -521,6 +522,14 @@ public final class TackVirtualMachine {
             try movzwb(dst, src)
         case .movzbw(let dst, let src):
             try movzbw(dst, src)
+        case .movp(let dst, let src):
+            try bitcast(.p(dst), .p(src))
+        case .movw(let dst, let src):
+            try bitcast(.w(dst), .w(src))
+        case .movb(let dst, let src):
+            try bitcast(.b(dst), .b(src))
+        case .movo(let dst, let src):
+            try bitcast(.o(dst), .o(src))
         case .bitcast(let dst, let src):
             try bitcast(dst, src)
         }

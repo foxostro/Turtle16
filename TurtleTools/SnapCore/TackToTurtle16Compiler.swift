@@ -154,6 +154,10 @@ public final class TackToTurtle16Compiler: CompilerPass {
         case .movswb(let dst, let src): return movswb(anc, dst, src)
         case .movzwb(let dst, let src): return movzwb(anc, dst, src)
         case .movzbw(let dst, let src): return movzbw(anc, dst, src)
+        case .movp(let dst, let src): return bitcast(anc, .p(dst), .p(src))
+        case .movw(let dst, let src): return bitcast(anc, .w(dst), .w(src))
+        case .movb(let dst, let src): return bitcast(anc, .b(dst), .b(src))
+        case .movo(let dst, let src): return bitcast(anc, .o(dst), .o(src))
         case .bitcast(let dst, let src): return bitcast(anc, dst, src)
         }
     }

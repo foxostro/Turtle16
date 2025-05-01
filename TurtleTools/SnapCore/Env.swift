@@ -392,6 +392,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 public enum SymbolStorage: Hashable {
     case staticStorage(offset: Int?)
     case automaticStorage(offset: Int?)
+    case registerStorage(TackInstruction.Register?)
     
     public init(_ qualifier: StorageQualifier, _ offset: Int?) {
         self = switch qualifier {
@@ -402,8 +403,14 @@ public enum SymbolStorage: Hashable {
     
     public var qualifier: StorageQualifier {
         switch self {
-        case .automaticStorage(offset: _): .automaticStorage
-        case .staticStorage(offset: _): .staticStorage
+        case .automaticStorage(offset: _):
+                .automaticStorage
+            
+        case .staticStorage(offset: _):
+                .staticStorage
+            
+        case .registerStorage:
+            fatalError("There is no storage qualifier associated with a symbol bound to a register: \(self)")
         }
     }
     
@@ -412,6 +419,9 @@ public enum SymbolStorage: Hashable {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
             offset!
+            
+        case .registerStorage:
+            fatalError("There is no offset associated with a symbol bound to a register: \(self)")
         }
     }
 }

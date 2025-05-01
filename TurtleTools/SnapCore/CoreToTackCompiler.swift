@@ -849,6 +849,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     depth: depth
                 )
             ]
+        case .registerStorage:
+            fatalError("a symbol with register storage has no offset: \(symbol)")
         }
         return Seq(sourceAnchor: sourceAnchor, children: children)
     }
@@ -928,6 +930,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             case .staticStorage(offset: let offset),
                  .automaticStorage(offset: let offset):
                 offset
+            case .registerStorage:
+                nil
             }
             guard let offset else {
                 fatalError("symbol is missing an expected offset: \(symbol)")
@@ -958,6 +962,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     case .staticStorage(offset: let offset),
                          .automaticStorage(offset: let offset):
                         offset
+                    case .registerStorage:
+                        nil
                     }
                     guard let offset else {
                         fatalError("symbol is missing an expected offset: \(symbol)")
@@ -2696,6 +2702,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             case .staticStorage(offset: let offset),
                  .automaticStorage(offset: let offset):
                 offset
+            case .registerStorage:
+                nil
             }
             guard let offset else {
                 fatalError("symbol is missing an expected offset: \(symbol)")
@@ -2789,6 +2797,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     case .staticStorage(offset: let offset),
                          .automaticStorage(offset: let offset):
                         offset
+                    case .registerStorage:
+                        nil
                     }
                     guard let offset else {
                         fatalError("symbol is missing an expected offset: \(symbol)")

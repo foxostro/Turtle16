@@ -1433,8 +1433,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
         
         let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+        case .staticStorage(offset: let offset),
+             .automaticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
@@ -1458,8 +1461,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+        case .staticStorage(offset: let offset),
+             .automaticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
@@ -1483,8 +1489,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+        case .staticStorage(offset: let offset),
+             .automaticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
@@ -1507,8 +1516,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+        case .staticStorage(offset: let offset),
+             .automaticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
@@ -1577,8 +1589,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+        case .staticStorage(offset: let offset),
+             .automaticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
@@ -1617,8 +1632,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+        case .staticStorage(offset: let offset),
+             .automaticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
@@ -1821,8 +1839,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset), .automaticStorage(offset: let offset):
+        case .staticStorage(offset: let offset),
+             .automaticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")

@@ -19,15 +19,18 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.u8)) else {
             return nil
         }
-        switch symbol.storage {
+        let offset: Int? = switch symbol.storage {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
-            guard let offset else {
-                return nil
-            }
-            let word = computer.ram[offset]
-            return UInt8(word & 0x00ff)
+            offset
+        case .registerStorage:
+            nil
         }
+        guard let offset else {
+            return nil
+        }
+        let word = computer.ram[offset]
+        return UInt8(word & 0x00ff)
     }
     
     public func loadSymbolU16(_ identifier: String) -> UInt16? {
@@ -37,15 +40,18 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.u16)) else {
             return nil
         }
-        switch symbol.storage {
+        let offset: Int? = switch symbol.storage {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
-            guard let offset else {
-                return nil
-            }
-            let word = computer.ram[offset]
-            return word
+            offset
+        case .registerStorage:
+            nil
         }
+        guard let offset else {
+            return nil
+        }
+        let word = computer.ram[offset]
+        return word
     }
     
     public func loadSymbolI8(_ identifier: String) -> Int8? {
@@ -55,16 +61,19 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.i8)) else {
             return nil
         }
-        switch symbol.storage {
+        let offset: Int? = switch symbol.storage {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
-            guard let offset else {
-                return nil
-            }
-            let word = UInt8(computer.ram[offset] & 0x00ff)
-            let value = Int8(bitPattern: word)
-            return value
+            offset
+        case .registerStorage:
+            nil
         }
+        guard let offset else {
+            return nil
+        }
+        let word = UInt8(computer.ram[offset] & 0x00ff)
+        let value = Int8(bitPattern: word)
+        return value
     }
     
     public func loadSymbolI16(_ identifier: String) -> Int16? {
@@ -74,16 +83,19 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.i16)) else {
             return nil
         }
-        switch symbol.storage {
+        let offset: Int? = switch symbol.storage {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
-            guard let offset else {
-                return nil
-            }
-            let word = UInt16(computer.ram[offset] & 0xffff)
-            let value = Int16(bitPattern: word)
-            return value
+            offset
+        case .registerStorage:
+            nil
         }
+        guard let offset else {
+            return nil
+        }
+        let word = UInt16(computer.ram[offset] & 0xffff)
+        let value = Int16(bitPattern: word)
+        return value
     }
     
     public func loadSymbolBool(_ identifier: String) -> Bool? {
@@ -93,15 +105,18 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type.correspondingConstType == .constBool else {
             return nil
         }
-        switch symbol.storage {
+        let offset: Int? = switch symbol.storage {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
-            guard let offset else {
-                return nil
-            }
-            let word = computer.ram[offset]
-            return word != 0
+            offset
+        case .registerStorage:
+            nil
         }
+        guard let offset else {
+            return nil
+        }
+        let word = computer.ram[offset]
+        return word != 0
     }
     
     public func loadSymbolPointer(_ identifier: String) -> UInt16? {
@@ -111,15 +126,18 @@ public class SnapDebugConsole : DebugConsole {
         guard case .constPointer = symbol.type.correspondingConstType else {
             return nil
         }
-        switch symbol.storage {
+        let offset: Int? = switch symbol.storage {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
-            guard let offset else {
-                return nil
-            }
-            let word = computer.ram[offset]
-            return word
+            offset
+        case .registerStorage:
+            nil
         }
+        guard let offset else {
+            return nil
+        }
+        let word = computer.ram[offset]
+        return word
     }
     
     public func loadSymbolArrayOfU8(_ count: Int, _ identifier: String) -> [UInt8]? {
@@ -129,12 +147,13 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type == .array(count: count, elementType: .u8) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8))) else {
             return nil
         }
-        
         let offset: Int? = switch symbol.storage {
-            case .automaticStorage(offset: let offset),
-                 .staticStorage(offset: let offset):
-                offset
-            }
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            offset
+        case .registerStorage:
+            nil
+        }
         guard let offset else {
             return nil
         }
@@ -155,12 +174,13 @@ public class SnapDebugConsole : DebugConsole {
         guard symbol.type == .array(count: count, elementType: .u16) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16))) else {
             return nil
         }
-        
         let offset: Int? = switch symbol.storage {
-            case .automaticStorage(offset: let offset),
-                 .staticStorage(offset: let offset):
-                offset
-            }
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            offset
+        case .registerStorage:
+            nil
+        }
         guard let offset else {
             return nil
         }
@@ -187,12 +207,13 @@ public class SnapDebugConsole : DebugConsole {
         default:
             return nil
         }
-        
         let offset: Int? = switch symbol.storage {
-            case .automaticStorage(offset: let offset),
-                 .staticStorage(offset: let offset):
-                offset
-            }
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            offset
+        case .registerStorage:
+            nil
+        }
         guard let offset else {
             return nil
         }
@@ -223,12 +244,13 @@ public class SnapDebugConsole : DebugConsole {
         default:
             return nil
         }
-        
         let offset: Int? = switch symbol.storage {
-            case .automaticStorage(offset: let offset),
-                 .staticStorage(offset: let offset):
-                offset
-            }
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            offset
+        case .registerStorage:
+            nil
+        }
         guard let offset else {
             return nil
         }

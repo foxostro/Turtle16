@@ -95,6 +95,8 @@ public final class TackDebugger {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
             offset
+        case .registerStorage:
+            nil
         }
         guard let offset else {
             return nil
@@ -120,6 +122,9 @@ public final class TackDebugger {
         case .staticStorage(let offset):
             guard let offset else { return 0xFFFF } // TODO: addressOfSymbol() should be able to return nil
             addr = UInt(offset)
+            
+        case .registerStorage:
+            return 0xFFFF // TODO: addressOfSymbol() should be able to return nil
         }
         return addr
     }

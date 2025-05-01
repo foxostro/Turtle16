@@ -162,6 +162,9 @@ public struct SnapSubcompilerVarDeclaration {
             
         case .automaticStorage:
             symbols.frame!
+            
+        case .registerStorage:
+            fatalError("symbol with register storage cannot be attached to a frame: \(identifier)")
         }
         frame.add(identifier: identifier, symbol: symbol)
     }

@@ -3001,8 +3001,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         if ltype.isPrimitive {
             if let lexpr = expr.lexpr as? Identifier,
-                let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
-                symbol.storage.isRegisterStorage
+               let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
+               symbol.storage.isRegisterStorage
             {
                 // In this case, the destination symbol is of a primitive type
                 // with storage in an explicitly defined register. Instead of
@@ -3093,27 +3093,28 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         }
         else if let structInitializer = expr.rexpr as? StructInitializer {
+            
             let children = try structInitializer.arguments.map {
                 let g = Get(
                     sourceAnchor: expr.lexpr.sourceAnchor,
                     expr: expr.lexpr,
                     member: Identifier($0.name)
                 )
-                let assig: Assignment
-                if expr is InitialAssignment {
-                    assig = InitialAssignment(
-                        sourceAnchor: expr.sourceAnchor,
-                        lexpr: g,
-                        rexpr: $0.expr
-                    )
-                }
-                else {
-                    assig = Assignment(
-                        sourceAnchor: expr.sourceAnchor,
-                        lexpr: g,
-                        rexpr: $0.expr
-                    )
-                }
+                let assig: Assignment =
+                    if expr is InitialAssignment {
+                        InitialAssignment(
+                            sourceAnchor: expr.sourceAnchor,
+                            lexpr: g,
+                            rexpr: $0.expr
+                        )
+                    }
+                    else {
+                        Assignment(
+                            sourceAnchor: expr.sourceAnchor,
+                            lexpr: g,
+                            rexpr: $0.expr
+                        )
+                    }
                 return assig
             }
             .map {

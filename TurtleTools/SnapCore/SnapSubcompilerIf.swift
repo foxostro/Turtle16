@@ -33,7 +33,7 @@ public struct SnapSubcompilerIf {
                 Goto(sourceAnchor: s, target: labelTail),
                 LabelDeclaration(sourceAnchor: s, identifier: labelElse),
                 elseBranch,
-                LabelDeclaration(sourceAnchor: s, identifier: labelTail),
+                LabelDeclaration(sourceAnchor: s, identifier: labelTail)
             ]
         }
         else {
@@ -45,7 +45,7 @@ public struct SnapSubcompilerIf {
                     target: labelTail
                 ),
                 node.thenBranch,
-                LabelDeclaration(sourceAnchor: s, identifier: labelTail),
+                LabelDeclaration(sourceAnchor: s, identifier: labelTail)
             ]
         }
         return Seq(sourceAnchor: s, children: children)

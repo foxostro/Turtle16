@@ -46,14 +46,14 @@ final class ATF22V10Tests: XCTestCase {
             [0, 0, 0],
             [0, 1, 0],
             [1, 0, 0],
-            [1, 1, 1],
+            [1, 1, 1]
         ]
         for row in truthTable {
             let a = UInt(row[0])
             let b = UInt(row[1])
             let y = UInt(row[2])
             let output = gal.step(inputs: [
-                0, a, b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, a, b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ])
             XCTAssertEqual(output[0], y)
         }
@@ -81,7 +81,7 @@ final class ATF22V10Tests: XCTestCase {
             [0, 0, 0],
             [0, 1, 0],
             [1, 0, 0],
-            [1, 1, 1],
+            [1, 1, 1]
         ]
         for row in truthTable {
             let a = UInt(row[0])
@@ -89,7 +89,7 @@ final class ATF22V10Tests: XCTestCase {
             let y = UInt(row[2])
             let output = gal.step(inputs: [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, b,
-                a,
+                a
             ])
             XCTAssertEqual(output[0], y)
         }
@@ -117,22 +117,22 @@ final class ATF22V10Tests: XCTestCase {
 
         let step0 = gal.step(inputs: [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-            nil,
+            nil
         ])
         XCTAssertEqual(step0[0], 1)
         let step1 = gal.step(inputs: [
             0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-            nil,
+            nil
         ])
         XCTAssertEqual(step1[0], 0)
         let step2 = gal.step(inputs: [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-            nil,
+            nil
         ])
         XCTAssertEqual(step2[0], 0)
         let step3 = gal.step(inputs: [
             0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-            nil,
+            nil
         ])
         XCTAssertEqual(step3[0], 1)
     }
@@ -163,13 +163,13 @@ final class ATF22V10Tests: XCTestCase {
         results.append(
             gal.step(inputs: [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
     }
@@ -216,7 +216,7 @@ final class ATF22V10Tests: XCTestCase {
             results.append(
                 gal.step(inputs: [
                     0, 0, d0, d1, d2, d3, d4, d5, d6, d7, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil, nil,
+                    nil, nil, nil, nil
                 ])
             )
         }
@@ -324,7 +324,7 @@ final class ATF22V10Tests: XCTestCase {
             results.append(
                 gal.step(inputs: [
                     0, 0, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil, nil,
+                    nil, nil, nil, nil
                 ])
             )
         }
@@ -364,49 +364,49 @@ final class ATF22V10Tests: XCTestCase {
         results.append(
             gal.step(inputs: [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         results.append(
             gal.step(inputs: [
                 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
 
@@ -510,12 +510,12 @@ final class ATF22V10Tests: XCTestCase {
             let d0 = UInt(i) & 1
             _ = gal.step(inputs: [
                 0, 0, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, nil, nil, nil, nil, nil, nil,
-                nil, nil, nil, nil,
+                nil, nil, nil, nil
             ])
             results.append(
                 gal.step(inputs: [
                     0, 1, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil, nil,
+                    nil, nil, nil, nil
                 ])
             )
         }

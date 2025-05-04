@@ -91,7 +91,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
                     },
                     id: node.id
                 ),
-                vtableInstanceDecl,
+                vtableInstanceDecl
             ]
         )
 
@@ -234,7 +234,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
                             structName: structType.name
                         )
                     )
-                ),
+                )
             ]
         )
     }

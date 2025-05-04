@@ -23,7 +23,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                 returnType: PrimitiveType(.void),
                                 arguments: [
                                     PointerType(PrimitiveType(.void)),
-                                    DynamicArrayType(PrimitiveType(.u8)),
+                                    DynamicArrayType(PrimitiveType(.u8))
                                 ]
                             )
                         )
@@ -41,7 +41,7 @@ final class CompilerPassImplForTests: XCTestCase {
                     StructDeclaration.Member(
                         name: "vtable",
                         type: PointerType(ConstType(Identifier("__Serial_vtable")))
-                    ),
+                    )
                 ],
                 isConst: true,
                 associatedTraitType: "Serial"
@@ -57,19 +57,19 @@ final class CompilerPassImplForTests: XCTestCase {
                                 returnType: PrimitiveType(.void),
                                 arguments: [
                                     PointerType(Identifier("Serial")),
-                                    DynamicArrayType(PrimitiveType(.u8)),
+                                    DynamicArrayType(PrimitiveType(.u8))
                                 ]
                             )
                         )
                     )
                 ],
                 visibility: .privateVisibility
-            ),
+            )
         ]),
         StructDeclaration(
             identifier: Identifier("SerialFake"),
             members: []
-        ),
+        )
     ])
 
     let innerBlockID = AbstractSyntaxTreeNode.ID()
@@ -89,7 +89,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("Serial")),
-                                DynamicArrayType(PrimitiveType(.u8)),
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]
                         ),
                         argumentNames: ["self", "s"],
@@ -108,7 +108,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
-            ),
+            )
         ])
         .reconnect(parent: nil)
     }
@@ -126,7 +126,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                     returnType: PrimitiveType(.void),
                                     arguments: [
                                         PointerType(PrimitiveType(.void)),
-                                        DynamicArrayType(PrimitiveType(.u8)),
+                                        DynamicArrayType(PrimitiveType(.u8))
                                     ]
                                 )
                             )
@@ -144,11 +144,11 @@ final class CompilerPassImplForTests: XCTestCase {
                         StructDeclaration.Member(
                             name: "vtable",
                             type: PointerType(ConstType(Identifier("__Serial_vtable")))
-                        ),
+                        )
                     ],
                     isConst: true,
                     associatedTraitType: "Serial"
-                ),
+                )
             ]),
             StructDeclaration(
                 identifier: Identifier("SerialFake"),
@@ -166,7 +166,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                 returnType: PrimitiveType(.void),
                                 arguments: [
                                     PointerType(Identifier("__Serial_object")),
-                                    DynamicArrayType(PrimitiveType(.u8)),
+                                    DynamicArrayType(PrimitiveType(.u8))
                                 ]
                             ),
                             argumentNames: ["self", "s"],
@@ -198,7 +198,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                                     returnType: .void,
                                                     arguments: [
                                                         .pointer(.void),
-                                                        .dynamicArray(elementType: .u8),
+                                                        .dynamicArray(elementType: .u8)
                                                     ]
                                                 )
                                             )
@@ -211,7 +211,7 @@ final class CompilerPassImplForTests: XCTestCase {
                     storage: .staticStorage(offset: nil),
                     isMutable: false,
                     visibility: .privateVisibility
-                ),
+                )
             ]),
             VarDeclaration(
                 identifier: Identifier("serialFake"),
@@ -223,7 +223,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
-            ),
+            )
         ])
     }
 
@@ -297,7 +297,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("SerialFake")),
-                                PrimitiveType(.u8),
+                                PrimitiveType(.u8)
                             ]
                         ),
                         argumentNames: ["self", "s"],
@@ -332,7 +332,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PrimitiveType(.u8),
-                                DynamicArrayType(PrimitiveType(.u8)),
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]
                         ),
                         argumentNames: ["self", "s"],
@@ -367,7 +367,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.bool),
                             arguments: [
                                 PointerType(Identifier("SerialFake")),
-                                DynamicArrayType(PrimitiveType(.u8)),
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]
                         ),
                         argumentNames: ["self", "s"],
@@ -434,7 +434,7 @@ final class CompilerPassImplForTests: XCTestCase {
                         StructInitializer.Argument(
                             name: "vtable",
                             expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        ),
+                        )
                     ]
                 ),
                 storage: .automaticStorage(offset: nil),
@@ -482,7 +482,7 @@ final class CompilerPassImplForTests: XCTestCase {
                         StructInitializer.Argument(
                             name: "vtable",
                             expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        ),
+                        )
                     ]
                 ),
                 storage: .automaticStorage(offset: nil),
@@ -509,7 +509,7 @@ final class CompilerPassImplForTests: XCTestCase {
             InitialAssignment(
                 lexpr: Identifier("serial"),
                 rexpr: Identifier("serialFake")
-            ),
+            )
         ])
         let expected = compiledSerialFakeWithImplForAST.appending(children: [
             VarDeclaration(
@@ -538,10 +538,10 @@ final class CompilerPassImplForTests: XCTestCase {
                         StructInitializer.Argument(
                             name: "vtable",
                             expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        ),
+                        )
                     ]
                 )
-            ),
+            )
         ])
         let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
@@ -565,7 +565,7 @@ final class CompilerPassImplForTests: XCTestCase {
                     op: .ampersand,
                     expression: Identifier("serialFake")
                 )
-            ),
+            )
         ])
         let expected = compiledSerialFakeWithImplForAST.appending(children: [
             VarDeclaration(
@@ -594,10 +594,10 @@ final class CompilerPassImplForTests: XCTestCase {
                         StructInitializer.Argument(
                             name: "vtable",
                             expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        ),
+                        )
                     ]
                 )
-            ),
+            )
         ])
         let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
@@ -618,7 +618,7 @@ final class CompilerPassImplForTests: XCTestCase {
             Assignment(
                 lexpr: Identifier("serial"),
                 rexpr: Identifier("serialFake")
-            ),
+            )
         ])
         let expected = compiledSerialFakeWithImplForAST.appending(children: [
             VarDeclaration(
@@ -647,10 +647,10 @@ final class CompilerPassImplForTests: XCTestCase {
                         StructInitializer.Argument(
                             name: "vtable",
                             expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        ),
+                        )
                     ]
                 )
-            ),
+            )
         ])
         let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
@@ -674,7 +674,7 @@ final class CompilerPassImplForTests: XCTestCase {
                     op: .ampersand,
                     expression: Identifier("serialFake")
                 )
-            ),
+            )
         ])
         let expected = compiledSerialFakeWithImplForAST.appending(children: [
             VarDeclaration(
@@ -703,10 +703,10 @@ final class CompilerPassImplForTests: XCTestCase {
                         StructInitializer.Argument(
                             name: "vtable",
                             expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        ),
+                        )
                     ]
                 )
-            ),
+            )
         ])
         let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)

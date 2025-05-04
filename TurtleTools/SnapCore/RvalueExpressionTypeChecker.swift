@@ -1685,7 +1685,7 @@ public class RvalueExpressionTypeChecker {
             StructDeclaration.Member(
                 name: "vtable",
                 type: PointerType(ConstType(Identifier(traitDecl.nameOfVtableType)))
-            ),
+            )
         ]
         let structDecl = StructDeclaration(
             sourceAnchor: traitDecl.sourceAnchor,

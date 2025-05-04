@@ -115,10 +115,10 @@ public final class CompilerPassForIn: CompilerPass {
                                     left: index,
                                     right: one
                                 )
-                            ),
+                            )
                         ]
                     )
-                ),
+                )
             ]
         )
 

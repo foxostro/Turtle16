@@ -88,7 +88,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
             argumentNames: [],
             body: Block(children: [
                 Return(LiteralBool(true)),
-                LiteralBool(false),
+                LiteralBool(false)
             ])
         )
         .reconnect(parent: nil)

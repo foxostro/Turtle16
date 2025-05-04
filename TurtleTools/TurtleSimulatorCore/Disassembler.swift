@@ -41,12 +41,12 @@ public final class Disassembler {
         DecoderGenerator.opcodeBltu: "BLTU",
         DecoderGenerator.opcodeBgtu: "BGTU",
         DecoderGenerator.opcodeAdc: "ADC",
-        DecoderGenerator.opcodeSbc: "SBC",
+        DecoderGenerator.opcodeSbc: "SBC"
     ]
 
     let formatX: Set<Int> = [
         DecoderGenerator.opcodeNop,
-        DecoderGenerator.opcodeHlt,
+        DecoderGenerator.opcodeHlt
     ]
 
     let formatRRI: Set<Int> = [
@@ -56,7 +56,7 @@ public final class Disassembler {
         DecoderGenerator.opcodeAndi,
         DecoderGenerator.opcodeOri,
         DecoderGenerator.opcodeXori,
-        DecoderGenerator.opcodeJalr,
+        DecoderGenerator.opcodeJalr
     ]
 
     let formatIRR: Set<Int> = [
@@ -65,7 +65,7 @@ public final class Disassembler {
 
     let formatRII: Set<Int> = [
         DecoderGenerator.opcodeLi,
-        DecoderGenerator.opcodeLui,
+        DecoderGenerator.opcodeLui
     ]
 
     let formatRRR: Set<Int> = [
@@ -75,7 +75,7 @@ public final class Disassembler {
         DecoderGenerator.opcodeOr,
         DecoderGenerator.opcodeXor,
         DecoderGenerator.opcodeAdc,
-        DecoderGenerator.opcodeSbc,
+        DecoderGenerator.opcodeSbc
     ]
 
     let formatIII: Set<Int> = [
@@ -85,12 +85,12 @@ public final class Disassembler {
         DecoderGenerator.opcodeBlt,
         DecoderGenerator.opcodeBgt,
         DecoderGenerator.opcodeBltu,
-        DecoderGenerator.opcodeBgtu,
+        DecoderGenerator.opcodeBgtu
     ]
 
     let formatXRI: Set<Int> = [
         DecoderGenerator.opcodeCmpi,
-        DecoderGenerator.opcodeJr,
+        DecoderGenerator.opcodeJr
     ]
 
     let formatXRR: Set<Int> = [

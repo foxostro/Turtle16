@@ -61,7 +61,7 @@ final class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
                 name: "Slice",
                 fields: Env(tuples: [
                     ("base", Symbol(type: .u16, storage: .automaticStorage(offset: 0))),
-                    ("count", Symbol(type: .u16, storage: .automaticStorage(offset: 2))),
+                    ("count", Symbol(type: .u16, storage: .automaticStorage(offset: 2)))
                 ])
             )
         )

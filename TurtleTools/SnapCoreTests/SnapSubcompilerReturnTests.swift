@@ -91,7 +91,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
                     lexpr: Identifier("__returnValue"),
                     rexpr: LiteralInt(1)
                 ),
-                Return(),
+                Return()
             ])
         )
     }

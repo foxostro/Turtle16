@@ -43,7 +43,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                         ])
                     )
                 ])
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -68,7 +68,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 body: Block(children: [])
             ),
             TestDeclaration(name: "bar", body: Block(children: [])),
-            TestDeclaration(name: "bar", body: Block(children: [])),
+            TestDeclaration(name: "bar", body: Block(children: []))
         ])
         .reconnect(parent: nil)
 
@@ -89,7 +89,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 storage: .staticStorage(offset: nil),
                 isMutable: true
             ),
-            TestDeclaration(name: "bar", body: Block(children: [])),
+            TestDeclaration(name: "bar", body: Block(children: []))
         ])
         let expected = Block(children: [
             VarDeclaration(
@@ -127,7 +127,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 ),
                 argumentNames: [],
                 body: Block(children: [])
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -149,7 +149,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 argumentNames: [],
                 body: Block(children: [])
             ),
-            Call(callee: Identifier("main"), arguments: []),
+            Call(callee: Identifier("main"), arguments: [])
         ])
         .reconnect(parent: nil)
 
@@ -177,7 +177,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                         rexpr: LiteralInt(42)
                     )
                 ])
-            ),
+            )
         ])
         let expected = Block(children: [
             VarDeclaration(
@@ -202,10 +202,10 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                             rexpr: LiteralInt(42)
                         )
                     ]),
-                    Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")]),
+                    Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
                 ])
             ),
-            Call(callee: Identifier("__testMain"), arguments: []),
+            Call(callee: Identifier("__testMain"), arguments: [])
         ])
 
         let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: "bar")
@@ -241,7 +241,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                         rexpr: LiteralInt(41)
                     )
                 ])
-            ),
+            )
         ])
         let expected = Block(children: [
             VarDeclaration(
@@ -266,10 +266,10 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                             rexpr: LiteralInt(42)
                         )
                     ]),
-                    Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")]),
+                    Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
                 ])
             ),
-            Call(callee: Identifier("__testMain"), arguments: []),
+            Call(callee: Identifier("__testMain"), arguments: [])
         ])
 
         let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: "bar")
@@ -315,7 +315,7 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                 ),
                 argumentNames: [],
                 body: Block(children: [])
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -352,10 +352,10 @@ final class CompilerPassTestDeclarationTests: XCTestCase {
                             rexpr: LiteralInt(42)
                         )
                     ]),
-                    Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")]),
+                    Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
                 ])
             ),
-            Call(callee: Identifier("__testMain"), arguments: []),
+            Call(callee: Identifier("__testMain"), arguments: [])
         ])
         .reconnect(parent: nil)
 

@@ -21,7 +21,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         parser.parse()
         XCTAssertTrue(parser.hasError)
@@ -41,7 +41,7 @@ final class ParserTests: XCTestCase {
     func testAdvanceSkipsPastNextToken() {
         let parser = Parser(tokens: [
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         parser.advance()
         XCTAssertEqual(parser.peek(), TokenEOF())
@@ -61,7 +61,7 @@ final class ParserTests: XCTestCase {
     func testPeekLooksAhead() {
         let parser = Parser(tokens: [
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
 
         XCTAssertEqual(parser.peek(), TokenNewline())
@@ -78,7 +78,7 @@ final class ParserTests: XCTestCase {
     func testAcceptYieldsNilWhenNextTokenFailsToMatchGivenType() {
         let parser = Parser(tokens: [
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept(TokenLet.self))
     }
@@ -86,7 +86,7 @@ final class ParserTests: XCTestCase {
     func testWhenAcceptMatchesTheTypeThenItAdvances() {
         let parser = Parser(tokens: [
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertEqual(parser.accept(TokenNewline.self), TokenNewline())
         XCTAssertEqual(parser.tokens, [TokenEOF()])
@@ -97,7 +97,7 @@ final class ParserTests: XCTestCase {
             TokenLet(),
             TokenIdentifier(),
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept([]))
         XCTAssertEqual(parser.accept([TokenLet.self, TokenIdentifier.self]), TokenLet())
@@ -110,7 +110,7 @@ final class ParserTests: XCTestCase {
             TokenOperator(op: .plus),
             TokenOperator(op: .minus),
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept(operator: .minus))
         XCTAssertEqual(parser.accept(operator: .plus), TokenOperator(op: .plus))
@@ -122,7 +122,7 @@ final class ParserTests: XCTestCase {
             TokenOperator(op: .plus),
             TokenOperator(op: .minus),
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept(operators: []))
         XCTAssertNil(parser.accept(operators: [.eq, .divide]))
@@ -144,7 +144,7 @@ final class ParserTests: XCTestCase {
             TokenLet(),
             TokenIdentifier(),
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertThrowsError(
             try parser.expect(
@@ -200,7 +200,7 @@ final class ParserTests: XCTestCase {
     func testAcceptWillTakeNewlinesWhenThatIsSpecified() {
         let parser = Parser(tokens: [
             TokenNewline(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertEqual(parser.accept(TokenNewline.self), TokenNewline())
     }
@@ -209,7 +209,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenComma(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertEqual(parser.accept(TokenComma.self), TokenComma())
     }
@@ -218,7 +218,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenComma(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertEqual(parser.accept([TokenComma.self, TokenSemicolon.self]), TokenComma())
     }
@@ -227,7 +227,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenOperator(op: .plus),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertEqual(parser.accept(operator: .plus), TokenOperator(op: .plus))
     }
@@ -236,7 +236,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenOperator(op: .plus),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertEqual(parser.accept(operators: [.plus, .minus]), TokenOperator(op: .plus))
     }
@@ -245,7 +245,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenSemicolon(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept(TokenComma.self))
         XCTAssertEqual(parser.peek(), TokenNewline())
@@ -255,7 +255,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenSemicolon(),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept([TokenComma.self]))
         XCTAssertEqual(parser.peek(), TokenNewline())
@@ -265,7 +265,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenOperator(op: .plus),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept(operator: .star))
         XCTAssertEqual(parser.peek(), TokenNewline())
@@ -275,7 +275,7 @@ final class ParserTests: XCTestCase {
         let parser = Parser(tokens: [
             TokenNewline(),
             TokenOperator(op: .plus),
-            TokenEOF(),
+            TokenEOF()
         ])
         XCTAssertNil(parser.accept(operators: [.star]))
         XCTAssertEqual(parser.peek(), TokenNewline())

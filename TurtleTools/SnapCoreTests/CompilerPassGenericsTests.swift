@@ -111,7 +111,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     visibility: .privateVisibility,
                     symbols: funSym
                 ),
-                Identifier("foo[const u16]"),
+                Identifier("foo[const u16]")
             ]
         )
 
@@ -144,7 +144,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 GenericTypeApplication(
                     identifier: Identifier("foo"),
                     arguments: [PrimitiveType(.constU16)]
-                ),
+                )
             ]
         )
 
@@ -180,7 +180,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 Call(
                     callee: Identifier("foo[u16]"),
                     arguments: [PrimitiveType(.u16)]
-                ),
+                )
             ]
         )
 
@@ -213,7 +213,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 Call(
                     callee: Identifier("foo"),
                     arguments: [PrimitiveType(.u16)]
-                ),
+                )
             ]
         )
 
@@ -253,7 +253,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             identifier: Identifier("foo"),
             arguments: [
                 PrimitiveType(.u16),
-                PrimitiveType(.u16),
+                PrimitiveType(.u16)
             ]
         )
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
@@ -298,7 +298,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 identifier: Identifier("foo"),
                 arguments: [
                     PrimitiveType(.constU16),
-                    PrimitiveType(.constU16),
+                    PrimitiveType(.constU16)
                 ]
             )
         )
@@ -375,7 +375,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             expr: PrimitiveType(.u16)
                         )
                     ]
-                ),
+                )
             ]
         )
 
@@ -413,7 +413,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         expr: PrimitiveType(.u16)
                     )
                 ]
-            ),
+            )
         ])
 
         let ast0 = Block(children: [
@@ -445,7 +445,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         expr: PrimitiveType(.u16)
                     )
                 ]
-            ),
+            )
         ])
 
         let ast1 = try CompilerPassGenerics().run(ast0)
@@ -499,7 +499,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: Identifier("MyStruct[u16]"),
                     arguments: [],
                     id: structInitializerID
-                ),
+                )
             ],
             id: outerBlockID
         )
@@ -560,7 +560,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     ),
                     arguments: [],
                     id: structInitializerID
-                ),
+                )
             ],
             id: outerBlockID
         )
@@ -612,7 +612,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 StructInitializer(
                     expr: Identifier("MyStruct[u16]"),
                     arguments: []
-                ),
+                )
             ]
         )
 
@@ -670,7 +670,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         ]
                     ),
                     arguments: []
-                ),
+                )
             ],
             id: expected.id
         )
@@ -763,7 +763,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         ]
                     ),
                     arguments: []
-                ),
+                )
             ])
             .reconnect(parent: nil)
 
@@ -814,7 +814,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 StructInitializer(
                     expr: Identifier("MyStruct[u16]"),
                     arguments: []
-                ),
+                )
             ],
             id: ast0.id
         )
@@ -864,7 +864,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             typeArguments: [],
                             body: Block(children: [
                                 StructDeclaration(StructTypeInfo(name: "T", fields: Env())),
-                                Return(Identifier("arg1")),
+                                Return(Identifier("arg1"))
                             ])
                         )
                     ]
@@ -877,7 +877,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         ]
                     ),
                     arguments: []
-                ),
+                )
             ])
             .reconnect(parent: nil)
 
@@ -942,7 +942,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     ),
                     structTypeExpr: Identifier("MyStruct"),
                     children: []
-                ),
+                )
             ]
         )
 
@@ -1007,7 +1007,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             symbols: funSym
                         )
                     ]
-                ),
+                )
             ]
         )
         let expectedBodyId = ((expected.children[2] as! ImplFor).children[0]).body.id
@@ -1066,7 +1066,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             symbols: funSym
                         )
                     ]
-                ),
+                )
             ],
             id: expected.id
         )
@@ -1122,7 +1122,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     arguments: [
                         LiteralInt(0)
                     ]
-                ),
+                )
             ],
             id: blockId
         )
@@ -1176,7 +1176,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     arguments: [
                         LiteralInt(0)
                     ]
-                ),
+                )
             ],
             id: blockId
         )
@@ -1212,7 +1212,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         ]),
                     visibility: .privateVisibility
                 ),
-                Identifier("foo[const u16]"),
+                Identifier("foo[const u16]")
             ])
             .reconnect(parent: nil)
 
@@ -1260,7 +1260,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     arguments: [
                         PrimitiveType(.u16)
                     ]
-                ),
+                )
             ])
             .reconnect(parent: nil)
 
@@ -1299,7 +1299,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     arguments: [
                         PrimitiveType(.u16)
                     ]
-                ),
+                )
             ])
             .reconnect(parent: nil)
 

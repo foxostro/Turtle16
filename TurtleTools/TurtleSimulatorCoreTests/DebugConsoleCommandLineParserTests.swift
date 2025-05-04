@@ -111,7 +111,7 @@ final class DebugConsoleCommandLineParserTests: XCTestCase {
             InstructionNode(
                 instruction: "x",
                 parameters: [
-                    ParameterSlashed(child: ParameterIdentifier("foo")), ParameterNumber(0x1000),
+                    ParameterSlashed(child: ParameterIdentifier("foo")), ParameterNumber(0x1000)
                 ]
             )
         )

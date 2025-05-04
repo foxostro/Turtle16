@@ -37,7 +37,7 @@ public final class CompilerPassTestDeclaration: CompilerPass {
                     symbols: bodySymbols,
                     children: [
                         testDeclaration.body,
-                        Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")]),
+                        Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
                     ]
                 )
                 let testRunnerMain = FunctionDeclaration(
@@ -53,7 +53,7 @@ public final class CompilerPassTestDeclaration: CompilerPass {
                 )
                 children += [
                     testRunnerMain,
-                    Call(callee: Identifier(kTestMainFunctionName), arguments: []),
+                    Call(callee: Identifier(kTestMainFunctionName), arguments: [])
                 ]
             }
             else {

@@ -117,7 +117,7 @@ class LexerTests: XCTestCase {
             [
                 TokenNewline(lineNumber: 1, lexeme: "\n"),
                 TokenNewline(lineNumber: 2, lexeme: "\n"),
-                TokenEOF(lineNumber: 3, lexeme: ""),
+                TokenEOF(lineNumber: 3, lexeme: "")
             ]
         )
     }
@@ -165,7 +165,7 @@ class LexerTests: XCTestCase {
                 let token = TokenNewline(lineNumber: tokenizer.lineNumber, lexeme: $0)
                 tokenizer.lineNumber += 1
                 return token
-            },
+            }
         ]
         tokenizer.scanTokens()
         XCTAssertEqual(
@@ -173,7 +173,7 @@ class LexerTests: XCTestCase {
             [
                 TokenComma(lineNumber: 1, lexeme: ","),
                 TokenNewline(lineNumber: 1, lexeme: "\n"),
-                TokenEOF(lineNumber: 2, lexeme: ""),
+                TokenEOF(lineNumber: 2, lexeme: "")
             ]
         )
     }

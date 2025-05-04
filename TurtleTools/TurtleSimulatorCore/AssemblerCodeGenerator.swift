@@ -315,7 +315,7 @@ public final class AssemblerCodeGenerator {
                     mask: 0xff00,
                     shift: 8,
                     offset: instructions.count + 1
-                ),
+                )
             ]
         }
         instructions.append(try gen.li(destination, lo))

@@ -173,7 +173,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
                         returnType: PrimitiveType(.void),
                         arguments: [
                             PointerType(Identifier("Serial")),
-                            DynamicArrayType(PrimitiveType(.u8)),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ]
                     )
                 )
@@ -213,7 +213,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
                                 returnType: PrimitiveType(.void),
                                 arguments: [
                                     PointerType(Identifier("Serial")),
-                                    DynamicArrayType(PrimitiveType(.u8)),
+                                    DynamicArrayType(PrimitiveType(.u8))
                                 ]
                             ),
                             argumentNames: ["self", "s"],

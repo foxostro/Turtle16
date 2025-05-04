@@ -67,7 +67,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
         let step0 = cell.step(
             Input(inputs: [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         XCTAssertEqual(step0, 1)
@@ -76,7 +76,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
         let step1 = cell.step(
             Input(inputs: [
                 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil,
-                nil, nil,
+                nil, nil
             ])
         )
         XCTAssertEqual(step1, 0)
@@ -103,7 +103,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             )
@@ -114,7 +114,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             )
@@ -125,7 +125,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             )
@@ -136,7 +136,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             )
@@ -147,7 +147,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             )
@@ -158,7 +158,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             )
@@ -183,7 +183,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 ar: 1
             )
@@ -209,7 +209,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 ar: 1
             )
@@ -236,7 +236,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 ar: 1
             )
@@ -248,7 +248,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 sp: 1
             )
@@ -260,7 +260,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 sp: 1
             )
@@ -287,7 +287,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 ar: 1
             )
@@ -299,7 +299,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 sp: 1
             )
@@ -311,7 +311,7 @@ final class OutputLogicMacroCellTests: XCTestCase {
             Input(
                 inputs: [
                     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil,
-                    nil, nil, nil,
+                    nil, nil, nil
                 ],
                 sp: 1
             )

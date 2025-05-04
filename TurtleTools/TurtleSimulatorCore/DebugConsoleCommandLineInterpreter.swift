@@ -273,7 +273,7 @@ public final class DebugConsoleCommandLineInterpreter {
     fileprivate func load(_ what: String, _ url: URL) {
         let validDestinations: Set<String> = [
             "program", "program_hi", "program_lo", "data", "OpcodeDecodeROM1", "OpcodeDecodeROM2",
-            "OpcodeDecodeROM3",
+            "OpcodeDecodeROM3"
         ]
         guard validDestinations.contains(what) else {
             printHelp(.load)

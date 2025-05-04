@@ -41,7 +41,7 @@ final class CompilerPassImportTests: XCTestCase {
     func testInjectEmptyModule() throws {
         let expected = Block(children: [
             Module(name: "Foo", block: Block()),
-            Import(moduleName: "Foo"),
+            Import(moduleName: "Foo")
         ])
         let compiler = CompilerPassImport(
             injectModules: [("Foo", "")],
@@ -94,7 +94,7 @@ final class CompilerPassImportTests: XCTestCase {
         let expected = Block(children: [
             Module(name: "Foo", block: Block()),
             Import(moduleName: "Foo"),
-            Import(moduleName: "Foo"),
+            Import(moduleName: "Foo")
         ])
         let compiler = CompilerPassImport(
             injectModules: [("Foo", "")],
@@ -103,7 +103,7 @@ final class CompilerPassImportTests: XCTestCase {
         let input = Block(
             children: [
                 Import(moduleName: "Foo"),
-                Import(moduleName: "Foo"),
+                Import(moduleName: "Foo")
             ],
             id: expected.id
         )
@@ -120,12 +120,12 @@ final class CompilerPassImportTests: XCTestCase {
                     Import(moduleName: "Bar")
                 ])
             ),
-            Import(moduleName: "Foo"),
+            Import(moduleName: "Foo")
         ])
         let compiler = CompilerPassImport(
             injectModules: [
                 ("Foo", "import Bar\n"),
-                ("Bar", ""),
+                ("Bar", "")
             ],
             runtimeSupport: nil
         )

@@ -170,7 +170,7 @@ final class ImplScannerTests: XCTestCase {
                         )
                     ]
                 )
-            ]),
+            ])
         ])
         .reconnect(parent: nil)
 

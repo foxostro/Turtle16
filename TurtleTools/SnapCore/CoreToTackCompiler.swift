@@ -83,7 +83,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             frameLookupMode: .set(Frame()),
             tuples: [
                 (kSliceBase, Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
-                (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset)),
+                (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
             ]
         )
         kSliceType = .structType(StructTypeInfo(name: kSliceName, fields: structSymbols))
@@ -145,7 +145,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     instruction: .ret,
                     sourceAnchor: node.sourceAnchor,
                     symbols: symbols
-                ),
+                )
             ]
         )
     }
@@ -173,7 +173,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     sourceAnchor: node.sourceAnchor,
                     symbols: symbols
                 ),
-                subroutineBody,
+                subroutineBody
             ]
         )
         subroutines.append(subroutine)
@@ -431,7 +431,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     LabelDeclaration(
                         sourceAnchor: expr.sourceAnchor,
                         identifier: labelPassesLowerBoundsCheck
-                    ),
+                    )
                 ]
 
                 // Upper bound
@@ -486,7 +486,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     LabelDeclaration(
                         sourceAnchor: expr.sourceAnchor,
                         identifier: labelPassesUpperBoundsCheck
-                    ),
+                    )
                 ]
             }
 
@@ -523,7 +523,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         ),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols
-                    ),
+                    )
                 ]
             }
         }
@@ -743,7 +743,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             ),
             arguments: [
                 StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
-                StructInitializer.Argument(name: kSliceCount, expr: countExpr),
+                StructInitializer.Argument(name: kSliceCount, expr: countExpr)
             ]
         )
         let bitcastExpr = Bitcast(
@@ -973,7 +973,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             ),
             arguments: [
                 StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
-                StructInitializer.Argument(name: kSliceCount, expr: countExpr),
+                StructInitializer.Argument(name: kSliceCount, expr: countExpr)
             ]
         )
         let bitcastExpr = Bitcast(
@@ -1394,7 +1394,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     instruction: .ststr(peekRegister().unwrapPointer!, expr.value),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols
-                ),
+                )
             ]
         )
     }
@@ -1747,7 +1747,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     }(popRegister()),
                     sourceAnchor: rexpr.sourceAnchor,
                     symbols: symbols
-                ),
+                )
             ]
             let countReg = nextRegister(type: .w).unwrap16!
             children += [
@@ -1760,7 +1760,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     instruction: .sw(countReg, dst.unwrapPointer!, kSliceCountOffset),
                     sourceAnchor: rexpr.sourceAnchor,
                     symbols: symbols
-                ),
+                )
             ]
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
@@ -1794,7 +1794,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     ),
                     sourceAnchor: rexpr.sourceAnchor,
                     symbols: symbols
-                ),
+                )
             ]
             if targetType.isPrimitive {
                 children += [
@@ -1823,7 +1823,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         }(popRegister()),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols
-                    ),
+                    )
                 ]
             }
             else {
@@ -1857,7 +1857,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         ),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols
-                    ),
+                    )
                 ]
             }
             pushRegister(tempUnionAddr)
@@ -1909,7 +1909,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     LabelDeclaration(
                         sourceAnchor: rexpr.sourceAnchor,
                         identifier: labelSkipPanic
-                    ),
+                    )
                 ]
             }
 
@@ -1997,7 +1997,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                                     identifier: nameOfVtableInstance
                                 )
                             )
-                        ),
+                        )
                     ]
                 )
             )
@@ -2050,7 +2050,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                                     identifier: nameOfVtableInstance
                                 )
                             )
-                        ),
+                        )
                     ]
                 )
             )
@@ -2195,7 +2195,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         instruction: .subb(c.unwrap8!, a.unwrap8!, b.unwrap8!),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols
-                    ),
+                    )
                 ]
 
             case (.u16, .minus),
@@ -2213,7 +2213,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         instruction: .subw(c.unwrap16!, a.unwrap16!, b.unwrap16!),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols
-                    ),
+                    )
                 ]
 
             case (.u8, .tilde),
@@ -2322,7 +2322,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                             instruction: ins,
                             sourceAnchor: binary.sourceAnchor,
                             symbols: symbols
-                        ),
+                        )
                     ]
                 )
             }
@@ -2744,7 +2744,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 rexpr: binary.right,
                 ltype: .bool,
                 isExplicitCast: false
-            ),
+            )
         ]
         let b = popRegister()
         let c = nextRegister(type: .o)
@@ -2777,7 +2777,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             LabelDeclaration(
                 sourceAnchor: binary.sourceAnchor,
                 identifier: labelTail
-            ),
+            )
         ]
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
@@ -2800,7 +2800,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 rexpr: binary.right,
                 ltype: .bool,
                 isExplicitCast: false
-            ),
+            )
         ]
         let b = popRegister()
         let c = nextRegister(type: .o)
@@ -2833,7 +2833,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             LabelDeclaration(
                 sourceAnchor: binary.sourceAnchor,
                 identifier: labelTail
-            ),
+            )
         ]
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
@@ -2985,14 +2985,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         let size = memoryLayoutStrategy.sizeof(type: ltype)
         let result: Seq
-        
+
         // If the symbol has register storage but currently unbound then bind it
         // now to the next available Tack register.
         if let lexpr = expr.lexpr as? Identifier,
-           let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
-           let primitiveType = symbol.type.primitiveType,
-           symbol.storage.isRegisterStorage,
-           symbol.storage.register == nil
+            let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
+            let primitiveType = symbol.type.primitiveType,
+            symbol.storage.isRegisterStorage,
+            symbol.storage.register == nil
         {
             let nextReg = nextRegister(type: primitiveType)
             let nextSym = symbol.withStorage(.registerStorage(nextReg))
@@ -3001,8 +3001,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         if ltype.isPrimitive {
             if let lexpr = expr.lexpr as? Identifier,
-               let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
-               symbol.storage.isRegisterStorage
+                let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
+                symbol.storage.isRegisterStorage
             {
                 // In this case, the destination symbol is of a primitive type
                 // with storage in an explicitly defined register. Instead of
@@ -3041,7 +3041,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                             instruction: mov!,
                             sourceAnchor: expr.sourceAnchor,
                             symbols: symbols
-                        ),
+                        )
                     ]
                 )
 
@@ -3079,7 +3079,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                             instruction: storeIns,
                             sourceAnchor: expr.sourceAnchor,
                             symbols: symbols
-                        ),
+                        )
                     ]
                 )
             }
@@ -3093,7 +3093,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         }
         else if let structInitializer = expr.rexpr as? StructInitializer {
-            
+
             let children = try structInitializer.arguments.map {
                 let g = Get(
                     sourceAnchor: expr.lexpr.sourceAnchor,
@@ -3142,7 +3142,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         instruction: .memcpy(dst.unwrapPointer!, src.unwrapPointer!, size),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols
-                    ),
+                    )
                 ]
             )
         }
@@ -3607,7 +3607,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     instruction: .callptr(popRegister().unwrapPointer!),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols
-                ),
+                )
             ]
 
         default:
@@ -3627,7 +3627,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     ),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols
-                ),
+                )
             ]
         }
 
@@ -3658,7 +3658,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 sourceAnchor: expr.sourceAnchor,
                 children: [
                     innerSeq,
-                    try rvalue(identifier: tempRetId!),
+                    try rvalue(identifier: tempRetId!)
                 ]
             )
         }
@@ -3717,7 +3717,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                             arguments: [tempSelf] + expr.arguments
                         ),
                         typ: match.fnType
-                    ),
+                    )
                 ]
             )
         }

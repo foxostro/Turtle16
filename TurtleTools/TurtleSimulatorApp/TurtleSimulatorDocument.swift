@@ -45,7 +45,7 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
         let url = Bundle(for: type(of: self)).url(forResource: "example", withExtension: "bin")!
         debugConsole.interpreter.run(instructions: [
             .reset(type: .soft),
-            .load("program", url),
+            .load("program", url)
         ])
 
         debugger = DebugConsoleActor(debugConsole: debugConsole)

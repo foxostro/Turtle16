@@ -211,7 +211,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -224,7 +224,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.MemStore,
                 DecoderGenerator.AssertStoreOp,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -236,7 +236,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WriteBackSrc(.storeOp),
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
-                DecoderGenerator.WBEN,
+                DecoderGenerator.WBEN
             ]
         )
         makeControlWord(
@@ -247,7 +247,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.AssertStoreOp,
                 DecoderGenerator.WriteBackSrc(.storeOp),
                 DecoderGenerator.WRH,
-                DecoderGenerator.WBEN,
+                DecoderGenerator.WBEN
             ]
         )
         makeControlWord(
@@ -258,7 +258,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
                 DecoderGenerator.FI,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -273,7 +273,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -288,7 +288,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -303,7 +303,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -318,7 +318,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -333,7 +333,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
                 DecoderGenerator.LeftOperandIsUnused,
-                DecoderGenerator.RightOperandIsUnused,
+                DecoderGenerator.RightOperandIsUnused
             ]
         )
         makeControlWord(
@@ -345,7 +345,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -355,7 +355,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.SelRightOp(.imm_4_0),
                 DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
                 DecoderGenerator.FI,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -369,7 +369,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -383,7 +383,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -397,7 +397,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -411,7 +411,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -425,7 +425,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -434,7 +434,7 @@ public struct DecoderGenerator {
             [
                 DecoderGenerator.SelRightOp(.imm_10_0),
                 DecoderGenerator.ALUControl(fn: .or, rs: .zb, c0: 0),
-                DecoderGenerator.J,
+                DecoderGenerator.J
             ]
         )
         makeControlWord(
@@ -445,7 +445,7 @@ public struct DecoderGenerator {
                 DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
                 DecoderGenerator.J,
                 DecoderGenerator.JABS,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         makeControlWord(
@@ -461,13 +461,13 @@ public struct DecoderGenerator {
                 DecoderGenerator.WRL,
                 DecoderGenerator.WRH,
                 DecoderGenerator.WBEN,
-                DecoderGenerator.LeftOperandIsUnused,
+                DecoderGenerator.LeftOperandIsUnused
             ]
         )
         let signalsForRelativeJump: [Any] = [
             DecoderGenerator.SelRightOp(.imm_10_0),
             DecoderGenerator.ALUControl(fn: .add, rs: .zb, c0: 0),
-            DecoderGenerator.J,
+            DecoderGenerator.J
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -577,7 +577,7 @@ public struct DecoderGenerator {
                                 DecoderGenerator.WRH,
                                 DecoderGenerator.WBEN,
                                 DecoderGenerator.LeftOperandIsUnused,
-                                DecoderGenerator.RightOperandIsUnused,
+                                DecoderGenerator.RightOperandIsUnused
                             ]
                         )
                         makeControlWord(
@@ -598,7 +598,7 @@ public struct DecoderGenerator {
                                 DecoderGenerator.WRH,
                                 DecoderGenerator.WBEN,
                                 DecoderGenerator.LeftOperandIsUnused,
-                                DecoderGenerator.RightOperandIsUnused,
+                                DecoderGenerator.RightOperandIsUnused
                             ]
                         )
 
@@ -620,7 +620,7 @@ public struct DecoderGenerator {
                                 DecoderGenerator.WRH,
                                 DecoderGenerator.WBEN,
                                 DecoderGenerator.LeftOperandIsUnused,
-                                DecoderGenerator.RightOperandIsUnused,
+                                DecoderGenerator.RightOperandIsUnused
                             ]
                         )
                         makeControlWord(
@@ -641,7 +641,7 @@ public struct DecoderGenerator {
                                 DecoderGenerator.WRH,
                                 DecoderGenerator.WBEN,
                                 DecoderGenerator.LeftOperandIsUnused,
-                                DecoderGenerator.RightOperandIsUnused,
+                                DecoderGenerator.RightOperandIsUnused
                             ]
                         )
                     }  // v

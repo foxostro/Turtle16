@@ -90,7 +90,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
             liveIntervals: [
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr100", physicalRegisterName: nil),
                 LiveInterval(range: 1..<2, virtualRegisterName: "vr300", physicalRegisterName: nil),
-                LiveInterval(range: 2..<3, virtualRegisterName: "vr200", physicalRegisterName: nil),
+                LiveInterval(range: 2..<3, virtualRegisterName: "vr200", physicalRegisterName: nil)
             ]
         )
         XCTAssertEqual(
@@ -110,7 +110,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                     range: 2..<3,
                     virtualRegisterName: "vr200",
                     physicalRegisterName: "r0"
-                ),
+                )
             ]
         )
     }
@@ -122,7 +122,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr0", physicalRegisterName: nil),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr1", physicalRegisterName: nil),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr2", physicalRegisterName: nil),
-                LiveInterval(range: 0..<1, virtualRegisterName: "vr3", physicalRegisterName: nil),
+                LiveInterval(range: 0..<1, virtualRegisterName: "vr3", physicalRegisterName: nil)
             ]
         )
         XCTAssertEqual(
@@ -131,7 +131,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr0", physicalRegisterName: "r0"),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr1", physicalRegisterName: "r1"),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr2", physicalRegisterName: "r2"),
-                LiveInterval(range: 0..<1, virtualRegisterName: "vr3", physicalRegisterName: "r3"),
+                LiveInterval(range: 0..<1, virtualRegisterName: "vr3", physicalRegisterName: "r3")
             ]
         )
     }
@@ -144,7 +144,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr1", physicalRegisterName: nil),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr2", physicalRegisterName: nil),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr3", physicalRegisterName: nil),
-                LiveInterval(range: 0..<1, virtualRegisterName: "vr4", physicalRegisterName: nil),
+                LiveInterval(range: 0..<1, virtualRegisterName: "vr4", physicalRegisterName: nil)
             ]
         )
         XCTAssertEqual(
@@ -159,7 +159,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                     virtualRegisterName: "vr4",
                     physicalRegisterName: nil,
                     spillSlot: 0
-                ),
+                )
             ]
         )
     }
@@ -172,7 +172,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr1", physicalRegisterName: nil),
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr2", physicalRegisterName: nil),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr3", physicalRegisterName: nil),
-                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: nil),
+                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: nil)
             ]
         )
         XCTAssertEqual(
@@ -182,7 +182,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr1", physicalRegisterName: "r1"),
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr2", physicalRegisterName: "r2"),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr3", physicalRegisterName: "r3"),
-                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: "r3"),
+                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: "r3")
             ]
         )
     }
@@ -195,7 +195,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr1", physicalRegisterName: nil),
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr2", physicalRegisterName: nil),
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr3", physicalRegisterName: nil),
-                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: nil),
+                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: nil)
             ]
         )
         XCTAssertEqual(
@@ -210,7 +210,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                     physicalRegisterName: nil,
                     spillSlot: 0
                 ),
-                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: "r3"),
+                LiveInterval(range: 1..<2, virtualRegisterName: "vr4", physicalRegisterName: "r3")
             ]
         )
     }
@@ -228,7 +228,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                     range: 0..<Int.max,
                     virtualRegisterName: "vr101",
                     physicalRegisterName: nil
-                ),
+                )
             ]
         )
         XCTAssertEqual(
@@ -245,7 +245,7 @@ final class LinearScanRegisterAllocatorTests: XCTestCase {
                     virtualRegisterName: "vr101",
                     physicalRegisterName: nil,
                     spillSlot: 1
-                ),
+                )
             ]
         )
     }

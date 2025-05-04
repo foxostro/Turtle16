@@ -36,7 +36,7 @@ final class AssemblerLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNewline(sourceAnchor: lineMapper.anchor(9, 10)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(10, 10)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(10, 10))
             ]
         )
     }
@@ -54,7 +54,7 @@ final class AssemblerLexerTests: XCTestCase {
                 TokenParenLeft(sourceAnchor: lineMapper.anchor(4, 5)),
                 TokenIdentifier(sourceAnchor: lineMapper.anchor(5, 7)),
                 TokenParenRight(sourceAnchor: lineMapper.anchor(7, 8)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(8, 8)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(8, 8))
             ]
         )
     }
@@ -72,7 +72,7 @@ final class AssemblerLexerTests: XCTestCase {
                 TokenParenLeft(sourceAnchor: lineMapper.anchor(6, 7)),
                 TokenIdentifier(sourceAnchor: lineMapper.anchor(7, 9)),
                 TokenParenRight(sourceAnchor: lineMapper.anchor(9, 10)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(10, 10)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(10, 10))
             ]
         )
     }

@@ -36,7 +36,7 @@ final class ProductTermFuseMapTests: XCTestCase {
                 1, 1, 1, 1,
                 1, 1, 1, 1,
                 1, 1, 1, 1,
-                1, 1, 1, 1,
+                1, 1, 1, 1
             ]
         )
     }
@@ -46,7 +46,7 @@ final class ProductTermFuseMapTests: XCTestCase {
             fuseListBitmap: 0b1011_11111111_11111111_11111111_11111111_11111111
         )
         let productTerm = map.evaluate([
-            0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ])
         XCTAssertEqual(
             productTerm,
@@ -61,7 +61,7 @@ final class ProductTermFuseMapTests: XCTestCase {
                 1, 1, 1, 1,
                 1, 1, 1, 1,
                 1, 1, 1, 1,
-                1, 1, 1, 1,
+                1, 1, 1, 1
             ]
         )
     }
@@ -71,7 +71,7 @@ final class ProductTermFuseMapTests: XCTestCase {
             fuseListBitmap: 0b0111_01111111_11111111_11111111_11111111_11111111
         )
         let productTerm = map.evaluate([
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ])
         XCTAssertEqual(
             productTerm,
@@ -86,7 +86,7 @@ final class ProductTermFuseMapTests: XCTestCase {
                 1, 1, 1, 1,
                 1, 1, 1, 1,
                 1, 1, 1, 1,
-                1, 1, 1, 1,
+                1, 1, 1, 1
             ]
         )
     }
@@ -96,7 +96,7 @@ final class ProductTermFuseMapTests: XCTestCase {
             fuseListBitmap: 0b0111_10111101_11101111_11111111_11111111_11111111
         )
         let productTerm = map.evaluate([
-            0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+            0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0
         ])
         XCTAssertEqual(
             productTerm,
@@ -111,7 +111,7 @@ final class ProductTermFuseMapTests: XCTestCase {
                 1, 1, 1, 1,
                 1, 1, 1, 1,
                 1, 1, 1, 1,
-                1, 1, 1, 1,
+                1, 1, 1, 1
             ]
         )
     }

@@ -182,7 +182,7 @@ public class ProgrammableLogicDecoder: NSObject, InstructionDecoder {
             nil,
             nil,
             nil,
-            nil,
+            nil
         ]
 
         let out1 = gal1.step(inputs: inputs)

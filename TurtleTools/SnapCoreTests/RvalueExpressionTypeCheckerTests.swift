@@ -25,7 +25,7 @@ extension Env {
                     (
                         "limit",
                         Symbol(type: .u16, storage: .automaticStorage(offset: 1 * sizeOfU16))
-                    ),
+                    )
                 ])
             )
         )
@@ -4764,7 +4764,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
         let symbols = Env(tuples: [
             ("src", Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0010)),
-            ("dst", Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010)),
+            ("dst", Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "dst", right: Identifier("src"))
@@ -5829,7 +5829,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             arrayType: ArrayType(count: LiteralInt(2), elementType: PrimitiveType(.bool)),
             elements: [
                 LiteralInt(0),
-                LiteralBool(false),
+                LiteralBool(false)
             ]
         )
         let typeChecker = RvalueExpressionTypeChecker()
@@ -5851,7 +5851,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             elements: [
                 LiteralInt(0),
                 LiteralInt(1),
-                LiteralInt(2),
+                LiteralInt(2)
             ]
         )
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
@@ -5866,7 +5866,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             elements: [
                 LiteralInt(0),
                 LiteralInt(0),
-                LiteralInt(1000),
+                LiteralInt(1000)
             ]
         )
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
@@ -5879,7 +5879,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             elements: [
                 ExprUtils.makeU8(value: 0),
                 ExprUtils.makeU8(value: 0),
-                ExprUtils.makeU8(value: 0),
+                ExprUtils.makeU8(value: 0)
             ]
         )
         let typeChecker = RvalueExpressionTypeChecker()
@@ -5896,7 +5896,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             elements: [
                 LiteralInt(-1),
                 LiteralInt(-2),
-                LiteralInt(-3),
+                LiteralInt(-3)
             ]
         )
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
@@ -5911,7 +5911,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             elements: [
                 LiteralInt(0),
                 LiteralInt(-1),
-                LiteralInt(-2),
+                LiteralInt(-2)
             ]
         )
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
@@ -5926,7 +5926,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             elements: [
                 LiteralInt(-1000),
                 LiteralInt(-2000),
-                LiteralInt(-3000),
+                LiteralInt(-3000)
             ]
         )
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
@@ -5941,7 +5941,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             elements: [
                 LiteralInt(1000),
                 LiteralInt(-2000),
-                LiteralInt(-3000),
+                LiteralInt(-3000)
             ]
         )
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
@@ -5957,7 +5957,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                     offset: 0x0010
                 )
             ),
-            ("bar", Symbol(type: .array(count: nil, elementType: .u16), offset: 0x0012)),
+            ("bar", Symbol(type: .array(count: nil, elementType: .u16), offset: 0x0012))
         ])
         let expr = ExprUtils.makeAssignment(name: "bar", right: Identifier("foo"))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5978,7 +5978,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 elements: [
                     ExprUtils.makeU8(value: 0),
                     ExprUtils.makeU8(value: 1),
-                    ExprUtils.makeU8(value: 2),
+                    ExprUtils.makeU8(value: 2)
                 ]
             ),
             member: Identifier("length")
@@ -5998,7 +5998,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 elements: [
                     ExprUtils.makeU8(value: 0),
                     ExprUtils.makeU8(value: 1),
-                    ExprUtils.makeU8(value: 2),
+                    ExprUtils.makeU8(value: 2)
                 ]
             ),
             member: Identifier("count")
@@ -6201,14 +6201,14 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("Foo"),
             arguments: [
                 Arg(name: "bar", expr: LiteralInt(0)),
-                Arg(name: "baz", expr: LiteralInt(0)),
+                Arg(name: "baz", expr: LiteralInt(0))
             ]
         )
         let typ = StructTypeInfo(
             name: "Foo",
             fields: Env(tuples: [
                 ("bar", Symbol(type: .u16, storage: .automaticStorage(offset: 0))),
-                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 0))),
+                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 0)))
             ])
         )
         let symbols = Env(typeDict: ["Foo": .structType(typ)])
@@ -6222,7 +6222,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("Foo"),
             arguments: [
                 Arg(name: "bar", expr: LiteralInt(0)),
-                Arg(name: "bar", expr: LiteralInt(0)),
+                Arg(name: "bar", expr: LiteralInt(0))
             ]
         )
         let typ = StructTypeInfo(
@@ -6250,7 +6250,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             name: "Foo",
             fields: Env(tuples: [
                 ("bar", Symbol(type: .u16, storage: .automaticStorage(offset: 0))),
-                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 2))),
+                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 2)))
             ])
         )
         let symbols = Env(typeDict: ["Foo": .structType(typ)])
@@ -6401,14 +6401,14 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             PrimitiveType(.u8),
             PrimitiveType(.u16),
             PrimitiveType(.bool),
-            ArrayType(count: LiteralInt(5), elementType: PrimitiveType(.u8)),
+            ArrayType(count: LiteralInt(5), elementType: PrimitiveType(.u8))
         ])
         let expected: SymbolType = .unionType(
             UnionTypeInfo([
                 .u8,
                 .u16,
                 .bool,
-                .array(count: 5, elementType: .u8),
+                .array(count: 5, elementType: .u8)
             ])
         )
         let typeChecker = TypeContextTypeChecker()
@@ -6431,7 +6431,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 PrimitiveType(.u8),
                 PrimitiveType(.u16),
                 PrimitiveType(.bool),
-                ArrayType(count: LiteralInt(5), elementType: PrimitiveType(.u8)),
+                ArrayType(count: LiteralInt(5), elementType: PrimitiveType(.u8))
             ])
         )
         let expected: SymbolType = .unionType(
@@ -6439,7 +6439,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 .arithmeticType(.immutableInt(.u8)),
                 .arithmeticType(.immutableInt(.u16)),
                 .constBool,
-                .array(count: 5, elementType: .arithmeticType(.immutableInt(.u8))),
+                .array(count: 5, elementType: .arithmeticType(.immutableInt(.u8)))
             ])
         )
         let typeChecker = TypeContextTypeChecker()
@@ -6587,7 +6587,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("Range"),
             arguments: [
                 StructInitializer.Argument(name: "begin", expr: LiteralInt(1)),
-                StructInitializer.Argument(name: "limit", expr: LiteralInt(2)),
+                StructInitializer.Argument(name: "limit", expr: LiteralInt(2))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -6607,7 +6607,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("Range"),
             arguments: [
                 StructInitializer.Argument(name: "begin", expr: LiteralInt(0)),
-                StructInitializer.Argument(name: "limit", expr: LiteralInt(0)),
+                StructInitializer.Argument(name: "limit", expr: LiteralInt(0))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -6668,7 +6668,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                     ),
                     offset: addressOfBar
                 )
-            ),
+            )
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -6705,7 +6705,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testAssignment_automatic_conversion_from_object_to_pointer() {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.u16), storage: .staticStorage(offset: 0x1000))),
-            ("bar", Symbol(type: .u16, storage: .staticStorage(offset: 0x2000))),
+            ("bar", Symbol(type: .u16, storage: .staticStorage(offset: 0x2000)))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = Assignment(
@@ -6766,7 +6766,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 Symbol(type: .structType(StructTypeInfo(name: "", fields: Env())))
             ),
             ("bar", Symbol(type: .structType(StructTypeInfo(name: "Bar", fields: Env())))),
-            ("foo", Symbol(type: traitObjectType)),
+            ("foo", Symbol(type: traitObjectType))
         ])
 
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -6861,7 +6861,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("foo"),
             arguments: [
                 PrimitiveType(.u16),
-                PrimitiveType(.u16),
+                PrimitiveType(.u16)
             ]
         )
 
@@ -7102,7 +7102,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("foo"),
             arguments: [
                 PrimitiveType(.u16),
-                PrimitiveType(.u16),
+                PrimitiveType(.u16)
             ]
         )
 
@@ -7287,7 +7287,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("Foo"),
             arguments: [
                 PrimitiveType(.u16),
-                PrimitiveType(.u16),
+                PrimitiveType(.u16)
             ]
         )
 
@@ -7433,7 +7433,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testEseq_MultipleChildren() throws {
         let expr = Eseq(children: [
             ExprUtils.makeBool(value: true),
-            ExprUtils.makeU16(value: 1),
+            ExprUtils.makeU16(value: 1)
         ])
         let result = try RvalueExpressionTypeChecker().check(expression: expr)
         XCTAssertEqual(result, .u16)

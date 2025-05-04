@@ -182,7 +182,7 @@ final class SnapParserTests: XCTestCase {
             ),
             elements: [
                 Identifier(sourceAnchor: parser.lineMapper.anchor(17, 20), identifier: "foo"),
-                Identifier(sourceAnchor: parser.lineMapper.anchor(22, 25), identifier: "foo"),
+                Identifier(sourceAnchor: parser.lineMapper.anchor(22, 25), identifier: "foo")
             ]
         )
         let expected = LiteralArray(
@@ -341,7 +341,7 @@ final class SnapParserTests: XCTestCase {
             elements: [
                 LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1),
                 LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 2),
-                LiteralInt(sourceAnchor: parser.lineMapper.anchor(22, 23), value: 3),
+                LiteralInt(sourceAnchor: parser.lineMapper.anchor(22, 23), value: 3)
             ]
         )
         let expected = VarDeclaration(
@@ -1153,11 +1153,11 @@ final class SnapParserTests: XCTestCase {
                         sourceAnchor: parser.lineMapper.anchor(20, 35),
                         children: [
                             LiteralInt(sourceAnchor: parser.lineMapper.anchor(26, 27), value: 3),
-                            LiteralInt(sourceAnchor: parser.lineMapper.anchor(32, 33), value: 4),
+                            LiteralInt(sourceAnchor: parser.lineMapper.anchor(32, 33), value: 4)
                         ]
                     )
                 ),
-                LiteralInt(sourceAnchor: parser.lineMapper.anchor(36, 37), value: 5),
+                LiteralInt(sourceAnchor: parser.lineMapper.anchor(36, 37), value: 5)
             ]
         )
     }
@@ -1620,7 +1620,7 @@ final class SnapParserTests: XCTestCase {
                     ),
                     arguments: [
                         LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 1),
-                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 2),
+                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(7, 8), value: 2)
                     ]
                 )
             ]
@@ -1645,7 +1645,7 @@ final class SnapParserTests: XCTestCase {
                         ),
                         arguments: [
                             LiteralInt(sourceAnchor: parser.lineMapper.anchor(8, 9), value: 1),
-                            LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2),
+                            LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 2)
                         ]
                     )
                 )
@@ -1893,7 +1893,7 @@ final class SnapParserTests: XCTestCase {
                             PrimitiveType(
                                 sourceAnchor: parser.lineMapper.anchor(23, 27),
                                 typ: .bool
-                            ),
+                            )
                         ]
                     ),
                     argumentNames: ["bar", "baz"],
@@ -2057,7 +2057,7 @@ final class SnapParserTests: XCTestCase {
                     ),
                     arguments: [
                         LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 17), value: 0x0010),
-                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 23), value: 0xab),
+                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 23), value: 0xab)
                     ]
                 )
             ]
@@ -2079,7 +2079,7 @@ final class SnapParserTests: XCTestCase {
                     ),
                     arguments: [
                         LiteralInt(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
-                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(23, 24), value: 7),
+                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(23, 24), value: 7)
                     ]
                 )
             ]
@@ -2102,7 +2102,7 @@ final class SnapParserTests: XCTestCase {
                     arguments: [
                         LiteralInt(sourceAnchor: parser.lineMapper.anchor(15, 21), value: 0xffff),
                         LiteralInt(sourceAnchor: parser.lineMapper.anchor(23, 27), value: 0xff),
-                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(29, 30), value: 0),
+                        LiteralInt(sourceAnchor: parser.lineMapper.anchor(29, 30), value: 0)
                     ]
                 )
             ]
@@ -2350,7 +2350,7 @@ final class SnapParserTests: XCTestCase {
                 StructDeclaration.Member(
                     name: "qux",
                     type: PrimitiveType(sourceAnchor: parser.lineMapper.anchor(49, 53), typ: .bool)
-                ),
+                )
             ]
         )
         XCTAssertEqual(ast.children.first, expected)
@@ -2391,7 +2391,7 @@ final class SnapParserTests: XCTestCase {
                 StructDeclaration.Member(
                     name: "qux",
                     type: PrimitiveType(sourceAnchor: parser.lineMapper.anchor(37, 41), typ: .bool)
-                ),
+                )
             ]
         )
         XCTAssertEqual(ast.children.first, expected)
@@ -2556,7 +2556,7 @@ final class SnapParserTests: XCTestCase {
                 Argument(
                     name: "qux",
                     expr: LiteralBool(sourceAnchor: parser.lineMapper.anchor(56, 61), value: false)
-                ),
+                )
             ]
         )
         XCTAssertEqual(ast.children.first, expected)
@@ -2702,7 +2702,7 @@ final class SnapParserTests: XCTestCase {
                         Arg(
                             name: "limit",
                             expr: LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1)
-                        ),
+                        )
                     ]
                 )
             ]
@@ -2741,10 +2741,10 @@ final class SnapParserTests: XCTestCase {
                                 sourceAnchor: parser.lineMapper.anchor(5, 8),
                                 identifier: "Foo"
                             )
-                        ),
+                        )
                     ]
                 ),
-                Block(sourceAnchor: parser.lineMapper.anchor(9, 12), children: []),
+                Block(sourceAnchor: parser.lineMapper.anchor(9, 12), children: [])
             ]
         )
     }
@@ -2784,7 +2784,7 @@ final class SnapParserTests: XCTestCase {
                                     sourceAnchor: parser.lineMapper.anchor(12, 14),
                                     value: 10
                                 )
-                            ),
+                            )
                         ]
                     ),
                     body: Block(
@@ -3031,7 +3031,7 @@ final class SnapParserTests: XCTestCase {
                                 sourceAnchor: parser.lineMapper.anchor(69, 76),
                                 children: []
                             )
-                        ),
+                        )
                     ]
                 )
             ]
@@ -3074,7 +3074,7 @@ final class SnapParserTests: XCTestCase {
             sourceAnchor: parser.lineMapper.anchor(9, 18),
             members: [
                 PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
-                PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool),
+                PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool)
             ]
         )
         XCTAssertEqual(
@@ -3103,7 +3103,7 @@ final class SnapParserTests: XCTestCase {
             members: [
                 PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
                 PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool),
-                Identifier(sourceAnchor: parser.lineMapper.anchor(21, 24), identifier: "Foo"),
+                Identifier(sourceAnchor: parser.lineMapper.anchor(21, 24), identifier: "Foo")
             ]
         )
         XCTAssertEqual(
@@ -3134,7 +3134,7 @@ final class SnapParserTests: XCTestCase {
                     sourceAnchor: parser.lineMapper.anchor(9, 12),
                     typ: PrimitiveType(sourceAnchor: parser.lineMapper.anchor(10, 12), typ: .u8)
                 ),
-                Identifier(sourceAnchor: parser.lineMapper.anchor(15, 19), identifier: "None"),
+                Identifier(sourceAnchor: parser.lineMapper.anchor(15, 19), identifier: "None")
             ]
         )
         XCTAssertEqual(
@@ -3378,7 +3378,7 @@ final class SnapParserTests: XCTestCase {
                                 sourceAnchor: parser.lineMapper.anchor(54, 56),
                                 children: []
                             )
-                        ),
+                        )
                     ],
                     elseClause: Block(sourceAnchor: parser.lineMapper.anchor(70, 72), children: [])
                 )
@@ -3929,7 +3929,7 @@ final class SnapParserTests: XCTestCase {
                     ),
                     arguments: [
                         PrimitiveType(sourceAnchor: parser.lineMapper.anchor(28, 30), typ: .u8),
-                        PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 37), typ: .u8),
+                        PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 37), typ: .u8)
                     ]
                 )
             )
@@ -3961,7 +3961,7 @@ final class SnapParserTests: XCTestCase {
             sourceAnchor: parser.lineMapper.anchor(0, 77),
             identifier: Identifier(sourceAnchor: parser.lineMapper.anchor(6, 9), identifier: "Foo"),
             members: [
-                foo, bar,
+                foo, bar
             ],
             visibility: .privateVisibility
         )
@@ -4060,7 +4060,7 @@ final class SnapParserTests: XCTestCase {
                                                 typ: .u8
                                             )
                                         )
-                                    ),
+                                    )
                                 ]
                             ),
                             argumentNames: ["self", "s"],
@@ -4142,7 +4142,7 @@ final class SnapParserTests: XCTestCase {
                             Identifier(
                                 sourceAnchor: parser.lineMapper.anchor(29, 33),
                                 identifier: "None"
-                            ),
+                            )
                         ]
                     )
                 )
@@ -4318,7 +4318,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier("Range"),
             arguments: [
                 StructInitializer.Argument(name: "begin", expr: zero),
-                StructInitializer.Argument(name: "limit", expr: s_arr_count),
+                StructInitializer.Argument(name: "limit", expr: s_arr_count)
             ]
         )
         XCTAssertFalse(parser.hasError)
@@ -4345,7 +4345,7 @@ final class SnapParserTests: XCTestCase {
             identifier: Identifier("Range"),
             arguments: [
                 StructInitializer.Argument(name: "begin", expr: s_arr_count),
-                StructInitializer.Argument(name: "limit", expr: zero),
+                StructInitializer.Argument(name: "limit", expr: zero)
             ]
         )
         XCTAssertFalse(parser.hasError)

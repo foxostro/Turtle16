@@ -156,7 +156,7 @@ struct MemoryView: View {
             static let addressColumnWidth = 50.0
 
             static let hexDigits = [
-                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f",
+                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"
             ]
             static let wordColumnIdentifier = hexDigits.map {
                 NSUserInterfaceItemIdentifier("Word \($0)")

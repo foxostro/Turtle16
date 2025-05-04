@@ -32,7 +32,7 @@ public struct ATF22V10 {
             3652,
             4312,
             4884,
-            5368,
+            5368
         ]
         let outputEnableProductTermFuseMaps: [ProductTermFuseMap] = ATF22V10.makeSingleProductTerms(
             outputEnableProductTermFuseMapDefns,
@@ -52,7 +52,7 @@ public struct ATF22V10 {
             (3652 + 44, 14),
             (4312 + 44, 12),
             (4884 + 44, 10),
-            (5368 + 44, 8),
+            (5368 + 44, 8)
         ]
         let logicProductTermFuseMaps: [[ProductTermFuseMap]] = ATF22V10.makeProductTerms(
             logicProductTermFuseMapDefns,
@@ -119,7 +119,7 @@ public struct ATF22V10 {
                 productTermFuseMaps: logicProductTermFuseMaps[9],
                 s0: fuseList[5826],
                 s1: fuseList[5827]
-            ),
+            )
         ]
         signature = [UInt](fuseList[5828..<5892])
     }

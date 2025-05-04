@@ -32,7 +32,7 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
                 ),
                 node0.body,
                 Goto(sourceAnchor: s, target: labelHead),
-                LabelDeclaration(sourceAnchor: s, identifier: labelTail),
+                LabelDeclaration(sourceAnchor: s, identifier: labelTail)
             ]
         )
         let node2 = try super.visit(node1)

@@ -27,7 +27,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr0"),
                     ParameterIdentifier("vr0"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
@@ -35,7 +35,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr1")
                 ]
             ),
             InstructionNode(
@@ -43,9 +43,9 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr2"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ]
         let liveRanges = obj.determineLiveIntervals(input)
         XCTAssertEqual(
@@ -53,7 +53,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
             [
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr0", physicalRegisterName: nil),
                 LiveInterval(range: 1..<2, virtualRegisterName: "vr1", physicalRegisterName: nil),
-                LiveInterval(range: 2..<3, virtualRegisterName: "vr2", physicalRegisterName: nil),
+                LiveInterval(range: 2..<3, virtualRegisterName: "vr2", physicalRegisterName: nil)
             ]
         )
     }
@@ -66,7 +66,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -76,7 +76,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
             [
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr0", physicalRegisterName: nil),
                 LiveInterval(range: 0..<1, virtualRegisterName: "vr1", physicalRegisterName: nil),
-                LiveInterval(range: 0..<1, virtualRegisterName: "vr2", physicalRegisterName: nil),
+                LiveInterval(range: 0..<1, virtualRegisterName: "vr2", physicalRegisterName: nil)
             ]
         )
     }
@@ -89,7 +89,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr0"),
                     ParameterIdentifier("vr0"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
@@ -97,7 +97,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("vr1")
                 ]
             ),
             InstructionNode(
@@ -105,16 +105,16 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr0"),
                     ParameterIdentifier("vr0"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         let liveRanges = obj.determineLiveIntervals(input)
         XCTAssertEqual(
             liveRanges,
             [
                 LiveInterval(range: 0..<3, virtualRegisterName: "vr0", physicalRegisterName: nil),
-                LiveInterval(range: 1..<2, virtualRegisterName: "vr1", physicalRegisterName: nil),
+                LiveInterval(range: 1..<2, virtualRegisterName: "vr1", physicalRegisterName: nil)
             ]
         )
     }
@@ -126,7 +126,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 instruction: kLA,
                 parameters: [
                     ParameterIdentifier("vr0"),
-                    ParameterIdentifier("foo"),
+                    ParameterIdentifier("foo")
                 ]
             )
         ]
@@ -218,9 +218,9 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr0"),
                     ParameterIdentifier("vr0"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         let liveRanges = obj.determineLiveIntervals(input)
         XCTAssertEqual(
@@ -239,7 +239,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("fp"),
                     ParameterIdentifier("sp"),
-                    ParameterIdentifier("ra"),
+                    ParameterIdentifier("ra")
                 ]
             )
         ]
@@ -249,7 +249,7 @@ final class RegisterLiveIntervalCalculatorTests: XCTestCase {
             [
                 LiveInterval(range: 0..<1, virtualRegisterName: "ra", physicalRegisterName: "ra"),
                 LiveInterval(range: 0..<1, virtualRegisterName: "sp", physicalRegisterName: "sp"),
-                LiveInterval(range: 0..<1, virtualRegisterName: "fp", physicalRegisterName: "fp"),
+                LiveInterval(range: 0..<1, virtualRegisterName: "fp", physicalRegisterName: "fp")
             ]
         )
     }

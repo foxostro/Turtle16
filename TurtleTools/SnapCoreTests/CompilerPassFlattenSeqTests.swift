@@ -32,14 +32,14 @@ final class CompilerPassFlattenSeqTests: XCTestCase {
         let input = Seq(children: [
             Seq(children: [
                 CommentNode(string: "a"),
-                CommentNode(string: "b"),
+                CommentNode(string: "b")
             ]),
-            CommentNode(string: "c"),
+            CommentNode(string: "c")
         ])
         let expected = Seq(children: [
             CommentNode(string: "a"),
             CommentNode(string: "b"),
-            CommentNode(string: "c"),
+            CommentNode(string: "c")
         ])
         let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
@@ -50,14 +50,14 @@ final class CompilerPassFlattenSeqTests: XCTestCase {
         let input = Block(children: [
             Seq(children: [
                 CommentNode(string: "a"),
-                CommentNode(string: "b"),
+                CommentNode(string: "b")
             ]),
-            CommentNode(string: "c"),
+            CommentNode(string: "c")
         ])
         let expected = Block(children: [
             CommentNode(string: "a"),
             CommentNode(string: "b"),
-            CommentNode(string: "c"),
+            CommentNode(string: "c")
         ])
         let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
@@ -68,14 +68,14 @@ final class CompilerPassFlattenSeqTests: XCTestCase {
         let input = TopLevel(children: [
             Seq(children: [
                 CommentNode(string: "a"),
-                CommentNode(string: "b"),
+                CommentNode(string: "b")
             ]),
-            CommentNode(string: "c"),
+            CommentNode(string: "c")
         ])
         let expected = TopLevel(children: [
             CommentNode(string: "a"),
             CommentNode(string: "b"),
-            CommentNode(string: "c"),
+            CommentNode(string: "c")
         ])
         let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)

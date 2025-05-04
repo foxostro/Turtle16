@@ -81,7 +81,7 @@ final class DecoderGeneratorTests: XCTestCase {
             DecoderGenerator.opcodeXori,
             DecoderGenerator.opcodeJmp,
             DecoderGenerator.opcodeJr,
-            DecoderGenerator.opcodeJalr,
+            DecoderGenerator.opcodeJalr
         ]
         for opcode in unconditionalOpcodes {
             let indices = generator.indicesForAllConditions(opcode)
@@ -749,7 +749,7 @@ final class DecoderGeneratorTests: XCTestCase {
         let cpu = makeCPU()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11010011_11111111,  // BLT 1023
+            0b11010011_11111111  // BLT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -789,7 +789,7 @@ final class DecoderGeneratorTests: XCTestCase {
         let cpu = makeCPU()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11011011_11111111,  // BGT 1023
+            0b11011011_11111111  // BGT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -829,7 +829,7 @@ final class DecoderGeneratorTests: XCTestCase {
         let cpu = makeCPU()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11100011_11111111,  // BLTU 1023
+            0b11100011_11111111  // BLTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -869,7 +869,7 @@ final class DecoderGeneratorTests: XCTestCase {
         let cpu = makeCPU()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11101011_11111111,  // BGTU 1023
+            0b11101011_11111111  // BGTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]

@@ -23,7 +23,7 @@ let kSliceType: SymbolType = .structType(
         name: kSliceName,
         fields: Env(tuples: [
             (kSliceBase, Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
-            (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset)),
+            (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
         ])
     )
 )
@@ -35,7 +35,7 @@ let kRangeType: SymbolType = .structType(
         name: kRangeName,
         fields: Env(tuples: [
             (kRangeBegin, Symbol(type: .u16, storage: .automaticStorage(offset: 0))),
-            (kRangeLimit, Symbol(type: .u16, storage: .automaticStorage(offset: 1))),
+            (kRangeLimit, Symbol(type: .u16, storage: .automaticStorage(offset: 1)))
         ])
     )
 )
@@ -80,14 +80,14 @@ final class CoreToTackCompilerTests: XCTestCase {
         let result = try compiler.run(
             Block(children: [
                 LabelDeclaration(identifier: "foo"),
-                LabelDeclaration(identifier: "bar"),
+                LabelDeclaration(identifier: "bar")
             ])
         )
         XCTAssertEqual(
             result,
             Seq(children: [
                 LabelDeclaration(identifier: "foo"),
-                LabelDeclaration(identifier: "bar"),
+                LabelDeclaration(identifier: "bar")
             ])
         )
     }
@@ -99,8 +99,8 @@ final class CoreToTackCompilerTests: XCTestCase {
                 LabelDeclaration(identifier: "foo"),
                 Seq(children: [
                     LabelDeclaration(identifier: "bar"),
-                    LabelDeclaration(identifier: "baz"),
-                ]),
+                    LabelDeclaration(identifier: "baz")
+                ])
             ])
         )
         XCTAssertEqual(
@@ -108,7 +108,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             Seq(children: [
                 LabelDeclaration(identifier: "foo"),
                 LabelDeclaration(identifier: "bar"),
-                LabelDeclaration(identifier: "baz"),
+                LabelDeclaration(identifier: "baz")
             ])
         )
     }
@@ -124,7 +124,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.run(GotoIfFalse(condition: LiteralBool(false), target: "bar"))
         let expected = Seq(children: [
             TackInstructionNode(.lio(.o(0), false)),
-            TackInstructionNode(.bz(.o(0), "bar")),
+            TackInstructionNode(.bz(.o(0), "bar"))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertTrue(compiler.registerStack.isEmpty)
@@ -135,7 +135,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.run(Return())
         let expected = Seq(children: [
             TackInstructionNode(.leave),
-            TackInstructionNode(.ret),
+            TackInstructionNode(.ret)
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -146,7 +146,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             children: [
                 TackInstructionNode(.enter(0)),
                 TackInstructionNode(.leave),
-                TackInstructionNode(.ret),
+                TackInstructionNode(.ret)
             ]
         )
         let ast0 = Block(children: [
@@ -234,7 +234,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.liuw(.w(1), 42)),
-            TackInstructionNode(.sw(.w(1), .p(0), 0)),
+            TackInstructionNode(.sw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -260,7 +260,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.liuw(.w(4), 42)),
             TackInstructionNode(.sw(.w(4), .p(3), 0)),
             TackInstructionNode(.memcpy(.p(2), .p(3), 1)),
-            TackInstructionNode(.lip(.p(5), 272)),
+            TackInstructionNode(.lip(.p(5), 272))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(5)))
@@ -271,7 +271,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: LiteralString("a"))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
-            TackInstructionNode(.ststr(.p(0), "a")),
+            TackInstructionNode(.ststr(.p(0), "a"))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -292,7 +292,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                     StructInitializer.Argument(
                         name: kSliceCount,
                         expr: LiteralInt(0xffff)
-                    ),
+                    )
                 ]
             )
         )
@@ -305,7 +305,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.addip(.p(4), .p(3), 1)),
             TackInstructionNode(.liuw(.w(5), 0xffff)),
             TackInstructionNode(.sw(.w(5), .p(4), 0)),
-            TackInstructionNode(.lip(.p(6), 272)),
+            TackInstructionNode(.lip(.p(6), 272))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(6)))
@@ -321,7 +321,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Identifier("foo"))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), offset)),
-            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -337,7 +337,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Identifier("foo"))
         let expected = Seq(children: [
             TackInstructionNode(.subip(.p(0), .fp, offset)),
-            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -370,7 +370,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(1)))
@@ -391,7 +391,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
-            TackInstructionNode(.movzwb(.w(2), .b(1))),
+            TackInstructionNode(.movzwb(.w(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -412,7 +412,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
-            TackInstructionNode(.movzbw(.b(2), .w(1))),
+            TackInstructionNode(.movzbw(.b(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(2)))
@@ -433,7 +433,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
-            TackInstructionNode(.movzwb(.w(2), .b(1))),
+            TackInstructionNode(.movzwb(.w(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -454,7 +454,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
-            TackInstructionNode(.movsbw(.b(2), .w(1))),
+            TackInstructionNode(.movsbw(.b(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(2)))
@@ -475,7 +475,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
-            TackInstructionNode(.movswb(.w(2), .b(1))),
+            TackInstructionNode(.movswb(.w(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -554,7 +554,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(6), .p(5), 0)),
             TackInstructionNode(.movzbw(.b(7), .w(6))),
             TackInstructionNode(.sb(.b(7), .p(2), 0)),
-            TackInstructionNode(.lip(.p(8), 272)),
+            TackInstructionNode(.lip(.p(8), 272))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(8)))
@@ -579,7 +579,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(1), 0x1000)),
             TackInstructionNode(.sp(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 1)),
-            TackInstructionNode(.sw(.w(2), .p(0), 1)),
+            TackInstructionNode(.sw(.w(2), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -601,7 +601,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.sw(.w(2), .p(1), 0)),
             TackInstructionNode(.sp(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(3), 1)),
-            TackInstructionNode(.sw(.w(3), .p(0), 1)),
+            TackInstructionNode(.sw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -713,7 +713,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -762,7 +762,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .p(0), 1)),
+            TackInstructionNode(.lw(.w(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -788,7 +788,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.addip(.p(1), .p(0), 1)),
+            TackInstructionNode(.addip(.p(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -809,7 +809,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.sw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 0xabcd)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.sw(.w(3), .p(0), 1)),
+            TackInstructionNode(.sw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -833,7 +833,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.sw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 0xabcd)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.sw(.w(3), .p(0), 1)),
+            TackInstructionNode(.sw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -865,7 +865,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.sw(.w(1), .p(0), 0)),
             TackInstructionNode(.addip(.p(2), .p(0), 1)),
             TackInstructionNode(.lip(.p(3), 0xabcd)),
-            TackInstructionNode(.memcpy(.p(2), .p(3), 2)),
+            TackInstructionNode(.memcpy(.p(2), .p(3), 2))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -896,7 +896,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.bzw(.w(2), ".L0")),
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(.lw(.w(3), .p(0), 1)),
+            TackInstructionNode(.lw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -917,7 +917,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
-            TackInstructionNode(.bitcast(.p(.p(2)), .w(.w(1)))),
+            TackInstructionNode(.bitcast(.p(.p(2)), .w(.w(1))))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(2)))
@@ -941,7 +941,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.liub(.b(2), 0)),
-            TackInstructionNode(.subb(.b(3), .b(2), .b(1))),
+            TackInstructionNode(.subb(.b(3), .b(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(3)))
@@ -957,7 +957,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 0)),
-            TackInstructionNode(.subw(.w(3), .w(2), .w(1))),
+            TackInstructionNode(.subw(.w(3), .w(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -973,7 +973,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.liub(.b(2), 0)),
-            TackInstructionNode(.subb(.b(3), .b(2), .b(1))),
+            TackInstructionNode(.subb(.b(3), .b(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(3)))
@@ -989,7 +989,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 0)),
-            TackInstructionNode(.subw(.w(3), .w(2), .w(1))),
+            TackInstructionNode(.subw(.w(3), .w(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -1004,7 +1004,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
-            TackInstructionNode(.not(.o(2), .o(1))),
+            TackInstructionNode(.not(.o(2), .o(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(2)))
@@ -1019,7 +1019,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
-            TackInstructionNode(.negb(.b(2), .b(1))),
+            TackInstructionNode(.negb(.b(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(2)))
@@ -1034,7 +1034,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
-            TackInstructionNode(.negw(.w(2), .w(1))),
+            TackInstructionNode(.negw(.w(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -1049,7 +1049,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
-            TackInstructionNode(.negb(.b(2), .b(1))),
+            TackInstructionNode(.negb(.b(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(2)))
@@ -1064,7 +1064,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
-            TackInstructionNode(.negw(.w(2), .w(1))),
+            TackInstructionNode(.negw(.w(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -1107,7 +1107,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_addw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1118,7 +1118,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.addw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.addw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1127,7 +1127,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_subw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1138,7 +1138,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.subw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.subw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1147,7 +1147,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_mulw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1158,7 +1158,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.mulw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.mulw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1167,7 +1167,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_divw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .i16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1178,7 +1178,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.divw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.divw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1187,7 +1187,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_divuw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1198,7 +1198,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.divuw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.divuw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1207,7 +1207,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_mod16() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1218,7 +1218,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.modw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.modw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1227,7 +1227,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_lslw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1238,7 +1238,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.lslw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.lslw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1247,7 +1247,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_lsrw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1262,7 +1262,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.lsrw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.lsrw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1271,7 +1271,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_andw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1282,7 +1282,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.andw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.andw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1291,7 +1291,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_orw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1302,7 +1302,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.orw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.orw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1311,7 +1311,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_xorw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1322,7 +1322,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.xorw(.w(4), .w(3), .w(1))),
+            TackInstructionNode(.xorw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1331,7 +1331,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_eqw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1342,7 +1342,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.eqw(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.eqw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1351,7 +1351,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_new() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1362,7 +1362,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.new(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.new(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1371,7 +1371,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_ltw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .i16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1382,7 +1382,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.ltw(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.ltw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1391,7 +1391,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_gew() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .i16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1402,7 +1402,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.gew(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.gew(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1411,7 +1411,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_lew() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .i16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1422,7 +1422,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.lew(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.lew(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1431,7 +1431,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_gtw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .i16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .i16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1442,7 +1442,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.gtw(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.gtw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1451,7 +1451,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_ltuw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1462,7 +1462,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.ltuw(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.ltuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1471,7 +1471,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_geuw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1482,7 +1482,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.geuw(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.geuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1491,7 +1491,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_leuw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1502,7 +1502,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.leuw(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.leuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1511,7 +1511,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_gtuw() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u16, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1522,7 +1522,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lw(.w(3), .p(2), 0)),
-            TackInstructionNode(.gtuw(.o(4), .w(3), .w(1))),
+            TackInstructionNode(.gtuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1531,7 +1531,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_add8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1542,7 +1542,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.addb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.addb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1551,7 +1551,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_sub8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1562,7 +1562,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.subb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.subb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1571,7 +1571,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_mul8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1582,7 +1582,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.mulb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.mulb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1591,7 +1591,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_divb() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .i8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .i8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .i8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1602,7 +1602,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.divb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.divb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1611,7 +1611,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_divub() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1622,7 +1622,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.divub(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.divub(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1631,7 +1631,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_mod8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1642,7 +1642,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.modb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.modb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1651,7 +1651,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_lsl8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1662,7 +1662,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.lslb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.lslb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1671,7 +1671,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_lsr8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1686,7 +1686,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.lsrb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.lsrb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1695,7 +1695,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_and8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1706,7 +1706,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.andb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.andb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1715,7 +1715,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_or8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1726,7 +1726,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.orb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.orb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1735,7 +1735,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_xor8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1746,7 +1746,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.xorb(.b(4), .b(3), .b(1))),
+            TackInstructionNode(.xorb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
@@ -1755,7 +1755,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_eq8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1766,7 +1766,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.eqb(.o(4), .b(3), .b(1))),
+            TackInstructionNode(.eqb(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1775,7 +1775,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_ne8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1786,7 +1786,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.neb(.o(4), .b(3), .b(1))),
+            TackInstructionNode(.neb(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1795,7 +1795,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_ltu8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1806,7 +1806,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.ltub(.o(4), .b(3), .b(1))),
+            TackInstructionNode(.ltub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1815,7 +1815,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_geu8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1826,7 +1826,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.geub(.o(4), .b(3), .b(1))),
+            TackInstructionNode(.geub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1835,7 +1835,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_leu8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1846,7 +1846,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.leub(.o(4), .b(3), .b(1))),
+            TackInstructionNode(.leub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1855,7 +1855,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_gtu8() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u8, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .u8, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1866,7 +1866,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lb(.b(3), .p(2), 0)),
-            TackInstructionNode(.gtub(.o(4), .b(3), .b(1))),
+            TackInstructionNode(.gtub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -1875,7 +1875,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_eq() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1889,7 +1889,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_ne() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1903,7 +1903,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_lt() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(2)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1917,7 +1917,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_gt() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(2)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1931,7 +1931,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_le() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1945,7 +1945,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_ge() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1959,7 +1959,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_add() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(-1000)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(-1000)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(-1000))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1973,7 +1973,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_sub() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -1987,7 +1987,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_mul() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2001,7 +2001,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_div() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2015,7 +2015,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_mod() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(3)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(2)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2029,7 +2029,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_and() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2043,7 +2043,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_or() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2057,7 +2057,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_xor() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(0xab))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2071,7 +2071,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_lsl() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(2)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(2)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2085,7 +2085,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_lsr() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(8)))),
-            ("right", Symbol(type: .arithmeticType(.compTimeInt(2)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2103,7 +2103,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_eq_bool() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .bool, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2114,7 +2114,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lo(.o(3), .p(2), 0)),
-            TackInstructionNode(.eqo(.o(4), .o(3), .o(1))),
+            TackInstructionNode(.eqo(.o(4), .o(3), .o(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -2123,7 +2123,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_ne_bool() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .bool, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2134,7 +2134,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
             TackInstructionNode(.lip(.p(2), 100)),
             TackInstructionNode(.lo(.o(3), .p(2), 0)),
-            TackInstructionNode(.neo(.o(4), .o(3), .o(1))),
+            TackInstructionNode(.neo(.o(4), .o(3), .o(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -2143,7 +2143,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_logical_and() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .bool, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2160,7 +2160,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.jmp(".L1")),
             LabelDeclaration(identifier: ".L0"),
             TackInstructionNode(.lio(.o(4), false)),
-            LabelDeclaration(identifier: ".L1"),
+            LabelDeclaration(identifier: ".L1")
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -2169,7 +2169,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_logical_or() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .bool, storage: .staticStorage(offset: 100))),
-            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200))),
+            ("right", Symbol(type: .bool, storage: .staticStorage(offset: 200)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2186,7 +2186,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.jmp(".L1")),
             LabelDeclaration(identifier: ".L0"),
             TackInstructionNode(.lio(.o(4), true)),
-            LabelDeclaration(identifier: ".L1"),
+            LabelDeclaration(identifier: ".L1")
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
@@ -2195,7 +2195,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_bool_eq() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true)))),
+            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2209,7 +2209,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_bool_ne() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true)))),
+            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2223,7 +2223,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_bool_and() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true)))),
+            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2237,7 +2237,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Binary_comptime_bool_or() throws {
         let symbols = Env(tuples: [
             ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true)))),
+            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2282,7 +2282,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.liw(.w(0), 1)),
             TackInstructionNode(.lip(.p(1), 100)),
             TackInstructionNode(.lw(.w(2), .p(1), 0)),
-            TackInstructionNode(.eqw(.o(3), .w(2), .w(0))),
+            TackInstructionNode(.eqw(.o(3), .w(2), .w(0)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(3)))
@@ -2308,7 +2308,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.liw(.w(0), 1)),
             TackInstructionNode(.lip(.p(1), 100)),
             TackInstructionNode(.lw(.w(2), .p(1), 0)),
-            TackInstructionNode(.eqw(.o(3), .w(2), .w(0))),
+            TackInstructionNode(.eqw(.o(3), .w(2), .w(0)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(3)))
@@ -2328,7 +2328,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.liuw(.w(1), 42)),
-            TackInstructionNode(.sw(.w(1), .p(0), 0)),
+            TackInstructionNode(.sw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -2349,7 +2349,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                     type: .array(count: 0, elementType: .u16),
                     storage: .staticStorage(offset: 0x2000)
                 )
-            ),
+            )
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2378,7 +2378,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                     type: .array(count: 1, elementType: .u16),
                     storage: .staticStorage(offset: 0x2000)
                 )
-            ),
+            )
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2390,7 +2390,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
-            TackInstructionNode(.memcpy(.p(0), .p(1), 1)),
+            TackInstructionNode(.memcpy(.p(0), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -2411,7 +2411,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                     type: .array(count: 2, elementType: .u16),
                     storage: .staticStorage(offset: 0x2000)
                 )
-            ),
+            )
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2423,7 +2423,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
-            TackInstructionNode(.memcpy(.p(0), .p(1), 2)),
+            TackInstructionNode(.memcpy(.p(0), .p(1), 2))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -2448,7 +2448,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.liuw(.w(1), 9)),
             TackInstructionNode(.addpw(.p(2), .p(0), .w(1))),
-            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -2483,7 +2483,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(.addpw(.p(6), .p(0), .w(1))),
-            TackInstructionNode(.lw(.w(7), .p(6), 0)),
+            TackInstructionNode(.lw(.w(7), .p(6), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(7)))
@@ -2506,7 +2506,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -2541,7 +2541,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(.muliw(.w(6), .w(1), 2)),
-            TackInstructionNode(.addpw(.p(7), .p(0), .w(6))),
+            TackInstructionNode(.addpw(.p(7), .p(0), .w(6)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(7)))
@@ -2577,7 +2577,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(.addpw(.p(7), .p(1), .w(2))),
-            TackInstructionNode(.lw(.w(8), .p(7), 0)),
+            TackInstructionNode(.lw(.w(8), .p(7), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(8)))
@@ -2708,7 +2708,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.liuw(.w(1), 9)),
             TackInstructionNode(.addpw(.p(2), .p(0), .w(1))),
             TackInstructionNode(.liuw(.w(3), 42)),
-            TackInstructionNode(.sw(.w(3), .p(2), 0)),
+            TackInstructionNode(.sw(.w(3), .p(2), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -2717,7 +2717,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.u16), storage: .staticStorage(offset: 0x1000))),
-            ("bar", Symbol(type: .u16, storage: .staticStorage(offset: 0x2000))),
+            ("bar", Symbol(type: .u16, storage: .staticStorage(offset: 0x2000)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -2729,7 +2729,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
-            TackInstructionNode(.sp(.p(1), .p(0), 0)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -2786,7 +2786,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
-            TackInstructionNode(.sp(.p(1), .p(0), 0)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -2835,7 +2835,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .p(0), 1)),
+            TackInstructionNode(.lw(.w(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -2855,7 +2855,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .p(0), 1)),
+            TackInstructionNode(.lw(.w(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -2867,7 +2867,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 name: "bar",
                 fields: Env(tuples: [
                     ("wat", Symbol(type: .u16, offset: 0)),
-                    ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1)),
+                    ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
                 ])
             )
         )
@@ -2884,7 +2884,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.addip(.p(1), .p(0), 1)),
+            TackInstructionNode(.addip(.p(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -2905,7 +2905,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
-            TackInstructionNode(.lw(.w(2), .p(1), 0)),
+            TackInstructionNode(.lw(.w(2), .p(1), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -2925,7 +2925,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -2945,7 +2945,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -2971,7 +2971,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -3021,7 +3021,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
-            TackInstructionNode(.lw(.w(2), .p(1), 1)),
+            TackInstructionNode(.lw(.w(2), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -3042,7 +3042,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
-            TackInstructionNode(.lw(.w(2), .p(1), 1)),
+            TackInstructionNode(.lw(.w(2), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -3055,7 +3055,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                     name: "bar",
                     fields: Env(tuples: [
                         ("wat", Symbol(type: .u16, offset: 0)),
-                        ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1)),
+                        ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
                     ])
                 )
             )
@@ -3074,7 +3074,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
-            TackInstructionNode(.addip(.p(2), .p(1), 1)),
+            TackInstructionNode(.addip(.p(2), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(2)))
@@ -3128,7 +3128,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.memcpy(.p(1), .p(0), 1)),
             TackInstructionNode(.free(1)),
             TackInstructionNode(.subip(.p(2), .fp, 1)),
-            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -3159,7 +3159,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.subip(.p(1), .fp, 2)),
             TackInstructionNode(.memcpy(.p(1), .p(0), 2)),
             TackInstructionNode(.free(2)),
-            TackInstructionNode(.subip(.p(2), .fp, 2)),
+            TackInstructionNode(.subip(.p(2), .fp, 2))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(2)))
@@ -3198,7 +3198,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.alloca(.p(1), 1)),
             TackInstructionNode(.sw(.w(0), .p(1), 0)),
             TackInstructionNode(.call("foo")),
-            TackInstructionNode(.free(1)),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
@@ -3235,7 +3235,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.memcpy(.p(3), .p(1), 1)),
             TackInstructionNode(.free(2)),
             TackInstructionNode(.subip(.p(4), .fp, 1)),
-            TackInstructionNode(.lw(.w(5), .p(4), 0)),
+            TackInstructionNode(.lw(.w(5), .p(4), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(5)))
@@ -3262,7 +3262,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                     type: .unionType(UnionTypeInfo([.u16])),
                     storage: .staticStorage(offset: 0xabcd)
                 )
-            ),
+            )
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -3288,7 +3288,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.memcpy(.p(5), .p(3), 1)),
             TackInstructionNode(.free(3)),
             TackInstructionNode(.subip(.p(6), .fp, 1)),
-            TackInstructionNode(.lw(.w(7), .p(6), 0)),
+            TackInstructionNode(.lw(.w(7), .p(6), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(7)))
@@ -3309,7 +3309,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
-            TackInstructionNode(.callptr(.p(1))),
+            TackInstructionNode(.callptr(.p(1)))
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -3352,7 +3352,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.alloca(.p(3), 2)),  // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
             TackInstructionNode(.memcpy(.p(3), .p(0), 2)),
             TackInstructionNode(.call("panic")),
-            TackInstructionNode(.free(2)),
+            TackInstructionNode(.free(2))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
@@ -3402,7 +3402,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.alloca(.p(4), 1)),
             TackInstructionNode(.sp(.p(3), .p(4), 0)),
             TackInstructionNode(.call("bar")),
-            TackInstructionNode(.free(1)),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
@@ -3452,7 +3452,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.alloca(.p(4), 1)),
             TackInstructionNode(.sp(.p(3), .p(4), 0)),
             TackInstructionNode(.call("bar")),
-            TackInstructionNode(.free(1)),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
@@ -3502,7 +3502,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.alloca(.p(4), 1)),
             TackInstructionNode(.sp(.p(3), .p(4), 0)),
             TackInstructionNode(.call("bar")),
-            TackInstructionNode(.free(1)),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
@@ -3527,7 +3527,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 StructInitializer.Argument(
                     name: kSliceCount,
                     expr: LiteralInt(0xffff)
-                ),
+                )
             ]
         )
         let actual = try compiler.rvalue(expr: Assignment(lexpr: lexpr, rexpr: rexpr))
@@ -3539,7 +3539,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(3), 0x1000)),
             TackInstructionNode(.addip(.p(4), .p(3), 1)),
             TackInstructionNode(.liuw(.w(5), 0xffff)),
-            TackInstructionNode(.sw(.w(5), .p(4), 0)),
+            TackInstructionNode(.sw(.w(5), .p(4), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(5)))
@@ -3580,7 +3580,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                             type: kSliceCountType.correspondingConstType,
                             offset: kSliceCountOffset
                         )
-                    ),
+                    )
                 ])
             )
         )
@@ -3604,7 +3604,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 StructInitializer.Argument(
                     name: kSliceCount,
                     expr: LiteralInt(0xffff)
-                ),
+                )
             ]
         )
         let actual = try compiler.rvalue(expr: InitialAssignment(lexpr: lexpr, rexpr: rexpr))
@@ -3616,7 +3616,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(3), 0x1000)),
             TackInstructionNode(.addip(.p(4), .p(3), 1)),
             TackInstructionNode(.liuw(.w(5), 0xffff)),
-            TackInstructionNode(.sw(.w(5), .p(4), 0)),
+            TackInstructionNode(.sw(.w(5), .p(4), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(5)))
@@ -3637,7 +3637,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
             TackInstructionNode(.liuw(.w(1), 42)),
-            TackInstructionNode(.sw(.w(1), .p(0), 0)),
+            TackInstructionNode(.sw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -3648,7 +3648,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let literalArray = LiteralArray(
             arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u16)),
             elements: [
-                LiteralInt(1), LiteralInt(2),
+                LiteralInt(1), LiteralInt(2)
             ]
         )
         _ = try compiler.rvalue(expr: literalArray)
@@ -3682,7 +3682,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                             offset: SnapCompilerMetrics.kStaticStorageStartAddress + 1
                         )
                     )
-                ),
+                )
             ],
             typeDict: [
                 "None": None
@@ -3699,7 +3699,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.addip(.p(3), .p(1), 1)),
             TackInstructionNode(.lip(.p(4), 0x0110)),
             TackInstructionNode(.memcpy(.p(3), .p(4), 0)),
-            TackInstructionNode(.memcpy(.p(0), .p(1), 2)),
+            TackInstructionNode(.memcpy(.p(0), .p(1), 2))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
@@ -3715,7 +3715,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kSliceName),
             arguments: [
                 StructInitializer.Argument(name: kSliceBase, expr: LiteralInt(0)),
-                StructInitializer.Argument(name: kSliceCount, expr: LiteralInt(0)),
+                StructInitializer.Argument(name: kSliceCount, expr: LiteralInt(0))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: arg)
@@ -3739,7 +3739,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(200)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(201)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(201))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -3763,7 +3763,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(0)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(201)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(201))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -3787,7 +3787,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(0)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(0))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -3814,7 +3814,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let compiler = makeCompiler(symbols: symbols)
@@ -3822,7 +3822,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(0)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(1)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(1))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -3837,7 +3837,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.addip(.p(5), .p(4), 1)),
             TackInstructionNode(.liuw(.w(6), 1)),
             TackInstructionNode(.sw(.w(6), .p(5), 0)),
-            TackInstructionNode(.lip(.p(7), 0x0110)),
+            TackInstructionNode(.lip(.p(7), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(7)))
@@ -3856,7 +3856,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let compiler = makeCompiler(symbols: symbols)
@@ -3864,7 +3864,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -3881,7 +3881,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.addip(.p(7), .p(6), 1)),
             TackInstructionNode(.liuw(.w(8), 2)),
             TackInstructionNode(.sw(.w(8), .p(7), 0)),
-            TackInstructionNode(.lip(.p(9), 0x0110)),
+            TackInstructionNode(.lip(.p(9), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(9)))
@@ -3892,11 +3892,11 @@ final class CoreToTackCompilerTests: XCTestCase {
             tuples: [
                 ("foo", Symbol(type: .array(count: 3, elementType: .u16), offset: 0x1000)),
                 ("a", Symbol(type: .u16, offset: 0x2000)),
-                ("b", Symbol(type: .u16, offset: 0x2001)),
+                ("b", Symbol(type: .u16, offset: 0x2001))
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
@@ -3905,7 +3905,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
-                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b")),
+                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -3927,7 +3927,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(12), .p(11), 0)),
             TackInstructionNode(.subw(.w(13), .w(12), .w(10))),
             TackInstructionNode(.sw(.w(13), .p(8), 0)),
-            TackInstructionNode(.lip(.p(14), 0x0110)),
+            TackInstructionNode(.lip(.p(14), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(14)))
@@ -3946,7 +3946,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let compiler = makeCompiler(symbols: symbols)
@@ -3954,7 +3954,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -3971,7 +3971,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.addip(.p(7), .p(6), 1)),
             TackInstructionNode(.liuw(.w(8), 2)),
             TackInstructionNode(.sw(.w(8), .p(7), 0)),
-            TackInstructionNode(.lip(.p(9), 0x0110)),
+            TackInstructionNode(.lip(.p(9), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(9)))
@@ -3981,11 +3981,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = Env(
             tuples: [
                 ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x1000)),
-                ("range", Symbol(type: kRangeType, offset: 0x2000)),
+                ("range", Symbol(type: kRangeType, offset: 0x2000))
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
@@ -4012,7 +4012,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(12), .p(11), 1)),
             TackInstructionNode(.subw(.w(13), .w(12), .w(10))),
             TackInstructionNode(.sw(.w(13), .p(8), 0)),
-            TackInstructionNode(.lip(.p(14), 0x0110)),
+            TackInstructionNode(.lip(.p(14), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(14)))
@@ -4029,11 +4029,11 @@ final class CoreToTackCompilerTests: XCTestCase {
                     )
                 ),
                 ("a", Symbol(type: .u16, offset: 0x2000)),
-                ("b", Symbol(type: .u16, offset: 0x2001)),
+                ("b", Symbol(type: .u16, offset: 0x2001))
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
@@ -4042,7 +4042,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
-                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b")),
+                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -4066,7 +4066,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(14), .p(13), 0)),
             TackInstructionNode(.subw(.w(15), .w(14), .w(12))),
             TackInstructionNode(.sw(.w(15), .p(10), 0)),
-            TackInstructionNode(.lip(.p(16), 0x0110)),
+            TackInstructionNode(.lip(.p(16), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(16)))
@@ -4082,7 +4082,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kSliceName),
             arguments: [
                 StructInitializer.Argument(name: kSliceBase, expr: LiteralInt(0)),
-                StructInitializer.Argument(name: kSliceCount, expr: LiteralInt(0)),
+                StructInitializer.Argument(name: kSliceCount, expr: LiteralInt(0))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: arg)
@@ -4103,7 +4103,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let compiler = makeCompiler(symbols: symbols)
@@ -4111,7 +4111,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(0)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(1)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(1))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -4126,7 +4126,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.addip(.p(5), .p(4), 1)),
             TackInstructionNode(.liuw(.w(6), 1)),
             TackInstructionNode(.sw(.w(6), .p(5), 0)),
-            TackInstructionNode(.lip(.p(7), 0x0110)),
+            TackInstructionNode(.lip(.p(7), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(7)))
@@ -4137,11 +4137,11 @@ final class CoreToTackCompilerTests: XCTestCase {
             tuples: [
                 ("foo", Symbol(type: .constDynamicArray(elementType: .u16), offset: 0x1000)),
                 ("a", Symbol(type: .u16, offset: 0x2000)),
-                ("b", Symbol(type: .u16, offset: 0x2001)),
+                ("b", Symbol(type: .u16, offset: 0x2001))
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
@@ -4150,7 +4150,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
-                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b")),
+                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -4172,7 +4172,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(12), .p(11), 0)),
             TackInstructionNode(.subw(.w(13), .w(12), .w(10))),
             TackInstructionNode(.sw(.w(13), .p(8), 0)),
-            TackInstructionNode(.lip(.p(14), 0x0110)),
+            TackInstructionNode(.lip(.p(14), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(14)))
@@ -4191,7 +4191,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let compiler = makeCompiler(symbols: symbols)
@@ -4199,7 +4199,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
-                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3)),
+                StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -4216,7 +4216,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.addip(.p(7), .p(6), 1)),
             TackInstructionNode(.liuw(.w(8), 2)),
             TackInstructionNode(.sw(.w(8), .p(7), 0)),
-            TackInstructionNode(.lip(.p(9), 0x0110)),
+            TackInstructionNode(.lip(.p(9), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(9)))
@@ -4233,11 +4233,11 @@ final class CoreToTackCompilerTests: XCTestCase {
                     )
                 ),
                 ("a", Symbol(type: .u16, offset: 0x2000)),
-                ("b", Symbol(type: .u16, offset: 0x2001)),
+                ("b", Symbol(type: .u16, offset: 0x2001))
             ],
             typeDict: [
                 kRangeName: kRangeType,
-                kSliceName: kSliceType,
+                kSliceName: kSliceType
             ]
         )
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
@@ -4246,7 +4246,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: Identifier(kRangeName),
             arguments: [
                 StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
-                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b")),
+                StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
             ]
         )
         let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
@@ -4270,7 +4270,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(14), .p(13), 0)),
             TackInstructionNode(.subw(.w(15), .w(14), .w(12))),
             TackInstructionNode(.sw(.w(15), .p(10), 0)),
-            TackInstructionNode(.lip(.p(16), 0x0110)),
+            TackInstructionNode(.lip(.p(16), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(16)))
@@ -4426,7 +4426,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -4513,7 +4513,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.liuw(.w(0), 1)),
             TackInstructionNode(.lip(.p(1), 0xabcd)),
             TackInstructionNode(.lw(.w(2), .p(1), 0)),
-            TackInstructionNode(.addw(.w(3), .w(2), .w(0))),
+            TackInstructionNode(.addw(.w(3), .w(2), .w(0)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -4523,7 +4523,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let dst: TackInstruction.Register = .p(.p(1000))
         let symbols = Env(tuples: [
             ("dst", Symbol(type: .pointer(.void), storage: .registerStorage(dst))),
-            ("src", Symbol(type: .pointer(.void), storage: .staticStorage(offset: 0x1000))),
+            ("src", Symbol(type: .pointer(.void), storage: .staticStorage(offset: 0x1000)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -4536,7 +4536,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
-            TackInstructionNode(.movp(dst.unwrapPointer!, .p(1))),
+            TackInstructionNode(.movp(dst.unwrapPointer!, .p(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, dst)
@@ -4557,7 +4557,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.liuw(t0, 1000)),
-            TackInstructionNode(.movw(t1, t0)),
+            TackInstructionNode(.movw(t1, t0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(t1))
@@ -4578,7 +4578,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.liub(t0, 42)),
-            TackInstructionNode(.movb(t1, t0)),
+            TackInstructionNode(.movb(t1, t0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(t1))
@@ -4599,7 +4599,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.lio(t0, true)),
-            TackInstructionNode(.movo(t1, t0)),
+            TackInstructionNode(.movo(t1, t0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(t1))
@@ -4660,7 +4660,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let rightReg: TackInstruction.Register = .w(.w(2000))
         let symbols = Env(tuples: [
             ("left", Symbol(type: .u16, storage: .registerStorage(leftReg))),
-            ("right", Symbol(type: .u16, storage: .registerStorage(rightReg))),
+            ("right", Symbol(type: .u16, storage: .registerStorage(rightReg)))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -4706,7 +4706,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         )
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(1), 1000)),
-            TackInstructionNode(.movw(.w(0), .w(1))),
+            TackInstructionNode(.movw(.w(0), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))

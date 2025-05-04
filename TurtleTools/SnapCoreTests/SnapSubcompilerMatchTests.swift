@@ -79,7 +79,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                     valueIdentifier: Identifier("foo"),
                     valueType: PrimitiveType(.bool),
                     block: Block(children: [])
-                ),
+                )
             ],
             elseClause: nil
         )
@@ -121,7 +121,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                     valueIdentifier: Identifier("foo"),
                     valueType: Identifier("None"),
                     block: Block(children: [])
-                ),
+                )
             ],
             elseClause: nil
         )
@@ -143,7 +143,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .u8)),
+            ("test", Symbol(type: .u8))
         ])
         let input = Match(
             expr: Identifier("test"),
@@ -195,9 +195,9 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                                 lexpr: Identifier("result"),
                                 rexpr: Identifier("foo")
                             )
-                        ]),
+                        ])
                     ])
-                ),
+                )
             ])
         )
     }
@@ -206,7 +206,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])))),
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(
             expr: Identifier("test"),
@@ -239,7 +239,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])))),
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(
             expr: Identifier("test"),
@@ -257,7 +257,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                     block: Block(children: [
                         Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(2))
                     ])
-                ),
+                )
             ],
             elseClause: nil
         )
@@ -298,7 +298,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                                 lexpr: Identifier("result"),
                                 rexpr: LiteralInt(2)
                             )
-                        ]),
+                        ])
                     ]),
                     else: If(
                         condition: Is(
@@ -321,10 +321,10 @@ final class SnapSubcompilerMatchTests: XCTestCase {
                                     lexpr: Identifier("result"),
                                     rexpr: LiteralInt(1)
                                 )
-                            ]),
+                            ])
                         ])
                     )
-                ),
+                )
             ])
         )
     }

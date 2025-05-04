@@ -18,14 +18,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kCMP,
             parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
             instruction: kCMP,
             parameters: [
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -39,7 +39,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
@@ -47,7 +47,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -61,7 +61,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
-                ParameterIdentifier("ra"),
+                ParameterIdentifier("ra")
             ]
         )
         let expected = InstructionNode(
@@ -69,7 +69,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r4"),
                 ParameterIdentifier("r3"),
-                ParameterIdentifier("r5"),
+                ParameterIdentifier("r5")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -83,7 +83,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("sp"),
                 ParameterIdentifier("fp"),
-                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr3")
             ]
         )
         let expected = InstructionNode(
@@ -91,7 +91,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r6"),
                 ParameterIdentifier("r7"),
-                ParameterIdentifier("r3"),
+                ParameterIdentifier("r3")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -105,7 +105,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("foo"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         XCTAssertThrowsError(try registerAllocator.visit(input)) {
@@ -125,7 +125,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
@@ -133,7 +133,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -147,7 +147,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
@@ -155,7 +155,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -169,7 +169,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
@@ -177,7 +177,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -191,7 +191,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
@@ -199,7 +199,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -212,14 +212,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kNOT,
             parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
             instruction: kNOT,
             parameters: [
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -232,14 +232,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kCMPI,
             parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let expected = InstructionNode(
             instruction: kCMPI,
             parameters: [
                 ParameterIdentifier("r1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -253,7 +253,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let expected = InstructionNode(
@@ -261,7 +261,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -275,7 +275,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let expected = InstructionNode(
@@ -283,7 +283,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -297,7 +297,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let expected = InstructionNode(
@@ -305,7 +305,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -319,7 +319,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let expected = InstructionNode(
@@ -327,7 +327,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -341,7 +341,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let expected = InstructionNode(
@@ -349,7 +349,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -363,7 +363,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
@@ -371,7 +371,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -385,7 +385,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr0")
             ]
         )
         let expected = InstructionNode(
@@ -393,7 +393,7 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -406,14 +406,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterNumber(1),
+                ParameterNumber(1)
             ]
         )
         let expected = InstructionNode(
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("r1"),
-                ParameterNumber(1),
+                ParameterNumber(1)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -426,14 +426,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kLUI,
             parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterNumber(1),
+                ParameterNumber(1)
             ]
         )
         let expected = InstructionNode(
             instruction: kLUI,
             parameters: [
                 ParameterIdentifier("r1"),
-                ParameterNumber(1),
+                ParameterNumber(1)
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -482,14 +482,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kJALR,
             parameters: [
                 ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr1")
             ]
         )
         let expected = InstructionNode(
             instruction: kJALR,
             parameters: [
                 ParameterIdentifier("r2"),
-                ParameterIdentifier("r1"),
+                ParameterIdentifier("r1")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -502,14 +502,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kLOAD,
             parameters: [
                 ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr1")
             ]
         )
         let expected = InstructionNode(
             instruction: kLOAD,
             parameters: [
                 ParameterIdentifier("r2"),
-                ParameterIdentifier("r1"),
+                ParameterIdentifier("r1")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -522,14 +522,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kSTORE,
             parameters: [
                 ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr1")
             ]
         )
         let expected = InstructionNode(
             instruction: kSTORE,
             parameters: [
                 ParameterIdentifier("r2"),
-                ParameterIdentifier("r1"),
+                ParameterIdentifier("r1")
             ]
         )
         let actual = try registerAllocator.visit(input)
@@ -542,14 +542,14 @@ final class RegisterAllocatorNaiveTests: XCTestCase {
             instruction: kLA,
             parameters: [
                 ParameterIdentifier("vr0"),
-                ParameterIdentifier("foo"),
+                ParameterIdentifier("foo")
             ]
         )
         let expected = InstructionNode(
             instruction: kLA,
             parameters: [
                 ParameterIdentifier("r0"),
-                ParameterIdentifier("foo"),
+                ParameterIdentifier("foo")
             ]
         )
         let actual = try registerAllocator.visit(input)

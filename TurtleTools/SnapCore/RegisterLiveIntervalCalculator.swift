@@ -80,7 +80,7 @@ public struct RegisterLiveIntervalCalculator {
             "r7": "r7",
             "ra": "ra",
             "sp": "sp",
-            "fp": "fp",
+            "fp": "fp"
         ]
         let result = mapping[virtualRegisterName]
         return result

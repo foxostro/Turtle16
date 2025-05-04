@@ -58,7 +58,7 @@ final class AssemblerTests: XCTestCase {
                 0b01110001_01000000,  // ADDI r1, r2, 0
                 0b01101000_11101001,  // CMPI r7, 9
                 0b11010111_11111001,  // BLT -7
-                0b00001000_00000000,  // HLT
+                0b00001000_00000000  // HLT
             ]
         )
     }

@@ -71,7 +71,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "NOP"),
-            InstructionNode(instruction: "NOP"),
+            InstructionNode(instruction: "NOP")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -79,7 +79,7 @@ final class AssemblerCompilerTests: XCTestCase {
             compiler.instructions,
             [
                 0x0000,
-                0x0000,
+                0x0000
             ]
         )
     }
@@ -174,7 +174,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "LOAD",
                 parameters: [
-                    ParameterIdentifier("a"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("a"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -193,7 +193,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "LOAD",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("a"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("a"), ParameterNumber(0)
                 ]
             )
         ])
@@ -212,7 +212,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "LOAD",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterIdentifier("r2"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterIdentifier("r2")
                 ]
             )
         ])
@@ -231,7 +231,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "LOAD",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(16),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(16)
                 ]
             )
         ])
@@ -247,7 +247,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "LOAD",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1)
                 ]
             )
         ])
@@ -268,7 +268,7 @@ final class AssemblerCompilerTests: XCTestCase {
                 instruction: "LOAD",
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
             )
         ])
@@ -319,7 +319,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "STORE",
                 parameters: [
-                    ParameterIdentifier("a"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("a"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -338,7 +338,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "STORE",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("a"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("a"), ParameterNumber(0)
                 ]
             )
         ])
@@ -357,7 +357,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "STORE",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterIdentifier("r2"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterIdentifier("r2")
                 ]
             )
         ])
@@ -376,7 +376,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "STORE",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1)
                 ]
             )
         ])
@@ -397,7 +397,7 @@ final class AssemblerCompilerTests: XCTestCase {
                 instruction: "STORE",
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
             )
         ])
@@ -651,7 +651,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ADD",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -670,7 +670,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ADD",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -735,7 +735,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "SUB",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -754,7 +754,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "SUB",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -819,7 +819,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "AND",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -838,7 +838,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "AND",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -903,7 +903,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "OR",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -922,7 +922,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "OR",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -987,7 +987,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "XOR",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -1006,7 +1006,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "XOR",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -1197,7 +1197,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ADDI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -1216,7 +1216,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ADDI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -1281,7 +1281,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "SUBI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -1300,7 +1300,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "SUBI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -1365,7 +1365,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ANDI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -1384,7 +1384,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ANDI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -1449,7 +1449,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ORI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -1468,7 +1468,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ORI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -1533,7 +1533,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "XORI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -1552,7 +1552,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "XORI",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -1607,7 +1607,7 @@ final class AssemblerCompilerTests: XCTestCase {
         compiler.compile(ast: [
             InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier("foo")]),
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "HLT"),
+            InstructionNode(instruction: "HLT")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1615,7 +1615,7 @@ final class AssemblerCompilerTests: XCTestCase {
             compiler.instructions,
             [
                 0b10100111_11111111,
-                0b00001000_00000000,
+                0b00001000_00000000
             ]
         )
     }
@@ -1626,7 +1626,7 @@ final class AssemblerCompilerTests: XCTestCase {
             LabelDeclaration(identifier: "foo"),
             InstructionNode(instruction: "NOP"),
             InstructionNode(instruction: "NOP"),
-            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier("foo")]),
+            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1635,7 +1635,7 @@ final class AssemblerCompilerTests: XCTestCase {
             [
                 0b00000000_00000000,
                 0b00000000_00000000,
-                0b10100111_11111100,
+                0b10100111_11111100
             ]
         )
     }
@@ -1757,7 +1757,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "JALR",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -1776,7 +1776,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "JALR",
                 parameters: [
-                    ParameterIdentifier("r7"), ParameterIdentifier("r0"), ParameterNumber(-1),
+                    ParameterIdentifier("r7"), ParameterIdentifier("r0"), ParameterNumber(-1)
                 ]
             )
         ])
@@ -1819,7 +1819,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BEQ", parameters: [ParameterIdentifier("foo")]),
+            InstructionNode(instruction: "BEQ", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1860,7 +1860,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BNE", parameters: [ParameterIdentifier("foo")]),
+            InstructionNode(instruction: "BNE", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1901,7 +1901,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BLT", parameters: [ParameterIdentifier("foo")]),
+            InstructionNode(instruction: "BLT", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1942,7 +1942,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BGT", parameters: [ParameterIdentifier("foo")]),
+            InstructionNode(instruction: "BGT", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1983,7 +1983,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BLTU", parameters: [ParameterIdentifier("foo")]),
+            InstructionNode(instruction: "BLTU", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -2024,7 +2024,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BGTU", parameters: [ParameterIdentifier("foo")]),
+            InstructionNode(instruction: "BGTU", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -2087,7 +2087,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ADC",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -2106,7 +2106,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "ADC",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -2171,7 +2171,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "SBC",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)
                 ]
             )
         ])
@@ -2190,7 +2190,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(
                 instruction: "SBC",
                 parameters: [
-                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")
                 ]
             )
         ])
@@ -2271,7 +2271,7 @@ final class AssemblerCompilerTests: XCTestCase {
                 parameters: [ParameterIdentifier("r0"), ParameterIdentifier("foo")]
             ),
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "HLT"),
+            InstructionNode(instruction: "HLT")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -2280,7 +2280,7 @@ final class AssemblerCompilerTests: XCTestCase {
             [
                 0b00100000_00000010,  // LI
                 0b00101000_00000000,  // LUI
-                0b00001000_00000000,  // HLT
+                0b00001000_00000000  // HLT
             ]
         )
         XCTAssertEqual(
@@ -2297,7 +2297,7 @@ final class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "CALL", parameters: [ParameterIdentifier("foo")]),
-            LabelDeclaration(identifier: "foo"),
+            LabelDeclaration(identifier: "foo")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -2456,7 +2456,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(instruction: "NOP"),
             InstructionNode(instruction: "ENTER", parameter: ParameterNumber(8)),
             InstructionNode(instruction: "NOP"),
-            InstructionNode(instruction: "HLT"),
+            InstructionNode(instruction: "HLT")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -2494,7 +2494,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(instruction: "NOP"),
             InstructionNode(instruction: "LEAVE"),
             InstructionNode(instruction: "NOP"),
-            InstructionNode(instruction: "HLT"),
+            InstructionNode(instruction: "HLT")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -2533,7 +2533,7 @@ final class AssemblerCompilerTests: XCTestCase {
             InstructionNode(instruction: "ENTER", parameter: ParameterNumber(8)),
             InstructionNode(instruction: "LEAVE"),
             InstructionNode(instruction: "NOP"),
-            InstructionNode(instruction: "HLT"),
+            InstructionNode(instruction: "HLT")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)

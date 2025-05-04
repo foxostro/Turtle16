@@ -204,7 +204,7 @@ open class Lexer {
             "\r": "\\r",
             "\"": "\\\"",
             "\'": "\\\'",
-            "\\": "\\\\",
+            "\\": "\\\\"
         ]
         for (entity, description) in map {
             result = result.replacingOccurrences(of: description, with: entity)

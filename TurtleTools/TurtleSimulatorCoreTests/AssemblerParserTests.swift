@@ -128,7 +128,7 @@ final class AssemblerParserTests: XCTestCase {
                 parameters: [
                     ParameterNumber(1),
                     ParameterNumber(2),
-                    ParameterIdentifier("foo"),
+                    ParameterIdentifier("foo")
                 ]
             )
         )

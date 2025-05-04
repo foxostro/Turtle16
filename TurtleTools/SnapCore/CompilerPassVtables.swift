@@ -21,7 +21,7 @@ public final class CompilerPassVtables: CompilerPassWithDeclScan {
         var children: [AbstractSyntaxTreeNode] = [
             decls.vtableDecl,
             decls.traitObjectDecl,
-            traitDecl1,
+            traitDecl1
         ]
         if let traitObjectImpl = decls.traitObjectImpl {
             children.append(traitObjectImpl)

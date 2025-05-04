@@ -113,7 +113,7 @@ public struct RegisterSpiller {
                                 parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]
                             ),
                             InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
-                            InstructionNode(instruction: kLOAD, parameters: [tempReg, ra]),
+                            InstructionNode(instruction: kLOAD, parameters: [tempReg, ra])
                         ]
                     }
                     else {
@@ -155,7 +155,7 @@ public struct RegisterSpiller {
                                 parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]
                             ),
                             InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
-                            InstructionNode(instruction: kSTORE, parameters: [tempReg, ra]),
+                            InstructionNode(instruction: kSTORE, parameters: [tempReg, ra])
                         ]
                     }
                     else {

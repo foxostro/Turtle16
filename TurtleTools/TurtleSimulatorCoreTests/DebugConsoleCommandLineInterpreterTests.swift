@@ -481,7 +481,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let ins: UInt16 = UInt16(hltOpcode << 11)
         computer.instructions = [
             0b00000000_00000000,  // NOP
-            ins,
+            ins
         ]
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .run)
@@ -506,11 +506,11 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
                     0b01110001_01000000,  // ADDI r1, r2, 0
                     0b01101000_11101001,  // CMPI r7, 9
                     0b11010111_11111001,  // BLT -7
-                    0b00001000_00000000,  // HLT
+                    0b00001000_00000000  // HLT
                 ]
             ),
             .run,
-            .info("cpu"),
+            .info("cpu")
         ])
         XCTAssertEqual(
             (interpreter.logger as! StringLogger).stringValue,
@@ -562,7 +562,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
             .reset(type: .soft),
             .load("program", url),
             .run,
-            .info("cpu"),
+            .info("cpu")
         ])
         XCTAssertEqual(
             (interpreter.logger as! StringLogger).stringValue,
@@ -596,7 +596,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions: [
             .reset(type: .soft),
-            .load("program_hi", url),
+            .load("program_hi", url)
         ])
         let gold = try! Data(contentsOf: url)
         for i in 0..<min(gold.count, computer.instructions.count) {
@@ -611,7 +611,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions: [
             .reset(type: .soft),
-            .load("program_lo", url),
+            .load("program_lo", url)
         ])
         let gold = try! Data(contentsOf: url)
         for i in 0..<min(gold.count, computer.instructions.count) {
@@ -689,7 +689,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
 
     func testSaveProgram() throws {
         let tempUrl = NSURL.fileURL(withPathComponents: [
-            NSTemporaryDirectory(), NSUUID().uuidString,
+            NSTemporaryDirectory(), NSUUID().uuidString
         ])!
         defer {
             try? FileManager.default.removeItem(at: tempUrl)
@@ -700,7 +700,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         interpreter.run(instructions: [
             .reset(type: .soft),
             .load("program", url),
-            .save("program", tempUrl),
+            .save("program", tempUrl)
         ])
         let data1 = try! Data(contentsOf: url)
         guard let data2 = try? Data(contentsOf: tempUrl) else {
@@ -716,7 +716,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
 
     func testSaveProgramHi() throws {
         let tempUrl = NSURL.fileURL(withPathComponents: [
-            NSTemporaryDirectory(), NSUUID().uuidString,
+            NSTemporaryDirectory(), NSUUID().uuidString
         ])!
         defer {
             try? FileManager.default.removeItem(at: tempUrl)
@@ -727,7 +727,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         interpreter.run(instructions: [
             .reset(type: .soft),
             .load("program", url),
-            .save("program_hi", tempUrl),
+            .save("program_hi", tempUrl)
         ])
         let data1 = try! Data(contentsOf: url)
         guard let data2 = try? Data(contentsOf: tempUrl) else {
@@ -741,7 +741,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
 
     func testSaveProgramLo() throws {
         let tempUrl = NSURL.fileURL(withPathComponents: [
-            NSTemporaryDirectory(), NSUUID().uuidString,
+            NSTemporaryDirectory(), NSUUID().uuidString
         ])!
         defer {
             try? FileManager.default.removeItem(at: tempUrl)
@@ -752,7 +752,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         interpreter.run(instructions: [
             .reset(type: .soft),
             .load("program", url),
-            .save("program_lo", tempUrl),
+            .save("program_lo", tempUrl)
         ])
         let data1 = try! Data(contentsOf: url)
         guard let data2 = try? Data(contentsOf: tempUrl) else {
@@ -766,7 +766,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
 
     func testSaveData() throws {
         let tempUrl = NSURL.fileURL(withPathComponents: [
-            NSTemporaryDirectory(), NSUUID().uuidString,
+            NSTemporaryDirectory(), NSUUID().uuidString
         ])!
         defer {
             try? FileManager.default.removeItem(at: tempUrl)
@@ -777,7 +777,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         interpreter.run(instructions: [
             .reset(type: .soft),
             .load("data", url),
-            .save("data", tempUrl),
+            .save("data", tempUrl)
         ])
         let data1 = try! Data(contentsOf: url)
         guard let data2 = try? Data(contentsOf: tempUrl) else {
@@ -793,7 +793,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
 
     func testSaveOpcodeDecodeROM1() throws {
         let tempUrl = NSURL.fileURL(withPathComponents: [
-            NSTemporaryDirectory(), NSUUID().uuidString,
+            NSTemporaryDirectory(), NSUUID().uuidString
         ])!
         defer {
             try? FileManager.default.removeItem(at: tempUrl)
@@ -804,7 +804,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         interpreter.run(instructions: [
             .reset(type: .soft),
             .load("OpcodeDecodeROM1", url),
-            .save("OpcodeDecodeROM1", tempUrl),
+            .save("OpcodeDecodeROM1", tempUrl)
         ])
         let data1 = try! Data(contentsOf: url)
         guard let data2 = try? Data(contentsOf: tempUrl) else {
@@ -820,7 +820,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
 
     func testSaveOpcodeDecodeROM2() throws {
         let tempUrl = NSURL.fileURL(withPathComponents: [
-            NSTemporaryDirectory(), NSUUID().uuidString,
+            NSTemporaryDirectory(), NSUUID().uuidString
         ])!
         defer {
             try? FileManager.default.removeItem(at: tempUrl)
@@ -831,7 +831,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         interpreter.run(instructions: [
             .reset(type: .soft),
             .load("OpcodeDecodeROM2", url),
-            .save("OpcodeDecodeROM2", tempUrl),
+            .save("OpcodeDecodeROM2", tempUrl)
         ])
         let data1 = try! Data(contentsOf: url)
         guard let data2 = try? Data(contentsOf: tempUrl) else {
@@ -847,7 +847,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
 
     func testSaveOpcodeDecodeROM3() throws {
         let tempUrl = NSURL.fileURL(withPathComponents: [
-            NSTemporaryDirectory(), NSUUID().uuidString,
+            NSTemporaryDirectory(), NSUUID().uuidString
         ])!
         defer {
             try? FileManager.default.removeItem(at: tempUrl)
@@ -858,7 +858,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         interpreter.run(instructions: [
             .reset(type: .soft),
             .load("OpcodeDecodeROM3", url),
-            .save("OpcodeDecodeROM3", tempUrl),
+            .save("OpcodeDecodeROM3", tempUrl)
         ])
         let data1 = try! Data(contentsOf: url)
         guard let data2 = try? Data(contentsOf: tempUrl) else {
@@ -878,7 +878,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions: [
             .load("program", url),
-            .disassemble(.unspecified),
+            .disassemble(.unspecified)
         ])
         XCTAssertEqual(
             (interpreter.logger as! StringLogger).stringValue,
@@ -911,7 +911,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions: [
             .load("program", url),
-            .disassemble(.base(1)),
+            .disassemble(.base(1))
         ])
         XCTAssertEqual(
             (interpreter.logger as! StringLogger).stringValue,
@@ -944,7 +944,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions: [
             .load("program", url),
-            .disassemble(.baseCount(1, 4)),
+            .disassemble(.baseCount(1, 4))
         ])
         XCTAssertEqual(
             (interpreter.logger as! StringLogger).stringValue,
@@ -965,7 +965,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions: [
             .load("program", url),
-            .disassemble(.identifier("L0")),
+            .disassemble(.identifier("L0"))
         ])
         XCTAssertEqual(
             (interpreter.logger as! StringLogger).stringValue,
@@ -998,7 +998,7 @@ final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions: [
             .load("program", url),
-            .disassemble(.identifierCount("L0", 6)),
+            .disassemble(.identifierCount("L0", 6))
         ])
         XCTAssertEqual(
             (interpreter.logger as! StringLogger).stringValue,

@@ -161,7 +161,7 @@ final class EnvTests: XCTestCase {
     func testInitializedWithDeclarationOrder() {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0)),
-            ("bar", Symbol(type: .u8, offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 0))
         ])
         XCTAssertTrue(symbols.declarationOrder.contains("foo"))
         XCTAssertTrue(symbols.declarationOrder.contains("bar"))
@@ -171,13 +171,13 @@ final class EnvTests: XCTestCase {
     func testDeclarationOrderAffectsEquality() {
         let symbols1 = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0)),
-            ("bar", Symbol(type: .u8, offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 0))
         ])
         symbols1.declarationOrder = ["foo", "bar"]
 
         let symbols2 = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0)),
-            ("bar", Symbol(type: .u8, offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 0))
         ])
         symbols2.declarationOrder = ["bar", "foo"]
 

@@ -579,7 +579,7 @@ final class AssemblerCodeGeneratorTests: XCTestCase {
             codeGen.instructions,
             [
                 0b00100011_11001101,  // LI r3, 0xcd
-                0b00101011_10101011,  // LUI r3, 0xab
+                0b00101011_10101011  // LUI r3, 0xab
             ]
         )
     }
@@ -597,7 +597,7 @@ final class AssemblerCodeGeneratorTests: XCTestCase {
             [
                 0b00000000_00000000,  // NOP
                 0b00100011_11001101,  // LI r3, 0xcd
-                0b00101011_10101011,  // LUI r3, 0xab
+                0b00101011_10101011  // LUI r3, 0xab
             ]
         )
     }

@@ -86,7 +86,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
                 elements: [
                     ExprUtils.makeU8(value: 0),
                     ExprUtils.makeU8(value: 1),
-                    ExprUtils.makeU8(value: 2),
+                    ExprUtils.makeU8(value: 2)
                 ]
             ),
             member: Identifier("count")
@@ -108,7 +108,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
             name: "foo",
             fields: Env(tuples: [
                 ("bar", Symbol(type: .u8, storage: .automaticStorage(offset: 0))),
-                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1))),
+                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1)))
             ])
         )
         let symbols = Env(tuples: [
@@ -132,7 +132,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
             name: "foo",
             fields: Env(tuples: [
                 ("bar", Symbol(type: .u8, storage: .automaticStorage(offset: 0))),
-                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1))),
+                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1)))
             ])
         )
         let symbols = Env(tuples: [
@@ -154,7 +154,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
             name: "foo",
             fields: Env(tuples: [
                 ("bar", Symbol(type: .u8, storage: .automaticStorage(offset: 0))),
-                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1))),
+                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1)))
             ])
         )
         let symbols = Env(tuples: [
@@ -170,7 +170,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Identifier("foo")
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.u8), offset: 0x0100)),
-            ("bar", Symbol(type: .u8, offset: 0x0102)),
+            ("bar", Symbol(type: .u8, offset: 0x0102))
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -185,7 +185,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
         )
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.u8), offset: 0x0100)),
-            ("bar", Symbol(type: .u8, offset: 0x0102)),
+            ("bar", Symbol(type: .u8, offset: 0x0102))
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -203,7 +203,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
             name: "Foo",
             fields: Env(tuples: [
                 ("bar", Symbol(type: .u8, storage: .automaticStorage(offset: 0))),
-                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1))),
+                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1)))
             ])
         )
         let symbols = Env(tuples: [
@@ -227,7 +227,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
             name: "Foo",
             fields: Env(tuples: [
                 ("bar", Symbol(type: .u8, storage: .automaticStorage(offset: 0))),
-                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1))),
+                ("baz", Symbol(type: .u16, storage: .automaticStorage(offset: 1)))
             ])
         )
         let symbols = Env(tuples: [
@@ -386,11 +386,11 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
     func testEseq_MultipleChildren() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16)),
-            ("bar", Symbol(type: .i16)),
+            ("bar", Symbol(type: .i16))
         ])
         let expr = Eseq(children: [
             Identifier("bar"),
-            Identifier("foo"),
+            Identifier("foo")
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         let result = try typeChecker.check(expression: expr)

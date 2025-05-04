@@ -158,7 +158,7 @@ public struct ExprUtils {
             identifier: Identifier("Range"),
             arguments: [
                 StructInitializer.Argument(name: "begin", expr: LiteralInt(begin)),
-                StructInitializer.Argument(name: "limit", expr: LiteralInt(limit)),
+                StructInitializer.Argument(name: "limit", expr: LiteralInt(limit))
             ]
         )
     }

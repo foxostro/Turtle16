@@ -36,7 +36,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                         StructDeclaration.Member(
                             name: "vtable",
                             type: vtableType
-                        ),
+                        )
                     ],
                     isConst: false,
                     associatedTraitType: traitIdent.identifier
@@ -44,7 +44,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                 TraitDeclaration(
                     identifier: traitIdent,
                     members: []
-                ),
+                )
             ])
         ])
 
@@ -78,7 +78,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                         PrimitiveType(
                             .u8
                         )
-                    ),
+                    )
                 ]
             )
         )
@@ -95,7 +95,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                                     returnType: PrimitiveType(.void),
                                     arguments: [
                                         PointerType(PrimitiveType(.void)),
-                                        DynamicArrayType(PrimitiveType(.u8)),
+                                        DynamicArrayType(PrimitiveType(.u8))
                                     ]
                                 )
                             )
@@ -113,7 +113,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                         StructDeclaration.Member(
                             name: "vtable",
                             type: vtableType
-                        ),
+                        )
                     ],
                     isConst: false,
                     associatedTraitType: traitIdent.identifier
@@ -141,7 +141,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                                         PrimitiveType(
                                             .u8
                                         )
-                                    ),
+                                    )
                                 ]
                             ),
                             argumentNames: ["self", "arg1"],
@@ -159,13 +159,13 @@ final class CompilerPassVtablesTests: XCTestCase {
                                             expr: Identifier("self"),
                                             member: Identifier("object")
                                         ),
-                                        Identifier("arg1"),
+                                        Identifier("arg1")
                                     ]
                                 )
                             ])
                         )
                     ]
-                ),
+                )
             ])
         ])
 

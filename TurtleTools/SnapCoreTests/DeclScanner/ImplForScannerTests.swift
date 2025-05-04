@@ -24,7 +24,7 @@ final class ImplForScannerTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("Serial")),
-                                DynamicArrayType(PrimitiveType(.u8)),
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]
                         )
                     )
@@ -70,7 +70,7 @@ final class ImplForScannerTests: XCTestCase {
                             PointerType(
                                 Identifier("Serial")
                             ),
-                            DynamicArrayType(PrimitiveType(.u8)),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ]
                     ),
                     argumentNames: ["self", "s"],
@@ -198,7 +198,7 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.void),
                         arguments: [
                             PointerType(Identifier("SerialFake")),
-                            PrimitiveType(.u8),
+                            PrimitiveType(.u8)
                         ]
                     ),
                     argumentNames: ["self", "s"],
@@ -242,7 +242,7 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.void),
                         arguments: [
                             PrimitiveType(.u8),
-                            DynamicArrayType(PrimitiveType(.u8)),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ]
                     ),
                     argumentNames: ["self", "s"],
@@ -286,7 +286,7 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: PrimitiveType(.bool),
                         arguments: [
                             PointerType(Identifier("SerialFake")),
-                            DynamicArrayType(PrimitiveType(.u8)),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ]
                     ),
                     argumentNames: ["self", "s"],

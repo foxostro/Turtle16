@@ -202,7 +202,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
             callee: Identifier("foo"),
             arguments: [
                 Identifier("U"),
-                Identifier("V"),
+                Identifier("V")
             ]
         )
         let functionType = FunctionType(
@@ -210,7 +210,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
             returnType: PrimitiveType(.void),
             arguments: [
                 Identifier("T"),
-                Identifier("T"),
+                Identifier("T")
             ]
         )
         let template = FunctionDeclaration(
@@ -243,7 +243,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
             callee: Identifier("foo"),
             arguments: [
                 Identifier("U"),
-                Identifier("V"),
+                Identifier("V")
             ]
         )
         let functionType = FunctionType(
@@ -251,7 +251,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
             returnType: PrimitiveType(.void),
             arguments: [
                 Identifier("T"),
-                Identifier("T"),
+                Identifier("T")
             ]
         )
         let template = FunctionDeclaration(

@@ -176,7 +176,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: node.sourceAnchor,
             children: [
                 InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kNOP),
-                InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kHLT),
+                InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kHLT)
             ]
         )
     }
@@ -245,7 +245,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     sourceAnchor: sourceAnchor,
                     instruction: kANDI,
                     parameters: [dst, tmp, ParameterNumber(1)]
-                ),
+                )
             ]
         )
     }
@@ -267,7 +267,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBEQ, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -289,7 +289,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBNE, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -324,7 +324,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         test,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -333,7 +333,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(label)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -353,7 +353,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         test,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -362,7 +362,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(label)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -382,7 +382,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         test,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -391,7 +391,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(label)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -411,7 +411,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     dst,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -429,7 +429,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -437,7 +437,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -446,7 +446,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -454,9 +454,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLOAD,
                     parameters: [
                         dst,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -476,7 +476,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     dst,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -494,7 +494,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -502,7 +502,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -511,7 +511,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -519,9 +519,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLOAD,
                     parameters: [
                         dst,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -541,7 +541,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     dst,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -559,7 +559,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -567,7 +567,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -576,7 +576,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -584,9 +584,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLOAD,
                     parameters: [
                         dst,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -606,7 +606,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     dst,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -624,7 +624,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -632,7 +632,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -641,7 +641,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -649,9 +649,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLOAD,
                     parameters: [
                         dst,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -673,7 +673,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     src,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -691,7 +691,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -699,7 +699,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -708,7 +708,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -716,9 +716,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kSTORE,
                     parameters: [
                         src,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -738,7 +738,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     src,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -756,7 +756,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -764,7 +764,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -773,7 +773,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -781,9 +781,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kSTORE,
                     parameters: [
                         src,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -803,7 +803,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     src,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -821,7 +821,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -829,7 +829,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -838,7 +838,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -846,9 +846,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kSTORE,
                     parameters: [
                         src,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -868,7 +868,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     src,
                     addr,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -886,7 +886,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -894,7 +894,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(offset),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -903,7 +903,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         ParameterIdentifier(addr2),
                         ParameterIdentifier(offset),
-                        addr1,
+                        addr1
                     ]
                 ),
                 InstructionNode(
@@ -911,9 +911,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kSTORE,
                     parameters: [
                         src,
-                        ParameterIdentifier(addr2),
+                        ParameterIdentifier(addr2)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -961,7 +961,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     sourceAnchor: sourceAnchor,
                     instruction: kADDI,
                     parameters: [dst, dst, ParameterNumber(1)]
-                ),
+                )
             ]
         }
         return Seq(sourceAnchor: sourceAnchor, children: children)
@@ -994,7 +994,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         sourceAnchor: sourceAnchor,
                         instruction: kSTORE,
                         parameters: [temp, originalDst, ParameterNumber(0)]
-                    ),
+                    )
                 ]
             }
             return Seq(children: children)
@@ -1014,7 +1014,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     sourceAnchor: sourceAnchor,
                     instruction: kADDI,
                     parameters: [src, originalSrc, ParameterNumber(0)]
-                ),
+                )
             ]
             for _ in 0..<numberOfWords {
                 children += [
@@ -1037,7 +1037,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         sourceAnchor: sourceAnchor,
                         instruction: kADDI,
                         parameters: [src, src, ParameterNumber(1)]
-                    ),
+                    )
                 ]
             }
             return Seq(sourceAnchor: sourceAnchor, children: children)
@@ -1059,9 +1059,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         corresponding(.p(dst_)),
                         ParameterIdentifier("sp"),
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -1105,7 +1105,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     dst,
                     left,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -1122,7 +1122,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         ParameterIdentifier(right),
-                        ParameterNumber(Int(imm16 & 0x00ff)),
+                        ParameterNumber(Int(imm16 & 0x00ff))
                     ]
                 ),
                 InstructionNode(
@@ -1130,7 +1130,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         ParameterIdentifier(right),
-                        ParameterNumber(Int((imm16 & 0xff00) >> 8)),
+                        ParameterNumber(Int((imm16 & 0xff00) >> 8))
                     ]
                 ),
                 InstructionNode(
@@ -1139,9 +1139,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         left,
-                        ParameterIdentifier(right),
+                        ParameterIdentifier(right)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -1207,7 +1207,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 instruction: kLI,
                 parameters: [
                     dst,
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         }
@@ -1224,7 +1224,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         parameters: [
                             dst,
                             src,
-                            ParameterNumber(0),
+                            ParameterNumber(0)
                         ]
                     )
                 ]
@@ -1243,7 +1243,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         instruction: kNOT,
                         parameters: [
                             intermediate,
-                            src,
+                            src
                         ]
                     ),
                     InstructionNode(
@@ -1252,9 +1252,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         parameters: [
                             dst,
                             intermediate,
-                            ParameterNumber(1),
+                            ParameterNumber(1)
                         ]
-                    ),
+                    )
                 ]
             )
         }
@@ -1292,7 +1292,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         resultStack[resultStack.count - 1],
                         multiplier,
-                        multiplier,
+                        multiplier
                     ]
                 )
             ]
@@ -1304,7 +1304,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         parameters: [
                             resultStack[resultStack.count - 1],
                             resultStack[resultStack.count - 1],
-                            resultStack[resultStack.count - 1],
+                            resultStack[resultStack.count - 1]
                         ]
                     )
                 ]
@@ -1325,7 +1325,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         sum,
                         resultStack[0],
-                        resultStack[1],
+                        resultStack[1]
                     ]
                 )
             ]
@@ -1337,7 +1337,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         parameters: [
                             sum,
                             sum,
-                            component,
+                            component
                         ]
                     )
                 ]
@@ -1352,7 +1352,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         sum,
                         sum,
-                        multiplier,
+                        multiplier
                     ]
                 )
             ]
@@ -1367,7 +1367,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kNOT,
                     parameters: [
                         t1,
-                        sum,
+                        sum
                     ]
                 ),
                 InstructionNode(
@@ -1376,9 +1376,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         t2,
                         t1,
-                        ParameterNumber(1),
+                        ParameterNumber(1)
                     ]
-                ),
+                )
             ]
             sum = t2
         }
@@ -1399,7 +1399,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             instruction: kLI,
             parameters: [
                 dst,
-                ParameterNumber(imm ? 1 : 0),
+                ParameterNumber(imm ? 1 : 0)
             ]
         )
     }
@@ -1423,7 +1423,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         instruction: kLI,
                         parameters: [
                             dst,
-                            ParameterNumber(lower),
+                            ParameterNumber(lower)
                         ]
                     ),
                     InstructionNode(
@@ -1431,9 +1431,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         instruction: kLUI,
                         parameters: [
                             dst,
-                            ParameterNumber(upper),
+                            ParameterNumber(upper)
                         ]
-                    ),
+                    )
                 ]
             )
         }
@@ -1443,7 +1443,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             instruction: kLI,
             parameters: [
                 dst,
-                ParameterNumber(imm),
+                ParameterNumber(imm)
             ]
         )
     }
@@ -1460,7 +1460,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 instruction: kLI,
                 parameters: [
                     dst,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -1477,7 +1477,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         dst,
-                        ParameterNumber(lower),
+                        ParameterNumber(lower)
                     ]
                 ),
                 InstructionNode(
@@ -1485,9 +1485,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(upper),
+                        ParameterNumber(upper)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -1504,7 +1504,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 instruction: kLI,
                 parameters: [
                     dst,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -1521,7 +1521,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         dst,
-                        ParameterNumber(lower),
+                        ParameterNumber(lower)
                     ]
                 ),
                 InstructionNode(
@@ -1529,9 +1529,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(upper),
+                        ParameterNumber(upper)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -1549,7 +1549,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             instruction: kAND,
             parameters: [
-                c, a, b,
+                c, a, b
             ]
         )
     }
@@ -1567,7 +1567,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             instruction: kOR,
             parameters: [
-                c, a, b,
+                c, a, b
             ]
         )
     }
@@ -1585,7 +1585,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             instruction: kXOR,
             parameters: [
-                c, a, b,
+                c, a, b
             ]
         )
     }
@@ -1601,7 +1601,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             instruction: kNOT,
             parameters: [
-                dst, src,
+                dst, src
             ]
         )
     }
@@ -1619,7 +1619,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             instruction: kADD,
             parameters: [
-                c, a, b,
+                c, a, b
             ]
         )
     }
@@ -1637,7 +1637,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             instruction: kADD,
             parameters: [
-                c, a, b,
+                c, a, b
             ]
         )
     }
@@ -1655,7 +1655,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             instruction: kSUB,
             parameters: [
-                c, a, b,
+                c, a, b
             ]
         )
     }
@@ -1682,7 +1682,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         result,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -1691,7 +1691,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         counter,
                         left,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 LabelDeclaration(identifier: head),
@@ -1700,7 +1700,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         counter,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -1716,7 +1716,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         result,
                         result,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -1725,7 +1725,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         counter,
                         counter,
-                        ParameterNumber(1),
+                        ParameterNumber(1)
                     ]
                 ),
                 InstructionNode(
@@ -1735,7 +1735,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         ParameterIdentifier(head)
                     ]
                 ),
-                LabelDeclaration(identifier: tail),
+                LabelDeclaration(identifier: tail)
             ]
         )
     }
@@ -1757,7 +1757,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
     ) -> AbstractSyntaxTreeNode? {
         Seq(children: [
             divx(sourceAnchor, .b(c), .b(a), .b(b)),
-            signExtend8(corresponding(.b(c))),
+            signExtend8(corresponding(.b(c)))
         ])
     }
 
@@ -1798,7 +1798,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         a,
                         originalA,
-                        zero,
+                        zero
                     ]
                 ),
                 InstructionNode(
@@ -1807,7 +1807,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         b,
                         originalB,
-                        zero,
+                        zero
                     ]
                 ),
 
@@ -1903,7 +1903,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 LabelDeclaration(positiveBoth),
                 divux_core(sourceAnchor, c, a, b),
 
-                LabelDeclaration(tail),
+                LabelDeclaration(tail)
             ]
         )
     }
@@ -1924,7 +1924,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         c,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -1932,7 +1932,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         b,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -1948,7 +1948,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMP,
                     parameters: [
                         a,
-                        b,
+                        b
                     ]
                 ),
                 InstructionNode(
@@ -1964,7 +1964,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         a,
                         a,
-                        b,
+                        b
                     ]
                 ),
                 InstructionNode(
@@ -1973,7 +1973,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         c,
                         c,
-                        ParameterNumber(1),
+                        ParameterNumber(1)
                     ]
                 ),
                 InstructionNode(
@@ -1983,7 +1983,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         ParameterIdentifier(head)
                     ]
                 ),
-                LabelDeclaration(identifier: tail),
+                LabelDeclaration(identifier: tail)
             ]
         )
     }
@@ -2005,7 +2005,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
     ) -> AbstractSyntaxTreeNode? {
         Seq(children: [
             divux(sourceAnchor, .b(c_), .b(a_), .b(b_)),
-            signExtend8(corresponding(.b(c_))),
+            signExtend8(corresponding(.b(c_)))
         ])
     }
 
@@ -2029,7 +2029,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         result,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2037,7 +2037,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         right,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2053,7 +2053,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         tempLeft,
                         left,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 LabelDeclaration(identifier: head),
@@ -2062,7 +2062,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMP,
                     parameters: [
                         tempLeft,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -2078,7 +2078,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         tempLeft,
                         tempLeft,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -2087,7 +2087,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         result,
                         result,
-                        ParameterNumber(1),
+                        ParameterNumber(1)
                     ]
                 ),
                 InstructionNode(
@@ -2097,7 +2097,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         ParameterIdentifier(head)
                     ]
                 ),
-                LabelDeclaration(identifier: tail),
+                LabelDeclaration(identifier: tail)
             ]
         )
     }
@@ -2122,7 +2122,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         tempLeft,
                         left,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2130,7 +2130,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         right,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2146,7 +2146,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMP,
                     parameters: [
                         tempLeft,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -2162,7 +2162,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         tempLeft,
                         tempLeft,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -2172,7 +2172,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                         ParameterIdentifier(head)
                     ]
                 ),
-                LabelDeclaration(identifier: tail),
+                LabelDeclaration(identifier: tail)
             ]
         )
     }
@@ -2226,7 +2226,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kADD, parameters: [mask2, mask2, mask2]),
                 InstructionNode(instruction: kADDI, parameters: [i, i, ParameterNumber(1)]),
                 InstructionNode(instruction: kJMP, parameter: head_body),
-                LabelDeclaration(tail_body),
+                LabelDeclaration(tail_body)
             ]
         )
     }
@@ -2280,7 +2280,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kADD, parameters: [mask2, mask2, mask2]),
                 InstructionNode(instruction: kADDI, parameters: [i, i, ParameterNumber(1)]),
                 InstructionNode(instruction: kJMP, parameter: head_body),
-                LabelDeclaration(tail_body),
+                LabelDeclaration(tail_body)
             ]
         )
     }
@@ -2302,7 +2302,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBEQ, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2324,7 +2324,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBNE, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2346,7 +2346,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBEQ, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2368,7 +2368,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBNE, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2390,7 +2390,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBLT, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2412,7 +2412,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
                 InstructionNode(instruction: kBLT, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2434,7 +2434,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
                 InstructionNode(instruction: kBGT, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2456,7 +2456,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBGT, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2478,7 +2478,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBLTU, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2500,7 +2500,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
                 InstructionNode(instruction: kBLTU, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2522,7 +2522,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
                 InstructionNode(instruction: kBGTU, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2544,7 +2544,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
                 InstructionNode(instruction: kBGTU, parameter: ll0),
                 InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -2562,7 +2562,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             instruction: kLI,
             parameters: [
                 dst,
-                ParameterNumber(imm),
+                ParameterNumber(imm)
             ]
         )
     }
@@ -2582,7 +2582,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 instruction: kLI,
                 parameters: [
                     dst,
-                    ParameterNumber(imm),
+                    ParameterNumber(imm)
                 ]
             )
         }
@@ -2594,7 +2594,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         dst,
-                        ParameterNumber(imm),
+                        ParameterNumber(imm)
                     ]
                 ),
                 InstructionNode(
@@ -2602,9 +2602,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -2631,9 +2631,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         c,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -2660,9 +2660,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         c,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -2689,9 +2689,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         c,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -2716,9 +2716,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -2730,21 +2730,21 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 instruction: kLI,
                 parameters: [
                     temp,
-                    ParameterNumber(0x80),
+                    ParameterNumber(0x80)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     temp,
-                    ParameterNumber(0x00),
+                    ParameterNumber(0x00)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     c,
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -2752,7 +2752,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     c,
                     c,
-                    temp,
+                    temp
                 ]
             ),
             InstructionNode(
@@ -2760,9 +2760,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                 parameters: [
                     c,
                     c,
-                    temp,
+                    temp
                 ]
-            ),
+            )
         ])
     }
 
@@ -2784,7 +2784,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kADD,
                     parameters: [c, a, b]
                 ),
-                signExtend8(c),
+                signExtend8(c)
             ]
         )
     }
@@ -2807,7 +2807,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kSUB,
                     parameters: [c, a, b]
                 ),
-                signExtend8(c),
+                signExtend8(c)
             ]
         )
     }
@@ -2833,7 +2833,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         result,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2842,7 +2842,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         counter,
                         left,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 LabelDeclaration(identifier: head),
@@ -2851,7 +2851,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         counter,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2867,7 +2867,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         result,
                         result,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -2876,7 +2876,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         counter,
                         counter,
-                        ParameterNumber(1),
+                        ParameterNumber(1)
                     ]
                 ),
                 InstructionNode(
@@ -2887,7 +2887,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     ]
                 ),
                 LabelDeclaration(identifier: tail),
-                signExtend8(corresponding(.b(c_))),
+                signExtend8(corresponding(.b(c_)))
             ]
         )
     }
@@ -2913,7 +2913,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         tempLeft,
                         left,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2921,7 +2921,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMPI,
                     parameters: [
                         right,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -2937,7 +2937,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kCMP,
                     parameters: [
                         tempLeft,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -2953,7 +2953,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         tempLeft,
                         tempLeft,
-                        right,
+                        right
                     ]
                 ),
                 InstructionNode(
@@ -2964,7 +2964,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     ]
                 ),
                 LabelDeclaration(identifier: tail),
-                signExtend8(corresponding(.b(c_))),
+                signExtend8(corresponding(.b(c_)))
             ]
         )
     }
@@ -3025,9 +3025,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         corresponding(.b(c_)),
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -3088,9 +3088,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         corresponding(.b(c_)),
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -3122,7 +3122,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(0)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3154,7 +3154,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(0)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3186,7 +3186,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(0)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3218,7 +3218,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(1)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3250,7 +3250,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(1)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3282,7 +3282,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(0)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3314,7 +3314,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(0)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3346,7 +3346,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(1)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3378,7 +3378,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(1)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3410,7 +3410,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [c, ParameterNumber(0)]
                 ),
-                LabelDeclaration(ll0),
+                LabelDeclaration(ll0)
             ]
         )
     }
@@ -3435,7 +3435,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         src,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -3443,7 +3443,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         temp,
-                        ParameterNumber(0x80),
+                        ParameterNumber(0x80)
                     ]
                 ),
                 InstructionNode(
@@ -3451,7 +3451,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         temp,
-                        ParameterNumber(0x00),
+                        ParameterNumber(0x00)
                     ]
                 ),
                 InstructionNode(
@@ -3459,7 +3459,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -3468,7 +3468,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         dst,
-                        temp,
+                        temp
                     ]
                 ),
                 InstructionNode(
@@ -3477,9 +3477,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         dst,
-                        temp,
+                        temp
                     ]
-                ),
+                )
             ]
         )
     }
@@ -3504,7 +3504,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         src,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -3512,7 +3512,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLI,
                     parameters: [
                         temp,
-                        ParameterNumber(0x80),
+                        ParameterNumber(0x80)
                     ]
                 ),
                 InstructionNode(
@@ -3520,7 +3520,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         temp,
-                        ParameterNumber(0x00),
+                        ParameterNumber(0x00)
                     ]
                 ),
                 InstructionNode(
@@ -3528,7 +3528,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -3537,7 +3537,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         dst,
-                        temp,
+                        temp
                     ]
                 ),
                 InstructionNode(
@@ -3546,9 +3546,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         dst,
-                        temp,
+                        temp
                     ]
-                ),
+                )
             ]
         )
     }
@@ -3571,7 +3571,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         src,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -3579,9 +3579,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(0x00),
+                        ParameterNumber(0x00)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -3604,7 +3604,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst,
                         src,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 ),
                 InstructionNode(
@@ -3612,9 +3612,9 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     instruction: kLUI,
                     parameters: [
                         dst,
-                        ParameterNumber(0x00),
+                        ParameterNumber(0x00)
                     ]
-                ),
+                )
             ]
         )
     }
@@ -3635,7 +3635,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
                     parameters: [
                         dst1,
                         src1,
-                        ParameterNumber(0),
+                        ParameterNumber(0)
                     ]
                 )
             ]
@@ -3671,7 +3671,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
             sourceAnchor: sourceAnchor,
             children: [
                 InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOP),
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: kHLT),
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: kHLT)
             ]
         )
     }

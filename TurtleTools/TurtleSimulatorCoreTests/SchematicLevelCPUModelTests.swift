@@ -44,7 +44,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         XCTAssertFalse(cpu.isResetting)
@@ -115,7 +115,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b00000000_00000000,  // NOP
             0b00000000_00000000,  // NOP
             0b00000000_00000000,  // NOP
-            0b00000000_00000000,  // NOP
+            0b00000000_00000000  // NOP
         ]
         cpu.reset()
         cpu.setRegister(0, 0xcafe)
@@ -145,7 +145,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         XCTAssertFalse(cpu.isHalted)
@@ -174,7 +174,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         }
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00010011_00100001,  // LOAD r3, 1(r1)
+            0b00010011_00100001  // LOAD r3, 1(r1)
         ]
         cpu.reset()
         cpu.setRegister(1, 0xfffe)
@@ -205,7 +205,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         }
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00011111_00101111,  // STORE r3, r1, -1 -- 0bkkkkkiiiaaabbbii
+            0b00011111_00101111  // STORE r3, r1, -1 -- 0bkkkkkiiiaaabbbii
         ]
 
         cpu.reset()
@@ -226,7 +226,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00100011_00001101,  // LI r3, 0xd
+            0b00100011_00001101  // LI r3, 0xd
         ]
         cpu.reset()
         cpu.step()  // -
@@ -244,7 +244,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // is set so this is sign-extended to 65408.
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00100011_10000000,  // LI r3, 65408
+            0b00100011_10000000  // LI r3, 65408
         ]
         cpu.reset()
         cpu.step()  // -
@@ -260,7 +260,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00101011_11001101,  // LUI r3, 0xcd
+            0b00101011_11001101  // LUI r3, 0xcd
         ]
         cpu.reset()
         cpu.step()  // -
@@ -276,7 +276,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00110000_00101000,  // CMP r1, r2
+            0b00110000_00101000  // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
@@ -297,7 +297,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00110000_00101000,  // CMP r1, r2
+            0b00110000_00101000  // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
@@ -320,7 +320,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00110000_00101000,  // CMP r1, r2
+            0b00110000_00101000  // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 1)
@@ -343,7 +343,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00110000_00101000,  // CMP r1, r2
+            0b00110000_00101000  // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
@@ -366,7 +366,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00111000_00101000,  // ADD r0, r1, r2
+            0b00111000_00101000  // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 2)
@@ -389,7 +389,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00111000_00101000,  // ADD r0, r1, r2
+            0b00111000_00101000  // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0x7fff)
@@ -412,7 +412,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00111000_00101000,  // ADD r0, r1, r2
+            0b00111000_00101000  // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0xffff)
@@ -435,7 +435,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01000000_00101000,  // SUB r0, r1, r2
+            0b01000000_00101000  // SUB r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 10)
@@ -458,7 +458,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01000000_00101000,  // SUB r0, r1, r2
+            0b01000000_00101000  // SUB r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0)
@@ -481,7 +481,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01000000_00101000,  // SUB r0, r1, r2
+            0b01000000_00101000  // SUB r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0x8000)
@@ -504,7 +504,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01001000_00101000,  // AND r0, r1, r2
+            0b01001000_00101000  // AND r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0xabcd)
@@ -527,7 +527,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01010000_00101000,  // OR r0, r1, r2
+            0b01010000_00101000  // OR r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0xabcd)
@@ -550,7 +550,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01011000_00000000,  // XOR r0, r0, r0
+            0b01011000_00000000  // XOR r0, r0, r0
         ]
         cpu.reset()
         cpu.setRegister(0, 0xcafe)
@@ -581,7 +581,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01100000_00101000,  // NOT r0, r1
+            0b01100000_00101000  // NOT r0, r1
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0b10101010_10101010)
@@ -604,7 +604,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01101000_00100001,  // CMPI r1, 1
+            0b01101000_00100001  // CMPI r1, 1
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
@@ -626,7 +626,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01110000_00100010,  // ADDI r0, r1, 2
+            0b01110000_00100010  // ADDI r0, r1, 2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xffff)
@@ -648,7 +648,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b01111000_00100001,  // SUBI r0, r1, 1
+            0b01111000_00100001  // SUBI r0, r1, 1
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0)
@@ -670,7 +670,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b10000000_00101111,  // ANDI r0, r1, 15
+            0b10000000_00101111  // ANDI r0, r1, 15
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xffff)
@@ -692,7 +692,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b10001000_00101111,  // ORI r0, r1, 15
+            0b10001000_00101111  // ORI r0, r1, 15
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xfff0)
@@ -714,7 +714,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b10010000_00101010,  // XORI r0, r1, 10
+            0b10010000_00101010  // XORI r0, r1, 10
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xfffc)
@@ -737,7 +737,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11110000_00101000,  // ADC r0, r1, r2
+            0b11110000_00101000  // ADC r0, r1, r2
         ]
         cpu.c = 1
         cpu.setRegister(0, 0)
@@ -762,7 +762,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11110000_00101000,  // ADC r0, r1, r2
+            0b11110000_00101000  // ADC r0, r1, r2
         ]
         cpu.c = 0
         cpu.setRegister(0, 0)
@@ -787,7 +787,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11111000_00101000,  // SBC r0, r1, r2
+            0b11111000_00101000  // SBC r0, r1, r2
         ]
         cpu.c = 1
         cpu.setRegister(0, 0)
@@ -812,7 +812,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11111000_00101000,  // SBC r0, r1, r2
+            0b11111000_00101000  // SBC r0, r1, r2
         ]
         cpu.c = 0
         cpu.setRegister(0, 0)
@@ -836,7 +836,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b10100011_11111111,  // JMP 1023 -- pc := pc + 1023
+            0b10100011_11111111  // JMP 1023 -- pc := pc + 1023
         ]
         cpu.reset()
         XCTAssertEqual(0, cpu.pc)
@@ -867,7 +867,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b01110000_00000001,  // ADDI r0, r0, 1
             0b01110000_00000001,  // ADDI r0, r0, 1
             0b00000000_00000000,  // NOP (allow CPU a cycle to write back result of ADDI)
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 11)
@@ -882,7 +882,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b10100111_11111110,  // JMP -2
+            0b10100111_11111110  // JMP -2
         ]
         cpu.reset()
         cpu.step()
@@ -896,7 +896,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b10100111_11111110,  // JMP -2 -- pc := pc - 2
+            0b10100111_11111110  // JMP -2 -- pc := pc - 2
         ]
         cpu.reset()
         XCTAssertEqual(0, cpu.pc)
@@ -919,7 +919,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b00000000_00000000,  // NOP
             0b10100011_11111111,  // JMP 1023 -- pc := pc + 1023
-            0b00100000_00001101,  // LI r0, 0xd
+            0b00100000_00001101  // LI r0, 0xd
         ]
         cpu.reset()
         XCTAssertEqual(0, cpu.pc)
@@ -945,7 +945,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b00000000_00000000,  // NOP
             0b10101000_00100000,  // JR r1, 0 -- pc := r1 + 0
-            0b00100000_00001101,  // LI r0, 0xd
+            0b00100000_00001101  // LI r0, 0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1026)
@@ -972,7 +972,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b00000000_00000000,  // NOP
             0b10101000_00101111,  // JR r1, 15 -- pc := r1 + 15
-            0b00100000_00001101,  // LI r0, 0xd
+            0b00100000_00001101  // LI r0, 0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
@@ -999,7 +999,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b00000000_00000000,  // NOP
             0b10101000_00111111,  // JR r1, -1 -- pc := r1 - 1
-            0b00100000_00001101,  // LI r0, 0xd
+            0b00100000_00001101  // LI r0, 0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
@@ -1025,7 +1025,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b10110111_00100000,  // JALR r7, r1, 0 -- r7 := pc + 1 ; pc := r1 + 0
+            0b10110111_00100000  // JALR r7, r1, 0 -- r7 := pc + 1 ; pc := r1 + 0
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
@@ -1057,7 +1057,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b00000000_00000010,  // NOP
             0b00100110_00001101,  // LI r6, 13
             0b10101000_11111111,  // JR r7, -1 -- pc := r7 - 1
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         cpu.setRegister(1, 4)
@@ -1147,7 +1147,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11000011_11111111,  // BEQ 1023
+            0b11000011_11111111  // BEQ 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1186,7 +1186,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11001011_11111111,  // BNE 1023
+            0b11001011_11111111  // BNE 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1225,7 +1225,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11010011_11111111,  // BLT 1023
+            0b11010011_11111111  // BLT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1265,7 +1265,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11011011_11111111,  // BGT 1023
+            0b11011011_11111111  // BGT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1305,7 +1305,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11100011_11111111,  // BLTU 1023
+            0b11100011_11111111  // BLTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1345,7 +1345,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b11101011_11111111,  // BGTU 1023
+            0b11101011_11111111  // BGTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1386,7 +1386,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b00000000_00000000,  // NOP
             0b00100001_00000000,  // LI r1, 0
-            0b00111000_00101000,  // ADD r0, r1, r2
+            0b00111000_00101000  // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 1)
@@ -1462,7 +1462,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b00000000_00000000,  // NOP
             0b00110000_00101000,  // CMP r1, r2
-            0b11000011_11111111,  // BEQ 1023
+            0b11000011_11111111  // BEQ 1023
         ]
         cpu.reset()
         cpu.setRegister(1, 1)
@@ -1487,7 +1487,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.instructions = [
             0b00000000_00000000,  // NOP
             0b00010000_11100000,  // LOAD r0, r7
-            0b00111010_00000100,  // ADD r2, r0, r1
+            0b00111010_00000100  // ADD r2, r0, r1
         ]
         cpu.reset()
 
@@ -1564,7 +1564,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b00100111_00000101,  // LI r7, 5
             0b01111111_11100001,  // SUBI r7, r7, 1
             0b11001111_11111101,  // BNZ -3
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 30)
@@ -1579,7 +1579,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b01110111_11100001,  // ADDI r7, r7, 1
             0b01101000_11101001,  // CMPI r7, 1
             0b11010111_11111100,  // BLT -4
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 59)
@@ -1599,7 +1599,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b01110001_01000000,  // ADDI r1, r2, 0
             0b01101000_11101001,  // CMPI r7, 9
             0b11010111_11111001,  // BLT -7
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 89)
@@ -1624,7 +1624,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b01110001_01000000,  // ADDI r1, r2, 0
             0b01101000_11101001,  // CMPI r7, 9
             0b11010111_11111001,  // BLT -7
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 87)
@@ -1648,7 +1648,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b00000000_00000000,  // NOP
             0b00100000_00000000,  // LI r0, 0
             0b00000000_00000000,  // NOP
-            0b00100111_00000000,  // LI r7, 0
+            0b00100111_00000000  // LI r7, 0
         ]
         cpu.reset()
         cpu.step()
@@ -1666,7 +1666,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             0b00000000_00000000,  // NOP
             0b00100000_00000000,  // LI r0, 0
             0b00000000_00000000,  // NOP
-            0b01110000_00100000,  // ADDI r0, r1, 0
+            0b01110000_00100000  // ADDI r0, r1, 0
         ]
         cpu.reset()
         cpu.step()
@@ -1754,7 +1754,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b00000000_00000000,  // NOP
-            0b00110000_00101000,  // CMP r1, r2
+            0b00110000_00101000  // CMP r1, r2
         ]
 
         let N = 100

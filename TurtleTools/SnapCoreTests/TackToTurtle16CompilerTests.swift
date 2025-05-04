@@ -17,7 +17,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             InstructionNode(instruction: kNOP),
             assembly!,
             InstructionNode(instruction: kNOP),
-            InstructionNode(instruction: kHLT),
+            InstructionNode(instruction: kHLT)
         ])
         let topLevel1 = try! CompilerPassFlattenSeq().visit(topLevel0)! as! TopLevel
         let assembler = AssemblerCompiler()
@@ -78,7 +78,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try compile(input)
@@ -92,7 +92,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try compile(input)
@@ -105,7 +105,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kNOT,
             parameters: [
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try compile(input)
@@ -119,7 +119,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try compile(input)
@@ -133,7 +133,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try compile(input)
@@ -147,7 +147,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r2"),
                 ParameterIdentifier("r1"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try compile(input)
@@ -194,7 +194,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kNOT,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
@@ -202,9 +202,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(1),
+                    ParameterNumber(1)
                 ]
-            ),
+            )
         ])
         let compiler = TackToTurtle16Compiler()
         let actual = try compiler.visit(input)
@@ -217,7 +217,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kLA,
             parameters: [
                 ParameterIdentifier("r0"),
-                ParameterIdentifier("foo"),
+                ParameterIdentifier("foo")
             ]
         )
         let actual = try compile(input)
@@ -255,7 +255,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kCMPI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -263,7 +263,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("foo")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -276,7 +276,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kCMPI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -284,7 +284,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("foo")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -297,7 +297,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(15),
+                ParameterNumber(15)
             ]
         )
         let actual = try compile(input)
@@ -311,7 +311,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(-16),
+                ParameterNumber(-16)
             ]
         )
         let actual = try compile(input)
@@ -325,14 +325,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(16),
+                    ParameterNumber(16)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -340,16 +340,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -362,14 +362,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
                 ]
             ),
             InstructionNode(
@@ -377,16 +377,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -399,7 +399,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(15),
+                ParameterNumber(15)
             ]
         )
         let actual = try compile(input)
@@ -413,7 +413,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(-16),
+                ParameterNumber(-16)
             ]
         )
         let actual = try compile(input)
@@ -427,14 +427,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(16),
+                    ParameterNumber(16)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -442,16 +442,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -464,14 +464,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
                 ]
             ),
             InstructionNode(
@@ -479,16 +479,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -501,7 +501,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(15),
+                ParameterNumber(15)
             ]
         )
         let actual = try compile(input)
@@ -515,7 +515,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(-16),
+                ParameterNumber(-16)
             ]
         )
         let actual = try compile(input)
@@ -529,14 +529,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(16),
+                    ParameterNumber(16)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -544,16 +544,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -566,14 +566,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
                 ]
             ),
             InstructionNode(
@@ -581,16 +581,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -603,7 +603,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(15),
+                ParameterNumber(15)
             ]
         )
         let actual = try compile(input)
@@ -617,7 +617,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(-16),
+                ParameterNumber(-16)
             ]
         )
         let actual = try compile(input)
@@ -631,14 +631,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(16),
+                    ParameterNumber(16)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -646,16 +646,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -668,14 +668,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
                 ]
             ),
             InstructionNode(
@@ -683,16 +683,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
                     ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("vr2")
                 ]
-            ),
+            )
         ])
         let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
@@ -759,7 +759,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier(sp),
                     ParameterIdentifier(sp),
-                    ParameterNumber(2),
+                    ParameterNumber(2)
                 ]
             ),
             InstructionNode(
@@ -767,9 +767,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r0"),
                     ParameterIdentifier(sp),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -783,14 +783,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0xcd),
+                    ParameterNumber(0xcd)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0xab),
+                    ParameterNumber(0xab)
                 ]
             ),
             InstructionNode(
@@ -798,7 +798,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier(sp),
                     ParameterIdentifier(sp),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -806,9 +806,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier(sp),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -822,7 +822,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier(sp),
                 ParameterIdentifier(sp),
-                ParameterNumber(2),
+                ParameterNumber(2)
             ]
         )
         let actual = try compile(input)
@@ -837,14 +837,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0xcd),
+                    ParameterNumber(0xcd)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0xab),
+                    ParameterNumber(0xab)
                 ]
             ),
             InstructionNode(
@@ -852,9 +852,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier(sp),
                     ParameterIdentifier(sp),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -867,7 +867,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(15),
+                ParameterNumber(15)
             ]
         )
         let actual = try compile(input)
@@ -881,7 +881,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(-16),
+                ParameterNumber(-16)
             ]
         )
         let actual = try compile(input)
@@ -895,14 +895,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r1"),
-                    ParameterNumber(16),
+                    ParameterNumber(16)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r1"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             ),
             InstructionNode(
@@ -910,9 +910,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -925,14 +925,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r1"),
-                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff)),
+                    ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r1"),
-                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8)),
+                    ParameterNumber(Int(((UInt16(0) &- 17) & 0xff00) >> 8))
                 ]
             ),
             InstructionNode(
@@ -940,9 +940,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -955,7 +955,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(15),
+                ParameterNumber(15)
             ]
         )
         let actual = try compile(input)
@@ -969,7 +969,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(15),
+                ParameterNumber(15)
             ]
         )
         let actual = try compile(input)
@@ -982,7 +982,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("r1"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try compile(input)
@@ -996,7 +996,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try compile(input)
@@ -1010,7 +1010,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             parameters: [
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("r0"),
-                ParameterIdentifier("r0"),
+                ParameterIdentifier("r0")
             ]
         )
         let actual = try compile(input)
@@ -1025,7 +1025,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1033,9 +1033,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1049,7 +1049,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1057,9 +1057,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1073,7 +1073,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1081,7 +1081,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
             ),
             InstructionNode(
@@ -1089,9 +1089,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1105,7 +1105,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1113,7 +1113,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
             ),
             InstructionNode(
@@ -1121,7 +1121,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1129,9 +1129,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r3"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r2")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1145,7 +1145,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1153,7 +1153,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
             ),
             InstructionNode(
@@ -1161,7 +1161,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1169,7 +1169,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r3"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r2")
                 ]
             ),
             InstructionNode(
@@ -1177,9 +1177,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r3"),
                     ParameterIdentifier("r3"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1193,7 +1193,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1201,7 +1201,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
             ),
             InstructionNode(
@@ -1209,9 +1209,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1224,7 +1224,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kNOT,
                 parameters: [
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1232,9 +1232,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r1"),
-                    ParameterNumber(1),
+                    ParameterNumber(1)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1248,14 +1248,14 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
                 instruction: kNOT,
                 parameters: [
                     ParameterIdentifier("r2"),
-                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
                 ]
             ),
             InstructionNode(
@@ -1263,9 +1263,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r3"),
                     ParameterIdentifier("r2"),
-                    ParameterNumber(1),
+                    ParameterNumber(1)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1279,31 +1279,31 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r1"),
                     ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1"),
+                    ParameterIdentifier("r1")
+                ]
+            ),
+            InstructionNode(
+                instruction: kADD,
+                parameters: [
+                    ParameterIdentifier("r2"),
                     ParameterIdentifier("r0"),
-                ]
-            ),
-            InstructionNode(
-                instruction: kADD,
-                parameters: [
-                    ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
-                ]
-            ),
-            InstructionNode(
-                instruction: kADD,
-                parameters: [
-                    ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
-                    ParameterIdentifier("r1"),
-                ]
-            ),
-            InstructionNode(
-                instruction: kADD,
-                parameters: [
-                    ParameterIdentifier("r2"),
-                    ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1311,7 +1311,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r2"),
-                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r2")
                 ]
             ),
             InstructionNode(
@@ -1319,7 +1319,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r3"),
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -1327,7 +1327,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r4"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r2"),
+                    ParameterIdentifier("r2")
                 ]
             ),
             InstructionNode(
@@ -1335,9 +1335,9 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r4"),
                     ParameterIdentifier("r4"),
-                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r3")
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1349,7 +1349,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("r0"),
-                ParameterNumber(127),
+                ParameterNumber(127)
             ]
         )
         let actual = try compile(input)
@@ -1362,7 +1362,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("r0"),
-                ParameterNumber(-128),
+                ParameterNumber(-128)
             ]
         )
         let actual = try compile(input)
@@ -1375,7 +1375,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("r0"),
-                ParameterNumber(127),
+                ParameterNumber(127)
             ]
         )
         let actual = try compile(input)
@@ -1389,16 +1389,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(255),
+                    ParameterNumber(255)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1411,16 +1411,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0xff),
+                    ParameterNumber(0xff)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0x7f),
+                    ParameterNumber(0x7f)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1433,16 +1433,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0xff),
+                    ParameterNumber(0xff)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0x00),
+                    ParameterNumber(0x00)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -1455,16 +1455,16 @@ final class TackToTurtle16CompilerTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0x00),
+                    ParameterNumber(0x00)
                 ]
             ),
             InstructionNode(
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0x80),
+                    ParameterNumber(0x80)
                 ]
-            ),
+            )
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
@@ -2536,7 +2536,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("r0"),
-                ParameterNumber(1),
+                ParameterNumber(1)
             ]
         )
         let actual = try compile(input)
@@ -2549,7 +2549,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             instruction: kLI,
             parameters: [
                 ParameterIdentifier("r0"),
-                ParameterNumber(0),
+                ParameterNumber(0)
             ]
         )
         let actual = try compile(input)

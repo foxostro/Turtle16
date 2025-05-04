@@ -37,7 +37,7 @@ class ParserTests: XCTestCase {
         parser.tokens = [TokenNewline(lineNumber: 1, lexeme: "\n"), TokenEOF(lineNumber: 2)]
         parser.productions = [
             Parser.Production(symbol: TokenEOF.self, generator: { _ in [] }),
-            Parser.Production(symbol: TokenNewline.self, generator: { _ in [] }),
+            Parser.Production(symbol: TokenNewline.self, generator: { _ in [] })
         ]
         parser.parse()
         XCTAssertFalse(parser.hasError)

@@ -60,7 +60,7 @@ public final class HazardControlGAL: HazardControl {
             nil,
             nil,
             nil,
-            nil,
+            nil
         ])
 
         let fwd_mem_to_a: UInt = outputs[0]!
@@ -120,7 +120,7 @@ public final class HazardControlGAL: HazardControl {
             nil,
             nil,
             nil,
-            nil,
+            nil
         ])
 
         let stall: UInt = outputs[0]!

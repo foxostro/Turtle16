@@ -142,7 +142,7 @@ public struct SnapSubcompilerMatch {
                             sourceAnchor: clause.block.sourceAnchor,
                             symbols: Env(parent: outerSymbols),
                             children: clause.block.children
-                        ),
+                        )
                     ]
                 ),
                 else: compileMatchClause(match, clauses.dropLast(), symbols)
@@ -178,7 +178,7 @@ public struct SnapSubcompilerMatch {
                         sourceAnchor: clause.block.sourceAnchor,
                         symbols: Env(parent: outerSymbols),
                         children: clause.block.children
-                    ),
+                    )
                 ]
             ),
             else: clauseElseBlock

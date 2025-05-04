@@ -27,7 +27,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNewline(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -41,7 +41,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenNewline(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
                 TokenNewline(sourceAnchor: tokenizer.lineMapper.anchor(1, 2)),
                 TokenNewline(sourceAnchor: tokenizer.lineMapper.anchor(2, 3)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -53,7 +53,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenComma(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -74,7 +74,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenComma(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(11, 11)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(11, 11))
             ]
         )
     }
@@ -86,7 +86,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNewline(sourceAnchor: tokenizer.lineMapper.anchor(14, 15)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(15, 15)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(15, 15))
             ]
         )
     }
@@ -106,7 +106,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -126,7 +126,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 3), literal: 123),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -139,7 +139,7 @@ final class SnapLexerTests: XCTestCase {
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .minus),
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(1, 4), literal: 123),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -151,7 +151,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), literal: 0),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -163,7 +163,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 3), literal: 255),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -175,7 +175,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), literal: 255),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -187,7 +187,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), literal: 255),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -199,7 +199,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), literal: 3),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -211,7 +211,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 3), literal: 65),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -223,7 +223,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), literal: 10),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -235,7 +235,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -248,7 +248,7 @@ final class SnapLexerTests: XCTestCase {
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
                 TokenColon(sourceAnchor: tokenizer.lineMapper.anchor(5, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -260,7 +260,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenSemicolon(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -272,7 +272,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -284,7 +284,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenLet(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -299,7 +299,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(4, 7)),
                 TokenEqual(sourceAnchor: tokenizer.lineMapper.anchor(7, 8)),
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(8, 9), literal: 1),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))
             ]
         )
     }
@@ -313,7 +313,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenLet(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(4, 7)),
                 TokenEqual(sourceAnchor: tokenizer.lineMapper.anchor(8, 9)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))
             ]
         )
     }
@@ -325,7 +325,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .eq),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -337,7 +337,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .ne),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -352,7 +352,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 2),
                     op: .leftDoubleAngle
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -364,7 +364,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .lt),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -376,7 +376,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .gt),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -391,7 +391,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 2),
                     op: .rightDoubleAngle
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -403,7 +403,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .le),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -415,7 +415,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .ge),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -427,7 +427,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenReturn(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -440,7 +440,7 @@ final class SnapLexerTests: XCTestCase {
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .minus),
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(1, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -453,7 +453,7 @@ final class SnapLexerTests: XCTestCase {
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .ampersand),
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(1, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -468,7 +468,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 2),
                     op: .doubleAmpersand
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -481,7 +481,7 @@ final class SnapLexerTests: XCTestCase {
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .bang),
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(1, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -493,7 +493,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), op: .doublePipe),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -505,7 +505,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .pipe),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -517,7 +517,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .plus),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -529,7 +529,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .star),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -541,7 +541,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .divide),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -553,7 +553,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .modulus),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -566,7 +566,7 @@ final class SnapLexerTests: XCTestCase {
             [
                 TokenParenLeft(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
                 TokenParenRight(sourceAnchor: tokenizer.lineMapper.anchor(1, 2)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -582,7 +582,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(2, 3), op: .minus),
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(3, 4), literal: 1),
                 TokenParenRight(sourceAnchor: tokenizer.lineMapper.anchor(4, 5)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -594,7 +594,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenVar(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -606,7 +606,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIf(sourceAnchor: tokenizer.lineMapper.anchor(0, 2)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -618,7 +618,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenElse(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -631,7 +631,7 @@ final class SnapLexerTests: XCTestCase {
             [
                 TokenCurlyLeft(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
                 TokenCurlyRight(sourceAnchor: tokenizer.lineMapper.anchor(1, 2)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -643,7 +643,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenWhile(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -655,7 +655,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenFor(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -667,7 +667,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIn(sourceAnchor: tokenizer.lineMapper.anchor(0, 2)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -679,7 +679,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -691,7 +691,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenBoolean(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), literal: true),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -703,7 +703,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenBoolean(sourceAnchor: tokenizer.lineMapper.anchor(0, 5), literal: false),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -715,7 +715,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenStatic(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -727,7 +727,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenFunc(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -739,7 +739,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenArrow(sourceAnchor: tokenizer.lineMapper.anchor(0, 2)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -751,7 +751,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), type: .u8),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -763,7 +763,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 3), type: .u16),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -775,7 +775,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), type: .i8),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -787,7 +787,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 3), type: .i16),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -799,7 +799,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), type: .bool),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -811,7 +811,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 8)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(8, 8)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(8, 8))
             ]
         )
     }
@@ -823,7 +823,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), type: .void),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -835,7 +835,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenAs(sourceAnchor: tokenizer.lineMapper.anchor(0, 2)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -847,7 +847,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -859,7 +859,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -871,7 +871,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenBitcastAs(sourceAnchor: tokenizer.lineMapper.anchor(0, 9)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))
             ]
         )
     }
@@ -888,7 +888,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(5, 8)),
                 TokenSquareBracketRight(sourceAnchor: tokenizer.lineMapper.anchor(8, 9)),
                 TokenSquareBracketRight(sourceAnchor: tokenizer.lineMapper.anchor(9, 10)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))
             ]
         )
     }
@@ -903,7 +903,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 6),
                     literal: "test"
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -918,7 +918,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 16),
                     literal: "\t\n\r\"\'\\\0"
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(16, 16)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(16, 16))
             ]
         )
     }
@@ -937,7 +937,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 10),
                     literal: "test"
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))
             ]
         )
     }
@@ -958,7 +958,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 12),
                     literal: "test"
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(12, 12)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(12, 12))
             ]
         )
     }
@@ -980,7 +980,7 @@ final class SnapLexerTests: XCTestCase {
                     sourceAnchor: tokenizer.lineMapper.anchor(0, 27),
                     literal: "foo\nbar"
                 ),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(27, 27)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(27, 27))
             ]
         )
     }
@@ -992,7 +992,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenUnderscore(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -1006,7 +1006,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenSquareBracketLeft(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
                 TokenUnderscore(sourceAnchor: tokenizer.lineMapper.anchor(1, 2)),
                 TokenSquareBracketRight(sourceAnchor: tokenizer.lineMapper.anchor(2, 3)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -1018,7 +1018,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 7)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7))
             ]
         )
     }
@@ -1032,7 +1032,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), literal: 0),
                 TokenDoubleDot(sourceAnchor: tokenizer.lineMapper.anchor(1, 3)),
                 TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(3, 4), literal: 1),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -1046,7 +1046,7 @@ final class SnapLexerTests: XCTestCase {
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
                 TokenDot(sourceAnchor: tokenizer.lineMapper.anchor(3, 4)),
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(4, 7)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7))
             ]
         )
     }
@@ -1058,7 +1058,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenUndefined(sourceAnchor: tokenizer.lineMapper.anchor(0, 9)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))
             ]
         )
     }
@@ -1070,7 +1070,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 10)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))
             ]
         )
     }
@@ -1082,7 +1082,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 9)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))
             ]
         )
     }
@@ -1094,7 +1094,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenStruct(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -1106,7 +1106,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenConst(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -1118,7 +1118,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenImpl(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -1130,7 +1130,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIs(sourceAnchor: tokenizer.lineMapper.anchor(0, 2)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -1142,7 +1142,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenTypealias(sourceAnchor: tokenizer.lineMapper.anchor(0, 9)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))
             ]
         )
     }
@@ -1154,7 +1154,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenMatch(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -1166,7 +1166,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenPublic(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -1178,7 +1178,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenPrivate(sourceAnchor: tokenizer.lineMapper.anchor(0, 7)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(7, 7))
             ]
         )
     }
@@ -1190,7 +1190,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenAssert(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -1202,7 +1202,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: tokenizer.lineMapper.anchor(0, 10)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))
             ]
         )
     }
@@ -1214,7 +1214,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenTest(sourceAnchor: tokenizer.lineMapper.anchor(0, 4)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -1226,7 +1226,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenImport(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -1238,7 +1238,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenTrait(sourceAnchor: tokenizer.lineMapper.anchor(0, 5)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -1250,7 +1250,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .caret),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -1262,7 +1262,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .tilde),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -1274,7 +1274,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenAsm(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -1286,7 +1286,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenSizeof(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -1298,7 +1298,7 @@ final class SnapLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenAt(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))
             ]
         )
     }

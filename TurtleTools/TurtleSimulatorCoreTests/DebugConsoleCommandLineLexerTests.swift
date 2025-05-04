@@ -28,7 +28,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNewline(sourceAnchor: lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -44,7 +44,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
                 TokenNewline(sourceAnchor: lineMapper.anchor(0, 1)),
                 TokenNewline(sourceAnchor: lineMapper.anchor(1, 2)),
                 TokenNewline(sourceAnchor: lineMapper.anchor(2, 3)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -58,7 +58,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenComma(sourceAnchor: lineMapper.anchor(0, 1)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(1, 1)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(1, 1))
             ]
         )
     }
@@ -81,7 +81,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: lineMapper.anchor(0, 5)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(5, 5)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(5, 5))
             ]
         )
     }
@@ -104,7 +104,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: lineMapper.anchor(0, 3), literal: 123),
-                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -118,7 +118,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: lineMapper.anchor(0, 4), literal: -123),
-                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -132,7 +132,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: lineMapper.anchor(0, 3), literal: 255),
-                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -146,7 +146,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: lineMapper.anchor(0, 4), literal: 255),
-                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -160,7 +160,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: lineMapper.anchor(0, 4), literal: 255),
-                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -174,7 +174,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: lineMapper.anchor(0, 4), literal: 3),
-                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(4, 4))
             ]
         )
     }
@@ -188,7 +188,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenNumber(sourceAnchor: lineMapper.anchor(0, 3), literal: 65),
-                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(3, 3))
             ]
         )
     }
@@ -205,7 +205,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
                 TokenForwardSlash(sourceAnchor: lineMapper.anchor(2, 3)),
                 TokenIdentifier(sourceAnchor: lineMapper.anchor(3, 6)),
                 TokenNumber(sourceAnchor: lineMapper.anchor(7, 13), literal: 0x1000),
-                TokenEOF(sourceAnchor: lineMapper.anchor(13, 13)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(13, 13))
             ]
         )
     }
@@ -219,7 +219,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenLiteralString(sourceAnchor: lineMapper.anchor(0, 6), literal: "test"),
-                TokenEOF(sourceAnchor: lineMapper.anchor(6, 6)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(6, 6))
             ]
         )
     }
@@ -233,7 +233,7 @@ final class DebugConsoleCommandLineLexerTests: XCTestCase {
             tokenizer.tokens,
             [
                 TokenIdentifier(sourceAnchor: lineMapper.anchor(0, 12)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(12, 12)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(12, 12))
             ]
         )
     }

@@ -69,7 +69,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
                     ),
                     storage: .staticStorage(offset: nil),
                     isMutable: false
-                ),
+                )
             ]
         )
 
@@ -88,7 +88,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
                     StructDeclaration.Member(
                         name: "vtable",
                         type: PointerType(ConstType(Identifier("__Serial_vtable")))
-                    ),
+                    )
                 ],
                 associatedTraitType: "Serial"
             ),
@@ -142,10 +142,10 @@ final class SnapToCoreCompilerTests: XCTestCase {
                         StructInitializer.Argument(
                             name: "vtable",
                             expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        ),
+                        )
                     ]
                 )
-            ),
+            )
         ])
         .reconnect(parent: nil)
 

@@ -17,7 +17,7 @@ public final class SnapSubcompilerSubroutine: CompilerPass {
 
         children += [
             InstructionNode(instruction: kNOP),
-            InstructionNode(instruction: kHLT),
+            InstructionNode(instruction: kHLT)
         ]
 
         for subroutine in subroutines {

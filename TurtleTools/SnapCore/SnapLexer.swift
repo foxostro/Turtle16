@@ -289,7 +289,7 @@ public class SnapLexer: Lexer {
             },
             Rule(pattern: "[ \t]+") { _ in
                 nil
-            },
+            }
         ]
     }
 
@@ -350,7 +350,7 @@ public class SnapLexer: Lexer {
             "\r": "\\r",
             "\"": "\\\"",
             "\'": "\\\'",
-            "\\": "\\\\",
+            "\\": "\\\\"
         ]
         for (entity, description) in map {
             result = result.replacingOccurrences(of: description, with: entity)

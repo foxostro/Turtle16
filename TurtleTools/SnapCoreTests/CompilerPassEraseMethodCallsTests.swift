@@ -58,7 +58,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                     member: Identifier("bar")
                 ),
                 arguments: []
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -110,7 +110,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 arguments: [
                     Identifier("instance")
                 ]
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -168,7 +168,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                     member: Identifier("bar")
                 ),
                 arguments: []
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -220,7 +220,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 arguments: [
                     Identifier("instance")
                 ]
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -280,7 +280,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 arguments: [
                     Identifier("instance")
                 ]
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -336,7 +336,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                     member: Identifier("bar")
                 ),
                 arguments: []
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -384,7 +384,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                     member: Identifier("bar")
                 ),
                 arguments: []
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -434,7 +434,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 isMutable: false,
                 visibility: .privateVisibility
             ),
-            Get(expr: Identifier("instance"), member: Identifier("bar")),
+            Get(expr: Identifier("instance"), member: Identifier("bar"))
         ])
         .reconnect(parent: nil)
 
@@ -476,7 +476,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 isMutable: false,
                 visibility: .privateVisibility
             ),
-            Get(expr: Identifier("Foo"), member: Identifier("bar")),
+            Get(expr: Identifier("Foo"), member: Identifier("bar"))
         ])
         .reconnect(parent: nil)
 

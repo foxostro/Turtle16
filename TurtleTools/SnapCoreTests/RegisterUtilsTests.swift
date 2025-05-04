@@ -28,7 +28,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLA,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("foo"),
+                    ParameterIdentifier("foo")
                 ]
             )
         )
@@ -42,7 +42,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         )
@@ -60,7 +60,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLA,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("foo"),
+                    ParameterIdentifier("foo")
                 ]
             )
         )
@@ -74,7 +74,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         )
@@ -87,7 +87,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMP,
                 parameters: [
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         )
@@ -100,7 +100,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMPI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(42),
+                    ParameterNumber(42)
                 ]
             )
         )
@@ -119,7 +119,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r0"),
                     ParameterIdentifier("r1"),
-                    ParameterNumber(42),
+                    ParameterNumber(42)
                 ]
             )
         )
@@ -137,7 +137,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLA,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("foo"),
+                    ParameterIdentifier("foo")
                 ]
             )
         )
@@ -151,7 +151,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r2"),
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         )
@@ -164,7 +164,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMP,
                 parameters: [
                     ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         )
@@ -177,7 +177,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMPI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(42),
+                    ParameterNumber(42)
                 ]
             )
         )
@@ -191,7 +191,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("r0"),
                     ParameterIdentifier("r1"),
-                    ParameterNumber(42),
+                    ParameterNumber(42)
                 ]
             )
         )
@@ -226,7 +226,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMP,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -235,7 +235,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMP,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -250,7 +250,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -260,7 +260,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -275,7 +275,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -285,7 +285,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -300,7 +300,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -310,7 +310,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -325,7 +325,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -335,7 +335,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -350,7 +350,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -360,7 +360,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -374,7 +374,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kNOT,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -383,7 +383,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kNOT,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -397,7 +397,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMPI,
                 parameters: [
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -406,7 +406,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kCMPI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -421,7 +421,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -431,7 +431,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -446,7 +446,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -456,7 +456,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -471,7 +471,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -481,7 +481,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -496,7 +496,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -506,7 +506,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -521,7 +521,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -531,7 +531,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr1"),
                     ParameterIdentifier("r0"),
-                    ParameterNumber(0),
+                    ParameterNumber(0)
                 ]
             )
         ]
@@ -546,7 +546,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -556,7 +556,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -571,7 +571,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -581,7 +581,7 @@ final class RegisterUtilsTests: XCTestCase {
                 parameters: [
                     ParameterIdentifier("vr2"),
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -595,7 +595,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(1),
+                    ParameterNumber(1)
                 ]
             )
         ]
@@ -604,7 +604,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(1),
+                    ParameterNumber(1)
                 ]
             )
         ]
@@ -618,7 +618,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("vr0"),
-                    ParameterNumber(1),
+                    ParameterNumber(1)
                 ]
             )
         ]
@@ -627,7 +627,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLUI,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterNumber(1),
+                    ParameterNumber(1)
                 ]
             )
         ]
@@ -683,7 +683,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kJALR,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -692,7 +692,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kJALR,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -706,7 +706,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLOAD,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -715,7 +715,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLOAD,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -729,7 +729,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kSTORE,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             )
         ]
@@ -738,7 +738,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kSTORE,
                 parameters: [
                     ParameterIdentifier("vr1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
             )
         ]
@@ -752,7 +752,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLA,
                 parameters: [
                     ParameterIdentifier("vr0"),
-                    ParameterIdentifier("foo"),
+                    ParameterIdentifier("foo")
                 ]
             )
         ]
@@ -761,7 +761,7 @@ final class RegisterUtilsTests: XCTestCase {
                 instruction: kLA,
                 parameters: [
                     ParameterIdentifier("r0"),
-                    ParameterIdentifier("foo"),
+                    ParameterIdentifier("foo")
                 ]
             )
         ]

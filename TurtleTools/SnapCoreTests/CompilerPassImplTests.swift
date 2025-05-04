@@ -49,7 +49,7 @@ final class CompilerPassImplTests: XCTestCase {
                 ]
             ),
             Get(expr: Identifier("Foo"), member: Identifier("val")),
-            Get(expr: Identifier("Foo"), member: Identifier("bar")),
+            Get(expr: Identifier("Foo"), member: Identifier("bar"))
         ])
         .reconnect(parent: nil)
 
@@ -80,7 +80,7 @@ final class CompilerPassImplTests: XCTestCase {
                 ])
             ),
             Get(expr: Identifier("Foo"), member: Identifier("val")),
-            Identifier("Foo::bar"),
+            Identifier("Foo::bar")
         ])
         .reconnect(parent: nil)
 
@@ -136,7 +136,7 @@ final class CompilerPassImplTests: XCTestCase {
                     )
                 ]),
                 visibility: .privateVisibility
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -178,7 +178,7 @@ final class CompilerPassImplTests: XCTestCase {
                     )
                 ]),
                 visibility: .privateVisibility
-            ),
+            )
         ])
         .reconnect(parent: nil)
 
@@ -273,7 +273,7 @@ final class CompilerPassImplTests: XCTestCase {
                                         Identifier("__Incrementer_vtable")
                                     )
                                 )
-                            ),
+                            )
                         ],
                         visibility: .privateVisibility,
                         isConst: false,
@@ -304,7 +304,7 @@ final class CompilerPassImplTests: XCTestCase {
                                     )
                                 ]
                             ),
-                            Return(),
+                            Return()
                         ])
                     ),
                     StructDeclaration(
@@ -345,7 +345,7 @@ final class CompilerPassImplTests: XCTestCase {
                                     right: LiteralInt(1)
                                 )
                             ),
-                            Return(),
+                            Return()
                         ]),
                         visibility: .privateVisibility
                     ),
@@ -425,7 +425,7 @@ final class CompilerPassImplTests: XCTestCase {
                                     expr: Identifier(
                                         "__Incrementer_RealIncrementer[u16]_vtable_instance"
                                     )
-                                ),
+                                )
                             ]
                         ),
                         storage: .automaticStorage(offset: nil),
@@ -443,7 +443,7 @@ final class CompilerPassImplTests: XCTestCase {
                             expr: Identifier("realIncrementer"),
                             member: Identifier("val")
                         )
-                    ),
+                    )
                 ]),
                 visibility: .privateVisibility
             ),
@@ -457,7 +457,7 @@ final class CompilerPassImplTests: XCTestCase {
                 storage: .automaticStorage(offset: nil),
                 isMutable: false,
                 visibility: .privateVisibility
-            ),
+            )
         ])
         .reconnect(parent: nil)
 

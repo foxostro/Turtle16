@@ -193,7 +193,7 @@ final class DisassemblerTests: XCTestCase {
             [
                 0: "L0",
                 1: "L1",
-                2: "L2",
+                2: "L2"
             ]
         )
     }
@@ -207,7 +207,7 @@ final class DisassemblerTests: XCTestCase {
             disassembler.labels,
             [
                 0: "L0",
-                1: "L1",
+                1: "L1"
             ]
         )
     }
@@ -223,7 +223,7 @@ final class DisassemblerTests: XCTestCase {
             0b01110111_11100001,  // ADDI r7, r7, 1
             0b01110001_01000000,  // ADDI r1, r2, 0
             0b01101000_11101001,  // CMPI r7, 9
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         let result = disassembler.disassembleToText(program)
         XCTAssertEqual(
@@ -255,7 +255,7 @@ final class DisassemblerTests: XCTestCase {
             0b01110001_01000000,  // ADDI r1, r2, 0
             0b01101000_11101001,  // CMPI r7, 9
             0b11010111_11111001,  // BLT -7
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         let result = disassembler.disassembleToText(program)
         XCTAssertEqual(
@@ -302,7 +302,7 @@ final class DisassemblerTests: XCTestCase {
             0b01110111_11100001,  // ADDI r7, r7, 1
             0b01110001_01000000,  // ADDI r1, r2, 0
             0b10111011_11111111,  // 0xBBFF
-            0b00001000_00000000,  // HLT
+            0b00001000_00000000  // HLT
         ]
         let result = disassembler.disassembleToText(program)
         XCTAssertEqual(

@@ -60,7 +60,7 @@ struct TraitObjectDeclarationsBuilder {
             ),
             members: [
                 StructDeclaration.Member(name: "object", type: voidPtr),
-                StructDeclaration.Member(name: "vtable", type: vtableType),
+                StructDeclaration.Member(name: "vtable", type: vtableType)
             ],
             visibility: traitDecl.visibility,
             isConst: false,

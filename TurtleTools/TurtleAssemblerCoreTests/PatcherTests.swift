@@ -81,22 +81,22 @@ class PatcherTests: XCTestCase {
         let inputInstructions = [
             Instruction(opcode: 0, immediate: 0),
             Instruction(opcode: 1, immediate: 0),
-            Instruction(opcode: 2, immediate: 0),
+            Instruction(opcode: 2, immediate: 0)
         ]
         let expected = [
             Instruction(opcode: 0, immediate: 10),
             Instruction(opcode: 1, immediate: 20),
-            Instruction(opcode: 2, immediate: 30),
+            Instruction(opcode: 2, immediate: 30)
         ]
         let symbols: SymbolTable = [
             "a": 10,
             "b": 20,
-            "c": 30,
+            "c": 30
         ]
         let actions: [Patcher.Action] = [
             (index: 0, symbol: TokenIdentifier(lineNumber: 1, lexeme: "a"), shift: 0),
             (index: 1, symbol: TokenIdentifier(lineNumber: 2, lexeme: "b"), shift: 0),
-            (index: 2, symbol: TokenIdentifier(lineNumber: 3, lexeme: "c"), shift: 0),
+            (index: 2, symbol: TokenIdentifier(lineNumber: 3, lexeme: "c"), shift: 0)
         ]
         let patcher = Patcher(
             inputInstructions: inputInstructions,

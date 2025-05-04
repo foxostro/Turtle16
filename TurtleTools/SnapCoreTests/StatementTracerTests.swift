@@ -34,7 +34,7 @@ final class StatementTracerTests: XCTestCase {
         let one = LiteralInt(1)
         let ast = Block(children: [
             Return(one),
-            ExprUtils.makeAssignment(name: "foo", right: one),
+            ExprUtils.makeAssignment(name: "foo", right: one)
         ])
         XCTAssertThrowsError(try tracer.trace(ast: ast)) {
             if let error = $0 as? CompilerError {
@@ -59,7 +59,7 @@ final class StatementTracerTests: XCTestCase {
                     then: Return(one),
                     else: nil
                 ),
-                Return(two),
+                Return(two)
             ])
         )
         XCTAssertEqual(traces[0], [.IfThen, .Return])
@@ -124,7 +124,7 @@ final class StatementTracerTests: XCTestCase {
                         block: Block(children: [
                             Return(two)
                         ])
-                    ),
+                    )
                 ],
                 elseClause: Block(children: [
                     Return(three)

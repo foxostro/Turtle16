@@ -128,7 +128,7 @@ final class LexerTests: XCTestCase {
             [
                 TokenNewline(sourceAnchor: lineMapper.anchor(0, 1)),
                 TokenNewline(sourceAnchor: lineMapper.anchor(1, 2)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(2, 2))
             ]
         )
     }
@@ -174,7 +174,7 @@ final class LexerTests: XCTestCase {
             },
             Lexer.Rule(pattern: "\n") {
                 TokenNewline(sourceAnchor: $0)
-            },
+            }
         ]
         tokenizer.scanTokens()
         XCTAssertEqual(
@@ -182,7 +182,7 @@ final class LexerTests: XCTestCase {
             [
                 TokenComma(sourceAnchor: lineMapper.anchor(0, 1)),
                 TokenNewline(sourceAnchor: lineMapper.anchor(1, 2)),
-                TokenEOF(sourceAnchor: lineMapper.anchor(2, 2)),
+                TokenEOF(sourceAnchor: lineMapper.anchor(2, 2))
             ]
         )
     }

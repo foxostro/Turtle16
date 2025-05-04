@@ -58,7 +58,7 @@ final class TackFlattenerTests: XCTestCase {
     func testLabelDeclarationRedeclaration() throws {
         let program = Seq(children: [
             LabelDeclaration(ParameterIdentifier("foo")),
-            LabelDeclaration(ParameterIdentifier("foo")),
+            LabelDeclaration(ParameterIdentifier("foo"))
         ])
         XCTAssertThrowsError(try TackFlattener.compile(program)) {
             let compilerError = $0 as? CompilerError
@@ -80,11 +80,11 @@ final class TackFlattenerTests: XCTestCase {
         let expected = TackProgram(
             instructions: [
                 .hlt,
-                .nop,
+                .nop
             ],
             subroutines: [
                 nil,
-                "foo",
+                "foo"
             ],
             labels: [
                 "foo": 1

@@ -26,12 +26,12 @@ final class RegisterSpillerTests: XCTestCase {
         let input = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(0)]),
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: kRET),
+            InstructionNode(instruction: kRET)
         ]
         let expected: [AbstractSyntaxTreeNode] = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(0)]),
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: kRET),
+            InstructionNode(instruction: kRET)
         ]
         switch RegisterSpiller.spill(spilledIntervals: [], temporaries: [0], nodes: input) {
         case .success(let r):
@@ -84,7 +84,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kLI,
                 parameters: [ParameterIdentifier("vr0"), ParameterNumber(0)]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -113,7 +113,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kLI,
                 parameters: [ParameterIdentifier("vr0"), ParameterNumber(0)]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
@@ -124,9 +124,9 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -155,7 +155,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kLI,
                 parameters: [ParameterIdentifier("vr0"), ParameterNumber(0)]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -166,9 +166,9 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-1),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-1)
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -201,7 +201,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kLI,
                 parameters: [ParameterIdentifier("vr0"), ParameterNumber(1)]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
@@ -212,7 +212,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             InstructionNode(
@@ -222,9 +222,9 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -252,7 +252,7 @@ final class RegisterSpillerTests: XCTestCase {
                 virtualRegisterName: "vr1",
                 physicalRegisterName: nil,
                 spillSlot: 1
-            ),
+            )
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -263,7 +263,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kLI,
                 parameters: [ParameterIdentifier("vr1"), ParameterNumber(1)]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(3)]),
@@ -274,7 +274,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             InstructionNode(
@@ -284,9 +284,9 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-3),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-3)
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -316,24 +316,24 @@ final class RegisterSpillerTests: XCTestCase {
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("r2"), ParameterIdentifier("r1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("r2"), ParameterIdentifier("r1"), ParameterIdentifier("r4"),
+                    ParameterIdentifier("r2"), ParameterIdentifier("r1"), ParameterIdentifier("r4")
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -363,30 +363,30 @@ final class RegisterSpillerTests: XCTestCase {
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("vr0"), ParameterIdentifier("r1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r4"),
+                    ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r4")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -416,16 +416,16 @@ final class RegisterSpillerTests: XCTestCase {
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("vr0"), ParameterIdentifier("r1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
             ),
             InstructionNode(
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("vr0"), ParameterIdentifier("r2"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
@@ -433,40 +433,40 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r4"),
+                    ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r4")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             // Storing and then immediately loading again is inefficient. Rely on the optimizer to clean this up later.
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("r2"), ParameterIdentifier("r4"),
+                    ParameterIdentifier("r4"), ParameterIdentifier("r2"), ParameterIdentifier("r4")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -496,7 +496,7 @@ final class RegisterSpillerTests: XCTestCase {
                 virtualRegisterName: "vr1",
                 physicalRegisterName: nil,
                 spillSlot: spillSlot1
-            ),
+            )
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(0)]),
@@ -504,9 +504,9 @@ final class RegisterSpillerTests: XCTestCase {
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("vr2"), ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -534,7 +534,7 @@ final class RegisterSpillerTests: XCTestCase {
                 virtualRegisterName: "vr1",
                 physicalRegisterName: nil,
                 spillSlot: 1
-            ),
+            )
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(0)]),
@@ -542,31 +542,31 @@ final class RegisterSpillerTests: XCTestCase {
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("vr2"), ParameterIdentifier("vr1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
-                    ParameterIdentifier("r3"), ParameterIdentifier("fp"), ParameterNumber(-1),
+                    ParameterIdentifier("r3"), ParameterIdentifier("fp"), ParameterNumber(-1)
                 ]
             ),
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2),
+                    ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
             InstructionNode(
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("vr2"), ParameterIdentifier("r4"),
-                    ParameterIdentifier("r3"),
+                    ParameterIdentifier("r3")
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -596,7 +596,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kLI,
                 parameters: [ParameterIdentifier("vr0"), ParameterNumber(0)]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -627,9 +627,9 @@ final class RegisterSpillerTests: XCTestCase {
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("r2"), ParameterIdentifier("r1"),
-                    ParameterIdentifier("vr0"),
+                    ParameterIdentifier("vr0")
                 ]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(101)]),
@@ -644,7 +644,7 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp"),
+                    ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp")
                 ]
             ),
             InstructionNode(
@@ -654,9 +654,9 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("r2"), ParameterIdentifier("r1"), ParameterIdentifier("r4"),
+                    ParameterIdentifier("r2"), ParameterIdentifier("r1"), ParameterIdentifier("r4")
                 ]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,
@@ -687,16 +687,16 @@ final class RegisterSpillerTests: XCTestCase {
                 instruction: kADD,
                 parameters: [
                     ParameterIdentifier("vr2"), ParameterIdentifier("r1"),
-                    ParameterIdentifier("r0"),
+                    ParameterIdentifier("r0")
                 ]
-            ),
+            )
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(101)]),
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r0"),
+                    ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r0")
                 ]
             ),
             InstructionNode(
@@ -710,13 +710,13 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(
                 instruction: kADD,
                 parameters: [
-                    ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp"),
+                    ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp")
                 ]
             ),
             InstructionNode(
                 instruction: kSTORE,
                 parameters: [ParameterIdentifier("r4"), ParameterIdentifier("ra")]
-            ),
+            )
         ]
         switch RegisterSpiller.spill(
             spilledIntervals: spilledIntervals,

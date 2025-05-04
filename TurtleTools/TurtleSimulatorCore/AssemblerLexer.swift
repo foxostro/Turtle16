@@ -29,7 +29,7 @@ public class AssemblerLexer: Lexer {
             makeHexadecimalNumberRule(),
             makeBinaryNumberRule(),
             makeQuotedCharacterRule(),
-            makeWhitespaceRule(),
+            makeWhitespaceRule()
         ]
     }
 }

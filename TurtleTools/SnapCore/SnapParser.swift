@@ -1146,7 +1146,7 @@ public class SnapParser: Parser {
                 identifier: Identifier("Range"),
                 arguments: [
                     Arg(name: "begin", expr: beginExpr),
-                    Arg(name: "limit", expr: limitExpr),
+                    Arg(name: "limit", expr: limitExpr)
                 ]
             )
         }
@@ -1734,7 +1734,7 @@ public class SnapParser: Parser {
         while true {
             if let token = accept([
                 TokenStatic.self, TokenLet.self, TokenVar.self, TokenIf.self, TokenWhile.self,
-                TokenFor.self, TokenReturn.self, TokenStruct.self,
+                TokenFor.self, TokenReturn.self, TokenStruct.self
             ]) {
                 throw CompilerError(
                     sourceAnchor: token.sourceAnchor,

@@ -69,7 +69,7 @@ final class CompilerPassMatchTests: XCTestCase {
                     valueIdentifier: Identifier("foo"),
                     valueType: PrimitiveType(.bool),
                     block: Block(children: [])
-                ),
+                )
             ],
             elseClause: nil
         )
@@ -107,7 +107,7 @@ final class CompilerPassMatchTests: XCTestCase {
                     valueIdentifier: Identifier("foo"),
                     valueType: Identifier("None"),
                     block: Block(children: [])
-                ),
+                )
             ],
             elseClause: nil
         )
@@ -126,7 +126,7 @@ final class CompilerPassMatchTests: XCTestCase {
     func testCompileMatchStatementWithOnlyOneClause() throws {
         let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .u8)),
+            ("test", Symbol(type: .u8))
         ])
         let input = Match(
             expr: Identifier("test"),
@@ -167,9 +167,9 @@ final class CompilerPassMatchTests: XCTestCase {
                             lexpr: Identifier("result"),
                             rexpr: Identifier("foo")
                         )
-                    ]),
+                    ])
                 ])
-            ),
+            )
         ])
         let compiler = CompilerPassMatch(symbols: symbols)
         let output = try compiler.run(input)
@@ -179,7 +179,7 @@ final class CompilerPassMatchTests: XCTestCase {
     func testCompileMatchStatementWithUnionTypeAndNonexhaustiveClauses() {
         let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])))),
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(
             expr: Identifier("test"),
@@ -208,7 +208,7 @@ final class CompilerPassMatchTests: XCTestCase {
     func testCompileMatchStatementWithUnionTypeAndExhaustiveClauses() throws {
         let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])))),
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(
             expr: Identifier("test"),
@@ -226,7 +226,7 @@ final class CompilerPassMatchTests: XCTestCase {
                     block: Block(children: [
                         Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(2))
                     ])
-                ),
+                )
             ],
             elseClause: nil
         )
@@ -259,7 +259,7 @@ final class CompilerPassMatchTests: XCTestCase {
                             lexpr: Identifier("result"),
                             rexpr: LiteralInt(2)
                         )
-                    ]),
+                    ])
                 ]),
                 else: If(
                     condition: Is(
@@ -282,10 +282,10 @@ final class CompilerPassMatchTests: XCTestCase {
                                 lexpr: Identifier("result"),
                                 rexpr: LiteralInt(1)
                             )
-                        ]),
+                        ])
                     ])
                 )
-            ),
+            )
         ])
         let compiler = CompilerPassMatch(symbols: symbols)
         let output = try compiler.run(input)

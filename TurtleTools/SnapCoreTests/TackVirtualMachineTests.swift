@@ -51,7 +51,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .nop,
-                .jmp("foo"),
+                .jmp("foo")
             ],
             labels: ["foo": 0]
         )
@@ -144,7 +144,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .nop,
-                .bz(.o(0), "foo"),
+                .bz(.o(0), "foo")
             ],
             labels: ["foo": 0]
         )
@@ -160,7 +160,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .nop,
-                .bz(.o(0), "foo"),
+                .bz(.o(0), "foo")
             ],
             labels: ["foo": 0]
         )
@@ -198,7 +198,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .nop,
-                .bnz(.o(0), "foo"),
+                .bnz(.o(0), "foo")
             ],
             labels: ["foo": 0]
         )
@@ -214,7 +214,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .nop,
-                .bnz(.o(0), "foo"),
+                .bnz(.o(0), "foo")
             ],
             labels: ["foo": 0]
         )
@@ -253,7 +253,7 @@ final class TackVirtualMachineTests: XCTestCase {
             instructions: [
                 .call("foo"),
                 .nop,
-                .ret,
+                .ret
             ],
             labels: ["foo": 2]
         )
@@ -290,7 +290,7 @@ final class TackVirtualMachineTests: XCTestCase {
             instructions: [
                 .call("foo"),
                 .nop,
-                .ret,
+                .ret
             ],
             labels: ["foo": 2]
         )
@@ -319,7 +319,7 @@ final class TackVirtualMachineTests: XCTestCase {
             instructions: [
                 .callptr(.p(0)),
                 .nop,
-                .ret,
+                .ret
             ],
             labels: [:]
         )
@@ -435,7 +435,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .leave,
-                .leave,
+                .leave
             ],
             labels: [:]
         )
@@ -459,7 +459,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .enter(0),
-                .leave,
+                .leave
             ],
             labels: [:]
         )
@@ -2372,7 +2372,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .inlineAssembly("BREAK"),
-                .nop,
+                .nop
             ],
             labels: [:]
         )
@@ -2386,7 +2386,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(
             instructions: [
                 .nop,
-                .nop,
+                .nop
             ],
             labels: [:]
         )
@@ -2421,7 +2421,7 @@ final class TackVirtualMachineTests: XCTestCase {
                     .p(1)
                 ),  // pointer to argument structure
 
-                .hlt,
+                .hlt
             ],
             labels: [:]
         )
@@ -2455,7 +2455,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 .syscall(
                     .p(0),  // syscall number
                     .p(1)
-                ),  // pointer to argument structure
+                )  // pointer to argument structure
             ],
             labels: [:]
         )
@@ -2492,7 +2492,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 .syscall(
                     .p(0),  // syscall number
                     .p(1)
-                ),  // pointer to argument structure
+                )  // pointer to argument structure
             ],
             labels: [:]
         )

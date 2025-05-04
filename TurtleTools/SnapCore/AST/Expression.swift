@@ -283,31 +283,45 @@ public final class Group: Expression {
     }
 }
 
-// A linear sequence of expressions, the value of which is determined by the last expression
+/// An expression consisting of a sequence of statements and a final expression.
+/// The value of the Eseq expression is the value of the final expression.
+/// During execution, the sequence of statements is evaluated for side effects
+/// before evaluating the expression.
 public final class Eseq: Expression {
-    public let children: [Expression]
+    public let seq: Seq
+    public let expr: Expression
 
     public init(
         sourceAnchor: SourceAnchor? = nil,
-        children: [Expression],
+        seq: Seq,
+        expr: Expression,
         id: ID = ID()
     ) {
-        self.children = children
+        self.seq = seq
+        self.expr = expr
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
 
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Eseq {
         Eseq(
-            sourceAnchor: sourceAnchor,
-            children: children,
+            seq: seq,
+            expr: expr,
             id: id
         )
     }
 
-    public func withChildren(_ children: [Expression]) -> Eseq {
+    public func withSeq(_ seq: Seq) -> Eseq {
         Eseq(
-            sourceAnchor: sourceAnchor,
-            children: children,
+            seq: seq,
+            expr: expr,
+            id: id
+        )
+    }
+    
+    public func withExpr(_ expr: Expression) -> Eseq {
+        Eseq(
+            seq: seq,
+            expr: expr,
             id: id
         )
     }
@@ -315,33 +329,28 @@ public final class Eseq: Expression {
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Self else { return false }
-        guard children == rhs.children else { return false }
+        guard seq == rhs.seq else { return false }
+        guard expr == rhs.expr else { return false }
         return true
     }
 
     public override func hash(into hasher: inout Hasher) {
         super.hash(into: &hasher)
-        hasher.combine(children)
+        hasher.combine(seq)
+        hasher.combine(expr)
     }
 
     public override func makeIndentedDescription(
         depth: Int,
         wantsLeadingWhitespace: Bool = false
     ) -> String {
-        let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-
-        var childrenDesc =
-            children
-            .map {
-                $0.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: true)
-            }
-            .joined(separator: "\n")
-        if children.count > 0 {
-            childrenDesc = "\n" + childrenDesc
-        }
-
-        let result = leading + selfDesc + childrenDesc
-        return result
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth + 1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)seq: \(seq.makeIndentedDescription(depth: depth + 1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
+            """
     }
 }
 

@@ -1896,10 +1896,7 @@ public class RvalueExpressionTypeChecker {
     }
 
     public func check(eseq: Eseq) throws -> SymbolType {
-        guard let expr = eseq.children.last else {
-            return .void
-        }
-        return try check(expression: expr)
+        try check(expression: eseq.expr)
     }
 
     func unsupportedError(expression: Expression) -> Error {

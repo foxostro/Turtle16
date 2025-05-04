@@ -364,34 +364,15 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    func testEseq_Empty() throws {
-        let expr = Eseq(children: [])
-        let result = try LvalueExpressionTypeChecker().check(expression: expr)
-        XCTAssertNil(result)
-    }
-
-    func testEseq_OneChild() throws {
+    func testEseq() throws {
         let ident = "foo"
         let symbols = Env(tuples: [
-            (ident, Symbol(type: .u16, offset: 0x0010))
+            (ident, Symbol(type: .u16))
         ])
-        let expr = Eseq(children: [
-            Identifier("foo")
-        ])
-        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        let result = try typeChecker.check(expression: expr)
-        XCTAssertEqual(result, .u16)
-    }
-
-    func testEseq_MultipleChildren() throws {
-        let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16)),
-            ("bar", Symbol(type: .i16))
-        ])
-        let expr = Eseq(children: [
-            Identifier("bar"),
-            Identifier("foo")
-        ])
+        let expr = Eseq(
+            seq: Seq(),
+            expr: Identifier("foo")
+        )
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         let result = try typeChecker.check(expression: expr)
         XCTAssertEqual(result, .u16)

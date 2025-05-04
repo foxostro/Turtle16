@@ -7416,25 +7416,22 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    func testEseq_Empty() throws {
-        let expr = Eseq(children: [])
-        let result = try RvalueExpressionTypeChecker().check(expression: expr)
-        XCTAssertEqual(result, .void)
-    }
-
-    func testEseq_OneChild() throws {
-        let expr = Eseq(children: [
-            ExprUtils.makeU16(value: 1)
-        ])
+    func testEseq_EmptySequence() throws {
+        let expr = Eseq(
+            seq: Seq(),
+            expr: ExprUtils.makeU16(value: 1)
+        )
         let result = try RvalueExpressionTypeChecker().check(expression: expr)
         XCTAssertEqual(result, .u16)
     }
 
     func testEseq_MultipleChildren() throws {
-        let expr = Eseq(children: [
-            ExprUtils.makeBool(value: true),
-            ExprUtils.makeU16(value: 1)
-        ])
+        let expr = Eseq(
+            seq: Seq(children: [
+                ExprUtils.makeBool(value: true)
+            ]),
+            expr: ExprUtils.makeU16(value: 1)
+        )
         let result = try RvalueExpressionTypeChecker().check(expression: expr)
         XCTAssertEqual(result, .u16)
     }

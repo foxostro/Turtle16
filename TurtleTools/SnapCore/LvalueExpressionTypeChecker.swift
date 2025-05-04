@@ -131,9 +131,6 @@ public final class LvalueExpressionTypeChecker {
     }
 
     public func check(eseq: Eseq) throws -> SymbolType? {
-        guard let expr = eseq.children.last else {
-            return nil
-        }
-        return try check(expression: expr)
+        try check(expression: eseq.expr)
     }
 }

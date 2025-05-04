@@ -3742,18 +3742,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     func rvalue(eseq: Eseq) throws -> AbstractSyntaxTreeNode {
-        var children: [AbstractSyntaxTreeNode] = []
-        if eseq.children.count > 1 {
-            for child in eseq.children[0..<eseq.children.count - 1] {
-                let savedRegisterStack = registerStack
-                children.append(try rvalue(expr: child))
-                registerStack = savedRegisterStack
-            }
-        }
-        if let lastChild = eseq.children.last {
-            children.append(try rvalue(expr: lastChild))
-        }
-        return Seq(sourceAnchor: eseq.sourceAnchor, children: children)
+        let visitedStmts = try visit(seq: eseq.seq)
+        let seq0 = (visitedStmts as? Seq) ?? Seq(sourceAnchor: eseq.sourceAnchor)
+        let expr = try rvalue(expr: eseq.expr)
+        let seq1 = seq0.appending(child: expr)
+        return seq1
     }
 
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {

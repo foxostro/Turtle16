@@ -4483,9 +4483,9 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Eseq() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(
-            expr: Eseq(children: [
-                LiteralBool(false)
-            ])
+            expr: Eseq(
+                seq: Seq(),
+                expr: LiteralBool(false))
         )
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)

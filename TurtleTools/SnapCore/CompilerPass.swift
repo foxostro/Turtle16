@@ -637,11 +637,9 @@ public class CompilerPass {
     }
 
     public func visit(eseq node: Eseq) throws -> Expression? {
-        node.withChildren(
-            try node.children.compactMap {
-                try visit(expr: $0)
-            }
-        )
+        node
+            .withSeq(try visit(seq: node.seq) as! Seq)
+            .withExpr(try visit(expr: node.expr)!)
     }
 
     public func visit(primitiveType node: PrimitiveType) throws -> Expression? {

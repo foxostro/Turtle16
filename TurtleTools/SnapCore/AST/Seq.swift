@@ -40,6 +40,10 @@ public final class Seq: AbstractSyntaxTreeNode {
     public func appending(children moreChildren: [AbstractSyntaxTreeNode]) -> Seq {
         withChildren(children + moreChildren)
     }
+    
+    public func appending(child: AbstractSyntaxTreeNode) -> Seq {
+        withChildren(children + [child])
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

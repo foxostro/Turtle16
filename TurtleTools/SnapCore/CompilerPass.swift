@@ -102,22 +102,21 @@ public class CompilerPass {
             genericNode
         }
     }
+    
+    public func visit(children: [AbstractSyntaxTreeNode]) throws -> [AbstractSyntaxTreeNode] {
+        try children.compactMap { try visit($0) }
+    }
 
     public func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        let children = try node.children.compactMap { try visit($0) }
-        return TopLevel(sourceAnchor: node.sourceAnchor, children: children)
+        node.withChildren(try visit(children: node.children))
     }
 
-    public func visit(subroutine subroutine0: Subroutine) throws -> AbstractSyntaxTreeNode? {
-        let children = try subroutine0.children.compactMap { try visit($0) }
-        let subroutine1 = subroutine0.withChildren(children)
-        return subroutine1
+    public func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
+        node.withChildren(try visit(children: node.children))
     }
 
-    public func visit(seq seq0: Seq) throws -> AbstractSyntaxTreeNode? {
-        let children = try seq0.children.compactMap { try visit($0) }
-        let seq1 = seq0.withChildren(children)
-        return seq1
+    public func visit(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
+        node.withChildren(try visit(children: node.children))
     }
 
     public func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -171,11 +170,7 @@ public class CompilerPass {
 
     public func visit(block node0: Block) throws -> AbstractSyntaxTreeNode? {
         try willVisit(block: node0)
-        let node1 = node0.withChildren(
-            try node0.children.compactMap {
-                try visit($0)
-            }
-        )
+        let node1 = node0.withChildren(try visit(children: node0.children))
         didVisit(block: node0)
         return node1
     }
@@ -273,8 +268,8 @@ public class CompilerPass {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             structTypeExpr: try visit(expr: node.structTypeExpr)!,
-            children: try node.children.compactMap {
-                try visit($0) as? FunctionDeclaration
+            children: try visit(children: node.children).compactMap {
+                $0 as? FunctionDeclaration
             },
             id: node.id
         )
@@ -288,8 +283,8 @@ public class CompilerPass {
             },
             traitTypeExpr: try visit(expr: node.traitTypeExpr)!,
             structTypeExpr: try visit(expr: node.structTypeExpr)!,
-            children: try node.children.compactMap {
-                try visit($0) as? FunctionDeclaration
+            children: try visit(children: node.children).compactMap {
+                $0 as? FunctionDeclaration
             },
             id: node.id
         )
@@ -315,11 +310,7 @@ public class CompilerPass {
     private func visit(clause: Match.Clause, in match: Match) throws -> Block {
         let node0 = clause.block
         try willVisit(block: node0, clause: clause, in: match)
-        let node1 = node0.withChildren(
-            try node0.children.compactMap {
-                try visit($0)
-            }
-        )
+        let node1 = node0.withChildren(try visit(children: node0.children))
         didVisit(block: node0, clause: clause, in: match)
         return node1
     }

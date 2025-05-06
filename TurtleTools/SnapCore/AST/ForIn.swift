@@ -36,6 +36,16 @@ public final class ForIn: AbstractSyntaxTreeNode {
             id: id
         )
     }
+    
+    public func withSequenceExpr(_ sequenceExpr: Expression) -> ForIn {
+        ForIn(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            sequenceExpr: sequenceExpr,
+            body: body,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

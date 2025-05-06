@@ -37,6 +37,16 @@ public final class If: AbstractSyntaxTreeNode {
             id: id
         )
     }
+    
+    public func withCondition(_ condition: Expression) -> If {
+        If(
+            sourceAnchor: sourceAnchor,
+            condition: condition,
+            then: thenBranch,
+            else: elseBranch,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

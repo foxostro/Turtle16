@@ -32,6 +32,15 @@ public final class While: AbstractSyntaxTreeNode {
             id: id
         )
     }
+    
+    public func withCondition(_ condition: Expression) -> While {
+        While(
+            sourceAnchor: sourceAnchor,
+            condition: condition,
+            body: body,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

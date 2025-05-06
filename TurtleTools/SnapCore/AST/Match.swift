@@ -55,6 +55,16 @@ public final class Match: AbstractSyntaxTreeNode {
             id: id
         )
     }
+    
+    public func withExpr(_ expr: Expression) -> Match {
+        Match(
+            sourceAnchor: sourceAnchor,
+            expr: expr,
+            clauses: clauses,
+            elseClause: elseClause,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

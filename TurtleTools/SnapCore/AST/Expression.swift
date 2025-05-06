@@ -381,6 +381,26 @@ public final class Binary: Expression {
             id: id
         )
     }
+    
+    public func withLeft(_ left: Expression) -> Binary {
+        Binary(
+            sourceAnchor: sourceAnchor,
+            op: op,
+            left: left,
+            right: right,
+            id: id
+        )
+    }
+    
+    public func withRight(_ right: Expression) -> Binary {
+        Binary(
+            sourceAnchor: sourceAnchor,
+            op: op,
+            left: left,
+            right: right,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
@@ -628,6 +648,15 @@ public final class As: Expression {
             id: id
         )
     }
+    
+    public func withExpr(_ expr: Expression) -> As {
+        As(
+            sourceAnchor: sourceAnchor,
+            expr: expr,
+            targetType: targetType,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
@@ -667,6 +696,15 @@ public final class Bitcast: Expression {
     }
 
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Bitcast {
+        Bitcast(
+            sourceAnchor: sourceAnchor,
+            expr: expr,
+            targetType: targetType,
+            id: id
+        )
+    }
+    
+    public func withExpr(_ expr: Expression) -> Bitcast {
         Bitcast(
             sourceAnchor: sourceAnchor,
             expr: expr,
@@ -720,6 +758,15 @@ public final class Is: Expression {
             id: id
         )
     }
+    
+    public func withExpr(_ expr: Expression) -> Is {
+        Is(
+            sourceAnchor: sourceAnchor,
+            expr: expr,
+            testType: testType,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
@@ -766,6 +813,24 @@ public final class Subscript: Expression {
             id: id
         )
     }
+    
+    public func withSubscriptable(_ subscriptable: Expression) -> Subscript {
+        Subscript(
+            sourceAnchor: sourceAnchor,
+            subscriptable: subscriptable,
+            argument: argument,
+            id: id
+        )
+    }
+    
+    public func withArgument(_ argument: Expression) -> Subscript {
+        Subscript(
+            sourceAnchor: sourceAnchor,
+            subscriptable: subscriptable,
+            argument: argument,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
@@ -805,6 +870,15 @@ public final class LiteralArray: Expression {
     }
 
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LiteralArray {
+        LiteralArray(
+            sourceAnchor: sourceAnchor,
+            arrayType: arrayType,
+            elements: elements,
+            id: id
+        )
+    }
+    
+    public func withElements(_ elements: [Expression]) -> LiteralArray {
         LiteralArray(
             sourceAnchor: sourceAnchor,
             arrayType: arrayType,
@@ -1052,6 +1126,24 @@ public final class ArrayType: Expression {
             id: id
         )
     }
+    
+    public func withCount(_ count: Expression?) -> ArrayType {
+        ArrayType(
+            sourceAnchor: sourceAnchor,
+            count: count,
+            elementType: elementType,
+            id: id
+        )
+    }
+    
+    public func withElementType(_ elementType: Expression) -> ArrayType {
+        ArrayType(
+            sourceAnchor: sourceAnchor,
+            count: count,
+            elementType: elementType,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
@@ -1076,7 +1168,7 @@ public final class ArrayType: Expression {
         return """
             \(indent0)\(selfDesc)
             \(indent1)count: \(String(describing: count))
-            \(indent1)elementType: \(elementType))
+            \(indent1)elementType: \(elementType)
             """
     }
 }
@@ -1118,6 +1210,26 @@ public final class FunctionType: Expression {
             id: id
         )
     }
+    
+    public func withReturnType(_ returnType: Expression) -> FunctionType {
+        FunctionType(
+            sourceAnchor: sourceAnchor,
+            name: name,
+            returnType: returnType,
+            arguments: arguments,
+            id: id
+        )
+    }
+    
+    public func withArguments(_ arguments: [Expression]) -> FunctionType {
+        FunctionType(
+            sourceAnchor: sourceAnchor,
+            name: name,
+            returnType: returnType,
+            arguments: arguments,
+            id: id
+        )
+    }
 
     public func withNewId() -> FunctionType {
         FunctionType(
@@ -1134,7 +1246,7 @@ public final class FunctionType: Expression {
         wantsLeadingWhitespace w: Bool = false
     ) -> String {
         let indent0 = w ? makeIndent(depth: depth) : ""
-        let nextDepth = depth + (w ? 1 : 0)
+        let nextDepth = depth + (w ? 2 : 1)
         let indent1 = makeIndent(depth: nextDepth)
         let result = """
             \(indent0)\(selfDesc)
@@ -1270,6 +1382,15 @@ public final class GenericTypeApplication: Expression {
     }
 
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericTypeApplication {
+        GenericTypeApplication(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            arguments: arguments,
+            id: id
+        )
+    }
+    
+    public func withArguments(_ arguments: [Expression]) -> GenericTypeApplication {
         GenericTypeApplication(
             sourceAnchor: sourceAnchor,
             identifier: identifier,
@@ -1632,6 +1753,10 @@ public final class StructInitializer: Expression {
         public var description: String {
             ".\(name) = \(expr)"
         }
+        
+        public func withExpr(_ expr: Expression) -> Argument {
+            Argument(name: name, expr: expr)
+        }
     }
 
     public let expr: Expression
@@ -1663,6 +1788,15 @@ public final class StructInitializer: Expression {
     }
 
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> StructInitializer {
+        StructInitializer(
+            sourceAnchor: sourceAnchor,
+            expr: expr,
+            arguments: arguments,
+            id: id
+        )
+    }
+    
+    public func withArguments(_ arguments: [Argument]) -> StructInitializer {
         StructInitializer(
             sourceAnchor: sourceAnchor,
             expr: expr,
@@ -1800,7 +1934,7 @@ public final class TypeOf: Expression {
     ) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let exprDesc = expr.makeIndentedDescription(depth: 0, wantsLeadingWhitespace: false)
-        return "\(indent)\(selfDesc)(\(exprDesc)"
+        return "\(indent)\(selfDesc)(\(exprDesc))"
     }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {

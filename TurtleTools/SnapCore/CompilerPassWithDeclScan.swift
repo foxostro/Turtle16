@@ -290,6 +290,29 @@ public class CompilerPassWithDeclScan: CompilerPass {
         try super.willVisit(block: block, clause: clause, in: match)
         try scan(block: block, clause: clause, in: match)
     }
+    
+    public override func visit(call node: Call) throws -> Expression? {
+        let calleeType = try rvalueContext.check(expression: node.callee)
+        let calleeContext: ExpressionEvaluationContext =
+            if calleeType.isPointerType {
+                .concrete
+            }
+            else {
+                .none
+            }
+        let call = node
+            .withCallee(
+                try with(context: calleeContext) {
+                    try visit(expr: node.callee)!
+                }
+            )
+            .withArguments(
+                try node.arguments.compactMap {
+                    try visit(expr: $0)
+                }
+            )
+        return call
+    }
 }
 
 extension Env {

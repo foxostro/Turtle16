@@ -9,6 +9,21 @@
 import TurtleCore
 
 public class CompilerPass {
+    public enum ExpressionEvaluationContext: Equatable {
+        case concrete, temporary, type, none
+    }
+    var context: ExpressionEvaluationContext = .concrete
+    
+    public func with<T>(
+        context newContext: ExpressionEvaluationContext,
+        block: () throws -> T
+    ) rethrows -> T {
+        let oldContext = context
+        context = newContext
+        defer { context = oldContext }
+        return try block()
+    }
+    
     struct EnvStack {
         private var stack: [Env] = []
 
@@ -104,9 +119,11 @@ public class CompilerPass {
     }
     
     public func visit(children: [AbstractSyntaxTreeNode]) throws -> [AbstractSyntaxTreeNode] {
-        try children.compactMap { try visit($0) }
-    }
-
+            try children.compactMap {
+                try visit($0)
+            }
+        }
+    
     public func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         node.withChildren(try visit(children: node.children))
     }
@@ -120,7 +137,10 @@ public class CompilerPass {
     }
 
     public func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        guard let identifier = try visit(identifier: node0.identifier) as? Identifier else {
+        let identifier = try with(context: .none) {
+            try visit(identifier: node0.identifier)
+        } as? Identifier
+        guard let identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "expected identifier: `\(node0.identifier)'"
@@ -129,8 +149,14 @@ public class CompilerPass {
         let node1 = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
-            explicitType: try node0.explicitType.flatMap { try visit(expr: $0) },
-            expression: try node0.expression.flatMap { try visit(expr: $0) },
+            explicitType: try with(context: .type) {
+                try node0.explicitType.flatMap {
+                    try visit(expr: $0)
+                }
+            },
+            expression: try node0.expression.flatMap {
+                    try visit(expr: $0)
+            },
             storage: node0.storage,
             isMutable: node0.isMutable,
             visibility: node0.visibility,
@@ -161,7 +187,9 @@ public class CompilerPass {
     public func visit(forIn node: ForIn) throws -> AbstractSyntaxTreeNode? {
         ForIn(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Identifier,
+            identifier: try with(context: .none) {
+                try visit(identifier: node.identifier)
+            } as! Identifier,
             sequenceExpr: try visit(expr: node.sequenceExpr)!,
             body: try visit(node.body) as! Block,
             id: node.id
@@ -195,9 +223,9 @@ public class CompilerPass {
 
     public func visit(return node: Return) throws -> AbstractSyntaxTreeNode? {
         node.withExpression(
-            try node.expression.flatMap {
-                try visit(expr: $0)
-            }
+                try node.expression.flatMap {
+                    try visit(expr: $0)
+                }
         )
     }
 
@@ -212,11 +240,17 @@ public class CompilerPass {
     public func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Identifier,
-            functionType: try visit(expr: node.functionType) as! FunctionType,
+            identifier: try with(context: .none) {
+                try visit(identifier: node.identifier)
+            } as! Identifier,
+            functionType: try with(context: .type) {
+                try visit(expr: node.functionType) as! FunctionType
+            },
             argumentNames: node.argumentNames,
-            typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+            typeArguments: try with(context: .type) {
+                try node.typeArguments.compactMap {
+                    try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+                }
             },
             body: try visit(node.body) as! Block,
             visibility: node.visibility,
@@ -234,7 +268,9 @@ public class CompilerPass {
     }
 
     public func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let maybeIdentNode = try visit(identifier: node0.identifier)
+        let maybeIdentNode = try with(context: .none) {
+            try visit(identifier: node0.identifier)
+        }
         guard let identifier = maybeIdentNode as? Identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
@@ -244,14 +280,18 @@ public class CompilerPass {
         let node1 = StructDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
-            typeArguments: try node0.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+            typeArguments: try with(context: .type) {
+                try node0.typeArguments.compactMap {
+                    try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+                }
             },
-            members: try node0.members.map {
-                StructDeclaration.Member(
-                    name: $0.name,
-                    type: try visit(expr: $0.memberType)!
-                )
+            members: try with(context: .type) {
+                try node0.members.map {
+                    StructDeclaration.Member(
+                        name: $0.name,
+                        type: try visit(expr: $0.memberType)!
+                    )
+                }
             },
             visibility: node0.visibility,
             isConst: node0.isConst,
@@ -264,10 +304,14 @@ public class CompilerPass {
     public func visit(impl node: Impl) throws -> AbstractSyntaxTreeNode? {
         Impl(
             sourceAnchor: node.sourceAnchor,
-            typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+            typeArguments: try with(context: .type) {
+                try node.typeArguments.compactMap {
+                    try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+                }
             },
-            structTypeExpr: try visit(expr: node.structTypeExpr)!,
+            structTypeExpr: try with(context: .type) {
+                try visit(expr: node.structTypeExpr)!
+            },
             children: try visit(children: node.children).compactMap {
                 $0 as? FunctionDeclaration
             },
@@ -278,11 +322,17 @@ public class CompilerPass {
     public func visit(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
         ImplFor(
             sourceAnchor: node.sourceAnchor,
-            typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+            typeArguments: try with(context: .type) {
+                try node.typeArguments.compactMap {
+                    try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+                }
             },
-            traitTypeExpr: try visit(expr: node.traitTypeExpr)!,
-            structTypeExpr: try visit(expr: node.structTypeExpr)!,
+            traitTypeExpr: try with(context: .type) {
+                try visit(expr: node.traitTypeExpr)!
+            },
+            structTypeExpr: try with(context: .type) {
+                try visit(expr: node.structTypeExpr)!
+            },
             children: try visit(children: node.children).compactMap {
                 $0 as? FunctionDeclaration
             },
@@ -294,12 +344,14 @@ public class CompilerPass {
         Match(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
-            clauses: try node.clauses.map {
+            clauses: try node.clauses.map { clause in
                 Match.Clause(
-                    sourceAnchor: $0.sourceAnchor,
-                    valueIdentifier: try visit(identifier: $0.valueIdentifier) as! Identifier,
-                    valueType: try visit(expr: $0.valueType)!,
-                    block: try visit(clause: $0, in: node)
+                    sourceAnchor: clause.sourceAnchor,
+                    valueIdentifier: try visit(identifier: clause.valueIdentifier) as! Identifier,
+                    valueType: try with(context: .type) {
+                        try visit(expr: clause.valueType)!
+                    },
+                    block: try visit(clause: clause, in: node)
                 )
             },
             elseClause: try visit(node.elseClause) as? Block,
@@ -333,13 +385,17 @@ public class CompilerPass {
         TraitDeclaration(
             sourceAnchor: node.sourceAnchor,
             identifier: try visit(identifier: node.identifier) as! Identifier,
-            typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+            typeArguments: try with(context: .type) {
+                try node.typeArguments.compactMap {
+                    try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+                }
             },
-            members: try node.members.map {
+            members: try node.members.map { member in
                 TraitDeclaration.Member(
-                    name: $0.name,
-                    type: try visit(expr: $0.memberType)!
+                    name: member.name,
+                    type: try with(context: .type) {
+                        try visit(expr: member.memberType)!
+                    }
                 )
             },
             visibility: node.visibility,
@@ -355,8 +411,12 @@ public class CompilerPass {
     public func visit(typealias node: Typealias) throws -> AbstractSyntaxTreeNode? {
         Typealias(
             sourceAnchor: node.sourceAnchor,
-            lexpr: try visit(identifier: node.lexpr) as! Identifier,
-            rexpr: try visit(expr: node.rexpr)!,
+            lexpr: try with(context: .type) {
+                try visit(identifier: node.lexpr) as! Identifier
+            },
+            rexpr: try with(context: .type) {
+                try visit(expr: node.rexpr)!
+            },
             visibility: node.visibility,
             id: node.id
         )
@@ -391,8 +451,8 @@ public class CompilerPass {
     }
 
     public func visit(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
-        try visit(expr: node)
-    }
+            try visit(expr: node)
+        }
 
     public func visit(expr: Expression) throws -> Expression? {
         switch expr {
@@ -480,7 +540,9 @@ public class CompilerPass {
     public func visit(literalArray expr: LiteralArray) throws -> Expression? {
         LiteralArray(
             sourceAnchor: expr.sourceAnchor,
-            arrayType: try visit(expr: expr.arrayType)!,
+            arrayType: try with(context: .type) {
+                try visit(expr: expr.arrayType)!
+            },
             elements: try expr.elements.compactMap {
                 try visit(expr: $0)
             },
@@ -500,7 +562,9 @@ public class CompilerPass {
         As(
             sourceAnchor: expr.sourceAnchor,
             expr: try visit(expr: expr.expr)!,
-            targetType: try visit(expr: expr.targetType)!,
+            targetType: try with(context: .type) {
+                try visit(expr: expr.targetType)!
+            },
             id: expr.id
         )
     }
@@ -509,7 +573,9 @@ public class CompilerPass {
         Bitcast(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
-            targetType: try visit(expr: node.targetType)!,
+            targetType: try with(context: .type) {
+                try visit(expr: node.targetType)!
+            },
             id: node.id
         )
     }
@@ -532,27 +598,21 @@ public class CompilerPass {
         Is(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
-            testType: try visit(expr: node.testType)!,
+            testType: try with(context: .type) {
+                try visit(expr: node.testType)!
+            },
             id: node.id
         )
     }
 
     public func visit(initialAssignment node: InitialAssignment) throws -> Expression? {
-        InitialAssignment(
-            sourceAnchor: node.sourceAnchor,
-            lexpr: try visit(expr: node.lexpr)!,
-            rexpr: try visit(expr: node.rexpr)!,
-            id: node.id
-        )
+        try visit(assignment: node)
     }
 
     public func visit(assignment node: Assignment) throws -> Expression? {
-        Assignment(
-            sourceAnchor: node.sourceAnchor,
-            lexpr: try visit(expr: node.lexpr)!,
-            rexpr: try visit(expr: node.rexpr)!,
-            id: node.id
-        )
+        node
+            .withLexpr(try visit(expr: node.lexpr)!)
+            .withRexpr(try visit(expr: node.rexpr)!)
     }
 
     public func visit(subscript node: Subscript) throws -> Expression? {
@@ -568,19 +628,23 @@ public class CompilerPass {
         Get(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
-            member: try visit(expr: node.member)!
+            member: try with(context: .none) {
+                try visit(expr: node.member)!
+            }
         )
     }
 
     public func visit(structInitializer node: StructInitializer) throws -> Expression? {
         StructInitializer(
             sourceAnchor: node.sourceAnchor,
-            expr: try visit(expr: node.expr)!,
+            expr: try with(context: .type) {
+                try visit(expr: node.expr)!
+            },
             arguments: try node.arguments.compactMap {
-                StructInitializer.Argument(
-                    name: $0.name,
-                    expr: try visit(expr: $0.expr)!
-                )
+                    StructInitializer.Argument(
+                        name: $0.name,
+                        expr: try visit(expr: $0.expr)!
+                    )
             },
             id: node.id
         )
@@ -589,9 +653,11 @@ public class CompilerPass {
     public func visit(call node: Call) throws -> Expression? {
         Call(
             sourceAnchor: node.sourceAnchor,
-            callee: try visit(expr: node.callee)!,
+            callee: try with(context: .none) {
+                try visit(expr: node.callee)!
+            },
             arguments: try node.arguments.compactMap {
-                try visit(expr: $0)
+                    try visit(expr: $0)
             },
             id: node.id
         )
@@ -606,25 +672,31 @@ public class CompilerPass {
     }
 
     public func visit(genericTypeApplication expr: GenericTypeApplication) throws -> Expression? {
-        GenericTypeApplication(
-            sourceAnchor: expr.sourceAnchor,
-            identifier: try visit(identifier: expr.identifier) as! Identifier,
-            arguments: try expr.arguments.compactMap {
-                try visit(expr: $0)
-            },
-            id: expr.id
-        )
+        try with(context: .type) {
+            GenericTypeApplication(
+                sourceAnchor: expr.sourceAnchor,
+                identifier: try visit(identifier: expr.identifier) as! Identifier,
+                arguments: try with(context: .type) {
+                    try expr.arguments.compactMap {
+                        try visit(expr: $0)
+                    }
+                },
+                id: expr.id
+            )
+        }
     }
 
     public func visit(genericTypeArgument node: GenericTypeArgument) throws -> Expression? {
-        GenericTypeArgument(
-            sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Identifier,
-            constraints: try node.constraints.compactMap {
-                try visit(expr: $0) as! Identifier?
-            },
-            id: node.id
-        )
+        try with(context: .type) {
+            GenericTypeArgument(
+                sourceAnchor: node.sourceAnchor,
+                identifier: try visit(identifier: node.identifier) as! Identifier,
+                constraints: try node.constraints.compactMap {
+                    try visit(expr: $0) as! Identifier?
+                },
+                id: node.id
+            )
+        }
     }
 
     public func visit(eseq node: Eseq) throws -> Expression? {
@@ -634,60 +706,82 @@ public class CompilerPass {
     }
 
     public func visit(primitiveType node: PrimitiveType) throws -> Expression? {
-        node
+        with(context: .type) {
+            node
+        }
     }
 
     public func visit(pointerType node: PointerType) throws -> Expression? {
-        node.withTyp(try visit(expr: node.typ)!)
+        try with(context: .type) {
+            node.withTyp(try visit(expr: node.typ)!)
+        }
     }
 
     public func visit(constType node: ConstType) throws -> Expression? {
-        node.withTyp(try visit(expr: node.typ)!)
+        try with(context: .type) {
+            node.withTyp(try visit(expr: node.typ)!)
+        }
     }
 
     public func visit(mutableType node: MutableType) throws -> Expression? {
-        node.withTyp(try visit(expr: node.typ)!)
+        try with(context: .type) {
+            node.withTyp(try visit(expr: node.typ)!)
+        }
     }
 
     public func visit(unionType node: UnionType) throws -> Expression? {
-        node.withMembers(
-            try node.members.compactMap {
-                try visit(expr: $0)
-            }
-        )
+        try with(context: .type) {
+            node.withMembers(
+                try node.members.compactMap {
+                    try visit(expr: $0)
+                }
+            )
+        }
     }
 
     public func visit(dynamicArrayType node: DynamicArrayType) throws -> Expression? {
-        node.withElementType(try visit(expr: node.elementType)!)
+        try with(context: .type) {
+            node.withElementType(try visit(expr: node.elementType)!)
+        }
     }
 
     public func visit(arrayType node: ArrayType) throws -> Expression? {
-        ArrayType(
-            sourceAnchor: node.sourceAnchor,
-            count: try node.count.flatMap {
-                try visit(expr: $0)
-            },
-            elementType: try visit(expr: node.elementType)!,
-            id: node.id
-        )
+        try with(context: .type) {
+            ArrayType(
+                sourceAnchor: node.sourceAnchor,
+                count: try with(context: .none) {
+                    try node.count.flatMap {
+                        try visit(expr: $0)
+                    }
+                },
+                elementType: try with(context: .type) {
+                    try visit(expr: node.elementType)!
+                },
+                id: node.id
+            )
+        }
     }
 
     public func visit(functionType node: FunctionType) throws -> Expression? {
-        FunctionType(
-            sourceAnchor: node.sourceAnchor,
-            name: node.name,
-            returnType: try visit(expr: node.returnType)!,
-            arguments: try node.arguments.compactMap {
-                try visit(expr: $0)
-            },
-            id: node.id
-        )
+        try with(context: .type) {
+            FunctionType(
+                sourceAnchor: node.sourceAnchor,
+                name: node.name,
+                returnType: try visit(expr: node.returnType)!,
+                arguments: try node.arguments.compactMap {
+                    try visit(expr: $0)
+                },
+                id: node.id
+            )
+        }
     }
 
     public func visit(genericFunctionType node0: GenericFunctionType) throws -> Expression? {
-        let template0 = node0.template
-        let template1 = try visit(func: template0) as! FunctionDeclaration
-        let node1 = node0.withTemplate(template1)
-        return node1
+        try with(context: .type) {
+            let template0 = node0.template
+            let template1 = try visit(func: template0) as! FunctionDeclaration
+            let node1 = node0.withTemplate(template1)
+            return node1
+        }
     }
 }

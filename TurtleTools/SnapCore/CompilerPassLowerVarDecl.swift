@@ -18,8 +18,10 @@ public final class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
         let node1 = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: try visit(identifier: node0.identifier) as! Identifier,
-            explicitType: try node0.explicitType.flatMap {
-                try visit(expr: $0)
+            explicitType: try with(context: .type) {
+                try node0.explicitType.flatMap {
+                    try visit(expr: $0)
+                }
             },
             expression: try node0.expression.flatMap {
                 try visit(expr: $0)

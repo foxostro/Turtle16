@@ -170,6 +170,8 @@
 		6F47D8F3261CC6F2008EFFF2 /* JEDECFuseFileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */; };
 		6F47D905261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */; };
 		6F4B5CB22471DE2D000C57EB /* SnapCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */; };
+		6F4E50752DC953CF00F9F868 /* CompilerPassEraseEseq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4E50742DC953CF00F9F868 /* CompilerPassEraseEseq.swift */; };
+		6F4E50772DC9542000F9F868 /* CompilerPassEraseEseqTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4E50762DC9542000F9F868 /* CompilerPassEraseEseqTests.swift */; };
 		6F4F3C43249EAEB30018BBBC /* FunctionDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */; };
 		6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */; };
 		6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C46249EBC3A0018BBBC /* TokenType.swift */; };
@@ -700,6 +702,8 @@
 		6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JEDECFuseFileParserTests.swift; sourceTree = "<group>"; };
 		6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCommandLineDriver.swift; sourceTree = "<group>"; };
 		6F4BE175230D2E31008C2329 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
+		6F4E50742DC953CF00F9F868 /* CompilerPassEraseEseq.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEraseEseq.swift; sourceTree = "<group>"; };
+		6F4E50762DC9542000F9F868 /* CompilerPassEraseEseqTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEraseEseqTests.swift; sourceTree = "<group>"; };
 		6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclaration.swift; sourceTree = "<group>"; };
 		6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclarationTests.swift; sourceTree = "<group>"; };
 		6F4F3C46249EBC3A0018BBBC /* TokenType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenType.swift; sourceTree = "<group>"; };
@@ -1214,6 +1218,7 @@
 				6F3227552C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift */,
 				6F20F9392C744D4300415E35 /* CompilerPassEraseSourceAnchor.swift */,
 				6F2B443526D9ACFE009ACF08 /* CompilerPassFlattenSeq.swift */,
+				6F4E50742DC953CF00F9F868 /* CompilerPassEraseEseq.swift */,
 				6F7CCE692C67FA9D00F435F1 /* CompilerPassForIn.swift */,
 				6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */,
 				6F1F3B792C7D00CA008C2EEB /* CompilerPassIf.swift */,
@@ -1286,55 +1291,56 @@
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
 				6FDFAA8E2C97B68100F7A68D /* DeclScanner */,
+				6F40731E26B2A194007D8382 /* CompilerPassAssertTests.swift */,
+				6F4E50762DC9542000F9F868 /* CompilerPassEraseEseqTests.swift */,
 				6FA939CA2D1CA09600E611BE /* CompilerPassEraseMethodCallsTests.swift */,
+				6F2B443726D9AF67009ACF08 /* CompilerPassFlattenSeqTests.swift */,
 				6F058A322C59839000B3FA82 /* CompilerPassGenericsTests.swift */,
-				6FA939C62D1B887300E611BE /* CompilerPassImplTests.swift */,
 				6F8508E22D0FA61000B57518 /* CompilerPassImplForTests.swift */,
+				6FA939C62D1B887300E611BE /* CompilerPassImplTests.swift */,
 				6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */,
 				6FBC1F152C72BFE200CAC35E /* CompilerPassMatchTests.swift */,
 				6F8508E62D10A0A900B57518 /* CompilerPassSynthesizeTerminalReturnStatementsTests.swift */,
+				6F15422326B5EBC300BA9572 /* CompilerPassTestDeclarationTests.swift */,
 				6F0943F02C8FDE9B00A24FAC /* CompilerPassVtablesTests.swift */,
 				6F0EA1B82D399D5100894EDC /* CompilerPassWhileTests.swift */,
 				6FBC1F192C72FA0800CAC35E /* CompilerPassWithDeclScanTests.swift */,
+				6F40730826B1D61F007D8382 /* CoreToTackCompilerTests.swift */,
+				6F50DB0D247F5F9500643DAC /* EnvTests.swift */,
 				6F924E7D248B4CCA00F43741 /* ExprUtils.swift */,
 				6FBD0F062C657EBC000FEE84 /* GenericFunctionPartialEvaluatorTests.swift */,
 				6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */,
 				6F3F00FF275F45F200875339 /* LinearScanRegisterAllocatorTests.swift */,
 				6F25325924CB5D0B00339332 /* LvalueExpressionTypeCheckerTests.swift */,
-				6F40730426ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift */,
 				6FD2736B26CA18CE00749CDA /* MemoryLayoutStrategyTurtle16Tests.swift */,
+				6F40730426ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift */,
 				6F3F00FB27560FF900875339 /* RegisterAllocatorDriverTests.swift */,
 				6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */,
 				6F3F0103275FD42A00875339 /* RegisterLiveIntervalCalculatorTests.swift */,
 				6F3F0109275FEC8000875339 /* RegisterSpillerTests.swift */,
 				6F3F010D2760676000875339 /* RegisterUtilsTests.swift */,
 				6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */,
-				6F40731826B281C1007D8382 /* SnapToCoreCompilerTests.swift */,
-				6F40730826B1D61F007D8382 /* CoreToTackCompilerTests.swift */,
-				6F2B443726D9AF67009ACF08 /* CompilerPassFlattenSeqTests.swift */,
-				6F15422326B5EBC300BA9572 /* CompilerPassTestDeclarationTests.swift */,
 				6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */,
 				6F840519291A2B0300C9B957 /* SnapCompilerFrontEndTests.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
-				6F40731E26B2A194007D8382 /* CompilerPassAssertTests.swift */,
 				6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */,
 				6FD2735D26C9C73A00749CDA /* SnapSubcompilerIfTests.swift */,
 				6F13826026C0DA01002CF167 /* SnapSubcompilerMatchTests.swift */,
 				6F13826426C0E893002CF167 /* SnapSubcompilerReturnTests.swift */,
-				6F15423726B92ADB00BA9572 /* StructScannerTests.swift */,
-				6F9E8F8026B9A91900FE25E4 /* TypealiasScannerTests.swift */,
 				6F15422F26B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift */,
+				6F40731826B281C1007D8382 /* SnapToCoreCompilerTests.swift */,
 				6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */,
 				6FBCFA5726F5123700193819 /* StructMemberFunctionCallMatcherTests.swift */,
+				6F15423726B92ADB00BA9572 /* StructScannerTests.swift */,
 				6F15421F26B34E4400BA9572 /* SymbolTablesReconnectorTests.swift */,
-				6F50DB0D247F5F9500643DAC /* EnvTests.swift */,
 				6F3E5AD4291AF84100C0F988 /* TackDebuggerTests.swift */,
 				6F840515291808E100C9B957 /* TackFlattenerTests.swift */,
 				6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */,
 				6F8405112918051500C9B957 /* TackVirtualMachineTests.swift */,
-				6F234E562D3D9459009EB986 /* XCTestCaseExtensions.swift */,
+				6F9E8F8026B9A91900FE25E4 /* TypealiasScannerTests.swift */,
 				6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */,
+				6F234E562D3D9459009EB986 /* XCTestCaseExtensions.swift */,
 				6F9201F42471DAC7009E1410 /* Info.plist */,
 			);
 			path = SnapCoreTests;
@@ -2113,6 +2119,7 @@
 				6F2940C5248399BE00C50ABA /* Env.swift in Sources */,
 				6FBC1F182C72F9F200CAC35E /* CompilerPassWithDeclScan.swift in Sources */,
 				6F40731726B281B7007D8382 /* SnapToCoreCompiler.swift in Sources */,
+				6F4E50752DC953CF00F9F868 /* CompilerPassEraseEseq.swift in Sources */,
 				6FC87B6A2D25DF0F006D6CD8 /* CompilerPassLowerVarDecl.swift in Sources */,
 				6F238AD9248C6A560040250D /* Block.swift in Sources */,
 				6F8405102918050400C9B957 /* TackVirtualMachine.swift in Sources */,
@@ -2170,6 +2177,7 @@
 				6F15422026B34E4400BA9572 /* SymbolTablesReconnectorTests.swift in Sources */,
 				6F2940D02483A15000C50ABA /* ExpressionTests.swift in Sources */,
 				6F15422426B5EBC300BA9572 /* CompilerPassTestDeclarationTests.swift in Sources */,
+				6F4E50772DC9542000F9F868 /* CompilerPassEraseEseqTests.swift in Sources */,
 				6FA939CB2D1CA09600E611BE /* CompilerPassEraseMethodCallsTests.swift in Sources */,
 				6F15423026B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift in Sources */,
 				6F3F00FC27560FF900875339 /* RegisterAllocatorDriverTests.swift in Sources */,

@@ -97,6 +97,8 @@
 		6F300DCB266A90CC00BFBAC4 /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6F300DCC266A90CC00BFBAC4 /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F300DD1266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */; };
+		6F30EBEA2DCAD07E002EB96A /* CompilerPassDecomposeExpressionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F30EBE92DCAD07E002EB96A /* CompilerPassDecomposeExpressionsTests.swift */; };
+		6F30EBEC2DCAD0B8002EB96A /* CompilerPassDecomposeExpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F30EBEB2DCAD0B8002EB96A /* CompilerPassDecomposeExpressions.swift */; };
 		6F3227562C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3227552C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift */; };
 		6F3443FD2B5F55EE002593F2 /* DebugConsoleActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3443FC2B5F55EE002593F2 /* DebugConsoleActor.swift */; };
 		6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F35B4352628ABF6004EA0AB /* DebugConsole.swift */; };
@@ -631,6 +633,8 @@
 		6F300DC0266A906F00BFBAC4 /* TurtleAssembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleAssembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F300DC2266A906F00BFBAC4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
+		6F30EBE92DCAD07E002EB96A /* CompilerPassDecomposeExpressionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassDecomposeExpressionsTests.swift; sourceTree = "<group>"; };
+		6F30EBEB2DCAD0B8002EB96A /* CompilerPassDecomposeExpressions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassDecomposeExpressions.swift; sourceTree = "<group>"; };
 		6F3227552C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEraseSeq.swift; sourceTree = "<group>"; };
 		6F3443FC2B5F55EE002593F2 /* DebugConsoleActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleActor.swift; sourceTree = "<group>"; };
 		6F35B4352628ABF6004EA0AB /* DebugConsole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsole.swift; sourceTree = "<group>"; };
@@ -1214,6 +1218,7 @@
 				6F40732026B2AD72007D8382 /* CompilerPass.swift */,
 				6F1F3B772C7D0001008C2EEB /* CompilerPassAssert.swift */,
 				6F6A2EED2C5C5C6C004A25F5 /* CompilerPassClearSymbols.swift */,
+				6F30EBEB2DCAD0B8002EB96A /* CompilerPassDecomposeExpressions.swift */,
 				6FA939C82D1CA06A00E611BE /* CompilerPassEraseMethodCalls.swift */,
 				6F3227552C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift */,
 				6F20F9392C744D4300415E35 /* CompilerPassEraseSourceAnchor.swift */,
@@ -1292,6 +1297,7 @@
 				6F5337332474BE7100CFD33C /* AST */,
 				6FDFAA8E2C97B68100F7A68D /* DeclScanner */,
 				6F40731E26B2A194007D8382 /* CompilerPassAssertTests.swift */,
+				6F30EBE92DCAD07E002EB96A /* CompilerPassDecomposeExpressionsTests.swift */,
 				6F4E50762DC9542000F9F868 /* CompilerPassEraseEseqTests.swift */,
 				6FA939CA2D1CA09600E611BE /* CompilerPassEraseMethodCallsTests.swift */,
 				6F2B443726D9AF67009ACF08 /* CompilerPassFlattenSeqTests.swift */,
@@ -2090,6 +2096,7 @@
 				6F3F0108275FEC5700875339 /* RegisterSpiller.swift in Sources */,
 				6F15422226B5EBA800BA9572 /* CompilerPassTestDeclaration.swift in Sources */,
 				6F15421E26B34E3300BA9572 /* SymbolTablesReconnector.swift in Sources */,
+				6F30EBEC2DCAD0B8002EB96A /* CompilerPassDecomposeExpressions.swift in Sources */,
 				6F0EA1BB2D3C87AD00894EDC /* MemoryLayoutStrategyNull.swift in Sources */,
 				6F7CCE6A2C67FA9D00F435F1 /* CompilerPassForIn.swift in Sources */,
 				6F40730326ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift in Sources */,
@@ -2196,6 +2203,7 @@
 				6F8508E72D10A0A900B57518 /* CompilerPassSynthesizeTerminalReturnStatementsTests.swift in Sources */,
 				6F40731926B281C1007D8382 /* SnapToCoreCompilerTests.swift in Sources */,
 				6F2940BF2483995500C50ABA /* EnvTests.swift in Sources */,
+				6F30EBEA2DCAD07E002EB96A /* CompilerPassDecomposeExpressionsTests.swift in Sources */,
 				6FD2735E26C9C73A00749CDA /* SnapSubcompilerIfTests.swift in Sources */,
 				6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */,
 				6F058A332C59839000B3FA82 /* CompilerPassGenericsTests.swift in Sources */,

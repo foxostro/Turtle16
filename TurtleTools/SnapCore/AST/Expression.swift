@@ -1165,10 +1165,12 @@ public final class ArrayType: Expression {
     ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
+        let countStr = count?.makeIndentedDescription(depth: depth + 1) ?? "nil"
+        let elementTypeStr = elementType.makeIndentedDescription(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent1)count: \(String(describing: count))
-            \(indent1)elementType: \(elementType)
+            \(indent1)count: \(countStr)
+            \(indent1)elementType: \(elementTypeStr)
             """
     }
 }

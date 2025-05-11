@@ -669,7 +669,7 @@ internal compiler error: type expression expected to resolve to a FunctionType
                 try visit(expr: node.callee)!
             },
             arguments: try node.arguments.compactMap {
-                    try visit(expr: $0)
+                try visit(expr: $0)
             },
             id: node.id
         )
@@ -688,10 +688,8 @@ internal compiler error: type expression expected to resolve to a FunctionType
             GenericTypeApplication(
                 sourceAnchor: expr.sourceAnchor,
                 identifier: try visit(identifier: expr.identifier) as! Identifier,
-                arguments: try with(context: .type) {
-                    try expr.arguments.compactMap {
-                        try visit(expr: $0)
-                    }
+                arguments: try expr.arguments.compactMap {
+                    try visit(expr: $0)
                 },
                 id: expr.id
             )

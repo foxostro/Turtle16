@@ -244,7 +244,19 @@ public class CompilerPass {
                 try visit(identifier: node.identifier)
             } as! Identifier,
             functionType: try with(context: .type) {
-                try visit(expr: node.functionType) as! FunctionType
+                let expr = try visit(expr: node.functionType)
+                guard let expr = expr as? FunctionType else {
+                    let anchor = node.functionType.sourceAnchor
+                    let nodeStr = node.functionType.makeIndentedDescription(depth: 2)
+                    let exprStr = expr?.makeIndentedDescription(depth: 2) ?? "nil"
+                    let msg = """
+internal compiler error: type expression expected to resolve to a FunctionType
+    type expression: \(nodeStr)
+    what we got: \(exprStr))
+"""
+                    throw CompilerError(sourceAnchor: anchor, message: msg)
+                }
+                return expr
             },
             argumentNames: node.argumentNames,
             typeArguments: try with(context: .type) {

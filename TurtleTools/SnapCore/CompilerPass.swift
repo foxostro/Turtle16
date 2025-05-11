@@ -757,14 +757,8 @@ internal compiler error: type expression expected to resolve to a FunctionType
         try with(context: .type) {
             ArrayType(
                 sourceAnchor: node.sourceAnchor,
-                count: try with(context: .none) {
-                    try node.count.flatMap {
-                        try visit(expr: $0)
-                    }
-                },
-                elementType: try with(context: .type) {
-                    try visit(expr: node.elementType)!
-                },
+                count: try node.count.flatMap { try visit(expr: $0) },
+                elementType: try visit(expr: node.elementType)!,
                 id: node.id
             )
         }

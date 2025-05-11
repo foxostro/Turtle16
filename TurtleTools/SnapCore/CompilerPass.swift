@@ -394,26 +394,26 @@ internal compiler error: type expression expected to resolve to a FunctionType
     }
 
     public func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
-        TraitDeclaration(
-            sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Identifier,
-            typeArguments: try with(context: .type) {
-                try node.typeArguments.compactMap {
+        try with(context: .type) {
+            TraitDeclaration(
+                sourceAnchor: node.sourceAnchor,
+                identifier: try with(context: .none) {
+                    try visit(identifier: node.identifier) as! Identifier
+                },
+                typeArguments: try node.typeArguments.compactMap {
                     try visit(genericTypeArgument: $0) as! GenericTypeArgument?
-                }
-            },
-            members: try node.members.map { member in
-                TraitDeclaration.Member(
-                    name: member.name,
-                    type: try with(context: .type) {
-                        try visit(expr: member.memberType)!
-                    }
-                )
-            },
-            visibility: node.visibility,
-            mangledName: node.mangledName,
-            id: node.id
-        )
+                },
+                members: try node.members.map { member in
+                    TraitDeclaration.Member(
+                        name: member.name,
+                        type: try visit(expr: member.memberType)!
+                    )
+                },
+                visibility: node.visibility,
+                mangledName: node.mangledName,
+                id: node.id
+            )
+        }
     }
 
     public func visit(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {

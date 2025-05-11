@@ -423,7 +423,7 @@ internal compiler error: type expression expected to resolve to a FunctionType
     public func visit(typealias node: Typealias) throws -> AbstractSyntaxTreeNode? {
         Typealias(
             sourceAnchor: node.sourceAnchor,
-            lexpr: try with(context: .type) {
+            lexpr: try with(context: .none) {
                 try visit(identifier: node.lexpr) as! Identifier
             },
             rexpr: try with(context: .type) {
@@ -653,10 +653,10 @@ internal compiler error: type expression expected to resolve to a FunctionType
                 try visit(expr: node.expr)!
             },
             arguments: try node.arguments.compactMap {
-                    StructInitializer.Argument(
-                        name: $0.name,
-                        expr: try visit(expr: $0.expr)!
-                    )
+                StructInitializer.Argument(
+                    name: $0.name,
+                    expr: try visit(expr: $0.expr)!
+                )
             },
             id: node.id
         )
@@ -665,7 +665,7 @@ internal compiler error: type expression expected to resolve to a FunctionType
     public func visit(call node: Call) throws -> Expression? {
         Call(
             sourceAnchor: node.sourceAnchor,
-            callee: try with(context: .none) {
+            callee: try with(context: .none) { // TODO: `none` is a fishy context in which to evaluate the callee.
                 try visit(expr: node.callee)!
             },
             arguments: try node.arguments.compactMap {

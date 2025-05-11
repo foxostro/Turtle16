@@ -760,6 +760,43 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testAssignmentExpression_RightHandSideIsStructType() throws {
+        let shared = [
+            StructDeclaration(
+                identifier: Foo,
+                members: [
+                    StructDeclaration.Member(
+                        name: "bar",
+                        type: u16
+                    )
+                ]
+            ),
+            VarDeclaration(identifier: bar, explicitType: Foo),
+            VarDeclaration(identifier: foo, explicitType: Foo, isMutable: true),
+        ]
+        let input = Block(children: shared + [
+            Assignment(lexpr: foo, rexpr: bar)
+        ])
+        .reconnect(parent: nil)
+
+        let temp0 = Temp(i: 0, expr: AddressOf(foo))
+        let temp1 = Temp(i: 1, expr: AddressOf(bar))
+        let temp2 = Temp(
+            i: 2,
+            expr: Assignment(
+                lexpr: Get(expr: temp0, member: pointee),
+                rexpr: Get(expr: temp1, member: pointee)
+            )
+        )
+        let expected = Block(children: shared + [
+            temp2
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+    
     func testAssignmentExpression_LeftHandSideIsGetExpression() throws {
         let shared = [
             StructDeclaration(

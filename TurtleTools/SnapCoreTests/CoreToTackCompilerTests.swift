@@ -4715,4 +4715,30 @@ final class CoreToTackCompilerTests: XCTestCase {
             .registerStorage(.w(.w(0)))
         )
     }
+    
+    func testRvalue_SubscriptRvalue_SubscriptThroughPointerToArray() throws {
+        let symbols = Env(tuples: [
+            (
+                "foo",
+                Symbol(
+                    type: .pointer(.array(count: 10, elementType: .u16)),
+                    storage: .staticStorage(offset: 0xabcd)
+                )
+            )
+        ])
+        symbols.frameLookupMode = .set(Frame())
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(
+            expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(9))
+        )
+        let expected = Seq(children: [
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.liuw(.w(2), 9)),
+            TackInstructionNode(.addpw(.p(3), .p(1), .w(2))),
+            TackInstructionNode(.lw(.w(4), .p(3), 0))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
+    }
 }

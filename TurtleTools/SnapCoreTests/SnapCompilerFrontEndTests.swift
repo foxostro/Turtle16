@@ -330,6 +330,19 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let a = debugger.loadSymbolU16("a")
         XCTAssertEqual(a, UInt16(0x1000))
     }
+    
+    func test_EndToEndIntegration_SubscriptArrayThroughPointer() throws {
+        let debugger = try run(
+            options: Options(isVerboseLogging: true),
+            program: """
+                let arr = [_]u16{0x1000}
+                let ptr = &arr
+                let a: u16 = ptr[0]
+                """
+        )
+        let a = debugger.loadSymbolU16("a")
+        XCTAssertEqual(a, UInt16(0x1000))
+    }
 
     func test_EndToEndIntegration_SubscriptSlice() throws {
         let debugger = try run(

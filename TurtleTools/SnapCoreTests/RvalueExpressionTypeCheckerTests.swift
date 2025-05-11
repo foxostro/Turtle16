@@ -7435,4 +7435,34 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let result = try RvalueExpressionTypeChecker().check(expression: expr)
         XCTAssertEqual(result, .u16)
     }
+    
+    func testSubscriptArrayThroughPointerToArray() {
+        let ident = "foo"
+        let symbols = Env(tuples: [
+            (ident, Symbol(type: .pointer(.array(count: 3, elementType: .u16))))
+        ])
+        let expr = Subscript(
+            subscriptable: Identifier(ident),
+            argument: LiteralInt(0)
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
+    
+    func testSubscriptArrayThroughConstPointerToArray() {
+        let ident = "foo"
+        let symbols = Env(tuples: [
+            (ident, Symbol(type: .constPointer(.array(count: 3, elementType: .u16))))
+        ])
+        let expr = Subscript(
+            subscriptable: Identifier(ident),
+            argument: LiteralInt(0)
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .u16)
+    }
 }

@@ -355,9 +355,25 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             }
         }
 
-        var children: [AbstractSyntaxTreeNode] = [
-            try lvalue(expr: expr.subscriptable)
-        ]
+        var children: [AbstractSyntaxTreeNode] = []
+        
+        // If this is a pointer to array then we must follow the pointer to get
+        // the base address of the array.
+        let computeArrayBaseAddress =
+            switch subscriptableType {
+            case .pointer(.array(count: _, elementType: _)),
+                 .pointer(.dynamicArray(elementType: _)),
+                 .pointer(.constDynamicArray(elementType: _)),
+                 .constPointer(.array(count: _, elementType: _)),
+                 .constPointer(.dynamicArray(elementType: _)),
+                 .constPointer(.constDynamicArray(elementType: _)):
+                
+                try rvalue(expr: expr.subscriptable)
+
+            default:
+                try lvalue(expr: expr.subscriptable)
+            }
+        children.append(computeArrayBaseAddress)
 
         // If this is a dynamic array then we must dereference the slice.
         // The slice is a structure that contains a pointer and a count, and the

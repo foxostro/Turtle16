@@ -716,9 +716,7 @@ internal compiler error: type expression expected to resolve to a FunctionType
     }
 
     public func visit(primitiveType node: PrimitiveType) throws -> Expression? {
-        with(context: .type) {
-            node
-        }
+        node
     }
 
     public func visit(pointerType node: PointerType) throws -> Expression? {

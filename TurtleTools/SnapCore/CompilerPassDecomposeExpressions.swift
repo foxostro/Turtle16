@@ -471,6 +471,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
     
     func extract(expr: Expression?) throws -> Expression? {
+        guard [.concrete, .temporary].contains(context) else { return expr }
         guard let expr, !isCompilerTemporary(expr) else { return expr }
         
         let temp = Identifier(

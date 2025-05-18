@@ -628,10 +628,14 @@ internal compiler error: type expression expected to resolve to a FunctionType
     }
 
     public func visit(subscript node: Subscript) throws -> Expression? {
-        Subscript(
+        let argument = try with(context: .concrete) {
+            try visit(expr: node.argument)
+        }
+        let subscriptable = try visit(expr: node.subscriptable)
+        return Subscript(
             sourceAnchor: node.sourceAnchor,
-            subscriptable: try visit(expr: node.subscriptable)!,
-            argument: try visit(expr: node.argument)!,
+            subscriptable: subscriptable!,
+            argument: argument!,
             id: node.id
         )
     }

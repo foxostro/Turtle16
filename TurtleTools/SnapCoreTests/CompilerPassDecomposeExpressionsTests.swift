@@ -1120,7 +1120,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                     elementType: u16
                 ),
                 isMutable: true
-            ),
+            )
         ]
         let input = Block(children: shared + [
             Subscript(
@@ -1130,14 +1130,95 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let temp0 = Temp(i: 0, expr: Unary(op: .ampersand, expression: foo))
-        let temp1 = Temp(i: 1, expr: LiteralInt(0))
-        let temp2 = Temp(i: 2, expr: Get(
-            expr: AddressOf(Subscript(subscriptable: temp0, argument: temp1)),
-            member: pointee
-        ))
+        let temp0 = Temp(i: 0, expr: LiteralInt(0))
+        let temp1 = Temp(i: 1, expr: Unary(op: .ampersand, expression: foo))
+        let temp2 = Temp(i: 2, expr: Subscript(subscriptable: temp1, argument: temp0))
         let expected = Block(children: shared + [
             temp2
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testAssignmentExpression_LeftHandSideIsArraySubscript() throws {
+        let shared = [
+            VarDeclaration(
+                identifier: foo,
+                explicitType: ArrayType(
+                    count: LiteralInt(1),
+                    elementType: u16
+                ),
+                isMutable: true
+            )
+        ]
+        let input = Block(children: shared + [
+            Assignment(
+                lexpr: Subscript(
+                    subscriptable: foo,
+                    argument: LiteralInt(0)
+                ),
+                rexpr: LiteralInt(1000)
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let temp0 = Temp(i: 0, expr: LiteralInt(0))
+        let temp1 = Temp(i: 1, expr: AddressOf(foo))
+        let temp2 = Temp(i: 2, expr: AddressOf(Subscript(subscriptable: temp1, argument: temp0)))
+        let temp3 = Temp(i: 3, expr: LiteralInt(1000))
+        let temp4 = Temp(
+            i: 4,
+            expr: Assignment(
+                lexpr: Get(expr: temp2, member: pointee),
+                rexpr: temp3
+            )
+        )
+        let expected = Block(children: shared + [
+            temp4
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testAssignmentExpression_RightHandSideIsArraySubscript() throws {
+        let shared = [
+            VarDeclaration(identifier: foo, explicitType: u16, isMutable: true),
+            VarDeclaration(
+                identifier: bar,
+                explicitType: ArrayType(
+                    count: LiteralInt(1),
+                    elementType: u16
+                )
+            )
+        ]
+        let input = Block(children: shared + [
+            Assignment(
+                lexpr: foo,
+                rexpr: Subscript(
+                    subscriptable: bar,
+                    argument: LiteralInt(0)
+                )
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let temp0 = Temp(i: 0, expr: AddressOf(foo))
+        let temp1 = Temp(i: 1, expr: LiteralInt(0))
+        let temp2 = Temp(i: 2, expr: AddressOf(bar))
+        let temp3 = Temp(i: 3, expr: AddressOf(Subscript(subscriptable: temp2, argument: temp1)))
+        let temp4 = Temp(
+            i: 4,
+            expr: Assignment(
+                lexpr: Get(expr: temp0, member: pointee),
+                rexpr: Get(expr: temp3, member: pointee)
+            )
+        )
+        let expected = Block(children: shared + [
+            temp4
         ])
         .reconnect(parent: nil)
 

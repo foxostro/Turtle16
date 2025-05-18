@@ -269,30 +269,28 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
 
     public override func visit(subscript node0: Subscript) throws -> Expression? {
-        let subscriptable = try with(context: .temporary) {
-            try visit(expr: node0.subscriptable)!
-        }
         let argument = try with(context: .concrete) {
             try visit(expr: node0.argument)!
         }
+        let subscriptable = try with(context: .temporary) {
+            try visit(expr: node0.subscriptable)!
+        }
         let node1 = node0
-            .withSubscriptable(subscriptable)
             .withArgument(argument)
-        let node2 = Unary(
-            sourceAnchor: node1.sourceAnchor,
-            op: .ampersand,
-            expression: node1
-        )
-        let node3 = Get(
-            sourceAnchor: node2.sourceAnchor,
-            expr: node2,
-            member: Identifier(
-                sourceAnchor: node2.sourceAnchor,
-                identifier: "pointee"
-            )
-        )
-        let node4 = try extract(expr: node3)
-        return node4
+            .withSubscriptable(subscriptable)
+        let node2 =
+            if context == .temporary {
+                Unary(
+                    sourceAnchor: node1.sourceAnchor,
+                    op: .ampersand,
+                    expression: node1
+                )
+            }
+            else {
+                node1
+            }
+        let node3 = try extract(expr: node2)
+        return node3
     }
 
     public override func visit(get node0: Get) throws -> Expression? {

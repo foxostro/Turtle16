@@ -16,14 +16,14 @@ import TurtleCore
 public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     let tempPrefix = "__temp"
 
-#if false
-    public override func postProcess(
-        _ node: AbstractSyntaxTreeNode?
-    ) throws -> AbstractSyntaxTreeNode? {
-        try node?.eraseEseq()?.flatten()
-    }
-#endif
-    
+    #if false
+        public override func postProcess(
+            _ node: AbstractSyntaxTreeNode?
+        ) throws -> AbstractSyntaxTreeNode? {
+            try node?.eraseEseq()?.flatten()
+        }
+    #endif
+
     public override func visit(
         expressionStatement node: Expression
     ) throws -> AbstractSyntaxTreeNode? {
@@ -32,13 +32,13 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             switch expr0 {
             case let expr as Get:
                 try extract(expr: expr)
-                
+
             default:
                 expr0
             }
         return expr1
     }
-    
+
     public override func visit(literalInt node: LiteralInt) throws -> Expression? {
         try extract(expr: try super.visit(literalInt: node))
     }
@@ -59,7 +59,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
         switch context {
         case .concrete:
             guard !isCompilerTemporary(node) else { return node }
-            
+
             let tempRef0 = Identifier(
                 sourceAnchor: node.sourceAnchor,
                 identifier: nextTempName()
@@ -109,10 +109,10 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             .compile(tempDecl1)
             let temp1 = Eseq(seq: Seq(children: [tempDecl1]), expr: tempRef1)
             return temp1
-            
+
         case .temporary:
             guard !isCompilerTemporary(node) else { return node }
-            
+
             let tempRef0 = Identifier(
                 sourceAnchor: node.sourceAnchor,
                 identifier: nextTempName()
@@ -136,7 +136,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 expr: tempRef0
             )
             return temp0
-            
+
         default:
             return node
         }
@@ -158,7 +158,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             try extract(expr: try super.visit(unary: node0))
         }
     }
-    
+
     private func visit(addressOf node0: Unary) throws -> Expression? {
         assert(node0.op == .ampersand)
         switch node0.child {
@@ -169,7 +169,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             // compiler will translate this to a sequence of instructions to
             // derive the address of the symbol, if it has one.
             return node0
-            
+
         case let child0 as Get:
             // In the case where we're taking the address of a Get expression,
             // note that expressions of the form, `AddressOf(Get(_, Member))`,
@@ -187,14 +187,14 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                             expression: expr
                         )
                     )!
-                    
+
                 default:
                     try super.visit(expr: getExpr0)!
                 }
             let child1 = child0.withExpr(getExpr1)
             let node1 = node0.withExpression(child1)
             return node1
-            
+
         default:
             return try super.visit(unary: node0)
         }
@@ -235,34 +235,34 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                     )
                 )
                 .withRexpr({
-                    // The right-hand side may be some temporary value which is
-                    // never materialized in memory. (For example, this can
-                    // happen when assigning a literal integer to a variable.)
-                    // If this is the case then evaluating the expression in a
-                    // transient context will yield something other than a
-                    // pointer. So, if we see this, then just pass it along.
-                    let rvalue0 = node.rexpr
-                    let rvalue1 = try with(context: .temporary) {
-                        try visit(expr: rvalue0)!
-                    }
-                    let rvalue2 =
-                        if let eseq = rvalue1 as? Eseq,
-                           let varDecl = eseq.seq.children.first as? VarDeclaration,
+                        // The right-hand side may be some temporary value which is
+                        // never materialized in memory. (For example, this can
+                        // happen when assigning a literal integer to a variable.)
+                        // If this is the case then evaluating the expression in a
+                        // transient context will yield something other than a
+                        // pointer. So, if we see this, then just pass it along.
+                        let rvalue0 = node.rexpr
+                        let rvalue1 = try with(context: .temporary) {
+                            try visit(expr: rvalue0)!
+                        }
+                        let rvalue2 =
+                            if let eseq = rvalue1 as? Eseq,
+                                let varDecl = eseq.seq.children.first as? VarDeclaration,
                            !(try rvalueContext.check(identifier: varDecl.identifier).isPointerType) {
-                            
-                            rvalue1
-                        }
-                        else {
-                            Get(
-                                sourceAnchor: node.sourceAnchor,
-                                expr: rvalue1,
-                                member: Identifier(
+
+                                rvalue1
+                            }
+                            else {
+                                Get(
                                     sourceAnchor: node.sourceAnchor,
-                                    identifier: "pointee"
+                                    expr: rvalue1,
+                                    member: Identifier(
+                                        sourceAnchor: node.sourceAnchor,
+                                        identifier: "pointee"
+                                    )
                                 )
-                            )
-                        }
-                    return rvalue2
+                            }
+                        return rvalue2
                 }())
         )
     }
@@ -297,25 +297,25 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             switch node0.expr {
             case let expr as Identifier where isCompilerTemporary(expr):
                 try extract(expr: node0)
-                
+
             case let expr as Identifier where !isCompilerTemporary(expr):
                 try with(context: .temporary) {
                     try visit(getFromBareIdentifier: node0)
                 }
-                
+
             case _ as Get:
                 try with(context: .temporary) {
                     try visit(getFromGetExpression: node0)
                 }
-                
+
             default:
                 try with(context: .concrete) {
                     try super.visit(get: node0)
                 }
             }
-        
+
         let node2 = try extract(expr: node1)!
-        
+
         // We may want to evaluated a Get expression for either a concrete value
         // or for a transient value. The concrete value is an actual, real value
         // matching the value of the member per the environment. Evaluating this
@@ -337,21 +337,21 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                         identifier: "pointee"
                     )
                 )
-                
+
             case .temporary:
                 node2
-                
+
             case .none, .type:
                 fatalError("invalid context for Get expression: \(context)")
             }
-        
+
         return node3
     }
-    
+
     private func visit(getFromBareIdentifier node0: Get) throws -> Expression? {
         assert(node0.expr is Identifier)
         assert(!isCompilerTemporary(node0.expr))
-        
+
         let expr: Expression! = try with(context: .temporary) {
             try visit(expr: node0.expr)
         }
@@ -365,21 +365,21 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             op: .ampersand,
             expression: node1!
         )
-        
+
         return node2
     }
-    
+
     private func visit(getFromGetExpression node0: Get) throws -> Expression? {
         let getExpr0 = node0.expr as! Get
         let getExpr1 = try with(context: .temporary) {
             try visit(expr: getExpr0)!
         }
-        
+
         // We're getting _from_ a Get expression.
         // Decompose this inner Get expression, which may form a long chain for
         // all we know right now.
         let node1 = node0.withExpr(getExpr1)
-        
+
         // Take the address of this inner Get expression and stuff it in a new
         // temporary value.
         // Note that expressions of the form, `AddressOf(Get(_, Member))`, are
@@ -389,18 +389,18 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             op: .ampersand,
             expression: node1
         )
-        
+
         return node2
     }
 
     public override func visit(structInitializer node0: StructInitializer) throws -> Expression? {
         guard [.concrete, .temporary].contains(context) else { return node0 }
-        
+
         let temp = Identifier(
             sourceAnchor: node0.sourceAnchor,
             identifier: nextTempName()
         )
-        
+
         let tempDecl: AbstractSyntaxTreeNode! = try visit(
             VarDeclaration(
                 sourceAnchor: node0.sourceAnchor,
@@ -412,9 +412,9 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 visibility: .privateVisibility
             )
         )
-        
+
         var children: [AbstractSyntaxTreeNode] = [tempDecl]
-        
+
         if let firstArg = node0.arguments.first {
             let child: Expression! = try visit(
                 initialAssignment: InitialAssignment(
@@ -432,7 +432,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             )
             children.append(child)
         }
-        
+
         if node0.arguments.count > 1 {
             children += try node0.arguments[1...].map { arg in
                 let child: Expression! = try visit(
@@ -452,7 +452,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 return child
             }
         }
-        
+
         let eseq = Eseq(
             sourceAnchor: node0.sourceAnchor,
             seq: Seq(
@@ -476,7 +476,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             typ: try rvalueContext.check(expression: node.expr)
         )
     }
-    
+
     public override func visit(sizeof node: SizeOf) throws -> Expression? {
         let type = try rvalueContext.check(expression: node.expr)
         let size = memoryLayoutStrategy.sizeof(type: type)
@@ -489,11 +489,11 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     public override func visit(eseq node: Eseq) throws -> Expression? {
         try extract(expr: try super.visit(eseq: node))
     }
-    
+
     func extract(expr: Expression?) throws -> Expression? {
         guard [.concrete, .temporary].contains(context) else { return expr }
         guard let expr, !isCompilerTemporary(expr) else { return expr }
-        
+
         let temp = Identifier(
             sourceAnchor: expr.sourceAnchor,
             identifier: nextTempName()
@@ -517,21 +517,21 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             sourceAnchor: expr.sourceAnchor,
             seq: Seq(
                 sourceAnchor: expr.sourceAnchor,
-                children: [ tempDecl ]
+                children: [tempDecl]
             ),
             expr: temp
         )
         return eseq
     }
-    
+
     private func nextTempName() -> String {
         symbols!.tempName(prefix: tempPrefix)
     }
-    
+
     private func isCompilerTemporary(_ expr: Expression?) -> Bool {
         guard let expr = expr as? Identifier else { return false }
         let type = try? rvalueContext.check(identifier: expr)
-        return (true==type?.isPrimitive) && expr.identifier.hasPrefix(tempPrefix)
+        return (true == type?.isPrimitive) && expr.identifier.hasPrefix(tempPrefix)
     }
 }
 

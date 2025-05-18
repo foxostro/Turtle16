@@ -13,7 +13,7 @@ public class CompilerPass {
         case concrete, temporary, type, none
     }
     var context: ExpressionEvaluationContext = .concrete
-    
+
     public func with<T>(
         context newContext: ExpressionEvaluationContext,
         block: () throws -> T
@@ -23,7 +23,7 @@ public class CompilerPass {
         defer { context = oldContext }
         return try block()
     }
-    
+
     struct EnvStack {
         private var stack: [Env] = []
 
@@ -117,13 +117,13 @@ public class CompilerPass {
             genericNode
         }
     }
-    
+
     public func visit(children: [AbstractSyntaxTreeNode]) throws -> [AbstractSyntaxTreeNode] {
-            try children.compactMap {
-                try visit($0)
-            }
+        try children.compactMap {
+            try visit($0)
         }
-    
+    }
+
     public func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         node.withChildren(try visit(children: node.children))
     }
@@ -138,8 +138,8 @@ public class CompilerPass {
 
     public func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let identifier = try with(context: .none) {
-            try visit(identifier: node0.identifier)
-        } as? Identifier
+                try visit(identifier: node0.identifier)
+            } as? Identifier
         guard let identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
@@ -155,7 +155,7 @@ public class CompilerPass {
                 }
             },
             expression: try node0.expression.flatMap {
-                    try visit(expr: $0)
+                try visit(expr: $0)
             },
             storage: node0.storage,
             isMutable: node0.isMutable,
@@ -223,9 +223,9 @@ public class CompilerPass {
 
     public func visit(return node: Return) throws -> AbstractSyntaxTreeNode? {
         node.withExpression(
-                try node.expression.flatMap {
-                    try visit(expr: $0)
-                }
+            try node.expression.flatMap {
+                try visit(expr: $0)
+            }
         )
     }
 
@@ -250,10 +250,10 @@ public class CompilerPass {
                     let nodeStr = node.functionType.makeIndentedDescription(depth: 2)
                     let exprStr = expr?.makeIndentedDescription(depth: 2) ?? "nil"
                     let msg = """
-internal compiler error: type expression expected to resolve to a FunctionType
-    type expression: \(nodeStr)
-    what we got: \(exprStr))
-"""
+                        internal compiler error: type expression expected to resolve to a FunctionType
+                            type expression: \(nodeStr)
+                            what we got: \(exprStr))
+                        """
                     throw CompilerError(sourceAnchor: anchor, message: msg)
                 }
                 return expr
@@ -463,8 +463,8 @@ internal compiler error: type expression expected to resolve to a FunctionType
     }
 
     public func visit(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
-            try visit(expr: node)
-        }
+        try visit(expr: node)
+    }
 
     public func visit(expr: Expression) throws -> Expression? {
         switch expr {

@@ -32,7 +32,7 @@ public final class While: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withCondition(_ condition: Expression) -> While {
         While(
             sourceAnchor: sourceAnchor,

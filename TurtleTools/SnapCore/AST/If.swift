@@ -37,7 +37,7 @@ public final class If: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withCondition(_ condition: Expression) -> If {
         If(
             sourceAnchor: sourceAnchor,

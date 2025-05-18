@@ -317,7 +317,7 @@ public final class Eseq: Expression {
             id: id
         )
     }
-    
+
     public func withExpr(_ expr: Expression) -> Eseq {
         Eseq(
             seq: seq,
@@ -381,7 +381,7 @@ public final class Binary: Expression {
             id: id
         )
     }
-    
+
     public func withLeft(_ left: Expression) -> Binary {
         Binary(
             sourceAnchor: sourceAnchor,
@@ -391,7 +391,7 @@ public final class Binary: Expression {
             id: id
         )
     }
-    
+
     public func withRight(_ right: Expression) -> Binary {
         Binary(
             sourceAnchor: sourceAnchor,
@@ -648,7 +648,7 @@ public final class As: Expression {
             id: id
         )
     }
-    
+
     public func withExpr(_ expr: Expression) -> As {
         As(
             sourceAnchor: sourceAnchor,
@@ -703,7 +703,7 @@ public final class Bitcast: Expression {
             id: id
         )
     }
-    
+
     public func withExpr(_ expr: Expression) -> Bitcast {
         Bitcast(
             sourceAnchor: sourceAnchor,
@@ -758,7 +758,7 @@ public final class Is: Expression {
             id: id
         )
     }
-    
+
     public func withExpr(_ expr: Expression) -> Is {
         Is(
             sourceAnchor: sourceAnchor,
@@ -813,7 +813,7 @@ public final class Subscript: Expression {
             id: id
         )
     }
-    
+
     public func withSubscriptable(_ subscriptable: Expression) -> Subscript {
         Subscript(
             sourceAnchor: sourceAnchor,
@@ -822,7 +822,7 @@ public final class Subscript: Expression {
             id: id
         )
     }
-    
+
     public func withArgument(_ argument: Expression) -> Subscript {
         Subscript(
             sourceAnchor: sourceAnchor,
@@ -877,7 +877,7 @@ public final class LiteralArray: Expression {
             id: id
         )
     }
-    
+
     public func withElements(_ elements: [Expression]) -> LiteralArray {
         LiteralArray(
             sourceAnchor: sourceAnchor,
@@ -1126,7 +1126,7 @@ public final class ArrayType: Expression {
             id: id
         )
     }
-    
+
     public func withCount(_ count: Expression?) -> ArrayType {
         ArrayType(
             sourceAnchor: sourceAnchor,
@@ -1135,7 +1135,7 @@ public final class ArrayType: Expression {
             id: id
         )
     }
-    
+
     public func withElementType(_ elementType: Expression) -> ArrayType {
         ArrayType(
             sourceAnchor: sourceAnchor,
@@ -1212,7 +1212,7 @@ public final class FunctionType: Expression {
             id: id
         )
     }
-    
+
     public func withReturnType(_ returnType: Expression) -> FunctionType {
         FunctionType(
             sourceAnchor: sourceAnchor,
@@ -1222,7 +1222,7 @@ public final class FunctionType: Expression {
             id: id
         )
     }
-    
+
     public func withArguments(_ arguments: [Expression]) -> FunctionType {
         FunctionType(
             sourceAnchor: sourceAnchor,
@@ -1391,7 +1391,7 @@ public final class GenericTypeApplication: Expression {
             id: id
         )
     }
-    
+
     public func withArguments(_ arguments: [Expression]) -> GenericTypeApplication {
         GenericTypeApplication(
             sourceAnchor: sourceAnchor,
@@ -1755,7 +1755,7 @@ public final class StructInitializer: Expression {
         public var description: String {
             ".\(name) = \(expr)"
         }
-        
+
         public func withExpr(_ expr: Expression) -> Argument {
             Argument(name: name, expr: expr)
         }
@@ -1797,7 +1797,7 @@ public final class StructInitializer: Expression {
             id: id
         )
     }
-    
+
     public func withArguments(_ arguments: [Argument]) -> StructInitializer {
         StructInitializer(
             sourceAnchor: sourceAnchor,

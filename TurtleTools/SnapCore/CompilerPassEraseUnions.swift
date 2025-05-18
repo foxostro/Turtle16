@@ -16,7 +16,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     private let tagType: SymbolType = .u16
     private let tagOffset = 0
     private let payloadOffset: Int
-    
+
     public override init(
         symbols: Env? = nil,
         staticStorageFrame: Frame = Frame(),
@@ -29,14 +29,14 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             memoryLayoutStrategy: memoryLayoutStrategy
         )
     }
-    
+
     public override func visit(as node0: As) throws -> Expression? {
         let node1 = try super.visit(as: node0)
         guard let node1 = node1 as? As else { return node1 }
         let objectType = try rvalueContext.check(expression: node1.expr)
         guard case .unionType(let info) = objectType else { return node1 }
         try rvalueContext.check(expression: node1) // Make sure the `As` expression is type-sound.
-        
+
         let s = node1.sourceAnchor
         let isExpr = try visit(
             is: Is(
@@ -46,7 +46,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             )
         )
         guard let isExpr else { fatalError("internal compiler error") }
-        
+
         let evaluatedTargetType = try rvalueContext.check(expression: node1.targetType)
         let firstExactMatch = info.members.first { evaluatedTargetType == $0 }
         let firstInexactMatch = info.members.first {
@@ -85,7 +85,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                     targetType: node1.targetType
                 )
             }
-        
+
         let eseq = Eseq(
             sourceAnchor: s,
             seq: Seq(
@@ -117,7 +117,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return eseq
     }
-    
+
     public override func visit(is node0: Is) throws -> Expression? {
         let node1 = try super.visit(is: node0)
         guard let node1 = node1 as? Is else { return node1 }
@@ -153,7 +153,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return node2
     }
-    
+
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         // Allow symbols with union types to be added to the environment.
         // This helps to identify them later in this compiler pass.
@@ -163,7 +163,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         .compile(node0)
-        
+
         let identifier = try with(context: .none) {
             try visit(identifier: node0.identifier)
         }
@@ -202,7 +202,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return eseq
     }
-    
+
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         let node1 = try super.visit(assignment: node0)
         guard let node1 = node1 as? Assignment else { return node1 }
@@ -259,9 +259,11 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                                 )
                             )
                         ),
-                        targetType: PointerType(PrimitiveType(
-                            unionTypeInfo.members[tagValue]
-                        ))
+                        targetType: PointerType(
+                            PrimitiveType(
+                                unionTypeInfo.members[tagValue]
+                            )
+                        )
                     ),
                     member: Identifier(
                         sourceAnchor: node1.sourceAnchor,
@@ -272,14 +274,18 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return eseq
     }
-    
+
     public override func visit(unionType: UnionType) throws -> Expression? {
-        PrimitiveType(.structType(StructTypeInfo(
-            name: "",
-            fields: try fields(for: unionType)
-        )))
+        PrimitiveType(
+            .structType(
+                StructTypeInfo(
+                    name: "",
+                    fields: try fields(for: unionType)
+                )
+            )
+        )
     }
-    
+
     public func fields(for unionType: UnionType) throws -> Env {
         let payloadSize = try unionType.members
             .map {

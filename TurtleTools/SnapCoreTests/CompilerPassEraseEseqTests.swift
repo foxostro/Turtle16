@@ -17,7 +17,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInTopLevel() throws {
         let expected = TopLevel(children: [
             VarDeclaration(
@@ -46,7 +46,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()?.flatten()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInSubroutine() throws {
         let expected = Subroutine(
             identifier: "foo",
@@ -81,7 +81,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()?.flatten()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInSeq() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -110,7 +110,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()?.flatten()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInVarDeclarationExplicitType() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -149,7 +149,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInVarDeclarationExpression() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -188,7 +188,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInIfStatement() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -223,7 +223,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInWhileStatement() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -256,7 +256,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInForInStatement() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -291,7 +291,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInReturn() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -320,7 +320,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInMatch() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -355,7 +355,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInAssert() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -388,7 +388,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInGotoIfFalse() throws {
         let expected = Seq(children: [
             VarDeclaration(
@@ -421,7 +421,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInLiteralArray() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -460,7 +460,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInTypeCastExpression() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -495,7 +495,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInBitCastExpression() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -530,7 +530,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInUnaryExpression() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -565,7 +565,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInBinaryExpression() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -620,7 +620,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInIsExpression() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -655,7 +655,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInInitialAssignment() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -708,7 +708,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInAssignment() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -761,7 +761,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInSubscript() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -820,7 +820,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInGet() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -873,7 +873,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInStructInitializer() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -918,7 +918,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInCall() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -975,7 +975,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInSizeOf() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1006,7 +1006,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInTypeOf() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1037,7 +1037,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInPointerType() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1068,7 +1068,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInConstType() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1099,7 +1099,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInMutableType() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1130,7 +1130,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInUnionType() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1161,7 +1161,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInDynamicArrayType() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1192,7 +1192,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInArrayType() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1245,7 +1245,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInFunctionType() throws {
         let expected = Eseq(
             seq: Seq(children: [
@@ -1302,7 +1302,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInGenericTypeApplication() throws {
         let expected = Eseq(
             seq: Seq(children: [

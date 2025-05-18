@@ -55,7 +55,7 @@ public final class Match: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withExpr(_ expr: Expression) -> Match {
         Match(
             sourceAnchor: sourceAnchor,

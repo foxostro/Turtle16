@@ -17,13 +17,13 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
     private let tag = Identifier("tag")
     private let payload = Identifier("payload")
     private let pointee = Identifier("pointee")
-    
+
     func testEraseUnionTypeExpression_ZeroMembers() throws {
         let input = Block(children: [
             UnionType([])
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -31,7 +31,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 (payload.identifier, Symbol(type: .array(count: 0, elementType: .u8), offset: 1))
             ]
         )
-        
+
         let expected = Block(children: [
             PrimitiveType(.structType(StructTypeInfo(name: "", fields: fields)))
         ])
@@ -40,13 +40,13 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseUnionTypeExpression_TwoMembers() throws {
         let input = Block(children: [
             UnionType([PrimitiveType(.u16), PrimitiveType(.bool)])
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -55,18 +55,20 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
-            PrimitiveType(.structType(
-                StructTypeInfo(name: "", fields: fields)
-            ))
+            PrimitiveType(
+                .structType(
+                    StructTypeInfo(name: "", fields: fields)
+                )
+            )
         ])
         .reconnect(parent: nil)
 
         let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRewriteDeclarationOfVariableWithUnionType() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -78,7 +80,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             )
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -87,13 +89,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
             VarDeclaration(
                 identifier: foo,
-                explicitType: PrimitiveType(.structType(
-                    StructTypeInfo(name: "", fields: fields)
-                )),
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
                 expression: nil,
                 storage: .automaticStorage(offset: nil),
                 isMutable: false
@@ -104,7 +108,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRewriteDeclarationOfVariableWithUnionType_WithInitialValue() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -116,7 +120,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             )
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -125,19 +129,22 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
             VarDeclaration(
                 identifier: foo,
-                explicitType: PrimitiveType(.structType(
-                    StructTypeInfo(name: "", fields: fields)
-                )),
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
                 expression: nil,
                 storage: .automaticStorage(offset: nil),
                 isMutable: false
             ),
             InitialAssignment(
-                lexpr: foo, rexpr: LiteralBool(false)
+                lexpr: foo,
+                rexpr: LiteralBool(false)
             )
         ])
         .reconnect(parent: nil)
@@ -148,7 +155,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             .flatten()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRewriteAssignmentToVariableWithUnionType_tag0() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -164,7 +171,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             )
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -173,13 +180,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
             VarDeclaration(
                 identifier: foo,
-                explicitType: PrimitiveType(.structType(
-                    StructTypeInfo(name: "", fields: fields)
-                )),
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
                 expression: nil,
                 storage: .automaticStorage(offset: nil),
                 isMutable: true
@@ -214,7 +223,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRewriteAssignmentToVariableWithUnionType_tag1() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -230,7 +239,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             )
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -239,13 +248,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
             VarDeclaration(
                 identifier: foo,
-                explicitType: PrimitiveType(.structType(
-                    StructTypeInfo(name: "", fields: fields)
-                )),
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
                 expression: nil,
                 storage: .automaticStorage(offset: nil),
                 isMutable: true
@@ -280,7 +291,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
+
     public func testUnionIs() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -296,7 +307,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             )
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -305,13 +316,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
             VarDeclaration(
                 identifier: foo,
-                explicitType: PrimitiveType(.structType(
-                    StructTypeInfo(name: "", fields: fields)
-                )),
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
                 expression: nil,
                 storage: .automaticStorage(offset: nil),
                 isMutable: true
@@ -327,7 +340,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
+
     public func testUnionAs() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -343,7 +356,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             )
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -352,13 +365,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
             VarDeclaration(
                 identifier: foo,
-                explicitType: PrimitiveType(.structType(
-                    StructTypeInfo(name: "", fields: fields)
-                )),
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
                 expression: nil,
                 storage: .automaticStorage(offset: nil),
                 isMutable: true
@@ -407,7 +422,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
+
     public func testUnionAs_WithImplicitlyConvertibleType() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -423,7 +438,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             )
         ])
         .reconnect(parent: nil)
-        
+
         let fields = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -432,13 +447,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ]
         )
         fields.frameLookupMode = .set(Frame())
-        
+
         let expected = Block(children: [
             VarDeclaration(
                 identifier: foo,
-                explicitType: PrimitiveType(.structType(
-                    StructTypeInfo(name: "", fields: fields)
-                )),
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
                 expression: nil,
                 storage: .automaticStorage(offset: nil),
                 isMutable: true

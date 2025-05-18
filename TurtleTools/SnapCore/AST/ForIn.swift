@@ -36,7 +36,7 @@ public final class ForIn: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withSequenceExpr(_ sequenceExpr: Expression) -> ForIn {
         ForIn(
             sourceAnchor: sourceAnchor,

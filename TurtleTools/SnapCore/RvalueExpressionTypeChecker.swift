@@ -1021,7 +1021,7 @@ public class RvalueExpressionTypeChecker {
             .constPointer(.array(count: _, let elementType)),
             .constPointer(.constDynamicArray(let elementType)),
             .constPointer(.dynamicArray(let elementType)):
-            
+
             let argumentType = try rvalueContext().check(expression: expr.argument)
             let typeError = CompilerError(
                 sourceAnchor: expr.sourceAnchor,

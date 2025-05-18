@@ -19,8 +19,10 @@ public final class CompilerPassEraseEseq: CompilerPass {
             return node1
         }
     }
-    
-    public override func visit(children: [AbstractSyntaxTreeNode]) throws -> [AbstractSyntaxTreeNode] {
+
+    public override func visit(
+        children: [AbstractSyntaxTreeNode]
+    ) throws -> [AbstractSyntaxTreeNode] {
         try children.compactMap { child0 in
             let child1 = try visit(child0)
             if let child1 = child1 as? Eseq {
@@ -32,7 +34,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
             }
         }
     }
-    
+
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(varDecl: node0)
         guard let node1 = node1 as? VarDeclaration else { return node1 }
@@ -53,84 +55,84 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(if node0: If) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(if: node0)
         guard let node1 = node1 as? If else { return node1 }
         guard let eseq = node1.condition as? Eseq else { return node1 }
         let node2 = Seq(
             sourceAnchor: node0.sourceAnchor,
-            children: eseq.seq.children + [ node1.withCondition(eseq.expr) ]
+            children: eseq.seq.children + [node1.withCondition(eseq.expr)]
         )
         return node2
     }
-    
+
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(while: node0)
         guard let node1 = node1 as? While else { return node1 }
         guard let eseq = node1.condition as? Eseq else { return node1 }
         let node2 = Seq(
             sourceAnchor: node1.sourceAnchor,
-            children: eseq.seq.children + [ node1.withCondition(eseq.expr) ]
+            children: eseq.seq.children + [node1.withCondition(eseq.expr)]
         )
         return node2
     }
-    
+
     public override func visit(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(forIn: node0)
         guard let node1 = node1 as? ForIn else { return node1 }
         guard let eseq = node1.sequenceExpr as? Eseq else { return node1 }
         let node2 = Seq(
             sourceAnchor: node1.sourceAnchor,
-            children: eseq.seq.children + [ node1.withSequenceExpr(eseq.expr) ]
+            children: eseq.seq.children + [node1.withSequenceExpr(eseq.expr)]
         )
         return node2
     }
-    
+
     public override func visit(return node0: Return) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(return: node0)
         guard let node1 = node1 as? Return else { return node1 }
         guard let eseq = node1.expression as? Eseq else { return node1 }
         let node2 = Seq(
             sourceAnchor: node1.sourceAnchor,
-            children: eseq.seq.children + [ node1.withExpression(eseq.expr) ]
+            children: eseq.seq.children + [node1.withExpression(eseq.expr)]
         )
         return node2
     }
-    
+
     public override func visit(match node0: Match) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(match: node0)
         guard let node1 = node1 as? Match else { return node1 }
         guard let eseq = node1.expr as? Eseq else { return node1 }
         let node2 = Seq(
             sourceAnchor: node1.sourceAnchor,
-            children: eseq.seq.children + [ node1.withExpr(eseq.expr) ]
+            children: eseq.seq.children + [node1.withExpr(eseq.expr)]
         )
         return node2
     }
-    
+
     public override func visit(assert node0: Assert) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(assert: node0)
         guard let node1 = node1 as? Assert else { return node1 }
         guard let eseq = node1.condition as? Eseq else { return node1 }
         let node2 = Seq(
             sourceAnchor: node1.sourceAnchor,
-            children: eseq.seq.children + [ node1.withCondition(eseq.expr) ]
+            children: eseq.seq.children + [node1.withCondition(eseq.expr)]
         )
         return node2
     }
-    
+
     public override func visit(gotoIfFalse node0: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(gotoIfFalse: node0)
         guard let node1 = node1 as? GotoIfFalse else { return node1 }
         guard let eseq = node1.condition as? Eseq else { return node1 }
         let node2 = Seq(
             sourceAnchor: node1.sourceAnchor,
-            children: eseq.seq.children + [ node1.withCondition(eseq.expr) ]
+            children: eseq.seq.children + [node1.withCondition(eseq.expr)]
         )
         return node2
     }
-    
+
     public override func visit(literalArray node0: LiteralArray) throws -> Expression? {
         let node1 = try super.visit(literalArray: node0)
         guard let node1 = node1 as? LiteralArray else { return node1 }
@@ -149,7 +151,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(as node0: As) throws -> Expression? {
         let node1 = try super.visit(as: node0)
         guard let node1 = node1 as? As else { return node1 }
@@ -161,7 +163,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(bitcast node0: Bitcast) throws -> Expression? {
         let node1 = try super.visit(bitcast: node0)
         guard let node1 = node1 as? Bitcast else { return node1 }
@@ -173,7 +175,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(unary node0: Unary) throws -> Expression? {
         let node1 = try super.visit(unary: node0)
         guard let node1 = node1 as? Unary else { return node1 }
@@ -185,7 +187,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(binary node0: Binary) throws -> Expression? {
         let node1 = try super.visit(binary: node0)
         guard let node1 = node1 as? Binary else { return node1 }
@@ -207,7 +209,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(is node0: Is) throws -> Expression? {
         let node1 = try super.visit(is: node0)
         guard let node1 = node1 as? Is else { return node1 }
@@ -219,7 +221,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(initialAssignment node0: InitialAssignment) throws -> Expression? {
         let node1 = try super.visit(initialAssignment: node0)
         guard let node1 = node1 as? InitialAssignment else { return node1 }
@@ -241,7 +243,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         let node1 = try super.visit(assignment: node0)
         guard let node1 = node1 as? Assignment else { return node1 }
@@ -263,7 +265,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(subscript node0: Subscript) throws -> Expression? {
         let node1 = try super.visit(subscript: node0)
         guard let node1 = node1 as? Subscript else { return node1 }
@@ -285,7 +287,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(get node0: Get) throws -> Expression? {
         let node1 = try super.visit(get: node0)
         guard let node1 = node1 as? Get else { return node1 }
@@ -307,7 +309,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(structInitializer node0: StructInitializer) throws -> Expression? {
         let node1 = try super.visit(structInitializer: node0)
         guard let node1 = node1 as? StructInitializer else { return node1 }
@@ -326,7 +328,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(call node0: Call) throws -> Expression? {
         let node1 = try super.visit(call: node0)
         guard let node1 = node1 as? Call else { return node1 }
@@ -350,7 +352,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(sizeof node0: SizeOf) throws -> Expression? {
         let node1 = try super.visit(sizeof: node0)
         guard let node1 = node1 as? SizeOf else { return node1 }
@@ -362,7 +364,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(typeof node0: TypeOf) throws -> Expression? {
         let node1 = try super.visit(typeof: node0)
         guard let node1 = node1 as? TypeOf else { return node1 }
@@ -374,7 +376,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(pointerType node0: PointerType) throws -> Expression? {
         let node1 = try super.visit(pointerType: node0)
         guard let node1 = node1 as? PointerType else { return node1 }
@@ -386,7 +388,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(constType node0: ConstType) throws -> Expression? {
         let node1 = try super.visit(constType: node0)
         guard let node1 = node1 as? ConstType else { return node1 }
@@ -398,7 +400,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(mutableType node0: MutableType) throws -> Expression? {
         let node1 = try super.visit(mutableType: node0)
         guard let node1 = node1 as? MutableType else { return node1 }
@@ -410,7 +412,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(unionType node0: UnionType) throws -> Expression? {
         let node1 = try super.visit(unionType: node0)
         guard let node1 = node1 as? UnionType else { return node1 }
@@ -429,7 +431,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(
         dynamicArrayType node0: DynamicArrayType
     ) throws -> Expression? {
@@ -443,7 +445,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node2
     }
-    
+
     public override func visit(arrayType node0: ArrayType) throws -> Expression? {
         let node1 = try super.visit(arrayType: node0)
         guard let node1 = node1 as? ArrayType else { return node1 }
@@ -465,7 +467,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(functionType node0: FunctionType) throws -> Expression? {
         let node1 = try super.visit(functionType: node0)
         guard var node2 = node1 as? FunctionType else { return node1 }
@@ -488,7 +490,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
         )
         return node3
     }
-    
+
     public override func visit(
         genericTypeApplication node0: GenericTypeApplication
     ) throws -> Expression? {

@@ -40,7 +40,7 @@ public final class Seq: AbstractSyntaxTreeNode {
     public func appending(children moreChildren: [AbstractSyntaxTreeNode]) -> Seq {
         withChildren(children + moreChildren)
     }
-    
+
     public func appending(child: AbstractSyntaxTreeNode) -> Seq {
         withChildren(children + [child])
     }

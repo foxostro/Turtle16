@@ -4485,7 +4485,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(
             expr: Eseq(
                 seq: Seq(),
-                expr: LiteralBool(false))
+                expr: LiteralBool(false)
+            )
         )
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
@@ -4715,7 +4716,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             .registerStorage(.w(.w(0)))
         )
     }
-    
+
     func testRvalue_SubscriptRvalue_SubscriptThroughPointerToArray() throws {
         let symbols = Env(tuples: [
             (

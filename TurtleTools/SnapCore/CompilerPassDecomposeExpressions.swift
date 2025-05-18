@@ -15,7 +15,6 @@ import TurtleCore
 /// a subsequent compiler pass.
 public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     let tempPrefix = "__temp"
-    let tempBackingStoragePrefix = "__tempStorage"
 
 #if false
     public override func postProcess(

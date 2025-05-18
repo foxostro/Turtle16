@@ -1110,6 +1110,40 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testArraySubscriptExpression() throws {
+        let shared = [
+            VarDeclaration(
+                identifier: foo,
+                explicitType: ArrayType(
+                    count: LiteralInt(1),
+                    elementType: u16
+                ),
+                isMutable: true
+            ),
+        ]
+        let input = Block(children: shared + [
+            Subscript(
+                subscriptable: foo,
+                argument: LiteralInt(0)
+            )
+        ])
+        .reconnect(parent: nil)
+        
+        let temp0 = Temp(i: 0, expr: Unary(op: .ampersand, expression: foo))
+        let temp1 = Temp(i: 1, expr: LiteralInt(0))
+        let temp2 = Temp(i: 2, expr: Get(
+            expr: AddressOf(Subscript(subscriptable: temp0, argument: temp1)),
+            member: pointee
+        ))
+        let expected = Block(children: shared + [
+            temp2
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
 }
 
 private extension VarDeclaration {

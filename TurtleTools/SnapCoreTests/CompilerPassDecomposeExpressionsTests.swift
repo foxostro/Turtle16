@@ -890,6 +890,61 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testAssignmentExpression_RightHandSideIsArrayLiteralValue() throws {
+        let shared = [
+            VarDeclaration(
+                identifier: foo,
+                explicitType: ArrayType(
+                    count: LiteralInt(1),
+                    elementType: u16
+                ),
+                isMutable: true
+            ),
+        ]
+        let input = Block(children: shared + [
+            Assignment(
+                lexpr: foo,
+                rexpr: LiteralArray(
+                    arrayType: ArrayType(
+                        count: LiteralInt(1),
+                        elementType: u16
+                    ),
+                    elements: [
+                        LiteralInt(1)
+                    ]
+                )
+            )
+        ])
+        .reconnect(parent: nil)
+        
+        let temp0 = Temp(i: 0, expr: Unary(op: .ampersand, expression: foo))
+        let temp1 = Temp(i: 1, expr: LiteralInt(1))
+        let temp2 = Temp(
+            i: 2,
+            expr: LiteralArray(
+                arrayType: ArrayType(
+                    count: LiteralInt(1),
+                    elementType: PrimitiveType(.u16)
+                ),
+                elements: [temp1]
+            )
+        )
+        let temp3 = Temp(
+            i: 3,
+            expr: Assignment(
+                lexpr: Get(expr: temp0, member: pointee),
+                rexpr: temp2
+            )
+        )
+        let expected = Block(children: shared + [
+            temp3
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+    
     func testStructInitializerExpression_ZeroMembers() throws {
         let shared = [
             StructDeclaration(

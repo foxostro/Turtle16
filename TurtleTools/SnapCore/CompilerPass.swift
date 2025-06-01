@@ -714,9 +714,29 @@ public class CompilerPass {
     }
 
     public func visit(eseq node: Eseq) throws -> Expression? {
-        node
-            .withSeq(try visit(seq: node.seq) as! Seq)
-            .withExpr(try visit(expr: node.expr)!)
+        let seq0 = node.seq
+        let seq1 = try visit(seq: seq0)
+        let seq2: Seq =
+            switch seq1 {
+            case let a as Seq:
+                a
+            
+            case .some(let a):
+                Seq(sourceAnchor: seq0.sourceAnchor, children: [a], id: node.seq.id)
+                
+            case nil:
+                Seq(sourceAnchor: seq0.sourceAnchor, children: [], id: node.seq.id)
+            }
+        guard let expr = try visit(expr: node.expr) else {
+            throw CompilerError(
+                sourceAnchor: node.sourceAnchor,
+                message: "internal compiler error: unexpected nil after visiting expression: \(node.expr)"
+            )
+        }
+        let result = node
+            .withSeq(seq2)
+            .withExpr(expr)
+        return result
     }
 
     public func visit(primitiveType node: PrimitiveType) throws -> Expression? {

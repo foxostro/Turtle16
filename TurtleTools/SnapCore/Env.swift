@@ -279,9 +279,9 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         case .genericFunction(let genericFunctionType):
             "\(genericFunctionType)"
         case .constStructType(let typ):
-            "const \(typ.name)"
+            "const \(typ.shortDescription)"
         case .structType(let typ):
-            "\(typ.name)"
+            "\(typ.shortDescription)"
         case .genericStructType(let typ):
             "\(typ)"
         case .constTraitType(let typ):
@@ -813,6 +813,19 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
             associatedTraitType: associatedTraitType,
             associatedModuleName: associatedModuleName
         )
+    }
+    
+    private var isShortDescriptionRunning = 0 // avoid infinite recursion
+    
+    public var shortDescription: String {
+        isShortDescriptionRunning += 1
+        defer { isShortDescriptionRunning -= 1 }
+        guard name.isEmpty else { return name }
+        guard isShortDescriptionRunning <= 1 else { return "struct { … }" }
+        let membersDesc = symbols.symbolTable
+            .map { "\($0):\($1.type)" }
+            .joined(separator: ", ")
+        return "struct { \(membersDesc) }"
     }
 
     public var description: String {

@@ -14,6 +14,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
     private typealias Member = StructDeclaration.Member
     private let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     private let foo = Identifier("foo")
+    private let bar = Identifier("bar")
     private let tag = Identifier("tag")
     private let payload = Identifier("payload")
     private let pointee = Identifier("pointee")
@@ -142,9 +143,34 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 storage: .automaticStorage(offset: nil),
                 isMutable: false
             ),
-            InitialAssignment(
-                lexpr: foo,
-                rexpr: LiteralBool(false)
+            Eseq(
+                seq: Seq(
+                    children: [
+                        InitialAssignment(
+                            lexpr: Get(
+                                expr: foo,
+                                member: tag
+                            ),
+                            rexpr: LiteralInt(1)
+                        )
+                    ]
+                ),
+                expr: InitialAssignment(
+                    lexpr: Get(
+                        expr: Bitcast(
+                            expr: Unary(
+                                op: .ampersand,
+                                expression: Get(
+                                    expr: foo,
+                                    member: payload
+                                )
+                            ),
+                            targetType: PointerType(PrimitiveType(.constBool))
+                        ),
+                        member: pointee
+                    ),
+                    rexpr: LiteralBool(false)
+                )
             )
         ])
         .reconnect(parent: nil)
@@ -153,6 +179,72 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             .eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)?
             .eraseEseq()?
             .flatten()
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testAssignUnionValueToUnionValueOfSameType() throws {
+        let input = Block(children: [
+            VarDeclaration(
+                identifier: foo,
+                explicitType: UnionType([PrimitiveType(.u16), PrimitiveType(.bool)]),
+                expression: nil,
+                storage: .automaticStorage(offset: nil),
+                isMutable: true
+            ),
+            VarDeclaration(
+                identifier: bar,
+                explicitType: UnionType([PrimitiveType(.u16), PrimitiveType(.bool)]),
+                expression: nil,
+                storage: .automaticStorage(offset: nil),
+                isMutable: true
+            ),
+            Assignment(
+                lexpr: foo,
+                rexpr: bar
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let fields = Env(
+            frameLookupMode: .set(Frame()),
+            tuples: [
+                (tag.identifier, Symbol(type: .u16, offset: 0)),
+                (payload.identifier, Symbol(type: .array(count: 1, elementType: .u8), offset: 1))
+            ]
+        )
+        fields.frameLookupMode = .set(Frame())
+
+        let expected = Block(children: [
+            VarDeclaration(
+                identifier: foo,
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
+                expression: nil,
+                storage: .automaticStorage(offset: nil),
+                isMutable: true
+            ),
+            VarDeclaration(
+                identifier: bar,
+                explicitType: PrimitiveType(
+                    .structType(
+                        StructTypeInfo(name: "", fields: fields)
+                    )
+                ),
+                expression: nil,
+                storage: .automaticStorage(offset: nil),
+                isMutable: true
+            ),
+            Assignment(
+                lexpr: foo,
+                rexpr: bar
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -202,7 +294,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 ]),
                 expr: Assignment(
                     lexpr: Get(
-                        expr: As(
+                        expr: Bitcast(
                             expr: Unary(
                                 op: .ampersand,
                                 expression: Get(
@@ -270,7 +362,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 ]),
                 expr: Assignment(
                     lexpr: Get(
-                        expr: As(
+                        expr: Bitcast(
                             expr: Unary(
                                 op: .ampersand,
                                 expression: Get(

@@ -163,6 +163,10 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         .compile(node0)
+        let actualType: SymbolType = try rvalueContext.check(identifier: node0.identifier)
+        guard case .unionType(_) = actualType else {
+            return node0
+        }
 
         let identifier = try with(context: .none) {
             try visit(identifier: node0.identifier)
@@ -171,6 +175,12 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "expected identifier: `\(node0.identifier)'"
+            )
+        }
+        guard node0.explicitType != nil else {
+            throw CompilerError(
+                sourceAnchor: node0.sourceAnchor,
+                message: "expected an explicit type"
             )
         }
         let decl = VarDeclaration(
@@ -188,24 +198,44 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             id: node0.id
         )
         guard let expr = node0.expression, let rexpr = try visit(expr: expr) else { return decl }
+        let myAssignment = try visit(
+            initialAssignment: InitialAssignment(
+                sourceAnchor: expr.sourceAnchor,
+                lexpr: identifier,
+                rexpr: rexpr
+            )
+        )
+        guard let myAssignment else {
+            throw CompilerError(
+                sourceAnchor: expr.sourceAnchor,
+                message: "expected an Assignment"
+            )
+        }
         let eseq = Eseq(
             sourceAnchor: node0.sourceAnchor,
             seq: Seq(
                 sourceAnchor: node0.sourceAnchor,
                 children: [decl]
             ),
-            expr: InitialAssignment(
-                sourceAnchor: expr.sourceAnchor,
-                lexpr: identifier,
-                rexpr: rexpr
-            )
+            expr: myAssignment
         )
         return eseq
     }
 
-    public override func visit(assignment node0: Assignment) throws -> Expression? {
-        let node1 = try super.visit(assignment: node0)
-        guard let node1 = node1 as? Assignment else { return node1 }
+    public func visit<T: Assignment>(someAssignment node0: T) throws -> Expression? {
+        let node1 =
+            switch node0 {
+            case let a as Assignment:
+                try super.visit(assignment: a)
+            case let a as InitialAssignment:
+                try super.visit(initialAssignment: a)
+            default:
+                throw CompilerError(
+                    sourceAnchor: node0.sourceAnchor,
+                    message: "expected an assignment"
+                )
+            }
+        guard let node1 = node1 as? T else { return node1 }
         let ltype = try lvalueContext.check(expression: node1.lexpr)
         guard let ltype else {
             throw CompilerError(
@@ -215,6 +245,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         }
         guard case .unionType(let unionTypeInfo) = ltype else { return node1 }
         let rtype = try rvalueContext.check(expression: node1.rexpr)
+        guard rtype.correspondingConstType != ltype.correspondingConstType else { return node0 }
         let tagValue = unionTypeInfo.members.firstIndex { member in
             rvalueContext.areTypesAreConvertible(
                 ltype: member,
@@ -233,22 +264,29 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             seq: Seq(
                 sourceAnchor: node1.sourceAnchor,
                 children: [
-                    Assignment(
-                        sourceAnchor: node1.sourceAnchor,
-                        lexpr: Get(
-                            expr: node1.lexpr,
-                            member: Identifier(
+                    node1
+                        .withLexpr(
+                            Get(
                                 sourceAnchor: node1.sourceAnchor,
-                                identifier: tag
+                                expr: node1.lexpr,
+                                member: Identifier(
+                                    sourceAnchor: node1.sourceAnchor,
+                                    identifier: tag
+                                )
                             )
-                        ),
-                        rexpr: LiteralInt(tagValue)
-                    )
+                        )
+                        .withRexpr(
+                            LiteralInt(
+                                sourceAnchor: node1.sourceAnchor,
+                                value: tagValue
+                            )
+                        )
+                        .withNewId()
                 ]
             ),
             expr: node1.withLexpr(
                 Get(
-                    expr: As(
+                    expr: Bitcast(
                         expr: Unary(
                             op: .ampersand,
                             expression: Get(
@@ -273,6 +311,14 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             )
         )
         return eseq
+    }
+    
+    public override func visit(initialAssignment node0: InitialAssignment) throws -> Expression? {
+        try visit(someAssignment: node0)
+    }
+    
+    public override func visit(assignment node0: Assignment) throws -> Expression? {
+        try visit(someAssignment: node0)
     }
 
     public override func visit(unionType: UnionType) throws -> Expression? {

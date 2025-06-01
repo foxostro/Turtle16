@@ -474,6 +474,15 @@ public class Assignment: Expression {
             id: id
         )
     }
+    
+    public func withNewId() -> Assignment {
+        Assignment(
+            sourceAnchor: sourceAnchor,
+            lexpr: lexpr,
+            rexpr: rexpr,
+            id: ID()
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
@@ -528,6 +537,15 @@ public final class InitialAssignment: Assignment {
             lexpr: lexpr,
             rexpr: rexpr,
             id: id
+        )
+    }
+    
+    public override func withNewId() -> InitialAssignment {
+        InitialAssignment(
+            sourceAnchor: sourceAnchor,
+            lexpr: lexpr,
+            rexpr: rexpr,
+            id: ID()
         )
     }
 }

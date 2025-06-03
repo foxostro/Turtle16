@@ -23,19 +23,22 @@ public final class SnapToCoreCompiler {
     private let runtimeSupport: String?
     private let sandboxAccessManager: SandboxAccessManager?
     private let injectModules: [(String, String)]
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
 
     public init(
         shouldRunSpecificTest: String? = nil,
         injectModules: [(String, String)] = [],
         isUsingStandardLibrary: Bool = false,
         runtimeSupport: String? = nil,
-        sandboxAccessManager: SandboxAccessManager? = nil
+        sandboxAccessManager: SandboxAccessManager? = nil,
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
         self.runtimeSupport = runtimeSupport
         self.sandboxAccessManager = sandboxAccessManager
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
 
     public func run(_ root: AbstractSyntaxTreeNode) throws -> (Block, testNames: [String]) {
@@ -125,14 +128,16 @@ extension AbstractSyntaxTreeNode {
         injectModules: [(String, String)] = [],
         isUsingStandardLibrary: Bool = false,
         runtimeSupport: String? = nil,
-        sandboxAccessManager: SandboxAccessManager? = nil
+        sandboxAccessManager: SandboxAccessManager? = nil,
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> (Block, testNames: [String]) {
         let compiler = SnapToCoreCompiler(
             shouldRunSpecificTest: shouldRunSpecificTest,
             injectModules: injectModules,
             isUsingStandardLibrary: isUsingStandardLibrary,
             runtimeSupport: runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager
+            sandboxAccessManager: sandboxAccessManager,
+            memoryLayoutStrategy: memoryLayoutStrategy
         )
         return try compiler.run(self)
     }

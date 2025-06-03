@@ -38,7 +38,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -66,7 +66,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -106,7 +106,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -176,7 +176,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         .reconnect(parent: nil)
 
         let actual = try input
-            .eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)?
+            .eraseUnions(memoryLayoutStrategy)?
             .eraseEseq()?
             .flatten()
         XCTAssertEqual(actual, expected)
@@ -244,7 +244,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -312,7 +312,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -380,7 +380,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -429,7 +429,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -511,7 +511,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 
@@ -596,7 +596,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         ])
         .reconnect(parent: nil)
 
-        let actual = try input.eraseUnions(memoryLayoutStrategy: memoryLayoutStrategy)
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
 }

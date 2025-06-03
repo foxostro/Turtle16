@@ -355,7 +355,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     /// Lower and erase union types from the program being compiled
     public func eraseUnions(
-        memoryLayoutStrategy m: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
+        _ m: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassEraseUnions(memoryLayoutStrategy: m).run(self)
     }

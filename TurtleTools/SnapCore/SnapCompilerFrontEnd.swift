@@ -77,7 +77,8 @@ public final class SnapCompilerFrontEnd {
             injectModules: Array(options.injectedModules),
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager
+            sandboxAccessManager: sandboxAccessManager,
+            memoryLayoutStrategy: memoryLayoutStrategy
         )
         let tackProgram = try ast1.coreToTack(
             memoryLayoutStrategy: memoryLayoutStrategy,

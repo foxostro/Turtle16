@@ -822,8 +822,13 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
         defer { isShortDescriptionRunning -= 1 }
         guard name.isEmpty else { return name }
         guard isShortDescriptionRunning <= 1 else { return "struct { … }" }
-        let membersDesc = symbols.symbolTable
-            .map { "\($0):\($1.type)" }
+        let membersDesc = symbols.declarationOrder
+            .map {
+                guard let sym = symbols.symbolTable[$0] else {
+                    fatalError("internal compiler error: an identifier in `declarationOrder` is expected to also be present in `smybolTable` but this one was missing: \($0)")
+                }
+                return "\($0):\(sym.type)"
+            }
             .joined(separator: ", ")
         return "struct { \(membersDesc) }"
     }

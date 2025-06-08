@@ -29,14 +29,30 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             memoryLayoutStrategy: memoryLayoutStrategy
         )
     }
-
+    
     public override func visit(as node0: As) throws -> Expression? {
+        try rvalueContext.check(expression: node0) // Make sure the `As` expression is type-sound.
+        let objectType = try rvalueContext.check(expression: node0.expr)
+        let targetType = try rvalueContext.check(expression: node0.targetType)
         let node1 = try super.visit(as: node0)
         guard let node1 = node1 as? As else { return node1 }
-        let objectType = try rvalueContext.check(expression: node1.expr)
-        guard case .unionType(let info) = objectType else { return node1 }
-        try rvalueContext.check(expression: node1) // Make sure the `As` expression is type-sound.
+        let result =
+            if case .unionType(let info) = objectType {
+                try convertFromUnionValue(info, node1)
+            }
+            else if case .unionType(let info) = targetType {
+                try convertToUnionValue(info, objectType, node1)
+            }
+            else {
+                node1
+            }
+        return result
+    }
 
+    private func convertFromUnionValue(
+        _ info: UnionTypeInfo,
+        _ node1: As
+    ) throws -> Expression? {
         let s = node1.sourceAnchor
         let isExpr = try visit(
             is: Is(
@@ -117,8 +133,88 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return eseq
     }
+    
+    private func convertToUnionValue(
+        _ unionTypeInfo: UnionTypeInfo,
+        _ objectType: SymbolType,
+        _ node1: As
+    ) throws -> Expression? {
+        let s = node1.sourceAnchor
+        let tempName = "__temp0"
+        let temp = Identifier(sourceAnchor: s, identifier: tempName)
+        let tagValue = unionTypeInfo.members.firstIndex { member in
+            rvalueContext.areTypesAreConvertible(
+                ltype: member,
+                rtype: objectType,
+                isExplicitCast: false
+            )
+        }
+        guard let tagValue else {
+            let unionTypesDesc = unionTypeInfo.members.map { "`\($0)`" }.joined(separator: ",")
+            throw CompilerError(
+                sourceAnchor: node1.targetType.sourceAnchor,
+                message: "expected the target type to match one of the union types, but `\(objectType)' does not match any of {\(unionTypesDesc)}"
+            )
+        }
+        let eseq = Eseq(
+            sourceAnchor: s,
+            seq: Seq(
+                sourceAnchor: s,
+                children: [
+                    VarDeclaration(
+                        sourceAnchor: s,
+                        identifier: temp,
+                        explicitType: PrimitiveType(
+                            .structType(
+                                StructTypeInfo(
+                                    name: "",
+                                    fields: try fields(for: unionTypeInfo)
+                                )
+                            )
+                        ),
+                        expression: nil,
+                        storage: .automaticStorage(offset: nil),
+                        isMutable: false
+                    ),
+                    InitialAssignment(
+                        sourceAnchor: s,
+                        lexpr: Get(
+                            sourceAnchor: s,
+                            expr: temp,
+                            member: Identifier(sourceAnchor: s, identifier: tag)
+                        ),
+                        rexpr: LiteralInt(sourceAnchor: s, value: tagValue)
+                    ),
+                    InitialAssignment(
+                        lexpr: Get(
+                            sourceAnchor: s,
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Get(
+                                        expr: temp,
+                                        member: Identifier(sourceAnchor: s, identifier: payload)
+                                    )
+                                ),
+                                targetType: PointerType(
+                                    PrimitiveType(
+                                        unionTypeInfo.members[tagValue]
+                                    )
+                                )
+                            ),
+                            member: Identifier(sourceAnchor: s, identifier: pointee)
+                        ),
+                        rexpr: node1.expr
+                    )
+                ]
+            ),
+            expr: temp
+        )
+        return eseq
+    }
 
     public override func visit(is node0: Is) throws -> Expression? {
+        try rvalueContext.check(expression: node0) // make sure the expression type checks
         let node1 = try super.visit(is: node0)
         guard let node1 = node1 as? Is else { return node1 }
         let exprType = try rvalueContext.check(expression: node1.expr)
@@ -223,6 +319,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     }
 
     public func visit<T: Assignment>(someAssignment node0: T) throws -> Expression? {
+        try rvalueContext.check(expression: node0) // make sure the expression type checks
         let node1 =
             switch node0 {
             case let a as Assignment:
@@ -322,24 +419,16 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     }
 
     public override func visit(unionType: UnionType) throws -> Expression? {
-        PrimitiveType(
-            .structType(
-                StructTypeInfo(
-                    name: "",
-                    fields: try fields(for: unionType)
-                )
-            )
-        )
+        let i = try rvalueContext.unionTypeInfo(for: unionType)
+        let f = try fields(for: i)
+        let r = PrimitiveType(.structType(StructTypeInfo(name: "", fields: f)))
+        return r
     }
 
-    public func fields(for unionType: UnionType) throws -> Env {
-        let payloadSize = try unionType.members
-            .map {
-                try rvalueContext.check(expression: $0)
-            }
-            .reduce(0) { (accum, type) in
-                max(accum, memoryLayoutStrategy.sizeof(type: type))
-            }
+    public func fields(for info: UnionTypeInfo) throws -> Env {
+        let payloadSize = info.members.reduce(0) { (accum, type) in
+            max(accum, memoryLayoutStrategy.sizeof(type: type))
+        }
         let payloadType: SymbolType = .array(count: payloadSize, elementType: .u8)
         let env = Env(
             frameLookupMode: .set(Frame()),

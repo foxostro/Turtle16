@@ -1865,8 +1865,11 @@ public class RvalueExpressionTypeChecker {
     }
 
     public func check(unionType expr: UnionType) throws -> SymbolType {
-        let members = try expr.members.map({ try check(expression: $0) })
-        return .unionType(UnionTypeInfo(members))
+        .unionType(try unionTypeInfo(for: expr))
+    }
+    
+    public func unionTypeInfo(for expr: UnionType) throws -> UnionTypeInfo {
+        UnionTypeInfo(try expr.members.map { try check(expression: $0) })
     }
 
     public func check(literalString expr: LiteralString) throws -> SymbolType {

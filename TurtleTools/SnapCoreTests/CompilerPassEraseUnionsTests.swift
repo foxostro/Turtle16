@@ -599,4 +599,177 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
+    
+    public func testConversionToUnionType() throws {
+        let input = Block(children: [
+            As(
+                expr: LiteralBool(true),
+                targetType: UnionType([PrimitiveType(.bool)])
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let structTyp = {
+            let fields = Env(
+                frameLookupMode: .set(Frame()),
+                tuples: [
+                    (tag.identifier, Symbol(type: .u16, offset: 0)),
+                    (payload.identifier, Symbol(type: .array(count: 1, elementType: .u8), offset: 1))
+                ]
+            )
+            fields.frameLookupMode = .set(Frame())
+            let typ = PrimitiveType(
+                .structType(
+                    StructTypeInfo(name: "", fields: fields)
+                )
+            )
+            return typ
+        }()
+
+        let expected = Block(children: [
+            Eseq(
+                seq: Seq(
+                    children: [
+                        VarDeclaration(
+                            identifier: Identifier("__temp0"),
+                            explicitType: structTyp,
+                            expression: nil,
+                            storage: .automaticStorage(offset: nil),
+                            isMutable: false
+                        ),
+                        InitialAssignment(
+                            lexpr: Get(
+                                expr: Identifier("__temp0"),
+                                member: Identifier("tag")
+                            ),
+                            rexpr: LiteralInt(0)
+                        ),
+                        InitialAssignment(
+                            lexpr: Get(
+                                expr: Bitcast(
+                                    expr: Unary(
+                                        op: .ampersand,
+                                        expression: Get(
+                                            expr: Identifier("__temp0"),
+                                            member: payload
+                                        )
+                                    ),
+                                    targetType: PointerType(PrimitiveType(.bool))
+                                ),
+                                member: pointee
+                            ),
+                            rexpr: LiteralBool(true)
+                        )
+                    ]
+                ),
+                expr: Identifier("__temp0")
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    public func testAssignmentInStructInitializer() throws {
+        let input = Block(children: [
+            StructDeclaration(
+                identifier: Identifier("Foo"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "value",
+                        type: UnionType([PrimitiveType(.bool)])
+                    )
+                ]
+            ),
+            StructInitializer(
+                identifier: Identifier("Foo"),
+                arguments: [
+                    StructInitializer.Argument(
+                        name: "value",
+                        expr: LiteralBool(true)
+                    )
+                ]
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let fields = Env(
+            frameLookupMode: .set(Frame()),
+            tuples: [
+                (tag.identifier, Symbol(type: .u16, offset: 0)),
+                (payload.identifier, Symbol(type: .array(count: 1, elementType: .u8), offset: 1))
+            ]
+        )
+        fields.frameLookupMode = .set(Frame())
+
+        let expected = Block(children: [
+            StructDeclaration(
+                identifier: Identifier("Foo"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "value",
+                        type: PrimitiveType(
+                            .structType(
+                                StructTypeInfo(name: "", fields: fields)
+                            )
+                        )
+                    )
+                ]
+            ),
+            StructInitializer(
+                identifier: Identifier("Foo"),
+                arguments: [
+                    StructInitializer.Argument(
+                        name: "value",
+                        expr: Eseq(
+                            seq: Seq(
+                                children: [
+                                    VarDeclaration(
+                                        identifier: Identifier("__temp0"),
+                                        explicitType: PrimitiveType(
+                                            .structType(
+                                                StructTypeInfo(name: "", fields: fields)
+                                            )
+                                        ),
+                                        expression: nil,
+                                        storage: .automaticStorage(offset: nil),
+                                        isMutable: false
+                                    ),
+                                    InitialAssignment(
+                                        lexpr: Get(
+                                            expr: Identifier("__temp0"),
+                                            member: Identifier("tag")
+                                        ),
+                                        rexpr: LiteralInt(0)
+                                    ),
+                                    InitialAssignment(
+                                        lexpr: Get(
+                                            expr: Bitcast(
+                                                expr: Unary(
+                                                    op: .ampersand,
+                                                    expression: Get(
+                                                        expr: Identifier("__temp0"),
+                                                        member: payload
+                                                    )
+                                                ),
+                                                targetType: PointerType(PrimitiveType(.bool))
+                                            ),
+                                            member: pointee
+                                        ),
+                                        rexpr: LiteralBool(true)
+                                    )
+                                ]
+                            ),
+                            expr: Identifier("__temp0")
+                        )
+                    )
+                ]
+            )
+        ])
+        .reconnect(parent: nil)
+
+        let actual = try input.eraseUnions(memoryLayoutStrategy)
+        XCTAssertEqual(actual, expected)
+    }
 }

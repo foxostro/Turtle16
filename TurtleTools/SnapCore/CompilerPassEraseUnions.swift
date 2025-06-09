@@ -16,6 +16,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     private let tagType: SymbolType = .u16
     private let tagOffset = 0
     private let payloadOffset: Int
+    private let tempPrefix = "__temp"
 
     public override init(
         symbols: Env? = nil,
@@ -177,8 +178,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         _ node1: As
     ) throws -> Expression? {
         let s = node1.sourceAnchor
-        let tempName = "__temp0"
-        let temp = Identifier(sourceAnchor: s, identifier: tempName)
+        let temp = Identifier(sourceAnchor: s, identifier: nextTempName())
         let tagValue = unionTypeInfo.members.firstIndex { member in
             rvalueContext.areTypesAreConvertible(
                 ltype: member,
@@ -475,6 +475,10 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             ]
         )
         return env
+    }
+    
+    private func nextTempName() -> String {
+        symbols!.tempName(prefix: tempPrefix)
     }
 }
 

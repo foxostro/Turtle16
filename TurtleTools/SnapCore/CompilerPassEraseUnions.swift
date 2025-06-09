@@ -30,6 +30,40 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
     }
     
+    public override func visit(structInitializer node0: StructInitializer) throws -> Expression? {
+        // First, make sure the struct initializer expression is well-formed.
+        _ = try rvalueContext.check(structInitializer: node0)
+        
+        // Insert an `As` expression if the struct field has a union type and
+        // the corresponding arguent of the struct initializer expression is not
+        // exactly the same type. This ensures the compiler inserts the correct
+        // conversion to the union value needed to initialize the struct field.
+        let structTypeInfo = try rvalueContext.check(expression: node0.expr).unwrapStructType()
+        let node1 = node0.withArguments(
+            try node0.arguments.map { arg0 in
+                let rtype = try rvalueContext.check(expression: arg0.expr)
+                let member = try structTypeInfo.symbols.resolve(identifier: arg0.name)
+                let ltype = member.type
+                let arg1: StructInitializer.Argument =
+                    if rtype != ltype && ltype.isUnionType {
+                        arg0.withExpr(
+                            As(
+                                sourceAnchor: arg0.expr.sourceAnchor,
+                                expr: arg0.expr,
+                                targetType: ltype.lift
+                            )
+                        )
+                    }
+                    else {
+                        arg0
+                    }
+                return arg1
+            }
+        )
+        let node2 = try super.visit(structInitializer: node1)
+        return node2
+    }
+    
     public override func visit(as node0: As) throws -> Expression? {
         try rvalueContext.check(expression: node0) // Make sure the `As` expression is type-sound.
         let objectType = try rvalueContext.check(expression: node0.expr)
@@ -54,14 +88,17 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         _ node1: As
     ) throws -> Expression? {
         let s = node1.sourceAnchor
-        let isExpr = try visit(
-            is: Is(
-                sourceAnchor: s,
-                expr: node1.expr,
-                testType: node1.targetType
-            )
+        let isExpr0 = Is(
+            sourceAnchor: s,
+            expr: node1.expr,
+            testType: node1.targetType
         )
-        guard let isExpr else { fatalError("internal compiler error") }
+        guard let isExpr1 = try visit(is: isExpr0) else {
+            throw CompilerError(
+                sourceAnchor: s,
+                message: "internal compiler error: unexpected nil while lowering expression: \(isExpr0)"
+            )
+        }
 
         let evaluatedTargetType = try rvalueContext.check(expression: node1.targetType)
         let firstExactMatch = info.members.first { evaluatedTargetType == $0 }
@@ -111,7 +148,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                         sourceAnchor: s,
                         condition: Unary(
                             op: .bang,
-                            expression: isExpr
+                            expression: isExpr1
                         ),
                         then: Block(
                             symbols: Env(parent: symbols),

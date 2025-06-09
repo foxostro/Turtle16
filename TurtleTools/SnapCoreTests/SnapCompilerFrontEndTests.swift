@@ -333,7 +333,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_SubscriptArrayThroughPointer() throws {
         let debugger = try run(
-            options: Options(isVerboseLogging: true),
             program: """
                 let arr = [_]u16{0x1000}
                 let ptr = &arr

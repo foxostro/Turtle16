@@ -91,10 +91,24 @@ public final class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
 
     fileprivate func rtypeExpr(varDecl node: VarDeclaration) -> Expression? {
         guard let expr = node.expression else { return nil }
-        let type0 = TypeOf(
-            sourceAnchor: expr.sourceAnchor,
-            expr: expr
-        )
+        
+        // Simplify the type expression where we can obviously avoid a TypeOf
+        // expression. This avoids issues where the argument to TypeOf no longer
+        // type checks after various lowering steps have been applied. We do not
+        // necessarily want to lower the argument to TypeOf itself, though, as
+        // this may introduce temporary variables in a context which is only
+        // evaluated at compile-time.
+        let type0: Expression =
+            switch expr {
+            case let expr as StructInitializer:
+                expr.expr
+            case let expr as As where !(expr.targetType is ArrayType):
+                expr.targetType
+            default:
+                TypeOf(sourceAnchor: expr.sourceAnchor, expr: expr)
+            }
+        
+        // The explicit type must account for immutability of the variable too.
         let type1 =
             if node.isMutable {
                 type0

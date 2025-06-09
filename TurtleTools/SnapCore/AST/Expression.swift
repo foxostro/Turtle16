@@ -1950,10 +1950,11 @@ public final class TypeOf: Expression {
 
     public override func makeIndentedDescription(
         depth: Int,
-        wantsLeadingWhitespace: Bool = false
+        wantsLeadingWhitespace w: Bool = false
     ) -> String {
-        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let exprDesc = expr.makeIndentedDescription(depth: 0, wantsLeadingWhitespace: false)
+        let indent = w ? makeIndent(depth: depth) : ""
+        let nextDepth = depth + (w ? 1 : 0)
+        let exprDesc = expr.makeIndentedDescription(depth: nextDepth, wantsLeadingWhitespace: false)
         return "\(indent)\(selfDesc)(\(exprDesc))"
     }
 

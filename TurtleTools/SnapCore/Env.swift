@@ -98,6 +98,23 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             self
         }
     }
+    
+    public var isUnionType: Bool {
+        maybeUnwrapUnionType() != nil
+    }
+    
+    public func unwrapUnionType() -> UnionTypeInfo {
+        maybeUnwrapUnionType()!
+    }
+
+    public func maybeUnwrapUnionType() -> UnionTypeInfo? {
+        switch self {
+        case .unionType(let typ):
+            typ
+        default:
+            nil
+        }
+    }
 
     public func unwrapGenericFunctionType() -> GenericFunctionType {
         switch self {

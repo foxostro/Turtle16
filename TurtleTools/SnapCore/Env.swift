@@ -375,16 +375,21 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             PointerType(typ.lift)
 
         case .constStructType:
-            ConstType(PrimitiveType(self.correspondingMutableType))
+            ConstType(self.correspondingMutableType.lift)
 
-        case .structType:
-            PrimitiveType(self)
+        case .structType(let typ):
+            if typ.name.isEmpty {
+                PrimitiveType(self)
+            }
+            else {
+                Identifier(typ.name)
+            }
 
         case .genericStructType:
             PrimitiveType(self)
 
         case .constTraitType:
-            ConstType(PrimitiveType(self.correspondingMutableType))
+            ConstType(self.correspondingMutableType.lift)
 
         case .traitType(let typ):
             Identifier(typ.name)

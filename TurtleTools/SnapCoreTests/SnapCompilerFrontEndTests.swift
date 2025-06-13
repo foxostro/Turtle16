@@ -1350,8 +1350,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
     }
 
-    // TODO: Eliminate LvalueExpressionTypeChecker and RvalueExpressionTypeChecker. Replace with functions lvalueType() and rvalueType() which work like in a manner similar to existing lvalue() and rvalue() functions.
-
     func test_EndToEndIntegration_CastArrayOfU16ToArrayOfU8() throws {
         let debugger = try run(
             program: """

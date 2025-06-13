@@ -66,11 +66,12 @@ public final class SnapToCoreCompiler {
             .synthesizeTerminalReturnStatements()?
             .eraseImplPass()?
             .matchPass()?
+            .lowerVarDeclPass()?
+            .eraseEseq()?
             .assertPass()?
             .returnPass()?
             .whilePass()?
             .ifPass()?
-            .lowerVarDeclPass()?
             .flatten()
         guard let block = core as? Block else {
             throw CompilerError(

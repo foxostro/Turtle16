@@ -141,7 +141,10 @@ final class SnapToCoreCompilerTests: XCTestCase {
                         ),
                         StructInitializer.Argument(
                             name: "vtable",
-                            expr: Identifier("__Serial_SerialFake_vtable_instance")
+                            expr: As(
+                                expr: Identifier("__Serial_SerialFake_vtable_instance"),
+                                targetType: PointerType(ConstType(Identifier("__Serial_vtable")))
+                            )
                         )
                     ]
                 )

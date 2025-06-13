@@ -66,6 +66,7 @@ public final class SnapToCoreCompiler {
             .synthesizeTerminalReturnStatements()?
             .eraseImplPass()?
             .matchPass()?
+            .exposeImplicitConversions()?
             .lowerVarDeclPass()?
             .eraseEseq()?
             .assertPass()?

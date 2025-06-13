@@ -68,6 +68,7 @@ public final class SnapToCoreCompiler {
             .matchPass()?
             .exposeImplicitConversions()?
             .lowerVarDeclPass()?
+            .eraseUnions(memoryLayoutStrategy)?
             .eraseEseq()?
             .assertPass()?
             .returnPass()?

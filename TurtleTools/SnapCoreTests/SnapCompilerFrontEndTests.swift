@@ -2086,7 +2086,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_LinkedList() throws {
+        let options = Options(runtimeSupport: kRuntime)
         let debugger = try run(
+            options: options,
             program: """
                 struct None {}
                 let none = None {}

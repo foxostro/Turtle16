@@ -31,40 +31,6 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
     }
     
-    public override func visit(structInitializer node0: StructInitializer) throws -> Expression? {
-        // First, make sure the struct initializer expression is well-formed.
-        _ = try rvalueContext.check(structInitializer: node0)
-        
-        // Insert an `As` expression if the struct field has a union type and
-        // the corresponding arguent of the struct initializer expression is not
-        // exactly the same type. This ensures the compiler inserts the correct
-        // conversion to the union value needed to initialize the struct field.
-        let structTypeInfo = try rvalueContext.check(expression: node0.expr).unwrapStructType()
-        let node1 = node0.withArguments(
-            try node0.arguments.map { arg0 in
-                let rtype = try rvalueContext.check(expression: arg0.expr)
-                let member = try structTypeInfo.symbols.resolve(identifier: arg0.name)
-                let ltype = member.type
-                let arg1: StructInitializer.Argument =
-                    if rtype != ltype && ltype.isUnionType {
-                        arg0.withExpr(
-                            As(
-                                sourceAnchor: arg0.expr.sourceAnchor,
-                                expr: arg0.expr,
-                                targetType: ltype.lift
-                            )
-                        )
-                    }
-                    else {
-                        arg0
-                    }
-                return arg1
-            }
-        )
-        let node2 = try super.visit(structInitializer: node1)
-        return node2
-    }
-    
     public override func visit(as node0: As) throws -> Expression? {
         try rvalueContext.check(expression: node0) // Make sure the `As` expression is type-sound.
         let objectType = try rvalueContext.check(expression: node0.expr)

@@ -1781,193 +1781,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
-        case (_, .unionType(let typ)):
-            let tempArrayId = try makeCompilerTemporary(
-                rexpr.sourceAnchor,
-                PrimitiveType(
-                    sourceAnchor: rexpr.sourceAnchor,
-                    typ: ltype
-                )
+        case (_, .unionType(_)),
+             (.unionType(_), _):
+            
+            throw CompilerError(
+                sourceAnchor: rexpr.sourceAnchor,
+                message: "internal compiler error: unions should have been erased in a previous compiler pass"
             )
-            var children: [AbstractSyntaxTreeNode] = [
-                try lvalue(expr: tempArrayId)
-            ]
-            let tempUnionAddr = popRegister()
-            let tempUnionTypeTag = nextRegister(type: .w).unwrap16!
-            let targetType = determineUnionTargetType(typ, rtype)!
-            let unionTypeTag = determineUnionTypeTag(typ, targetType)!
-            children += [
-                TackInstructionNode(
-                    instruction: .liuw(tempUnionTypeTag, unionTypeTag),
-                    sourceAnchor: rexpr.sourceAnchor,
-                    symbols: symbols
-                ),
-                TackInstructionNode(
-                    instruction: .sw(
-                        tempUnionTypeTag,
-                        tempUnionAddr.unwrapPointer!,
-                        kUnionTypeTagOffset
-                    ),
-                    sourceAnchor: rexpr.sourceAnchor,
-                    symbols: symbols
-                )
-            ]
-            if targetType.isPrimitive {
-                children += [
-                    try rvalue(
-                        as: As(
-                            sourceAnchor: rexpr.sourceAnchor,
-                            expr: rexpr,
-                            targetType: PrimitiveType(
-                                sourceAnchor: rexpr.sourceAnchor,
-                                typ: targetType
-                            )
-                        )
-                    ),
-                    TackInstructionNode(
-                        instruction: { resultRegister in
-                            switch resultRegister {
-                            case .p(let p):
-                                return .sp(p, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            case .w(let w):
-                                return .sw(w, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            case .b(let b):
-                                return .sb(b, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            case .o(let o):
-                                return .so(o, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            }
-                        }(popRegister()),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    )
-                ]
-            }
-            else {
-                let size = memoryLayoutStrategy.sizeof(type: rtype)
-                let tempUnionPayloadAddress = nextRegister(type: .p).unwrapPointer!
-                children += [
-                    TackInstructionNode(
-                        instruction: .addip(
-                            tempUnionPayloadAddress,
-                            tempUnionAddr.unwrapPointer!,
-                            kUnionPayloadOffset
-                        ),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    ),
-                    try rvalue(
-                        as: As(
-                            sourceAnchor: rexpr.sourceAnchor,
-                            expr: rexpr,
-                            targetType: PrimitiveType(
-                                sourceAnchor: rexpr.sourceAnchor,
-                                typ: targetType
-                            )
-                        )
-                    ),
-                    TackInstructionNode(
-                        instruction: .memcpy(
-                            tempUnionPayloadAddress,
-                            popRegister().unwrapPointer!,
-                            size
-                        ),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    )
-                ]
-            }
-            pushRegister(tempUnionAddr)
-            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
-
-        case (.unionType(let typ), _):
-            var children: [AbstractSyntaxTreeNode] = [
-                try lvalue(expr: rexpr)
-            ]
-            let tempUnionAddr = popRegister()
-
-            // If the union can contain more than one type then insert a runtime
-            // check that the tag matches that of the requested type.
-            if options.isBoundsCheckEnabled && typ.members.count > 1 {
-                let targetType = determineUnionTargetType(typ, ltype)!
-                let unionTypeTag = determineUnionTypeTag(typ, targetType)!
-                let tempUnionTag = nextRegister(type: .w)
-                let tempComparison = nextRegister(type: .w)
-                let labelSkipPanic = symbols!.nextLabel()
-                children += [
-                    TackInstructionNode(
-                        instruction: .lw(
-                            tempUnionTag.unwrap16!,
-                            tempUnionAddr.unwrapPointer!,
-                            kUnionTypeTagOffset
-                        ),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    ),
-                    TackInstructionNode(
-                        instruction: .subiw(
-                            tempComparison.unwrap16!,
-                            tempUnionTag.unwrap16!,
-                            unionTypeTag
-                        ),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    ),
-                    TackInstructionNode(
-                        instruction: .bzw(tempComparison.unwrap16!, labelSkipPanic),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    ),
-                    TackInstructionNode(
-                        instruction: .call(kOOB),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    ),
-                    LabelDeclaration(
-                        sourceAnchor: rexpr.sourceAnchor,
-                        identifier: labelSkipPanic
-                    )
-                ]
-            }
-
-            if let primitiveType = ltype.primitiveType {
-                let dst = nextRegister(type: primitiveType)
-                pushRegister(dst)
-                children += [
-                    TackInstructionNode(
-                        instruction: {
-                            switch dst {
-                            case .p(let p):
-                                return .lp(p, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            case .w(let w):
-                                return .lw(w, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            case .b(let b):
-                                return .lb(b, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            case .o(let o):
-                                return .lo(o, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
-                            }
-                        }(),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    )
-                ]
-            }
-            else {
-                let dst = nextRegister(type: .p)
-                pushRegister(dst)
-                children += [
-                    TackInstructionNode(
-                        instruction: .addip(
-                            dst.unwrapPointer!,
-                            tempUnionAddr.unwrapPointer!,
-                            kUnionPayloadOffset
-                        ),
-                        sourceAnchor: rexpr.sourceAnchor,
-                        symbols: symbols
-                    )
-                ]
-            }
-
-            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
         case (.constPointer(let a), .traitType(let b)),
             (.pointer(let a), .traitType(let b)),
@@ -2870,8 +2690,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         default:
             switch try typeCheck(rexpr: expr.expr) {
-            case .unionType(let typ):
-                return try compileUnionTypeIs(expr, typ)
+            case .unionType(_):
+                throw CompilerError(
+                    sourceAnchor: expr.sourceAnchor,
+                    message: "internal compiler error: unions should have been erased in a previous compiler pass"
+                )
 
             default:
                 fatalError(
@@ -2879,110 +2702,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             }
         }
-    }
-
-    func compileUnionTypeIs(_ expr: Is, _ typ: UnionTypeInfo) throws -> AbstractSyntaxTreeNode {
-        var children: [AbstractSyntaxTreeNode] = []
-
-        // Take the test type and determine the corresponding type tag.
-        let testType = try typeCheck(rexpr: expr.testType)
-        let typeTag: Int! = determineUnionTypeTag(typ, testType)
-        let tempTestTag = nextRegister(type: .w)
-        children += [
-            TackInstructionNode(
-                instruction: .liw(tempTestTag.unwrap16!, typeTag),
-                sourceAnchor: expr.sourceAnchor,
-                symbols: symbols
-            )
-        ]
-
-        // Get the address of the union in memory.
-        children += [
-            try lvalue(expr: expr.expr)
-        ]
-        let tempUnionAddr = popRegister()
-
-        // Read the union type tag in memory.
-        let tempActualTag = nextRegister(type: .w)
-        children += [
-            TackInstructionNode(
-                instruction: .lw(tempActualTag.unwrap16!, tempUnionAddr.unwrapPointer!, 0),
-                sourceAnchor: expr.sourceAnchor,
-                symbols: symbols
-            )
-        ]
-
-        // Compare the union's actual type tag against the tag of the test type.
-        let tempResult = nextRegister(type: .o)
-        children += [
-            TackInstructionNode(
-                instruction: .eqw(
-                    tempResult.unwrapBool!,
-                    tempActualTag.unwrap16!,
-                    tempTestTag.unwrap16!
-                ),
-                sourceAnchor: expr.sourceAnchor,
-                symbols: symbols
-            )
-        ]
-
-        pushRegister(tempResult)
-
-        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
-    }
-
-    // Given a type and a related union, determine the type to which to convert
-    // when inserting into the union. This is necessary because many types
-    // can automatically promote and convert to other types. For example, if
-    // the union can hold a u16 then we should automatically convert
-    // LiteralInt(1) to u16 in order to insert into the union.
-    func determineUnionTargetType(_ typ: UnionTypeInfo, _ rtype: SymbolType) -> SymbolType? {
-        // Find the first type that is an exact match
-        for ltype in typ.members {
-            if rtype == ltype {
-                return ltype
-            }
-        }
-
-        // Find the first type that matches except for its const-ness
-        for ltype in typ.members {
-            if rtype.correspondingConstType == ltype {
-                return ltype
-            }
-        }
-
-        // Find the first type that can be automatically converted in an assignment
-        for ltype in typ.members {
-            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!)
-            let status = typeChecker.convertBetweenTypes(
-                ltype: ltype,
-                rtype: rtype,
-                sourceAnchor: nil,
-                messageWhenNotConvertible: "",
-                isExplicitCast: false
-            )
-            switch status {
-            case .acceptable(let symbolType):
-                return symbolType
-
-            case .unacceptable:
-                break
-            }
-        }
-
-        return nil
-    }
-
-    // Given a type and a related union, determine the corresponding type tag.
-    // Return nil if the type does not match the union after all.
-    func determineUnionTypeTag(_ typ: UnionTypeInfo, _ testType: SymbolType) -> Int? {
-        for i in 0..<typ.members.count {
-            let member = typ.members[i]
-            if testType == member || testType.correspondingConstType == member {
-                return i
-            }
-        }
-        return nil
     }
 
     func rvalue(assignment expr: Assignment) throws -> AbstractSyntaxTreeNode {

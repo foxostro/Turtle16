@@ -77,21 +77,28 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             )
         }
         let targetMember: SymbolType! = firstExactMatch ?? firstInexactMatch
-        let extractPayload = As(
+        let extractPayload = Get(
             sourceAnchor: s,
-            expr: Unary(
+            expr: Bitcast(
                 sourceAnchor: s,
-                op: .ampersand,
-                expression: Get(
+                expr: Unary(
                     sourceAnchor: s,
-                    expr: node1.expr,
-                    member: Identifier(
+                    op: .ampersand,
+                    expression: Get(
                         sourceAnchor: s,
-                        identifier: payload
+                        expr: node1.expr,
+                        member: Identifier(
+                            sourceAnchor: s,
+                            identifier: payload
+                        )
                     )
-                )
+                ),
+                targetType: PointerType(targetMember.lift)
             ),
-            targetType: targetMember.lift
+            member: Identifier(
+                sourceAnchor: s,
+                identifier: pointee
+            )
         )
         let convertPayload =
             if firstExactMatch != nil {
@@ -199,11 +206,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                                         member: Identifier(sourceAnchor: s, identifier: payload)
                                     )
                                 ),
-                                targetType: PointerType(
-                                    PrimitiveType(
-                                        unionTypeInfo.members[tagValue]
-                                    )
-                                )
+                                targetType: PointerType(unionTypeInfo.members[tagValue].lift)
                             ),
                             member: Identifier(sourceAnchor: s, identifier: pointee)
                         ),
@@ -397,11 +400,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                                 )
                             )
                         ),
-                        targetType: PointerType(
-                            PrimitiveType(
-                                unionTypeInfo.members[tagValue]
-                            )
-                        )
+                        targetType: PointerType(unionTypeInfo.members[tagValue].lift)
                     ),
                     member: Identifier(
                         sourceAnchor: node1.sourceAnchor,
@@ -453,6 +452,7 @@ extension AbstractSyntaxTreeNode {
     public func eraseUnions(
         _ m: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassEraseUnions(memoryLayoutStrategy: m).run(self)
+        let r = try CompilerPassEraseUnions(memoryLayoutStrategy: m).run(self)
+        return r
     }
 }

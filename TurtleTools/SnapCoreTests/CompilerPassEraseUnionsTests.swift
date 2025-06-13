@@ -165,7 +165,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                                     member: payload
                                 )
                             ),
-                            targetType: PointerType(PrimitiveType(.constBool))
+                            targetType: PointerType(ConstType(PrimitiveType(.bool)))
                         ),
                         member: pointee
                     ),
@@ -497,15 +497,18 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                     ]
                 ),
                 expr:
-                    As(
-                        expr: Unary(
-                            op: .ampersand,
-                            expression: Get(
-                                expr: foo,
-                                member: payload
-                            )
+                    Get(
+                        expr: Bitcast(
+                            expr: Unary(
+                                op: .ampersand,
+                                expression: Get(
+                                    expr: foo,
+                                    member: payload
+                                )
+                            ),
+                            targetType: PointerType(PrimitiveType(.bool))
                         ),
-                        targetType: PrimitiveType(.bool)
+                        member: pointee
                     )
             )
         ])
@@ -580,15 +583,18 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 ),
                 expr:
                     As(
-                        expr: As(
-                            expr: Unary(
-                                op: .ampersand,
-                                expression: Get(
-                                    expr: foo,
-                                    member: payload
-                                )
+                        expr: Get(
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Get(
+                                        expr: foo,
+                                        member: payload
+                                    )
+                                ),
+                                targetType: PointerType(PrimitiveType(.u16))
                             ),
-                            targetType: PrimitiveType(.u16)
+                            member: pointee
                         ),
                         targetType: PrimitiveType(.u8)
                     )

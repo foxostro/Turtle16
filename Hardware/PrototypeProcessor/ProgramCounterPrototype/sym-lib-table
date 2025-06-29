@@ -1,3 +1,4 @@
 (sym_lib_table
-  (lib (name ProgramCounterPrototype-rescue)(type Legacy)(uri ${KIPRJMOD}/ProgramCounterPrototype-rescue.lib)(options "")(descr ""))
+  (version 7)
+  (lib (name "ProgramCounterPrototype-rescue")(type "KiCad")(uri "${KIPRJMOD}/ProgramCounterPrototype-rescue.kicad_sym")(options "")(descr ""))
 )

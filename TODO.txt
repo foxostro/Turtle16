@@ -1,4 +1,0 @@
-* I've updated MEM to include a delay on the MemStore and MemLoad signals, and the MainBoard project does not contain these changes yet.
-* I've updated MEM to include a jumper for single-step mode, and the MainBoard project does not contain these changes yet.
-* I need to generate updated plots of the MainBoard schematics with the above changes too.
-* Some schematics are done on A4 pages and others on USLetter. Use the same page size consistently.

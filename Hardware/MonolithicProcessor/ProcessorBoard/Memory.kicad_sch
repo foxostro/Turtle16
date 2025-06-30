@@ -3,7 +3,7 @@
 	(generator "eeschema")
 	(generator_version "9.0")
 	(uuid "c2e639a8-df6e-4af0-9d6b-1b074ca7eaa0")
-	(paper "A4")
+	(paper "USLetter")
 	(title_block
 		(date "2023-11-25")
 		(rev "A")
@@ -1915,7 +1915,7 @@
 	)
 	(bus
 		(pts
-			(xy 243.84 60.96) (xy 266.7 60.96)
+			(xy 233.68 58.42) (xy 256.54 58.42)
 		)
 		(stroke
 			(width 0)
@@ -1985,7 +1985,7 @@
 	)
 	(bus
 		(pts
-			(xy 205.74 30.48) (xy 182.88 30.48)
+			(xy 195.58 27.94) (xy 172.72 27.94)
 		)
 		(stroke
 			(width 0)
@@ -2025,7 +2025,7 @@
 	)
 	(bus
 		(pts
-			(xy 205.74 60.96) (xy 182.88 60.96)
+			(xy 195.58 58.42) (xy 172.72 58.42)
 		)
 		(stroke
 			(width 0)
@@ -2055,7 +2055,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 40.64) (xy 205.74 40.64)
+			(xy 172.72 38.1) (xy 195.58 38.1)
 		)
 		(stroke
 			(width 0)
@@ -2145,7 +2145,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 73.66) (xy 205.74 73.66)
+			(xy 172.72 71.12) (xy 195.58 71.12)
 		)
 		(stroke
 			(width 0)
@@ -2195,7 +2195,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 68.58) (xy 205.74 68.58)
+			(xy 185.42 66.04) (xy 195.58 66.04)
 		)
 		(stroke
 			(width 0)
@@ -2215,7 +2215,7 @@
 	)
 	(bus
 		(pts
-			(xy 205.74 55.88) (xy 182.88 55.88)
+			(xy 195.58 53.34) (xy 172.72 53.34)
 		)
 		(stroke
 			(width 0)
@@ -2285,7 +2285,7 @@
 	)
 	(bus
 		(pts
-			(xy 205.74 58.42) (xy 182.88 58.42)
+			(xy 195.58 55.88) (xy 172.72 55.88)
 		)
 		(stroke
 			(width 0)
@@ -2295,7 +2295,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 33.02) (xy 205.74 33.02)
+			(xy 185.42 30.48) (xy 195.58 30.48)
 		)
 		(stroke
 			(width 0)
@@ -2335,7 +2335,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 78.74) (xy 205.74 78.74)
+			(xy 172.72 76.2) (xy 195.58 76.2)
 		)
 		(stroke
 			(width 0)
@@ -2435,7 +2435,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 71.12) (xy 205.74 71.12)
+			(xy 172.72 68.58) (xy 195.58 68.58)
 		)
 		(stroke
 			(width 0)
@@ -2475,7 +2475,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 63.5) (xy 205.74 63.5)
+			(xy 185.42 60.96) (xy 195.58 60.96)
 		)
 		(stroke
 			(width 0)
@@ -2595,7 +2595,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 76.2) (xy 205.74 76.2)
+			(xy 172.72 73.66) (xy 195.58 73.66)
 		)
 		(stroke
 			(width 0)
@@ -2605,7 +2605,7 @@
 	)
 	(bus
 		(pts
-			(xy 243.84 30.48) (xy 266.7 30.48)
+			(xy 233.68 27.94) (xy 256.54 27.94)
 		)
 		(stroke
 			(width 0)
@@ -2625,7 +2625,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 66.04) (xy 205.74 66.04)
+			(xy 185.42 63.5) (xy 195.58 63.5)
 		)
 		(stroke
 			(width 0)
@@ -2644,7 +2644,7 @@
 		(uuid "0da2ecc0-09e5-42a1-bef3-8794603dcd24")
 	)
 	(label "~{RAMEN_L}"
-		(at 182.88 73.66 0)
+		(at 172.72 71.12 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2694,7 +2694,7 @@
 		(uuid "2df173a0-07e7-4d88-b4d6-2bd87604b105")
 	)
 	(label "RAMEN_L"
-		(at 182.88 71.12 0)
+		(at 172.72 68.58 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2714,7 +2714,7 @@
 		(uuid "37214499-5c4e-4181-b96e-24b0b2e36001")
 	)
 	(label "PC[0..15]"
-		(at 182.88 30.48 0)
+		(at 172.72 27.94 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2774,7 +2774,7 @@
 		(uuid "576e61ed-8c2d-4c64-bc88-4b7ad614eb35")
 	)
 	(label "Addr[0..15]"
-		(at 182.88 58.42 0)
+		(at 172.72 55.88 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2824,7 +2824,7 @@
 		(uuid "7a6a5cd8-650a-421a-b0ee-356a13c40f53")
 	)
 	(label "Ins_IF[0..15]"
-		(at 266.7 30.48 180)
+		(at 256.54 27.94 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2844,7 +2844,7 @@
 		(uuid "7b0e0627-1b53-4b1a-98cd-5f425d1474a1")
 	)
 	(label "RAMEN_R"
-		(at 182.88 76.2 0)
+		(at 172.72 73.66 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2924,7 +2924,7 @@
 		(uuid "a0654325-c39d-4250-bdd9-511e84594c21")
 	)
 	(label "Ins_IF[0..15]"
-		(at 266.7 60.96 180)
+		(at 256.54 58.42 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3044,7 +3044,7 @@
 		(uuid "c6a275db-a1bf-4b0f-aabf-9f53a72485af")
 	)
 	(label "IO[0..15]"
-		(at 182.88 55.88 0)
+		(at 172.72 53.34 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3064,7 +3064,7 @@
 		(uuid "d13f2a10-42ab-4e34-903b-be7c44b07542")
 	)
 	(label "PC[0..15]"
-		(at 182.88 60.96 0)
+		(at 172.72 58.42 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3084,7 +3084,7 @@
 		(uuid "d5d3e2ab-c32d-4f84-8bd1-1e0e80ae5e71")
 	)
 	(label "RAMEN_R"
-		(at 182.88 40.64 0)
+		(at 172.72 38.1 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3134,7 +3134,7 @@
 		(uuid "ed2f363d-43ec-419b-89c4-113a3e35f941")
 	)
 	(label "~{RAMEN_R}"
-		(at 182.88 78.74 0)
+		(at 172.72 76.2 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3232,7 +3232,7 @@
 	)
 	(hierarchical_label "~{MemStore}"
 		(shape input)
-		(at 195.58 66.04 180)
+		(at 185.42 63.5 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3243,7 +3243,7 @@
 	)
 	(hierarchical_label "FLUSH_IF"
 		(shape input)
-		(at 195.58 33.02 180)
+		(at 185.42 30.48 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3265,7 +3265,7 @@
 	)
 	(hierarchical_label "~{MemLoad}"
 		(shape input)
-		(at 195.58 68.58 180)
+		(at 185.42 66.04 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3276,7 +3276,7 @@
 	)
 	(hierarchical_label "FLUSH_IF"
 		(shape input)
-		(at 195.58 63.5 180)
+		(at 185.42 60.96 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5062,7 +5062,7 @@
 		)
 	)
 	(sheet
-		(at 205.74 22.86)
+		(at 195.58 20.32)
 		(size 38.1 22.86)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5078,7 +5078,7 @@
 		)
 		(uuid "058ef19a-b679-4601-88cf-59ae7f711a8b")
 		(property "Sheetname" "ROM"
-			(at 205.74 22.1484 0)
+			(at 195.58 19.6084 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5087,7 +5087,7 @@
 			)
 		)
 		(property "Sheetfile" "ROM.kicad_sch"
-			(at 205.74 46.3046 0)
+			(at 195.58 43.7646 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5096,7 +5096,7 @@
 			)
 		)
 		(pin "RAMEN_R" input
-			(at 205.74 40.64 180)
+			(at 195.58 38.1 180)
 			(uuid "0b379c16-77b3-4c46-b6d4-3ff4b62a6913")
 			(effects
 				(font
@@ -5106,7 +5106,7 @@
 			)
 		)
 		(pin "FLUSH_IF" input
-			(at 205.74 33.02 180)
+			(at 195.58 30.48 180)
 			(uuid "25515f1f-ae2c-44a2-9cfe-9435b3066e69")
 			(effects
 				(font
@@ -5116,7 +5116,7 @@
 			)
 		)
 		(pin "PC[0..15]" input
-			(at 205.74 30.48 180)
+			(at 195.58 27.94 180)
 			(uuid "4e83d52a-406d-4a40-b232-18f303aa39df")
 			(effects
 				(font
@@ -5126,7 +5126,7 @@
 			)
 		)
 		(pin "Ins_IF[0..15]" output
-			(at 243.84 30.48 0)
+			(at 233.68 27.94 0)
 			(uuid "fc1812b7-6677-4617-8858-999236976031")
 			(effects
 				(font
@@ -5137,7 +5137,7 @@
 		)
 	)
 	(sheet
-		(at 205.74 53.34)
+		(at 195.58 50.8)
 		(size 38.1 26.67)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5153,7 +5153,7 @@
 		)
 		(uuid "46d35a1a-4867-4988-9941-4b86f9dbec1c")
 		(property "Sheetname" "RAM"
-			(at 205.74 52.6284 0)
+			(at 195.58 50.0884 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5162,7 +5162,7 @@
 			)
 		)
 		(property "Sheetfile" "RAM.kicad_sch"
-			(at 205.74 81.2296 0)
+			(at 195.58 78.6896 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5171,7 +5171,7 @@
 			)
 		)
 		(pin "Ins_IF[0..15]" output
-			(at 243.84 60.96 0)
+			(at 233.68 58.42 0)
 			(uuid "ea304c63-b289-452c-a822-e09cee3cee7c")
 			(effects
 				(font
@@ -5181,7 +5181,7 @@
 			)
 		)
 		(pin "IO[0..15]" tri_state
-			(at 205.74 55.88 180)
+			(at 195.58 53.34 180)
 			(uuid "b84d2ea0-5069-4d5f-b10c-36516d4942ed")
 			(effects
 				(font
@@ -5191,7 +5191,7 @@
 			)
 		)
 		(pin "Addr[0..15]" tri_state
-			(at 205.74 58.42 180)
+			(at 195.58 55.88 180)
 			(uuid "f250e5bb-f325-4645-b301-c900906af505")
 			(effects
 				(font
@@ -5201,7 +5201,7 @@
 			)
 		)
 		(pin "PC[0..15]" input
-			(at 205.74 60.96 180)
+			(at 195.58 58.42 180)
 			(uuid "8b8c00c3-3407-4d91-aa98-017fab7f181a")
 			(effects
 				(font
@@ -5211,7 +5211,7 @@
 			)
 		)
 		(pin "FLUSH_IF" input
-			(at 205.74 63.5 180)
+			(at 195.58 60.96 180)
 			(uuid "a63738c0-0e33-493c-9d01-64edf34d0ad1")
 			(effects
 				(font
@@ -5221,7 +5221,7 @@
 			)
 		)
 		(pin "~{MemStore}" input
-			(at 205.74 66.04 180)
+			(at 195.58 63.5 180)
 			(uuid "52b2f322-6f23-4c6b-96ed-fc2af2bcf8a5")
 			(effects
 				(font
@@ -5231,7 +5231,7 @@
 			)
 		)
 		(pin "~{MemLoad}" input
-			(at 205.74 68.58 180)
+			(at 195.58 66.04 180)
 			(uuid "9a85f116-13cd-4627-97f4-7e585d9cc00a")
 			(effects
 				(font
@@ -5241,7 +5241,7 @@
 			)
 		)
 		(pin "~{RAMEN_L}" input
-			(at 205.74 73.66 180)
+			(at 195.58 71.12 180)
 			(uuid "1a5a169e-ad5e-40de-be9f-19f04e2d602b")
 			(effects
 				(font
@@ -5251,7 +5251,7 @@
 			)
 		)
 		(pin "~{RAMEN_R}" input
-			(at 205.74 78.74 180)
+			(at 195.58 76.2 180)
 			(uuid "f11b82ab-f445-4393-8149-324d588a3e2d")
 			(effects
 				(font
@@ -5261,7 +5261,7 @@
 			)
 		)
 		(pin "RAMEN_R" input
-			(at 205.74 76.2 180)
+			(at 195.58 73.66 180)
 			(uuid "8da07ee5-9ad4-47aa-8518-a04721c46cf0")
 			(effects
 				(font
@@ -5271,7 +5271,7 @@
 			)
 		)
 		(pin "RAMEN_L" input
-			(at 205.74 71.12 180)
+			(at 195.58 68.58 180)
 			(uuid "2ea19eaa-42c3-4b37-a655-1ddf841d126e")
 			(effects
 				(font

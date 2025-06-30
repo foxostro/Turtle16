@@ -3,7 +3,7 @@
 	(generator "eeschema")
 	(generator_version "9.0")
 	(uuid "e891b433-8f8c-451a-9a1f-eebc6bd34030")
-	(paper "A4")
+	(paper "USLetter")
 	(title_block
 		(date "2023-11-25")
 		(rev "A")

@@ -3,7 +3,7 @@
 	(generator "eeschema")
 	(generator_version "9.0")
 	(uuid "29a63f1d-37e8-4b5f-8ac7-6a9b82abbe9f")
-	(paper "A4")
+	(paper "USLetter")
 	(title_block
 		(title "Turtle16: RAM")
 		(date "2023-11-25")

@@ -768,6 +768,22 @@
       "sheet5FD8D6EB"
     ],
     [
+      "bd5bc204-b8c7-4bbb-837e-63cc5182bfbe",
+      "Operand Forwarding A"
+    ],
+    [
+      "d57c458c-d6b9-4988-aa86-ff7bb54c7a0d",
+      "Operand Forwarding B"
+    ],
+    [
+      "097a8f3d-04b1-4b7c-9023-b6f6b0c017d7",
+      "sheet60693B9A"
+    ],
+    [
+      "308b00b8-9bc8-4f6d-a97b-a673baac1269",
+      "sheet60693B9B"
+    ],
+    [
       "278b84b0-d28f-4248-8f63-f89f14b1dc97",
       "MEMModule"
     ],
@@ -788,24 +804,12 @@
       "EXModule"
     ],
     [
+      "5f0c81ab-e061-46b3-941f-11c63bee39e9",
+      "BypassModule"
+    ],
+    [
       "511f3e06-8e12-4701-ab9d-b334fc302cdf",
       "Clock Distribution"
-    ],
-    [
-      "84f439e8-1444-4fe8-b51a-3bb9769a863d",
-      "Operand Forwarding A"
-    ],
-    [
-      "2e370670-2291-4657-8360-03c3bd44e418",
-      "Operand Forwarding B"
-    ],
-    [
-      "c8cb28f7-4e0d-49a3-8b9b-fcff4adac1d4",
-      "sheet60693B9A"
-    ],
-    [
-      "d661b2bc-e1e7-41b6-9d3a-8c7c4264da70",
-      "sheet60693B9B"
     ],
     [
       "00000000-0000-0000-0000-00005faed671",

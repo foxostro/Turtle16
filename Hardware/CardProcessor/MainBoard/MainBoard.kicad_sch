@@ -1283,6 +1283,17 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "TODO: Buffer Phi1, Phi2,\nand ~{RST} before going\nout onto the bus"
+		(exclude_from_sim no)
+		(at 59.69 40.64 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "201d2762-ddab-4ea6-b480-ca1be7aa39f8")
+	)
 	(junction
 		(at 147.32 95.25)
 		(diameter 0)
@@ -1578,7 +1589,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 33.02) (xy 58.42 33.02)
+			(xy 68.58 27.94) (xy 58.42 27.94)
 		)
 		(stroke
 			(width 0)
@@ -1738,7 +1749,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 22.86) (xy 58.42 22.86)
+			(xy 68.58 17.78) (xy 58.42 17.78)
 		)
 		(stroke
 			(width 0)
@@ -1848,6 +1859,16 @@
 	)
 	(wire
 		(pts
+			(xy 45.72 50.8) (xy 57.15 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4237ff35-21ff-4739-bbaa-dc4f71dc996f")
+	)
+	(wire
+		(pts
 			(xy 217.17 69.85) (xy 227.33 69.85)
 		)
 		(stroke
@@ -1888,7 +1909,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 25.4) (xy 58.42 25.4)
+			(xy 68.58 20.32) (xy 58.42 20.32)
 		)
 		(stroke
 			(width 0)
@@ -1905,6 +1926,16 @@
 			(type default)
 		)
 		(uuid "4f05fd71-383d-43b7-964a-2d9f53c42fbc")
+	)
+	(wire
+		(pts
+			(xy 45.72 53.34) (xy 57.15 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "503b6025-90ea-4296-bca3-7f8bcda67aeb")
 	)
 	(wire
 		(pts
@@ -1978,7 +2009,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 27.94) (xy 58.42 27.94)
+			(xy 68.58 22.86) (xy 58.42 22.86)
 		)
 		(stroke
 			(width 0)
@@ -2095,6 +2126,16 @@
 			(type default)
 		)
 		(uuid "6949075d-b8ef-4474-8284-db075fae9438")
+	)
+	(wire
+		(pts
+			(xy 45.72 48.26) (xy 57.15 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6dd13438-e9c2-411e-be83-b6782567a4b8")
 	)
 	(bus
 		(pts
@@ -2338,7 +2379,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 30.48) (xy 58.42 30.48)
+			(xy 68.58 25.4) (xy 58.42 25.4)
 		)
 		(stroke
 			(width 0)
@@ -2458,6 +2499,16 @@
 	)
 	(wire
 		(pts
+			(xy 57.15 40.64) (xy 45.72 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ed7172e-26fd-490e-bf91-712692487f5c")
+	)
+	(wire
+		(pts
 			(xy 78.74 77.47) (xy 73.66 77.47)
 		)
 		(stroke
@@ -2558,7 +2609,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 35.56) (xy 58.42 35.56)
+			(xy 68.58 30.48) (xy 58.42 30.48)
 		)
 		(stroke
 			(width 0)
@@ -2615,6 +2666,16 @@
 			(type default)
 		)
 		(uuid "b38e3060-2903-48f0-b7d9-94666dada8c6")
+	)
+	(wire
+		(pts
+			(xy 57.15 43.18) (xy 45.72 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b40dffe5-98fe-4179-b799-4c71ff9c4ff2")
 	)
 	(wire
 		(pts
@@ -2805,6 +2866,16 @@
 			(type default)
 		)
 		(uuid "ca7d78b4-7152-47b4-a60e-7e08c48592d0")
+	)
+	(wire
+		(pts
+			(xy 57.15 45.72) (xy 45.72 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cab5f2fa-1b80-4d77-97ba-26d775ee5647")
 	)
 	(wire
 		(pts
@@ -3038,6 +3109,16 @@
 	)
 	(wire
 		(pts
+			(xy 15.24 40.64) (xy 26.67 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed1ff04b-f3d9-4ccf-b787-d46e8b91d3cf")
+	)
+	(wire
+		(pts
 			(xy 70.485 49.53) (xy 90.17 49.53)
 		)
 		(stroke
@@ -3216,7 +3297,7 @@
 		)
 		(uuid "feea8655-95f4-4ff1-9ff8-4246b88db57f")
 	)
-	(label "Phi1_In"
+	(label "Phi1_Bus"
 		(at 217.17 69.85 0)
 		(effects
 			(font
@@ -3225,6 +3306,26 @@
 			(justify left bottom)
 		)
 		(uuid "00dc0189-2f01-4181-9e78-1348696bb212")
+	)
+	(label "Phi1u"
+		(at 57.15 48.26 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "01b99d32-df3b-4b6d-8782-12eacbed98c1")
+	)
+	(label "Phi1_Bus"
+		(at 57.15 40.64 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "0fd0efc9-a8f9-4fd1-9af9-71b532264b3a")
 	)
 	(label "~{RST_sync}"
 		(at 21.59 97.79 0)
@@ -3236,7 +3337,7 @@
 		)
 		(uuid "12f4d24b-fad0-4bc0-9912-8f6297be7a81")
 	)
-	(label "Phi2_In"
+	(label "Phi2_Bus"
 		(at 217.17 72.39 0)
 		(effects
 			(font
@@ -3257,7 +3358,7 @@
 		(uuid "1580e543-2fad-484d-adcd-e18ed00bf023")
 	)
 	(label "Phi1b"
-		(at 68.58 25.4 180)
+		(at 68.58 20.32 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3297,7 +3398,7 @@
 		(uuid "30eb14df-f86c-47f6-b4d8-54c37ed8c8c6")
 	)
 	(label "Phi1e"
-		(at 68.58 33.02 180)
+		(at 68.58 27.94 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3306,7 +3407,7 @@
 		)
 		(uuid "3d2f1114-25ad-4fb1-99bb-6c5bdc9053e0")
 	)
-	(label "Phi1_In"
+	(label "Phi1u"
 		(at 16.51 23.495 0)
 		(effects
 			(font
@@ -3315,6 +3416,16 @@
 			(justify left bottom)
 		)
 		(uuid "3f4f6ea3-c6f9-455e-8586-2f6175385f27")
+	)
+	(label "Phi2_Bus"
+		(at 57.15 43.18 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "3fa82cf2-8bd1-4345-9838-38dd17a3720d")
 	)
 	(label "~{RST_sync}"
 		(at 85.09 22.86 0)
@@ -3337,7 +3448,7 @@
 		(uuid "58b3eec0-9d9d-4814-81e7-48f6865b4de8")
 	)
 	(label "Phi2"
-		(at 68.58 35.56 180)
+		(at 68.58 30.48 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3347,7 +3458,7 @@
 		(uuid "58db3bcb-80e4-4884-a55f-b7d3844682d6")
 	)
 	(label "Phi1c"
-		(at 68.58 27.94 180)
+		(at 68.58 22.86 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3355,6 +3466,26 @@
 			(justify right bottom)
 		)
 		(uuid "6aebf4cb-e32c-4e14-9338-06dcf74fb162")
+	)
+	(label "~{HLT_Bus}"
+		(at 217.17 67.31 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7634f5df-cfbe-41c5-9be3-157167e58549")
+	)
+	(label "~{HLT_Bus}"
+		(at 57.15 45.72 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "87ccd1e2-99eb-429a-9da0-bdfac0739d6e")
 	)
 	(label "Phi1d"
 		(at 90.17 133.35 0)
@@ -3406,6 +3537,16 @@
 		)
 		(uuid "a37cf5ec-353c-48c5-ae53-a5ee18e44c3e")
 	)
+	(label "Ctl_EX0"
+		(at 15.24 40.64 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "aa357dc2-24e6-4a28-ad1c-37810b8369c3")
+	)
 	(label "Ctl_WB17"
 		(at 20.955 130.81 0)
 		(effects
@@ -3416,7 +3557,7 @@
 		)
 		(uuid "aadb54f0-2307-47c4-b00d-c6af76565703")
 	)
-	(label "Phi2_In"
+	(label "Phi2u"
 		(at 16.51 26.035 0)
 		(effects
 			(font
@@ -3427,7 +3568,7 @@
 		(uuid "b08620f8-248d-419a-ab77-d9fa1176d1ed")
 	)
 	(label "Phi1a"
-		(at 68.58 22.86 180)
+		(at 68.58 17.78 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3446,8 +3587,18 @@
 		)
 		(uuid "ce368fad-128b-4bc7-842b-32432ad9aaba")
 	)
+	(label "~{RST_sync}"
+		(at 57.15 53.34 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "d26772f6-acc4-4f13-9c7f-3f380c5429c7")
+	)
 	(label "Phi1d"
-		(at 68.58 30.48 180)
+		(at 68.58 25.4 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3455,6 +3606,16 @@
 			(justify right bottom)
 		)
 		(uuid "e2236b5f-93eb-4ed4-b730-a5698826cb50")
+	)
+	(label "Phi2u"
+		(at 57.15 50.8 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "e5196ed1-ac34-4483-bfbf-7d4dc79fca4c")
 	)
 	(label "Phi1a"
 		(at 85.09 20.32 0)
@@ -3475,16 +3636,6 @@
 			(justify right bottom)
 		)
 		(uuid "f4750c60-8042-4b10-bb1a-5310ac684e7c")
-	)
-	(label "Ctl_EX0"
-		(at 217.17 67.31 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "f728de9e-f649-4023-8fb3-1699e973d416")
 	)
 	(label "~{RST_sync}"
 		(at 149.86 44.45 0)
@@ -4821,7 +4972,7 @@
 				(justify left)
 			)
 		)
-		(pin "Phi2_In" output
+		(pin "Phi2_Bus" input
 			(at 227.33 72.39 180)
 			(uuid "fc16fc80-ee9d-439c-992d-f4c7cc994217")
 			(effects
@@ -4851,7 +5002,7 @@
 				(justify left)
 			)
 		)
-		(pin "Phi1_In" output
+		(pin "Phi1_Bus" input
 			(at 227.33 69.85 180)
 			(uuid "dc0a327e-6616-4077-be41-0d7530706938")
 			(effects
@@ -4861,7 +5012,7 @@
 				(justify left)
 			)
 		)
-		(pin "~{HLT}" input
+		(pin "~{HLT_Bus}" input
 			(at 227.33 67.31 180)
 			(uuid "f5183afa-9f48-4d48-8560-a8a5859bb84a")
 			(effects
@@ -5628,8 +5779,8 @@
 		)
 	)
 	(sheet
-		(at 26.67 20.955)
-		(size 31.75 16.51)
+		(at 26.67 15.24)
+		(size 31.75 17.78)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -5644,7 +5795,7 @@
 		)
 		(uuid "511f3e06-8e12-4701-ab9d-b334fc302cdf")
 		(property "Sheetname" "Clock Distribution"
-			(at 26.67 20.2434 0)
+			(at 26.67 14.5284 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5653,7 +5804,7 @@
 			)
 		)
 		(property "Sheetfile" "ClockDistribution.kicad_sch"
-			(at 26.67 38.0496 0)
+			(at 26.67 33.6046 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5662,7 +5813,7 @@
 			)
 		)
 		(pin "Phi1a" output
-			(at 58.42 22.86 0)
+			(at 58.42 17.78 0)
 			(uuid "7efbaa49-b57a-4f92-ae50-d2f70ed7c854")
 			(effects
 				(font
@@ -5672,7 +5823,7 @@
 			)
 		)
 		(pin "Phi1b" output
-			(at 58.42 25.4 0)
+			(at 58.42 20.32 0)
 			(uuid "d3722b0b-69b1-4d59-ae58-767ce91d19ce")
 			(effects
 				(font
@@ -5682,7 +5833,7 @@
 			)
 		)
 		(pin "Phi1d" output
-			(at 58.42 30.48 0)
+			(at 58.42 25.4 0)
 			(uuid "bf16a3f1-148a-4dca-82a7-ebfe7d0dfc59")
 			(effects
 				(font
@@ -5692,7 +5843,7 @@
 			)
 		)
 		(pin "Phi1c" output
-			(at 58.42 27.94 0)
+			(at 58.42 22.86 0)
 			(uuid "c83abbea-c31d-416d-b062-2cb9b34a2623")
 			(effects
 				(font
@@ -5702,7 +5853,7 @@
 			)
 		)
 		(pin "Phi2" output
-			(at 58.42 35.56 0)
+			(at 58.42 30.48 0)
 			(uuid "84f17847-658c-490a-90d0-60b956f5aab1")
 			(effects
 				(font
@@ -5711,7 +5862,7 @@
 				(justify right)
 			)
 		)
-		(pin "Phi1_In" input
+		(pin "Phi1u" input
 			(at 26.67 23.495 180)
 			(uuid "71d91b01-239b-46b4-b637-389f29aa10c3")
 			(effects
@@ -5721,7 +5872,7 @@
 				(justify left)
 			)
 		)
-		(pin "Phi2_In" input
+		(pin "Phi2u" input
 			(at 26.67 26.035 180)
 			(uuid "f6621b35-c6f5-448c-84dd-7a1ba5319e12")
 			(effects
@@ -5732,7 +5883,7 @@
 			)
 		)
 		(pin "Phi1e" output
-			(at 58.42 33.02 0)
+			(at 58.42 27.94 0)
 			(uuid "ad2c623b-554b-4dc2-bcb3-b0cf7c67f89d")
 			(effects
 				(font
@@ -5745,6 +5896,118 @@
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "#")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 26.67 38.1)
+		(size 19.05 17.885)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "53a2b8c9-c045-4ac6-a158-8969563b20a4")
+		(property "Sheetname" "Clock"
+			(at 26.67 37.3884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Clock.kicad_sch"
+			(at 26.67 56.5696 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "Phi1u" output
+			(at 45.72 48.26 0)
+			(uuid "c48b8253-b329-4447-9594-91312b023f06")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Phi2u" output
+			(at 45.72 50.8 0)
+			(uuid "b479bd7a-3d2f-4f8a-821c-01b130f7f453")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "~{HLT}" input
+			(at 26.67 40.64 180)
+			(uuid "c29cfc62-c20c-454f-bd9f-b6832eed0016")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{RST_sync}" output
+			(at 45.72 53.34 0)
+			(uuid "3287e128-eab7-4db7-b858-2e636747d858")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Phi1_Bus" output
+			(at 45.72 40.64 0)
+			(uuid "f01e561a-eae3-4108-9152-32a7a6699527")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Phi2_Bus" output
+			(at 45.72 43.18 0)
+			(uuid "da59249f-9f39-4e3a-a6f9-cd1db38f9a50")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "~{HLT_Bus}" output
+			(at 45.72 45.72 0)
+			(uuid "78f0d48c-6be2-45a4-bf11-51b07487e858")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+					(page "44")
 				)
 			)
 		)

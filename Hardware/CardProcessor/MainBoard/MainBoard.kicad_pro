@@ -512,7 +512,7 @@
       "netlist": "",
       "plot": "",
       "pos_files": "",
-      "specctra_dsn": "../../../Desktop/ProcessorBoard.dsn",
+      "specctra_dsn": "../../../../../Desktop/MainBoard.dsn",
       "step": "",
       "svg": "",
       "vrml": ""
@@ -646,6 +646,14 @@
     [
       "83c5181e-f5ee-453c-ae5c-d7256ba8837d",
       "Root"
+    ],
+    [
+      "2f0d5dde-3f58-4306-8ccd-0ba407e98ba9",
+      "ExpansionSlotA"
+    ],
+    [
+      "f77fb7b0-dd41-4810-b5b8-e8ae7f1cdfbf",
+      "ExpansionSlotB"
     ],
     [
       "278b84b0-d28f-4248-8f63-f89f14b1dc97",

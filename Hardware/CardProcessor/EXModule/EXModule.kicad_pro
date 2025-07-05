@@ -512,7 +512,7 @@
       "netlist": "",
       "plot": "",
       "pos_files": "",
-      "specctra_dsn": "../../../Desktop/ProcessorBoard.dsn",
+      "specctra_dsn": "../../../../../Desktop/EXModule.dsn",
       "step": "",
       "svg": "",
       "vrml": ""

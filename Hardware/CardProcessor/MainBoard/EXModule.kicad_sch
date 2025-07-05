@@ -313,7 +313,7 @@
 		)
 		(uuid "d7130fb8-dbf7-48c1-9f7f-e788ac9c70f9")
 	)
-	(hierarchical_label "Phi1a"
+	(hierarchical_label "Phi1e"
 		(shape input)
 		(at 110.49 80.01 180)
 		(effects
@@ -488,7 +488,7 @@
 				(justify right)
 			)
 		)
-		(pin "Phi1a" input
+		(pin "Phi1e" input
 			(at 118.11 80.01 180)
 			(uuid "20f9ee27-7455-4365-9eaf-f754c324686e")
 			(effects

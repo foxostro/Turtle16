@@ -1576,6 +1576,16 @@
 		)
 		(uuid "1561f4c1-1d63-48e7-ae24-67bb324f6876")
 	)
+	(wire
+		(pts
+			(xy 68.58 33.02) (xy 58.42 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "16dd08be-116e-4700-b705-bf6fc01a7ece")
+	)
 	(bus
 		(pts
 			(xy 78.74 104.14) (xy 78.74 148.59)
@@ -1728,7 +1738,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 23.495) (xy 58.42 23.495)
+			(xy 68.58 22.86) (xy 58.42 22.86)
 		)
 		(stroke
 			(width 0)
@@ -1878,7 +1888,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 26.035) (xy 58.42 26.035)
+			(xy 68.58 25.4) (xy 58.42 25.4)
 		)
 		(stroke
 			(width 0)
@@ -1968,7 +1978,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 28.575) (xy 58.42 28.575)
+			(xy 68.58 27.94) (xy 58.42 27.94)
 		)
 		(stroke
 			(width 0)
@@ -2328,7 +2338,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 31.115) (xy 58.42 31.115)
+			(xy 68.58 30.48) (xy 58.42 30.48)
 		)
 		(stroke
 			(width 0)
@@ -2548,7 +2558,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 33.655) (xy 58.42 33.655)
+			(xy 68.58 35.56) (xy 58.42 35.56)
 		)
 		(stroke
 			(width 0)
@@ -3247,7 +3257,7 @@
 		(uuid "1580e543-2fad-484d-adcd-e18ed00bf023")
 	)
 	(label "Phi1b"
-		(at 68.58 26.035 180)
+		(at 68.58 25.4 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3286,6 +3296,16 @@
 		)
 		(uuid "30eb14df-f86c-47f6-b4d8-54c37ed8c8c6")
 	)
+	(label "Phi1e"
+		(at 68.58 33.02 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "3d2f1114-25ad-4fb1-99bb-6c5bdc9053e0")
+	)
 	(label "Phi1_In"
 		(at 16.51 23.495 0)
 		(effects
@@ -3306,7 +3326,7 @@
 		)
 		(uuid "52f46d7d-76d3-4cf8-9ae8-3c963ba0185c")
 	)
-	(label "Phi1a"
+	(label "Phi1e"
 		(at 81.28 77.47 0)
 		(effects
 			(font
@@ -3317,7 +3337,7 @@
 		(uuid "58b3eec0-9d9d-4814-81e7-48f6865b4de8")
 	)
 	(label "Phi2"
-		(at 68.58 33.655 180)
+		(at 68.58 35.56 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3327,7 +3347,7 @@
 		(uuid "58db3bcb-80e4-4884-a55f-b7d3844682d6")
 	)
 	(label "Phi1c"
-		(at 68.58 28.575 180)
+		(at 68.58 27.94 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3407,7 +3427,7 @@
 		(uuid "b08620f8-248d-419a-ab77-d9fa1176d1ed")
 	)
 	(label "Phi1a"
-		(at 68.58 23.495 180)
+		(at 68.58 22.86 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3427,7 +3447,7 @@
 		(uuid "ce368fad-128b-4bc7-842b-32432ad9aaba")
 	)
 	(label "Phi1d"
-		(at 68.58 31.115 180)
+		(at 68.58 30.48 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5609,7 +5629,7 @@
 	)
 	(sheet
 		(at 26.67 20.955)
-		(size 31.75 15.24)
+		(size 31.75 16.51)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -5633,7 +5653,7 @@
 			)
 		)
 		(property "Sheetfile" "ClockDistribution.kicad_sch"
-			(at 26.67 36.7796 0)
+			(at 26.67 38.0496 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5642,7 +5662,7 @@
 			)
 		)
 		(pin "Phi1a" output
-			(at 58.42 23.495 0)
+			(at 58.42 22.86 0)
 			(uuid "7efbaa49-b57a-4f92-ae50-d2f70ed7c854")
 			(effects
 				(font
@@ -5652,7 +5672,7 @@
 			)
 		)
 		(pin "Phi1b" output
-			(at 58.42 26.035 0)
+			(at 58.42 25.4 0)
 			(uuid "d3722b0b-69b1-4d59-ae58-767ce91d19ce")
 			(effects
 				(font
@@ -5662,7 +5682,7 @@
 			)
 		)
 		(pin "Phi1d" output
-			(at 58.42 31.115 0)
+			(at 58.42 30.48 0)
 			(uuid "bf16a3f1-148a-4dca-82a7-ebfe7d0dfc59")
 			(effects
 				(font
@@ -5672,7 +5692,7 @@
 			)
 		)
 		(pin "Phi1c" output
-			(at 58.42 28.575 0)
+			(at 58.42 27.94 0)
 			(uuid "c83abbea-c31d-416d-b062-2cb9b34a2623")
 			(effects
 				(font
@@ -5682,7 +5702,7 @@
 			)
 		)
 		(pin "Phi2" output
-			(at 58.42 33.655 0)
+			(at 58.42 35.56 0)
 			(uuid "84f17847-658c-490a-90d0-60b956f5aab1")
 			(effects
 				(font
@@ -5709,6 +5729,16 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+			)
+		)
+		(pin "Phi1e" output
+			(at 58.42 33.02 0)
+			(uuid "ad2c623b-554b-4dc2-bcb3-b0cf7c67f89d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 			)
 		)
 		(instances
@@ -6015,7 +6045,7 @@
 				(justify left)
 			)
 		)
-		(pin "Phi1a" input
+		(pin "Phi1e" input
 			(at 91.44 77.47 180)
 			(uuid "549e03b1-6928-48cb-b16d-0a31054a0ce6")
 			(effects

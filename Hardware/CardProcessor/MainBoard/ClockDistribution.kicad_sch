@@ -1092,9 +1092,9 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "The Phi1 clock is split into four\nclock outputs to allow clock line\ncapacitance and current load to be\nspread across multiple pins."
+	(text "The Phi1 clock is split into five\nclock outputs to allow clock line\ncapacitance and current load to be\nspread across multiple pins."
 		(exclude_from_sim no)
-		(at 162.56 118.745 0)
+		(at 168.148 127.508 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1121,10 +1121,22 @@
 		(uuid "1d866859-d2db-4ece-9749-10dfbd082a0f")
 	)
 	(junction
+		(at 128.27 105.41)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2004b92e-710d-422b-a124-acd8e8d1db6d")
+	)
+	(junction
 		(at 236.347 105.41)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "205435cf-f8a1-4081-a325-15a4828a77e3")
+	)
+	(junction
+		(at 250.317 107.95)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2c940fe3-65b1-4c00-bbf3-3c99f7820b74")
 	)
 	(junction
 		(at 190.627 97.79)
@@ -1175,10 +1187,6 @@
 		(uuid "d43929b3-45d0-4657-9911-517f0a864766")
 	)
 	(no_connect
-		(at 156.21 107.95)
-		(uuid "28501c46-bb87-4614-9d8b-5aa7584d2ea2")
-	)
-	(no_connect
 		(at 156.21 110.49)
 		(uuid "a98149db-a976-4410-af9a-64f21c43cc85")
 	)
@@ -1205,6 +1213,16 @@
 			(type default)
 		)
 		(uuid "082e2cfc-3dea-4e0c-ab13-1ff00c267b50")
+	)
+	(wire
+		(pts
+			(xy 130.81 107.95) (xy 128.27 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d07c73c-4fde-479c-9dfa-70418f97b4ff")
 	)
 	(wire
 		(pts
@@ -1298,6 +1316,16 @@
 	)
 	(wire
 		(pts
+			(xy 128.27 107.95) (xy 128.27 105.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "66847005-4782-466a-8f67-fb7dfb89d6dc")
+	)
+	(wire
+		(pts
 			(xy 177.927 95.25) (xy 179.197 95.25)
 		)
 		(stroke
@@ -1388,6 +1416,16 @@
 	)
 	(wire
 		(pts
+			(xy 250.317 107.95) (xy 251.587 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf8ada28-0b38-4e07-aa85-8f535249e6a8")
+	)
+	(wire
+		(pts
 			(xy 128.27 105.41) (xy 130.81 105.41)
 		)
 		(stroke
@@ -1448,6 +1486,16 @@
 	)
 	(wire
 		(pts
+			(xy 156.21 107.95) (xy 250.317 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "efd4df74-7597-49f8-8926-997d5b790203")
+	)
+	(wire
+		(pts
 			(xy 87.63 95.25) (xy 105.41 95.25)
 		)
 		(stroke
@@ -1488,6 +1536,17 @@
 			(justify left)
 		)
 		(uuid "4e97454c-4f40-4e23-b0ac-9cd6eed1ef9d")
+	)
+	(hierarchical_label "Phi1e"
+		(shape output)
+		(at 251.587 107.95 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "92f5dd6f-2cb2-412e-9d72-42f914f13fb8")
 	)
 	(hierarchical_label "Phi2_In"
 		(shape input)
@@ -1540,7 +1599,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "0abba84d-876b-48f8-a3e6-c65ed98fe996")
 		(property "Reference" "R17"
 			(at 98.0186 111.8616 0)
@@ -2076,7 +2135,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "6b2b8a10-9d0c-4572-a89e-5e933b19933c")
 		(property "Reference" "R18"
 			(at 106.9086 111.8616 0)
@@ -2373,17 +2432,34 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 130.81 107.95 270)
+		(lib_id "Connector:TestPoint")
+		(at 250.317 107.95 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c1c8f5f9-33fc-485b-adf7-5d5fde46286e")
-		(property "Reference" "#PWR0384"
-			(at 124.46 107.95 0)
+		(uuid "a6f363d5-54c7-47a4-aa43-23152a7b7efb")
+		(property "Reference" "TP106"
+			(at 251.587 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Phi1e"
+			(at 251.587 104.775 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 255.397 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2391,17 +2467,8 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
-			(at 127 107.95 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 130.81 107.95 0)
+		(property "Datasheet" "~"
+			(at 255.397 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2409,31 +2476,21 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
-			(at 130.81 107.95 0)
+		(property "Description" ""
+			(at 250.317 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 130.81 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
 			)
 		)
 		(pin "1"
-			(uuid "703356fd-91d9-47cc-9647-0fa3af9c8785")
+			(uuid "3e67e8e7-9290-4906-9a6b-7a496be0cd02")
 		)
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
-					(reference "#PWR0384")
+					(reference "TP106")
 					(unit 1)
 				)
 			)

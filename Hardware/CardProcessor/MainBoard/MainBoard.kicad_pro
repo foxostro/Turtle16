@@ -668,12 +668,20 @@
       "sheet5FCE207B"
     ],
     [
+      "7ea471aa-b409-45f6-8207-8d4b8300d145",
+      "Write Back and Register File"
+    ],
+    [
       "960ada49-cad4-45a9-8c06-0a6f2ac09c81",
       "ID Flush"
     ],
     [
       "00000000-0000-0000-0000-00005fb92c55",
       "Buffer Addr"
+    ],
+    [
+      "5d24f4c0-dd7f-43d2-9387-4d33d495b9b3",
+      "sheet60693B95"
     ],
     [
       "00000000-0000-0000-0000-00005ff1115c",
@@ -704,6 +712,10 @@
       "RAM"
     ],
     [
+      "15d111da-e708-4cff-aee7-702b294baaf1",
+      "Select Write Back Source"
+    ],
+    [
       "00000000-0000-0000-0000-000060693bcf",
       "sheet60693B97"
     ],
@@ -732,24 +744,16 @@
       "PCIFModule"
     ],
     [
+      "1a78a7cb-4b7c-49f5-83d0-cd7a87376a8e",
+      "RegisterFileModule"
+    ],
+    [
       "511f3e06-8e12-4701-ab9d-b334fc302cdf",
       "Clock Distribution"
     ],
     [
       "00000000-0000-0000-0000-00005fed3839",
       "ID"
-    ],
-    [
-      "e246f5e8-ec22-4141-b6b8-29cb3989af2b",
-      "Write Back and Register File"
-    ],
-    [
-      "15d111da-e708-4cff-aee7-702b294baaf1",
-      "Select Write Back Source"
-    ],
-    [
-      "5d24f4c0-dd7f-43d2-9387-4d33d495b9b3",
-      "sheet60693B95"
     ],
     [
       "00000000-0000-0000-0000-000060a71bbf",

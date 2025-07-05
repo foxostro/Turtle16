@@ -11039,6 +11039,158 @@
 		)
 	)
 	(sheet
+		(at 31.75 115.57)
+		(size 41.91 25.4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "1a78a7cb-4b7c-49f5-83d0-cd7a87376a8e")
+		(property "Sheetname" "RegisterFileModule"
+			(at 31.75 114.8584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "RegisterFileModule.kicad_sch"
+			(at 31.75 141.5546 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "Ins_ID[0..15]" input
+			(at 31.75 118.11 180)
+			(uuid "c769f105-116e-4f74-ac02-509d34584266")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Phi2" input
+			(at 31.75 120.65 180)
+			(uuid "cfe2e1ee-4e4e-4575-bb31-07b071c72d4d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "RegisterA[0..15]" output
+			(at 73.66 125.73 0)
+			(uuid "0fc765f2-dded-4b11-8d66-19c7308f19ee")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "RegisterB[0..15]" output
+			(at 73.66 128.27 0)
+			(uuid "fb81d44b-ae32-4d52-b932-8bc15845ce76")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SelC_WB[0..2]" input
+			(at 31.75 133.35 180)
+			(uuid "e202395d-4c07-40f3-9eef-3859e5721006")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "StoreOp_WB[0..15]" input
+			(at 31.75 138.43 180)
+			(uuid "ce7abd32-a0ad-47ba-912d-7bcbe5848c1c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "WriteBackSrc" input
+			(at 31.75 130.81 180)
+			(uuid "9d7a621c-a231-40ec-8751-b3ee225c9211")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Y_WB[0..15]" input
+			(at 31.75 135.89 180)
+			(uuid "538e3af3-7cf2-4b7f-aedf-d47d443331d3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{WBEN}" input
+			(at 31.75 123.19 180)
+			(uuid "85d5aaa7-1eaf-402a-8bf0-68c908efce91")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{WRH}" input
+			(at 31.75 125.73 180)
+			(uuid "d93b5ae9-d050-4e5a-9a5c-80fb15037726")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{WRL}" input
+			(at 31.75 128.27 180)
+			(uuid "f7ba8469-3942-406f-bc7c-b88ca5137e7a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+					(page "40")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 160.02 39.37)
 		(size 44.45 60.96)
 		(exclude_from_sim no)
@@ -11877,158 +12029,6 @@
 		(pin "Phi1d" input
 			(at 134.62 143.51 180)
 			(uuid "8c8b8ea1-af61-41fa-8d96-842cba49151d")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-					(page "#")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 31.75 115.57)
-		(size 41.91 25.4)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "e246f5e8-ec22-4141-b6b8-29cb3989af2b")
-		(property "Sheetname" "Write Back and Register File"
-			(at 31.75 114.8584 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "WBReg.kicad_sch"
-			(at 31.75 141.5546 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(pin "~{WRL}" input
-			(at 31.75 128.27 180)
-			(uuid "9ad05632-88c3-47f6-86df-e2d850a4096b")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "~{WBEN}" input
-			(at 31.75 123.19 180)
-			(uuid "2af30698-e92b-4ddf-9cb5-372200188259")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "StoreOp_WB[0..15]" input
-			(at 31.75 138.43 180)
-			(uuid "966b09ef-b3fe-4a65-8a57-e4ae5acc2aec")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Y_WB[0..15]" input
-			(at 31.75 135.89 180)
-			(uuid "ecdcb4c3-ab30-4a2a-a1aa-e72c9cdd6829")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "WriteBackSrc" input
-			(at 31.75 130.81 180)
-			(uuid "99348b7c-f45b-4fc0-afda-514a5e711ce1")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "SelC_WB[0..2]" input
-			(at 31.75 133.35 180)
-			(uuid "96a0fdad-c41c-4021-9d1f-eae53d398ff1")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Ins_ID[0..15]" input
-			(at 31.75 118.11 180)
-			(uuid "42a01708-b643-4649-9275-525d680a480f")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "~{WRH}" input
-			(at 31.75 125.73 180)
-			(uuid "34af196d-6212-418b-a19d-b9e7472177a7")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "RegisterA[0..15]" output
-			(at 73.66 125.73 0)
-			(uuid "8401240f-4ee5-4a3d-9d72-1452adead949")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "RegisterB[0..15]" output
-			(at 73.66 128.27 0)
-			(uuid "619f186f-b439-4886-97fc-15b32d5f6d7f")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "Phi2" input
-			(at 31.75 120.65 180)
-			(uuid "5410f0b0-e74f-40ff-8795-b632ded7e399")
 			(effects
 				(font
 					(size 1.27 1.27)

@@ -1,0 +1,395 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "6c5cb52f-f47e-48fe-bc5d-becbd5c588d3")
+	(paper "USLetter")
+	(title_block
+		(date "2025-07-01")
+		(rev "A")
+	)
+	(lib_symbols)
+	(wire
+		(pts
+			(xy 105.41 101.6) (xy 115.57 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "09270d4d-dc42-42d5-ae30-216f8a27c216")
+	)
+	(bus
+		(pts
+			(xy 157.48 99.06) (xy 167.64 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4148b57b-b964-4c1b-a17b-dfb522378b0e")
+	)
+	(bus
+		(pts
+			(xy 105.41 106.68) (xy 115.57 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e2bac4d-43f9-4514-b946-c10326d51b55")
+	)
+	(bus
+		(pts
+			(xy 105.41 109.22) (xy 115.57 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6338c8e4-871a-4571-992b-9239d3ea40dd")
+	)
+	(bus
+		(pts
+			(xy 105.41 91.44) (xy 115.57 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "75250dd7-dc5a-40b6-af31-5a382374e429")
+	)
+	(bus
+		(pts
+			(xy 157.48 101.6) (xy 167.64 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "83effa26-2db3-4958-ac8d-efe510600e6e")
+	)
+	(bus
+		(pts
+			(xy 105.41 111.76) (xy 115.57 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9e839b72-8dba-4098-9db3-ba08855c0282")
+	)
+	(wire
+		(pts
+			(xy 105.41 93.98) (xy 115.57 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b881f974-1f92-419a-847f-19b6586c9f96")
+	)
+	(wire
+		(pts
+			(xy 105.41 99.06) (xy 115.57 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c3e850ba-948c-4d94-942a-144a7149c283")
+	)
+	(wire
+		(pts
+			(xy 105.41 96.52) (xy 115.57 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dbb0d605-9edb-4327-a22a-5c9e2f62fe62")
+	)
+	(wire
+		(pts
+			(xy 105.41 104.14) (xy 115.57 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee6d0589-c95d-4488-b639-80421ca11bf3")
+	)
+	(hierarchical_label "StoreOp_WB[0..15]"
+		(shape input)
+		(at 105.41 111.76 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "03a3aa52-18be-4040-a591-c64c04a73492")
+	)
+	(hierarchical_label "Y_WB[0..15]"
+		(shape input)
+		(at 105.41 109.22 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "2050d2fd-2dba-4077-9811-4cb28340788b")
+	)
+	(hierarchical_label "~{WBEN}"
+		(shape input)
+		(at 105.41 96.52 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "7a1ae225-47e6-4972-9e5a-34f3b9a9812b")
+	)
+	(hierarchical_label "SelC_WB[0..2]"
+		(shape input)
+		(at 105.41 106.68 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9ff7f103-e4a9-4c80-a9d8-1868fc343b49")
+	)
+	(hierarchical_label "Phi2"
+		(shape input)
+		(at 105.41 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "bd76f04f-3e55-4f5c-871b-bf7d10ff0c2d")
+	)
+	(hierarchical_label "RegisterA[0..15]"
+		(shape output)
+		(at 167.64 99.06 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "cf4d72d1-b412-489e-9a66-58b2b2cc3ae3")
+	)
+	(hierarchical_label "~{WRL}"
+		(shape input)
+		(at 105.41 101.6 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "d0b2bc8c-6224-4b3c-a0ab-0392255f8b55")
+	)
+	(hierarchical_label "RegisterB[0..15]"
+		(shape output)
+		(at 167.64 101.6 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "d1b33ce5-741d-4a5d-90ff-6e7d66018886")
+	)
+	(hierarchical_label "~{WRH}"
+		(shape input)
+		(at 105.41 99.06 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e3d24f27-10ee-4d7d-b703-0f1c4326d92e")
+	)
+	(hierarchical_label "Ins_ID[0..15]"
+		(shape input)
+		(at 105.41 91.44 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e9f43c2d-b57c-4d70-9dcc-752169420140")
+	)
+	(hierarchical_label "WriteBackSrc"
+		(shape input)
+		(at 105.41 104.14 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f56da43b-9676-4e34-97a7-c0a779ad9762")
+	)
+	(sheet
+		(at 115.57 88.9)
+		(size 41.91 25.4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "7ea471aa-b409-45f6-8207-8d4b8300d145")
+		(property "Sheetname" "Write Back and Register File"
+			(at 115.57 88.1884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "WBReg.kicad_sch"
+			(at 115.57 114.8846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "~{WRL}" input
+			(at 115.57 101.6 180)
+			(uuid "999efab2-0762-4358-8668-ceb4b6a7c5d7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{WBEN}" input
+			(at 115.57 96.52 180)
+			(uuid "008d7f0a-ae6a-47a8-b504-ab28d2ee9fd0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "StoreOp_WB[0..15]" input
+			(at 115.57 111.76 180)
+			(uuid "8d35b4fc-7151-42e7-ad51-cf7e0e65a783")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Y_WB[0..15]" input
+			(at 115.57 109.22 180)
+			(uuid "3c3077a1-5f1b-4230-9ab6-b643d26b806d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "WriteBackSrc" input
+			(at 115.57 104.14 180)
+			(uuid "4669cde9-5090-494d-9875-14ba84d033e9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SelC_WB[0..2]" input
+			(at 115.57 106.68 180)
+			(uuid "5de1f813-7bf9-4ec2-9c68-d6c41c4129c2")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Ins_ID[0..15]" input
+			(at 115.57 91.44 180)
+			(uuid "1754839c-a1d9-48a4-af5d-7c0ec028f892")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{WRH}" input
+			(at 115.57 99.06 180)
+			(uuid "955ee4b2-c42b-4cfb-922b-1a16008f49e5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "RegisterA[0..15]" output
+			(at 157.48 99.06 0)
+			(uuid "be87e02e-f80a-48ef-ad8d-0f6c1d88d597")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "RegisterB[0..15]" output
+			(at 157.48 101.6 0)
+			(uuid "dce53510-d623-4849-a1d4-95546285559f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Phi2" input
+			(at 115.57 93.98 180)
+			(uuid "18934647-80ac-4272-bbfd-693d5f0e62e0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/1a78a7cb-4b7c-49f5-83d0-cd7a87376a8e"
+					(page "7")
+				)
+			)
+		)
+	)
+)

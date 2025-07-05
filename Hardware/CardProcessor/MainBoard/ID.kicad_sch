@@ -740,7 +740,7 @@
 		)
 		(pin "SelC_MEM[0..2]" input
 			(at 91.44 125.73 180)
-			(uuid "ab5db7e5-9de7-449f-b70b-9d0dd610b10b")
+			(uuid "4c02c28d-bf2e-4197-80b5-3dfcab4bb35d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -750,7 +750,7 @@
 		)
 		(pin "Ins_EX[0..10]" input
 			(at 91.44 128.27 180)
-			(uuid "a4813917-c395-4e03-b658-4133a12249cd")
+			(uuid "ff9a162e-84a8-47ef-8599-003ceb5f956c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -760,7 +760,7 @@
 		)
 		(pin "Ctl_MEM[14..20]" input
 			(at 91.44 123.19 180)
-			(uuid "f2cb3dc7-19c3-4d39-8479-4368f9d1680c")
+			(uuid "92679a18-fb40-4a33-ae99-82421a1f4763")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -770,7 +770,7 @@
 		)
 		(pin "Ins_ID[0..15]" input
 			(at 91.44 115.57 180)
-			(uuid "ee5ea3d6-1422-40d3-882b-9d8b9c72bbba")
+			(uuid "7d4ae06c-8f9c-4474-b836-ef462f89fe26")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -780,7 +780,7 @@
 		)
 		(pin "STALL" output
 			(at 127 118.11 0)
-			(uuid "6c1d0ff6-53d9-4a5b-89a8-5313d6ca7d94")
+			(uuid "4c93ad35-a186-4674-9446-bca581eda431")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -790,7 +790,7 @@
 		)
 		(pin "~{FLUSH}" output
 			(at 127 115.57 0)
-			(uuid "94b40fef-8e3d-4a32-a137-035c86ca86c8")
+			(uuid "5cc022e9-ced8-44e9-be52-a152ee0917f2")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -800,7 +800,7 @@
 		)
 		(pin "FWD_A" output
 			(at 127 120.65 0)
-			(uuid "bb592211-9895-49a1-bb6a-47f7a9f85864")
+			(uuid "bf90c317-0bde-4ea9-be88-f5c95955a148")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -810,7 +810,7 @@
 		)
 		(pin "FWD_EX_TO_A" output
 			(at 127 123.19 0)
-			(uuid "a28b42a6-1c1a-4667-9b8b-ad6bdfd23632")
+			(uuid "a3e34262-8951-4f65-909f-0d85a276cbab")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -820,7 +820,7 @@
 		)
 		(pin "FWD_MEM_TO_A" output
 			(at 127 125.73 0)
-			(uuid "fc56b098-c3aa-474b-aac9-da58d4f42386")
+			(uuid "bb245d8d-5d87-46cc-a0f7-ea3578cc6b89")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -830,7 +830,7 @@
 		)
 		(pin "FWD_EX_TO_B" output
 			(at 127 130.81 0)
-			(uuid "c360b637-6f5d-44e0-97f7-af09c2986ed7")
+			(uuid "3b62f9a5-a82e-4438-8a3d-42abb3e4e0b8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -840,7 +840,7 @@
 		)
 		(pin "FWD_MEM_TO_B" output
 			(at 127 133.35 0)
-			(uuid "91e34627-a183-42e4-bafa-955f631c2bab")
+			(uuid "f3cf7e44-9014-4adc-8662-5033370762d1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -850,7 +850,7 @@
 		)
 		(pin "FWD_B" output
 			(at 127 128.27 0)
-			(uuid "0df376e0-b3b8-4926-8318-ef70bcc43326")
+			(uuid "9dae2f9e-fbb6-4210-80e8-d79b24e6fa23")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -860,7 +860,7 @@
 		)
 		(pin "Ctl_Mid[0..23]" input
 			(at 91.44 113.03 180)
-			(uuid "d0e144a3-6f5f-4307-ac4c-47637e9032bf")
+			(uuid "5e6530ce-0e26-48a3-a393-b0e77ee9c21e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -870,7 +870,7 @@
 		)
 		(pin "~{RST_sync}" input
 			(at 91.44 130.81 180)
-			(uuid "3afbca7c-6431-4b48-95eb-70440d83182e")
+			(uuid "274d29c3-f5c9-44b7-a1d7-81fa218aa215")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -880,7 +880,7 @@
 		)
 		(pin "FLUSH" output
 			(at 127 112.395 0)
-			(uuid "8ebb9e95-3077-468f-b1ce-2532864c8a5b")
+			(uuid "77577a1a-e697-40ec-b16a-06044f542a35")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -890,7 +890,7 @@
 		)
 		(pin "Ctl_EX[0..20]" input
 			(at 91.44 120.65 180)
-			(uuid "26c71aa4-6d7b-4b4a-8877-c1425a3e0c35")
+			(uuid "d9fe280f-03ae-4a20-bad1-290bec40fdb0")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -900,8 +900,8 @@
 		)
 		(instances
 			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839"
-					(page "31")
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
+					(page "22")
 				)
 			)
 		)
@@ -942,7 +942,7 @@
 		)
 		(pin "Carry" input
 			(at 81.28 80.645 180)
-			(uuid "92ba8945-0271-4dc3-a102-541bc7646045")
+			(uuid "c29c87d5-0e8a-4b81-ae2b-2a3d24821e33")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -952,7 +952,7 @@
 		)
 		(pin "Z" input
 			(at 81.28 83.185 180)
-			(uuid "c8ce7d0f-bd8a-416c-9bb9-339f4090a830")
+			(uuid "7d9d0a41-bfc5-4c49-9bcb-be526899f03f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -962,7 +962,7 @@
 		)
 		(pin "Ins_ID[0..15]" input
 			(at 81.28 78.105 180)
-			(uuid "3a41f6b2-d64e-4fc9-9c78-62461e28f42c")
+			(uuid "6332bc89-e6c8-475d-b5f9-f892e05cbb2b")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -972,7 +972,7 @@
 		)
 		(pin "OVF" input
 			(at 81.28 85.725 180)
-			(uuid "fd2d066c-2ff9-43c4-ab8e-a65d2b71b5c1")
+			(uuid "8fc677c0-6cae-4e28-9ce6-745b8aeb1f88")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -982,7 +982,7 @@
 		)
 		(pin "Ctl_Mid[0..23]" output
 			(at 113.03 78.105 0)
-			(uuid "815a0815-7930-45ec-8d6e-dc110f979c75")
+			(uuid "fd087a91-3511-4192-a455-04b946c86b3f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -992,7 +992,7 @@
 		)
 		(pin "N" input
 			(at 81.28 88.265 180)
-			(uuid "2d3645f0-5e3c-4ee7-ae58-320ab620781d")
+			(uuid "d33f3b39-8a03-479e-b5ab-5d45114e17cb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1002,8 +1002,8 @@
 		)
 		(instances
 			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839"
-					(page "28")
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
+					(page "20")
 				)
 			)
 		)
@@ -1044,7 +1044,7 @@
 		)
 		(pin "Ctl_ID[0..23]" input
 			(at 175.895 78.105 180)
-			(uuid "050ccb9c-c92e-4885-96ad-3c8ee62baa70")
+			(uuid "4d6ae701-66cf-4e19-92b4-b86425c67deb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1054,7 +1054,7 @@
 		)
 		(pin "Ctl_EX[0..20]" output
 			(at 211.455 77.47 0)
-			(uuid "c31b0de8-04f3-4322-ac80-83337fa9be21")
+			(uuid "0933b851-dda8-479c-b3ac-1b773b15b48e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1064,7 +1064,7 @@
 		)
 		(pin "Phi1c" input
 			(at 175.895 76.2 180)
-			(uuid "5ec4efca-a682-4804-b74b-522548ab3414")
+			(uuid "d3196805-af32-4e09-92d9-e09e96ccb396")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1074,8 +1074,8 @@
 		)
 		(instances
 			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839"
-					(page "34")
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
+					(page "24")
 				)
 			)
 		)
@@ -1116,7 +1116,7 @@
 		)
 		(pin "Ins_ID[0..15]" input
 			(at 175.26 62.865 180)
-			(uuid "a560f403-c7e0-4d97-9b6c-c5351bebb237")
+			(uuid "be18920e-318a-4252-9e0a-fb9d04d5cd4a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1126,7 +1126,7 @@
 		)
 		(pin "Ins_EX[0..10]" output
 			(at 210.82 62.23 0)
-			(uuid "5cfe5589-d53d-4797-82e8-c31b86c5fbb8")
+			(uuid "f42f7d82-c2e0-46e4-aab6-c6c9307a4b4c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1136,7 +1136,7 @@
 		)
 		(pin "Phi1c" input
 			(at 175.26 60.96 180)
-			(uuid "13c5a143-2777-4d83-a358-3f308477d9f1")
+			(uuid "ea060bad-0685-4587-bf42-10e8ab39975a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1146,8 +1146,8 @@
 		)
 		(instances
 			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839"
-					(page "33")
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
+					(page "25")
 				)
 			)
 		)
@@ -1188,7 +1188,7 @@
 		)
 		(pin "Ctl_ID[0..23]" output
 			(at 165.735 78.105 0)
-			(uuid "30cfdc8b-d75b-478e-916a-733fd201bac5")
+			(uuid "1da98f90-6825-48d9-a8f8-7466385b94e3")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1198,7 +1198,7 @@
 		)
 		(pin "~{FLUSH}" input
 			(at 134.62 83.185 180)
-			(uuid "2caebdda-2a96-4349-85b3-3475c0c1b729")
+			(uuid "23992f44-141b-4735-b9fb-9b65c94730d7")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1208,7 +1208,7 @@
 		)
 		(pin "Ctl_Mid[0..23]" input
 			(at 134.62 78.105 180)
-			(uuid "4ec32454-e565-4235-b971-25af437c5c09")
+			(uuid "f4be9165-0073-479b-88f6-9207873942e8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1218,7 +1218,7 @@
 		)
 		(pin "FLUSH" input
 			(at 134.62 80.645 180)
-			(uuid "043f6404-5e26-446c-9302-cfde747d1018")
+			(uuid "9447c3f6-30e0-4d3f-89eb-64e1424a5242")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1228,8 +1228,8 @@
 		)
 		(instances
 			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839"
-					(page "8")
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
+					(page "21")
 				)
 			)
 		)

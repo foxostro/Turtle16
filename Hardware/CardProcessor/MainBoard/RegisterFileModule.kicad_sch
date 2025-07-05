@@ -276,7 +276,7 @@
 		)
 		(pin "~{WRL}" input
 			(at 115.57 101.6 180)
-			(uuid "999efab2-0762-4358-8668-ceb4b6a7c5d7")
+			(uuid "0409ee89-2da3-4f39-95e7-547599ea9b2e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -286,7 +286,7 @@
 		)
 		(pin "~{WBEN}" input
 			(at 115.57 96.52 180)
-			(uuid "008d7f0a-ae6a-47a8-b504-ab28d2ee9fd0")
+			(uuid "cf1a6eee-9406-40e8-adee-6df8692247c1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -296,7 +296,7 @@
 		)
 		(pin "StoreOp_WB[0..15]" input
 			(at 115.57 111.76 180)
-			(uuid "8d35b4fc-7151-42e7-ad51-cf7e0e65a783")
+			(uuid "dedbf36e-1c66-45a9-b9ac-b6cc8b6103a8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -306,7 +306,7 @@
 		)
 		(pin "Y_WB[0..15]" input
 			(at 115.57 109.22 180)
-			(uuid "3c3077a1-5f1b-4230-9ab6-b643d26b806d")
+			(uuid "4514b74d-33ce-4e24-af12-256436de86ac")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -316,7 +316,7 @@
 		)
 		(pin "WriteBackSrc" input
 			(at 115.57 104.14 180)
-			(uuid "4669cde9-5090-494d-9875-14ba84d033e9")
+			(uuid "a741a8e2-3d94-4f93-a3ed-f550389a5677")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -326,7 +326,7 @@
 		)
 		(pin "SelC_WB[0..2]" input
 			(at 115.57 106.68 180)
-			(uuid "5de1f813-7bf9-4ec2-9c68-d6c41c4129c2")
+			(uuid "91b7e6a7-6f6a-4421-b9ae-2aa625a7c302")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -336,7 +336,7 @@
 		)
 		(pin "Ins_ID[0..15]" input
 			(at 115.57 91.44 180)
-			(uuid "1754839c-a1d9-48a4-af5d-7c0ec028f892")
+			(uuid "3a9b634c-382e-436f-bd72-56b19f49b5cf")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -346,7 +346,7 @@
 		)
 		(pin "~{WRH}" input
 			(at 115.57 99.06 180)
-			(uuid "955ee4b2-c42b-4cfb-922b-1a16008f49e5")
+			(uuid "b1deef07-8203-420e-8b32-e0ddca01d05f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -356,7 +356,7 @@
 		)
 		(pin "RegisterA[0..15]" output
 			(at 157.48 99.06 0)
-			(uuid "be87e02e-f80a-48ef-ad8d-0f6c1d88d597")
+			(uuid "cb4ed933-6595-4684-946f-a84cc53f3b56")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -366,7 +366,7 @@
 		)
 		(pin "RegisterB[0..15]" output
 			(at 157.48 101.6 0)
-			(uuid "dce53510-d623-4849-a1d4-95546285559f")
+			(uuid "cb81aae3-fdaf-452e-a279-af3a0bb8ea9d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -376,7 +376,7 @@
 		)
 		(pin "Phi2" input
 			(at 115.57 93.98 180)
-			(uuid "18934647-80ac-4272-bbfd-693d5f0e62e0")
+			(uuid "04216e43-5178-45f3-8fc9-cc024a6a37c3")
 			(effects
 				(font
 					(size 1.27 1.27)

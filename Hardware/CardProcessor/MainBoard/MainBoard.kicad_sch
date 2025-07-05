@@ -10625,228 +10625,6 @@
 		)
 	)
 	(sheet
-		(at 31.75 74.93)
-		(size 41.91 35.56)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "00000000-0000-0000-0000-00005fed3839")
-		(property "Sheetname" "ID"
-			(at 31.75 74.2184 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "ID.kicad_sch"
-			(at 31.75 111.0746 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(pin "Z" input
-			(at 31.75 80.01 180)
-			(uuid "2eea20e6-112c-411a-b615-885ae773135a")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Carry" input
-			(at 31.75 77.47 180)
-			(uuid "49fec31e-3712-4229-8142-b191d90a97d0")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Ins_ID[0..15]" input
-			(at 31.75 92.71 180)
-			(uuid "022502e0-e724-4b75-bc35-3c5984dbeb76")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Ctl_EX[0..20]" output
-			(at 73.66 82.55 0)
-			(uuid "d655bb0a-cbf9-4908-ad60-7024ff468fbd")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "OVF" input
-			(at 31.75 82.55 180)
-			(uuid "9f969b13-1795-4747-8326-93bdc304ed56")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Ins_EX[0..10]" output
-			(at 73.66 85.09 0)
-			(uuid "b9d4de74-d246-495d-8b63-12ab2133d6d6")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "STALL" output
-			(at 73.66 77.47 0)
-			(uuid "a686ed7c-c2d1-4d29-9d54-727faf9fd6bf")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "Ctl_MEM[14..20]" input
-			(at 31.75 87.63 180)
-			(uuid "3e620609-f05a-43d1-888a-212317d948e6")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "SelC_MEM[0..2]" input
-			(at 31.75 90.17 180)
-			(uuid "44b0eb3f-e4cc-434c-b3a7-88da9c7c8c82")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "FWD_EX_TO_B" output
-			(at 73.66 97.79 0)
-			(uuid "6805920d-a2e7-4494-939c-d98b587c96d0")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "FWD_MEM_TO_B" output
-			(at 73.66 100.33 0)
-			(uuid "16d182a4-a3a5-41fd-8197-93926701cd55")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "FWD_B" output
-			(at 73.66 95.25 0)
-			(uuid "49f43fae-dec5-4a6d-8807-8532ee6596c5")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "FWD_EX_TO_A" output
-			(at 73.66 90.17 0)
-			(uuid "fe128b17-dac9-469c-a7af-480914420de0")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "FWD_MEM_TO_A" output
-			(at 73.66 92.71 0)
-			(uuid "b02d02f6-d244-430b-bb33-eb4c9b09ade2")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "FWD_A" output
-			(at 73.66 87.63 0)
-			(uuid "bab576e7-d133-47b1-bf40-e52d778bf69f")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "Phi1c" input
-			(at 31.75 95.25 180)
-			(uuid "6482eee7-b14d-481d-8ad1-56866099bb8d")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "~{RST_sync}" input
-			(at 31.75 97.79 180)
-			(uuid "2048a23e-ab49-452b-b97d-db688cf35538")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "N" input
-			(at 31.75 85.09 180)
-			(uuid "07373f01-7429-4680-b563-d6e22dbe3463")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-					(page "#")
-				)
-			)
-		)
-	)
-	(sheet
 		(at 91.44 74.93)
 		(size 43.18 24.765)
 		(exclude_from_sim no)
@@ -11520,6 +11298,228 @@
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "#")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 31.75 74.93)
+		(size 41.91 35.56)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "333b4292-93f5-442d-a859-8b1da2cd4698")
+		(property "Sheetname" "ControlModule"
+			(at 31.75 74.2184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "ControlModule.kicad_sch"
+			(at 31.75 111.0746 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "Carry" input
+			(at 31.75 77.47 180)
+			(uuid "c341d5ab-04f0-4055-b9f8-ccd48f9fd6c7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Ctl_EX[0..20]" output
+			(at 73.66 82.55 0)
+			(uuid "eb508adf-5edb-4dbf-88f2-cbe2c85c16d8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Ctl_MEM[14..20]" input
+			(at 31.75 87.63 180)
+			(uuid "e14910c7-c66b-438c-9735-5617e2a06481")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "FWD_A" output
+			(at 73.66 87.63 0)
+			(uuid "6d208801-1344-424c-a257-cb5dffe6e5d9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "FWD_B" output
+			(at 73.66 95.25 0)
+			(uuid "cc8f2fff-4def-44b8-a3e1-f51d63a4ccc5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "FWD_EX_TO_A" output
+			(at 73.66 90.17 0)
+			(uuid "9c0e6b34-e75d-40c5-baf2-f2233ee25a35")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "FWD_EX_TO_B" output
+			(at 73.66 97.79 0)
+			(uuid "ae5f93c0-6d85-4258-b43e-f1dfe942199d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "FWD_MEM_TO_A" output
+			(at 73.66 92.71 0)
+			(uuid "5ef6012d-d713-46ad-9592-3e38d639fe9c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "FWD_MEM_TO_B" output
+			(at 73.66 100.33 0)
+			(uuid "c3e21820-aef9-4dcd-b5cb-7be9d0dec4db")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Ins_EX[0..10]" output
+			(at 73.66 85.09 0)
+			(uuid "eb90bc81-55af-4be1-9642-de448953bb28")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Ins_ID[0..15]" input
+			(at 31.75 92.71 180)
+			(uuid "f1e63514-6c05-418b-9ef2-bac1fb5672db")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "N" input
+			(at 31.75 85.09 180)
+			(uuid "0ea16e15-5b10-4d40-8654-1b60a7134ab9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "OVF" input
+			(at 31.75 82.55 180)
+			(uuid "221e8078-b01a-4f57-a744-d337f6be4ddc")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Phi1c" input
+			(at 31.75 95.25 180)
+			(uuid "06b01c4f-1c94-4e6f-9fbf-50c1cc59c030")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SelC_MEM[0..2]" input
+			(at 31.75 90.17 180)
+			(uuid "1883e354-eb66-47e3-b0b1-93cdda12d7e1")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "STALL" output
+			(at 73.66 77.47 0)
+			(uuid "261dd8ad-cdc4-4cce-b911-f48dde419754")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Z" input
+			(at 31.75 80.01 180)
+			(uuid "7dd7b223-0957-4eea-8e49-41782bb0571c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{RST_sync}" input
+			(at 31.75 97.79 180)
+			(uuid "f453e7c1-1e12-41a1-a0d5-a458508c658f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+					(page "41")
 				)
 			)
 		)

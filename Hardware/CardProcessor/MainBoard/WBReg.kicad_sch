@@ -1064,7 +1064,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "b5b1182c-6257-47dd-a2f4-dcf633b11bd5")
+			(uuid "cdcd5fae-df7f-4908-858e-5fb7afa479fa")
 		)
 		(instances
 			(project "MainBoard"
@@ -1129,7 +1129,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "59bb7044-7681-402f-90b7-ecac7755a210")
+			(uuid "f52371ca-99fd-4cd7-9559-db6df9763663")
 		)
 		(instances
 			(project "MainBoard"
@@ -1194,7 +1194,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "d51870f0-c01e-4289-8e2d-a2f9feb71ac5")
+			(uuid "43ccf8ef-f4f2-4a10-be71-5bcf886eae4b")
 		)
 		(instances
 			(project "MainBoard"
@@ -1259,7 +1259,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "fcdda490-311e-4038-ae30-8669620ea677")
+			(uuid "18972f1f-0b7c-4c43-be0c-92b2843aa39a")
 		)
 		(instances
 			(project "MainBoard"
@@ -1324,7 +1324,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "667e9660-a032-4aad-8897-514a6520f9bf")
+			(uuid "6f85dbf4-a173-4756-ab37-446a4f16a8bd")
 		)
 		(instances
 			(project "MainBoard"
@@ -1389,7 +1389,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "7c7a00db-b0b0-461d-81b3-f30f6d97b136")
+			(uuid "8768d4ab-61c3-411e-aa1f-efa1660792c5")
 		)
 		(instances
 			(project "MainBoard"
@@ -1454,7 +1454,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "c1fadb4b-9ed2-4686-b12f-54f41a1855a4")
+			(uuid "5279b98f-4dcb-48ae-841f-e4eab8503a2f")
 		)
 		(instances
 			(project "MainBoard"
@@ -1519,7 +1519,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "0f8a45b4-6c4a-440e-8d19-7ef307a829d6")
+			(uuid "6aee1863-efbb-441b-9843-fa0bc7b513ff")
 		)
 		(instances
 			(project "MainBoard"
@@ -1584,7 +1584,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "afed2eb3-4358-4c26-a0c2-b2108c22dfa0")
+			(uuid "9955d996-80c4-461e-8a06-cb2e9026cdeb")
 		)
 		(instances
 			(project "MainBoard"
@@ -1649,7 +1649,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "b7ac079c-6b45-419c-a96b-e7afb8143dcf")
+			(uuid "891de59e-0a8e-4146-a6f3-b74e28b3df08")
 		)
 		(instances
 			(project "MainBoard"
@@ -1714,7 +1714,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "704ccdf6-9f81-4fb4-a700-171a3eb61554")
+			(uuid "dbd9abc0-10cd-4dbf-b5ce-0f899c1bd0f1")
 		)
 		(instances
 			(project "MainBoard"
@@ -1779,7 +1779,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "6b1e1928-2064-463e-ae4d-62d90d7a9e9d")
+			(uuid "f82e50c6-490a-415e-afd3-777d5a33b953")
 		)
 		(instances
 			(project "MainBoard"
@@ -1844,7 +1844,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "60f28a5e-f50d-4d37-adf9-81e9f747648b")
+			(uuid "5d0c6a2c-6acf-4a54-acef-cfa121d57a4f")
 		)
 		(instances
 			(project "MainBoard"
@@ -1909,7 +1909,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "bfc0c4f3-b151-4e4f-a26c-31a6ae318f57")
+			(uuid "8938985d-2100-44a6-ba9a-45a6752f428b")
 		)
 		(instances
 			(project "MainBoard"
@@ -1974,7 +1974,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "d942e0b1-cb7c-4a03-a588-30f156a5a964")
+			(uuid "a74bb940-25da-480e-8a94-2e5abb7a6cc0")
 		)
 		(instances
 			(project "MainBoard"
@@ -2039,7 +2039,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "4829ea4c-7d15-4497-b892-bd0283c6f68b")
+			(uuid "d3123e47-a5e0-498d-8c49-4377f0572cba")
 		)
 		(instances
 			(project "MainBoard"
@@ -2086,7 +2086,7 @@
 		)
 		(pin "C[0..15]" output
 			(at 133.35 92.71 0)
-			(uuid "4656a94c-b92d-4976-bb2c-7ec95320dbb3")
+			(uuid "f0129e12-ee99-43e8-bd6c-3599095825ae")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2096,7 +2096,7 @@
 		)
 		(pin "StoreOp_WB[0..15]" input
 			(at 101.6 97.79 180)
-			(uuid "684390cb-04be-47d2-bbcf-b96e489b0b3a")
+			(uuid "94368b0d-9f2b-4d7c-bec3-69560d71bc1c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2106,7 +2106,7 @@
 		)
 		(pin "Y_WB[0..15]" input
 			(at 101.6 95.25 180)
-			(uuid "0fd9112d-9e13-44e5-963a-9ab366b18771")
+			(uuid "23643476-9737-449e-a342-96034707ed37")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2116,7 +2116,7 @@
 		)
 		(pin "WriteBackSrc" input
 			(at 101.6 92.71 180)
-			(uuid "286d6886-1e53-4dd9-828d-81c5b03e3eaa")
+			(uuid "5b5dfc94-610b-4931-aaa6-80bf738d9787")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2168,7 +2168,7 @@
 		)
 		(pin "~{WRH}" input
 			(at 156.21 78.74 180)
-			(uuid "a58b26e5-7697-4dc4-9aae-c366af90f4b4")
+			(uuid "90110135-3fd2-4b0f-b160-19b03cbf6e91")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2178,7 +2178,7 @@
 		)
 		(pin "~{WRL}" input
 			(at 156.21 81.28 180)
-			(uuid "7134f5fd-3805-4da8-a918-de31d12e70d2")
+			(uuid "0dd75790-d470-43ea-be65-15037e76dff8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2188,7 +2188,7 @@
 		)
 		(pin "C[0..15]" input
 			(at 156.21 92.71 180)
-			(uuid "be02b5b0-0f38-4da8-aff9-73c0a5eb4fab")
+			(uuid "9db9bf09-9f93-4a3d-b0ab-7cc182b4aaf6")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2198,7 +2198,7 @@
 		)
 		(pin "SelC_WB[0..2]" input
 			(at 156.21 76.2 180)
-			(uuid "140131fd-33e8-4dfa-bcfc-84dcb47ec33f")
+			(uuid "acb69c03-4a68-4edc-be82-48ad790f5239")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2208,7 +2208,7 @@
 		)
 		(pin "RegisterB[0..15]" output
 			(at 196.85 82.55 0)
-			(uuid "302886a0-ce40-4269-88bf-7b749bfea31c")
+			(uuid "8a0f3737-1218-45ce-852a-b966f0227611")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2218,7 +2218,7 @@
 		)
 		(pin "RegisterA[0..15]" output
 			(at 196.85 80.01 0)
-			(uuid "9e4a2057-4363-48d3-8c00-b69a55623625")
+			(uuid "f4834300-ed02-4052-9a6e-dcec7c60fb2f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2228,7 +2228,7 @@
 		)
 		(pin "~{WBEN}" input
 			(at 156.21 83.82 180)
-			(uuid "9f3083a5-635d-4391-ba8a-9b80b1246ec3")
+			(uuid "f466b440-5eb5-4996-b1ee-f9cfc0f64c8e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2238,7 +2238,7 @@
 		)
 		(pin "Ins_ID[0..15]" input
 			(at 156.21 71.12 180)
-			(uuid "3d060113-36d4-4f37-9e3e-e397a968f383")
+			(uuid "6ac55004-9611-4a99-b2d9-aff737ff2fba")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2248,7 +2248,7 @@
 		)
 		(pin "Phi2" input
 			(at 156.21 86.36 180)
-			(uuid "984c9796-3d1d-47fc-9294-ed2040ac98d7")
+			(uuid "02132421-86f7-4c9e-9b5f-682a67c46109")
 			(effects
 				(font
 					(size 1.27 1.27)

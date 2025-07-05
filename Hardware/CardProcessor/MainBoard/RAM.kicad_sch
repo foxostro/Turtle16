@@ -4221,7 +4221,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "491877f6-4352-4a9d-9039-fa49d92ee168")
-		(property "Reference" "C76"
+		(property "Reference" "C24"
 			(at 113.411 162.6616 0)
 			(effects
 				(font
@@ -4310,7 +4310,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/abd747a2-d45e-4808-b0cb-3286e9a29151/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "C76")
+					(reference "C24")
 					(unit 1)
 				)
 			)
@@ -4848,7 +4848,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ad32d22b-365c-416d-a554-573db1073ac9")
-		(property "Reference" "IC2"
+		(property "Reference" "IC1"
 			(at 135.89 87.63 0)
 			(effects
 				(font
@@ -5234,7 +5234,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/abd747a2-d45e-4808-b0cb-3286e9a29151/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "IC2")
+					(reference "IC1")
 					(unit 1)
 				)
 			)
@@ -5645,7 +5645,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e109f789-c81e-49a7-abae-61a3c2597cf3")
-		(property "Reference" "C77"
+		(property "Reference" "C25"
 			(at 159.131 162.6616 0)
 			(effects
 				(font
@@ -5734,7 +5734,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/abd747a2-d45e-4808-b0cb-3286e9a29151/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "C77")
+					(reference "C25")
 					(unit 1)
 				)
 			)

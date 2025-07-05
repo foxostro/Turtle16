@@ -8119,7 +8119,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fb3292c")
-		(property "Reference" "C30"
+		(property "Reference" "C32"
 			(at 259.461 25.5016 0)
 			(effects
 				(font
@@ -8129,7 +8129,7 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 77.851 191.643 0)
+			(at 259.588 27.432 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8208,7 +8208,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/1a78a7cb-4b7c-49f5-83d0-cd7a87376a8e/7ea471aa-b409-45f6-8207-8d4b8300d145/5d24f4c0-dd7f-43d2-9387-4d33d495b9b3"
-					(reference "C30")
+					(reference "C32")
 					(unit 1)
 				)
 			)
@@ -8223,7 +8223,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fb32932")
-		(property "Reference" "C29"
+		(property "Reference" "C31"
 			(at 246.761 25.5016 0)
 			(effects
 				(font
@@ -8233,7 +8233,7 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 77.851 191.643 0)
+			(at 246.888 27.178 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8312,7 +8312,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/1a78a7cb-4b7c-49f5-83d0-cd7a87376a8e/7ea471aa-b409-45f6-8207-8d4b8300d145/5d24f4c0-dd7f-43d2-9387-4d33d495b9b3"
-					(reference "C29")
+					(reference "C31")
 					(unit 1)
 				)
 			)
@@ -13107,7 +13107,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2964f634-92c4-4900-8e72-2866ba153aaf")
-		(property "Reference" "C28"
+		(property "Reference" "C30"
 			(at 234.061 25.5016 0)
 			(effects
 				(font
@@ -13117,7 +13117,7 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 77.851 191.643 0)
+			(at 234.188 27.432 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13196,7 +13196,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/1a78a7cb-4b7c-49f5-83d0-cd7a87376a8e/7ea471aa-b409-45f6-8207-8d4b8300d145/5d24f4c0-dd7f-43d2-9387-4d33d495b9b3"
-					(reference "C28")
+					(reference "C30")
 					(unit 1)
 				)
 			)

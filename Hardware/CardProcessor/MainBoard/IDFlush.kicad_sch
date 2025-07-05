@@ -6774,7 +6774,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4a044913-bdd6-45ae-9972-bbe4651e0c4e")
-		(property "Reference" "C59"
+		(property "Reference" "C8"
 			(at 48.641 182.9816 0)
 			(effects
 				(font
@@ -6863,7 +6863,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "C59")
+					(reference "C8")
 					(unit 1)
 				)
 			)
@@ -6879,8 +6879,8 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4a265ee3-16d2-45c9-9547-693f987bc680")
-		(property "Reference" "C58"
-			(at 30.099 182.9816 0)
+		(property "Reference" "C7"
+			(at 38.862 183.134 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6889,7 +6889,7 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 30.099 185.293 0)
+			(at 41.656 185.166 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6968,7 +6968,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "C58")
+					(reference "C7")
 					(unit 1)
 				)
 			)
@@ -6983,7 +6983,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4cc0b3f3-f597-448e-9f35-f823b998bbd1")
-		(property "Reference" "U59"
+		(property "Reference" "U6"
 			(at 90.805 32.385 0)
 			(effects
 				(font
@@ -7210,7 +7210,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "U59")
+					(reference "U6")
 					(unit 1)
 				)
 			)
@@ -7356,7 +7356,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7b388540-ec22-4db7-978e-8d7087a9af37")
-		(property "Reference" "U56"
+		(property "Reference" "U5"
 			(at 77.1809 112.395 0)
 			(effects
 				(font
@@ -7499,7 +7499,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "U56")
+					(reference "U5")
 					(unit 1)
 				)
 			)
@@ -7580,8 +7580,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "87e44790-81d2-4be1-823b-799ba1609bb0")
-		(property "Reference" "U60"
-			(at 194.5991 111.76 0)
+		(property "Reference" "U7"
+			(at 194.5483 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7590,7 +7590,7 @@
 			)
 		)
 		(property "Value" "74ABT245"
-			(at 194.5991 114.3 0)
+			(at 194.5483 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7723,7 +7723,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "U60")
+					(reference "U7")
 					(unit 1)
 				)
 			)
@@ -8061,7 +8061,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d5f9b68e-b909-433b-b218-f2e4ccaa584e")
-		(property "Reference" "C62"
+		(property "Reference" "C9"
 			(at 61.341 182.9816 0)
 			(effects
 				(font
@@ -8150,7 +8150,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "C62")
+					(reference "C9")
 					(unit 1)
 				)
 			)
@@ -8165,7 +8165,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e872e15c-f428-4635-8576-71ea9a257a2d")
-		(property "Reference" "C57"
+		(property "Reference" "C6"
 			(at 23.241 182.9816 0)
 			(effects
 				(font
@@ -8254,7 +8254,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "C57")
+					(reference "C6")
 					(unit 1)
 				)
 			)
@@ -8335,7 +8335,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "fe43af67-33cb-4f6b-a47f-2fdda4f1a238")
-		(property "Reference" "U61"
+		(property "Reference" "U8"
 			(at 191.135 32.385 0)
 			(effects
 				(font
@@ -8562,7 +8562,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81"
-					(reference "U61")
+					(reference "U8")
 					(unit 1)
 				)
 			)

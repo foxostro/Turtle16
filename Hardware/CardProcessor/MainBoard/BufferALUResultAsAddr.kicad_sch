@@ -3079,7 +3079,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005ff007e0")
-		(property "Reference" "C72"
+		(property "Reference" "C4"
 			(at 242.951 151.2316 0)
 			(effects
 				(font
@@ -3168,7 +3168,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "C72")
+					(reference "C4")
 					(unit 1)
 				)
 			)
@@ -3377,7 +3377,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006219d879")
-		(property "Reference" "U69"
+		(property "Reference" "U3"
 			(at 139.7 93.98 0)
 			(effects
 				(font
@@ -3602,7 +3602,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "U69")
+					(reference "U3")
 					(unit 1)
 				)
 			)

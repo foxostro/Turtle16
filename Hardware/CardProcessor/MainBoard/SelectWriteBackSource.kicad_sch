@@ -6,8 +6,8 @@
 	(paper "USLetter")
 	(title_block
 		(title "WB: Select Write Back Source")
-		(date "2023-11-25")
-		(rev "B")
+		(date "2025-07-01")
+		(rev "A")
 		(comment 2 "or a byte swapped version of the latter.")
 		(comment 3 "It can choose either the ALU result, the store operand / value loaded from peripherals,")
 		(comment 4 "The write back stage can select one of several values to write back to the register file.")

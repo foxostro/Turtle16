@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "EX/MEM: Control Word Register")
-		(date "2023-11-25")
+		(date "2025-07-01")
 		(rev "A")
 	)
 	(lib_symbols

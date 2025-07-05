@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "Instruction Decoder")
-		(date "2023-11-25")
+		(date "2025-07-01")
 		(rev "A")
 		(comment 4 "Decodes an instruction opcode into an array of control signals.")
 	)

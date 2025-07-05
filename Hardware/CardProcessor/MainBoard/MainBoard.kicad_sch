@@ -1283,7 +1283,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "TODO: Buffer Phi1, Phi2,\nand ~{RST} before going\nout onto the bus"
+	(text "TODO: Buffer ~{RST} before\ngoing out onto the bus"
 		(exclude_from_sim no)
 		(at 59.69 40.64 0)
 		(effects

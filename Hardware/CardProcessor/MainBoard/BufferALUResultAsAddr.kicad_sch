@@ -3085,7 +3085,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005ff007e0")
-		(property "Reference" "C4"
+		(property "Reference" "C12"
 			(at 242.951 151.2316 0)
 			(effects
 				(font
@@ -3174,7 +3174,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "C4")
+					(reference "C12")
 					(unit 1)
 				)
 			)
@@ -3189,7 +3189,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005ff007ec")
-		(property "Reference" "#PWR0487"
+		(property "Reference" "#PWR060"
 			(at 240.03 152.4 0)
 			(effects
 				(font
@@ -3239,7 +3239,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR0487")
+					(reference "#PWR060")
 					(unit 1)
 				)
 			)
@@ -3254,7 +3254,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005ff007f5")
-		(property "Reference" "#PWR0488"
+		(property "Reference" "#PWR061"
 			(at 240.03 165.1 0)
 			(effects
 				(font
@@ -3304,7 +3304,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR0488")
+					(reference "#PWR061")
 					(unit 1)
 				)
 			)
@@ -3319,7 +3319,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060746adb")
-		(property "Reference" "#PWR0485"
+		(property "Reference" "#PWR058"
 			(at 163.83 114.3 0)
 			(effects
 				(font
@@ -3370,7 +3370,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR0485")
+					(reference "#PWR058")
 					(unit 1)
 				)
 			)
@@ -3386,7 +3386,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006219d879")
-		(property "Reference" "U3"
+		(property "Reference" "U11"
 			(at 139.7 93.98 0)
 			(effects
 				(font
@@ -3611,7 +3611,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "U3")
+					(reference "U11")
 					(unit 1)
 				)
 			)
@@ -3626,7 +3626,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006219d87f")
-		(property "Reference" "#PWR0484"
+		(property "Reference" "#PWR057"
 			(at 146.05 134.62 0)
 			(effects
 				(font
@@ -3676,7 +3676,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR0484")
+					(reference "#PWR057")
 					(unit 1)
 				)
 			)
@@ -3691,7 +3691,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006219d885")
-		(property "Reference" "#PWR0483"
+		(property "Reference" "#PWR056"
 			(at 139.7 67.31 0)
 			(effects
 				(font
@@ -3741,7 +3741,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR0483")
+					(reference "#PWR056")
 					(unit 1)
 				)
 			)
@@ -3756,7 +3756,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "14c21d77-8fa7-44f2-b8c8-f38b843b6f6f")
-		(property "Reference" "#PWR0486"
+		(property "Reference" "#PWR059"
 			(at 163.83 120.65 0)
 			(effects
 				(font
@@ -3807,7 +3807,7 @@
 		(instances
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR0486")
+					(reference "#PWR059")
 					(unit 1)
 				)
 			)

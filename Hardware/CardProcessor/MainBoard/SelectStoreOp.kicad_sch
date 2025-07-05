@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "Select Store Operand")
-		(date "2025-07-01")
+		(date "2025-07-02")
 		(rev "A")
 		(comment 3 "the program counter value, or an eight-bit immediate value.")
 		(comment 4 "The Store Operand can be taken from either the value on port B of the register file,")

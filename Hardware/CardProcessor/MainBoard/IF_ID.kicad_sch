@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "IF/ID")
-		(date "2025-07-01")
+		(date "2025-07-02")
 		(rev "A")
 		(comment 4 "Interstage pipeline registers between IF and ID")
 	)

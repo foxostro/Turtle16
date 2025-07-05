@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "ALU")
-		(date "2025-07-01")
+		(date "2025-07-02")
 		(rev "A")
 		(comment 2 "are latched in registers in other parts of the circuit.")
 		(comment 3 "This is configured for pure combinatorial operation where operands and outputs")

@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "ID/EX Control Register")
-		(date "2025-07-01")
+		(date "2025-07-02")
 		(rev "A")
 	)
 	(lib_symbols

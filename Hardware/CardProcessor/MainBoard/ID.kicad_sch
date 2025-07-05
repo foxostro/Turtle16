@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "ID")
-		(date "2025-07-01")
+		(date "2025-07-02")
 		(rev "A")
 		(comment 1 "Simultaneously, read the register file using indices extracted from the instruction word.")
 		(comment 2 "effect conditional instructions.")

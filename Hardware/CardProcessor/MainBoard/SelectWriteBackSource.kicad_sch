@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "WB: Select Write Back Source")
-		(date "2025-07-01")
+		(date "2025-07-02")
 		(rev "A")
 		(comment 2 "or a byte swapped version of the latter.")
 		(comment 3 "It can choose either the ALU result, the store operand / value loaded from peripherals,")

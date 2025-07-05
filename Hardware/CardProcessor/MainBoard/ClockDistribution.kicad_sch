@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "Turtle16: Clock Distribution")
-		(date "2025-07-01")
+		(date "2025-07-02")
 		(rev "A")
 	)
 	(lib_symbols

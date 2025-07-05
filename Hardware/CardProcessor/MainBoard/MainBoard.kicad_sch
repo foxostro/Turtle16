@@ -10625,158 +10625,6 @@
 		)
 	)
 	(sheet
-		(at 95.25 17.78)
-		(size 31.75 39.37)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "00000000-0000-0000-0000-00005fe35007")
-		(property "Sheetname" "IF"
-			(at 95.25 17.0684 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "IF.kicad_sch"
-			(at 95.25 57.7346 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(pin "Ins_ID[0..15]" output
-			(at 95.25 52.07 180)
-			(uuid "f674b8e7-203d-419e-988a-58e0f9ae4fad")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "PC_EX[0..15]" output
-			(at 95.25 54.61 180)
-			(uuid "d767f2ff-12ec-4778-96cb-3fdd7a473d60")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Y_EX[0..15]" input
-			(at 127 54.61 0)
-			(uuid "34ce7009-187e-4541-a14e-708b3a2903d9")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "~{J}" input
-			(at 95.25 27.94 180)
-			(uuid "25c663ff-96b6-4263-a06e-d1829409cf73")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "~{JABS}" input
-			(at 95.25 30.48 180)
-			(uuid "637e9edf-ffed-49a2-8408-fa110c9a4c79")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "STALL" input
-			(at 95.25 33.02 180)
-			(uuid "b456cffc-d9d7-4c91-91f2-36ec9a65dd1b")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "~{RST_sync}" input
-			(at 95.25 22.86 180)
-			(uuid "7097a057-d510-4cf2-b10c-87cf257b3b55")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "Phi1a" input
-			(at 95.25 20.32 180)
-			(uuid "c81c4a76-4538-433c-b517-00f2954ef3e2")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "PC[0..15]" output
-			(at 127 22.86 0)
-			(uuid "bdb456c0-8892-4e82-8c66-2387a26f58e6")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "FLUSH_IF" output
-			(at 127 25.4 0)
-			(uuid "ebfe7e2e-3207-45d9-8380-dfdc7b7eb8eb")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "Ins_IF[0..15]" output
-			(at 127 20.32 0)
-			(uuid "54fe7b37-e0b2-4654-a367-0d91a2517a89")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-					(page "#")
-				)
-			)
-		)
-	)
-	(sheet
 		(at 31.75 74.93)
 		(size 41.91 35.56)
 		(exclude_from_sim no)
@@ -11520,6 +11368,158 @@
 			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "#")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 95.25 17.78)
+		(size 31.75 39.37)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "445562cf-aa14-4ea1-8943-4ec5616008cb")
+		(property "Sheetname" "PCIFModule"
+			(at 95.25 17.0684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "PCIFModule.kicad_sch"
+			(at 95.25 57.7346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "FLUSH_IF" output
+			(at 127 25.4 0)
+			(uuid "33ece6a2-0c45-47c8-afc2-d2e7122336ad")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Ins_ID[0..15]" output
+			(at 95.25 52.07 180)
+			(uuid "ce06b31d-d48e-4d43-9b02-3bd7a68b04ae")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Ins_IF[0..15]" output
+			(at 127 20.32 0)
+			(uuid "65028bc7-5168-4808-b603-7698a4d37823")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "PC[0..15]" output
+			(at 127 22.86 0)
+			(uuid "2b6dda23-b933-4ad2-bc05-5947d97fcca4")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "PC_EX[0..15]" output
+			(at 95.25 54.61 180)
+			(uuid "c4fa2461-ce16-4a3b-9581-9a83092804e3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Phi1a" input
+			(at 95.25 20.32 180)
+			(uuid "678849e7-4151-4ec2-9e17-841de022a031")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "STALL" input
+			(at 95.25 33.02 180)
+			(uuid "e0d55731-e3ee-49fb-841c-c7b000c47798")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "Y_EX[0..15]" input
+			(at 127 54.61 0)
+			(uuid "aef331cf-3a4b-4e3b-be7f-ca3b6a99e287")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "~{JABS}" input
+			(at 95.25 30.48 180)
+			(uuid "0764e6cb-845f-4cdd-a787-a5edb8f9aebd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{J}" input
+			(at 95.25 27.94 180)
+			(uuid "9c58681c-0183-4733-a0bc-08cb555408bd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "~{RST_sync}" input
+			(at 95.25 22.86 180)
+			(uuid "8d15eaec-6d86-475d-b076-622efce84315")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+					(page "39")
 				)
 			)
 		)

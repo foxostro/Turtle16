@@ -660,46 +660,6 @@
       "sheet5FCE207B"
     ],
     [
-      "7ea471aa-b409-45f6-8207-8d4b8300d145",
-      "Write Back and Register File"
-    ],
-    [
-      "5d24f4c0-dd7f-43d2-9387-4d33d495b9b3",
-      "sheet60693B95"
-    ],
-    [
-      "15d111da-e708-4cff-aee7-702b294baaf1",
-      "Select Write Back Source"
-    ],
-    [
-      "101aadd6-c8f8-4873-8d28-86528ab686cf",
-      "ID"
-    ],
-    [
-      "00000000-0000-0000-0000-000060693bcf",
-      "sheet60693B97"
-    ],
-    [
-      "960ada49-cad4-45a9-8c06-0a6f2ac09c81",
-      "ID Flush"
-    ],
-    [
-      "00000000-0000-0000-0000-00005fda967f",
-      "Hazard Control"
-    ],
-    [
-      "00000000-0000-0000-0000-0000606fef6b",
-      "Hazard Control Comparators"
-    ],
-    [
-      "00000000-0000-0000-0000-000060693be1",
-      "sheet60693B98"
-    ],
-    [
-      "00000000-0000-0000-0000-000060693be5",
-      "sheet60693B99"
-    ],
-    [
       "278b84b0-d28f-4248-8f63-f89f14b1dc97",
       "MEMModule"
     ],

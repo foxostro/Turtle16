@@ -9,7 +9,7 @@
 		(rev "A")
 	)
 	(lib_symbols
-		(symbol "Turtle16:MEC5-140-01-L-DV-W1-K"
+		(symbol "Turtle16:MEC5-140-01-L-DV-W1-K_Edge"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -22,7 +22,7 @@
 					(justify left top)
 				)
 			)
-			(property "Value" "MEC5-140-01-L-DV-W1-K"
+			(property "Value" "MEC5-140-01-L-DV-W1-K_Edge"
 				(at 21.59 5.08 0)
 				(effects
 					(font
@@ -31,7 +31,7 @@
 					(justify left top)
 				)
 			)
-			(property "Footprint" "Turtle16:MEC514001LDVW1K"
+			(property "Footprint" "Turtle16:MEC5-140-01-L-DV-W1-K_Edge"
 				(at 21.59 -94.92 0)
 				(effects
 					(font
@@ -110,7 +110,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "MEC5-140-01-L-DV-W1-K_1_1"
+			(symbol "MEC5-140-01-L-DV-W1-K_Edge_1_1"
 				(rectangle
 					(start 5.08 2.54)
 					(end 20.32 -360.68)
@@ -5162,78 +5162,6 @@
 						)
 					)
 				)
-				(pin passive line
-					(at 25.4 -350.52 180)
-					(length 5.08)
-					(name "MH2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "MH2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 25.4 -353.06 180)
-					(length 5.08)
-					(name "MH3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "MH3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 25.4 -355.6 180)
-					(length 5.08)
-					(name "MH4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "MH4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 25.4 -358.14 180)
-					(length 5.08)
-					(name "MH5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "MH5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 			)
 			(embedded_fonts no)
 		)
@@ -7847,16 +7775,6 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 378.46) (xy 156.21 378.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3d70ec72-1d5d-42fa-a316-dca4a57281b6")
-	)
-	(wire
-		(pts
 			(xy 177.8 254) (xy 156.21 254)
 		)
 		(stroke
@@ -7984,16 +7902,6 @@
 			(type default)
 		)
 		(uuid "43792b92-7e66-4d42-929b-af8d08b41f8c")
-	)
-	(wire
-		(pts
-			(xy 177.8 375.92) (xy 156.21 375.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "43ddbe8a-801d-47d8-947c-61368447a5ff")
 	)
 	(bus
 		(pts
@@ -10135,16 +10043,6 @@
 		)
 		(uuid "c6f63c43-20a5-4ed2-80af-c2bd188209a3")
 	)
-	(wire
-		(pts
-			(xy 177.8 381) (xy 156.21 381)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c84427f9-6929-47e1-8c71-915099b6b6fd")
-	)
 	(bus
 		(pts
 			(xy 93.98 233.68) (xy 93.98 236.22)
@@ -10754,16 +10652,6 @@
 			(type default)
 		)
 		(uuid "eee90a43-f7a3-4e35-81cb-2026d9db8438")
-	)
-	(wire
-		(pts
-			(xy 177.8 373.38) (xy 156.21 373.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "eee9673a-4579-467d-a485-3fe33922cfaf")
 	)
 	(wire
 		(pts
@@ -14692,74 +14580,6 @@
 			(project "EXModule"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0110")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 177.8 375.92 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2742711b-86b2-43fb-b585-504390ae75a7")
-		(property "Reference" "#PWR0210"
-			(at 184.15 375.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 181.61 375.9199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 177.8 375.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 177.8 375.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 177.8 375.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "7dcb4f33-88e3-4e9e-bcee-5f751f856fde")
-		)
-		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
-					(reference "#PWR0210")
 					(unit 1)
 				)
 			)
@@ -18893,74 +18713,6 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 177.8 373.38 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a23c0b7d-10bb-40e3-bada-2aa1d0712200")
-		(property "Reference" "#PWR0209"
-			(at 184.15 373.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 181.61 373.3799 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 177.8 373.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 177.8 373.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 177.8 373.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "417f3186-1139-476e-abd7-2a50ebbb625f")
-		)
-		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
-					(reference "#PWR0209")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
 		(at 109.22 261.62 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -20380,74 +20132,6 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 177.8 381 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "cf7ec4d8-b5a5-457a-95bd-92755e2c87f0")
-		(property "Reference" "#PWR0212"
-			(at 184.15 381 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 181.61 380.9999 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 177.8 381 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 177.8 381 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 177.8 381 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "2fa3b50b-464c-4f63-a40e-75df492dc021")
-		)
-		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
-					(reference "#PWR0212")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
 		(at 177.8 71.12 90)
 		(mirror x)
 		(unit 1)
@@ -21122,7 +20806,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Turtle16:MEC5-140-01-L-DV-W1-K")
+		(lib_id "Turtle16:MEC5-140-01-L-DV-W1-K_Edge")
 		(at 130.81 22.86 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -22066,90 +21750,10 @@
 		(pin "280"
 			(uuid "5f45f96d-4784-43a7-8c67-2542b1d67a72")
 		)
-		(pin "MH2"
-			(uuid "a7b6bae5-678d-4b88-a336-5115aa96d626")
-		)
-		(pin "MH3"
-			(uuid "544a0f7c-5ef0-42df-81f9-bce623cbaa31")
-		)
-		(pin "MH4"
-			(uuid "f0ec2d26-a788-4efd-a64a-43394246f2e0")
-		)
-		(pin "MH5"
-			(uuid "9e8324f2-70d3-4cc9-a259-9deeecd54126")
-		)
 		(instances
 			(project "EXModule"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "J1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 177.8 378.46 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "e0bc93f3-088c-41d1-9a9d-a6fa7aea99c3")
-		(property "Reference" "#PWR0211"
-			(at 184.15 378.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 181.61 378.4599 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 177.8 378.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 177.8 378.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 177.8 378.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "fe4caed8-9e6d-4827-80a4-65552fbb8e60")
-		)
-		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
-					(reference "#PWR0211")
 					(unit 1)
 				)
 			)

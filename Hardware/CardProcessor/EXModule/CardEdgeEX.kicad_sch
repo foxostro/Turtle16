@@ -5575,14 +5575,14 @@
 		)
 		(uuid "97972d89-6a9f-4ae1-95a5-89f4b64e0fd7")
 	)
-	(text "4-bit card identification code"
+	(text "4-bit card identification code\nEX is 0b1111"
 		(exclude_from_sim no)
-		(at 126.492 22.86 0)
+		(at 124.968 21.59 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify right bottom)
 		)
 		(uuid "b7a7ecdc-27d8-4139-aa13-2b2636697512")
 	)
@@ -5621,22 +5621,6 @@
 	(no_connect
 		(at 130.81 195.58)
 		(uuid "15b78bc5-6473-4c5f-9f14-a40f34fe1b06")
-	)
-	(no_connect
-		(at 128.27 27.94)
-		(uuid "5dbb1997-101a-4c2d-ad0c-cae34dd9f561")
-	)
-	(no_connect
-		(at 128.27 25.4)
-		(uuid "6c146e16-2599-4088-a22b-ffcc2f0505a0")
-	)
-	(no_connect
-		(at 128.27 22.86)
-		(uuid "bc9648ee-ccbc-4ae6-a8fd-1898dbdb0d2f")
-	)
-	(no_connect
-		(at 128.27 30.48)
-		(uuid "c4d583ef-8975-46b3-8b21-015a30dfa7ed")
 	)
 	(no_connect
 		(at 130.81 147.32)
@@ -6963,6 +6947,16 @@
 	)
 	(wire
 		(pts
+			(xy 128.27 22.86) (xy 130.81 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0476c930-94cd-438e-925d-419306b639c0")
+	)
+	(wire
+		(pts
 			(xy 190.5 73.66) (xy 156.21 73.66)
 		)
 		(stroke
@@ -7353,16 +7347,6 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 27.94) (xy 130.81 27.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1d6d9794-d266-43aa-934f-066e94bf5053")
-	)
-	(wire
-		(pts
 			(xy 177.8 360.68) (xy 156.21 360.68)
 		)
 		(stroke
@@ -7530,16 +7514,6 @@
 			(type default)
 		)
 		(uuid "26bb121c-6f36-4db4-8fe6-00fc20927156")
-	)
-	(wire
-		(pts
-			(xy 128.27 22.86) (xy 130.81 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "26f409d4-d758-449f-88a9-80b05107cc35")
 	)
 	(wire
 		(pts
@@ -7783,6 +7757,16 @@
 	)
 	(wire
 		(pts
+			(xy 128.27 27.94) (xy 130.81 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "37ecb3bb-870a-47e9-a61e-fd8e52cd55e0")
+	)
+	(wire
+		(pts
 			(xy 177.8 289.56) (xy 156.21 289.56)
 		)
 		(stroke
@@ -7910,6 +7894,16 @@
 			(type default)
 		)
 		(uuid "3f1ee6b0-2cac-4e86-bd02-29ad1f19f6b0")
+	)
+	(wire
+		(pts
+			(xy 128.27 25.4) (xy 130.81 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f5b3201-2c07-45e2-aa00-8b1b08aea739")
 	)
 	(wire
 		(pts
@@ -9083,16 +9077,6 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 30.48) (xy 130.81 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8edec808-4e5e-42c6-846d-2b56ce59bd15")
-	)
-	(wire
-		(pts
 			(xy 177.8 162.56) (xy 156.21 162.56)
 		)
 		(stroke
@@ -9470,6 +9454,16 @@
 			(type default)
 		)
 		(uuid "a07c6cc7-df5b-469a-9076-f152f4c30026")
+	)
+	(wire
+		(pts
+			(xy 128.27 30.48) (xy 130.81 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a084e7c8-b988-4633-8e5c-70202a8fd58f")
 	)
 	(wire
 		(pts
@@ -9920,16 +9914,6 @@
 			(type default)
 		)
 		(uuid "bb98ab66-daac-4380-9eda-ef3935a9c093")
-	)
-	(wire
-		(pts
-			(xy 128.27 25.4) (xy 130.81 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bbee4014-70e5-44ee-8a47-7e3af330ae63")
 	)
 	(wire
 		(pts
@@ -13627,6 +13611,73 @@
 			(project "EXModule"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0121")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 128.27 27.94 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1199dcc1-eea0-4f23-b8af-531afa986981")
+		(property "Reference" "#PWR0215"
+			(at 132.08 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 124.46 27.9399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 128.27 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a7a5b4f5-ac0a-4f78-93fe-d3b0fb540fae")
+		)
+		(instances
+			(project "EXModule"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
+					(reference "#PWR0215")
 					(unit 1)
 				)
 			)
@@ -17827,6 +17878,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:VCC")
+		(at 128.27 22.86 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8d0d0df7-1340-485d-a832-ff85714f4ca0")
+		(property "Reference" "#PWR0213"
+			(at 132.08 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 124.46 22.8599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 128.27 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1763d158-bc21-47a6-8fa8-55906a08d07c")
+		)
+		(instances
+			(project "EXModule"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
+					(reference "#PWR0213")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 177.8 83.82 90)
 		(mirror x)
@@ -20126,6 +20244,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:VCC")
+		(at 128.27 25.4 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ccd71b6f-008c-4ee3-bafa-2e700d8c3d75")
+		(property "Reference" "#PWR0214"
+			(at 132.08 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 124.46 25.3999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 128.27 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bb93b0c6-6eb7-414e-8200-d532ea727791")
+		)
+		(instances
+			(project "EXModule"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
+					(reference "#PWR0214")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 177.8 271.78 90)
 		(mirror x)
@@ -20662,6 +20847,73 @@
 			(project "EXModule"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR094")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 128.27 30.48 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d82b1f16-7f3a-44d9-bd55-7346e2e802e0")
+		(property "Reference" "#PWR0216"
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 124.46 30.4799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 128.27 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b36d5c30-1368-4ffe-8416-171d8343043c")
+		)
+		(instances
+			(project "EXModule"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
+					(reference "#PWR0216")
 					(unit 1)
 				)
 			)

@@ -9,7 +9,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "Turtle16: EX Module Card")
-		(date "2025-07-11")
+		(date "2025-07-12")
 		(rev "A")
 		(comment 4 "EX stage of the pipeline")
 	)
@@ -415,7 +415,7 @@
 	(footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm"
 		(layer "F.Cu")
 		(uuid "0001c202-b6f0-4716-846b-cffe9a7597e7")
-		(at 161.19 102)
+		(at 161.19 90.725)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U2"
@@ -1289,7 +1289,7 @@
 	(footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm"
 		(layer "F.Cu")
 		(uuid "0f44360d-7903-456e-b29f-87d68571721b")
-		(at 125.49 102)
+		(at 125.49 90.725)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U13"
@@ -3288,7 +3288,7 @@
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
 		(uuid "263a2285-1efb-4012-9da2-ef55691a577e")
-		(at 75.6025 97.225)
+		(at 75.6025 85.95)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C3"
@@ -3539,7 +3539,7 @@
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
 		(uuid "34a7f17a-3e95-4b15-abfc-f6e1cae538b6")
-		(at 131.0525 93.75)
+		(at 131.0525 82.475)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C13"
@@ -3777,7 +3777,7 @@
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
 		(uuid "422e2538-196f-4657-b74e-ccc52d882018")
-		(at 94.9025 93.75)
+		(at 94.9025 82.475)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C6"
@@ -4028,7 +4028,7 @@
 	(footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm"
 		(layer "F.Cu")
 		(uuid "4d7964e6-8c24-4057-9c8d-db54d7bde17b")
-		(at 107.19 102)
+		(at 107.19 90.725)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U5"
@@ -7625,7 +7625,7 @@
 	(footprint "Package_SO:TSSOP-16_4.4x5mm_P0.65mm"
 		(layer "F.Cu")
 		(uuid "7d7e1123-67bd-4b75-915d-a858aca90e0f")
-		(at 71.19 102)
+		(at 71.19 90.725)
 		(descr "TSSOP, 16 Pin (https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO JEDEC-MO-153-AB TI-PW0016A Microchip-ST Toshiba-TSSOP16-P-0044-0.65A NXP-SOT403-1 Infineon-P-TSSOP-16-800")
 		(property "Reference" "U3"
@@ -9265,7 +9265,7 @@
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
 		(uuid "9016c0ff-f34b-4387-91e1-0ea2ffaa3cb5")
-		(at 148.7525 93.75)
+		(at 148.7525 82.475)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C4"
@@ -14515,7 +14515,7 @@
 	(footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm"
 		(layer "F.Cu")
 		(uuid "c108c7f2-3f7f-490d-a187-2591da18ff22")
-		(at 89.49 102)
+		(at 89.49 90.725)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U14"
@@ -15640,7 +15640,7 @@
 	(footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm"
 		(layer "F.Cu")
 		(uuid "de2e2eac-76a1-4e5a-8d02-eee8fbe06fde")
-		(at 143.19 102)
+		(at 143.19 90.725)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
 		(property "Reference" "U4"
@@ -16765,7 +16765,7 @@
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
 		(uuid "e9123449-d407-41ea-a00e-1455540023aa")
-		(at 166.6775 93.75)
+		(at 166.6775 82.475)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C5"
@@ -17531,7 +17531,7 @@
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
 		(layer "F.Cu")
 		(uuid "f0d8ce27-ec81-49d8-acb5-949ed682b79b")
-		(at 112.7525 93.75)
+		(at 112.7525 82.475)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C2"

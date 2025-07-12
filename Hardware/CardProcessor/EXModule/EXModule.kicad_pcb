@@ -20707,39 +20707,6 @@
 		)
 	)
 	(zone
-		(net 0)
-		(net_name "")
-		(locked yes)
-		(layer "B.Cu")
-		(uuid "f39f021b-33fa-4c01-89aa-acbb56b6bf68")
-		(hatch edge 0.5)
-		(connect_pads
-			(clearance 0)
-		)
-		(min_thickness 0.25)
-		(filled_areas_thickness no)
-		(keepout
-			(tracks allowed)
-			(vias not_allowed)
-			(pads allowed)
-			(copperpour allowed)
-			(footprints allowed)
-		)
-		(placement
-			(enabled no)
-			(sheetname "/CardEdgeEX/")
-		)
-		(fill
-			(thermal_gap 0.5)
-			(thermal_bridge_width 0.5)
-		)
-		(polygon
-			(pts
-				(xy 172.81 119) (xy 172.61 126.6) (xy 98.01 126.6) (xy 98.01 119)
-			)
-		)
-	)
-	(zone
 		(net 1)
 		(net_name "GND")
 		(locked yes)

@@ -5,7 +5,7 @@
 	(uuid "0b9dd887-f147-44a4-bd5d-7a0d980e90d1")
 	(paper "USLedger" portrait)
 	(title_block
-		(date "2025-07-03")
+		(date "2025-07-10")
 		(rev "A")
 	)
 	(lib_symbols
@@ -7092,7 +7092,7 @@
 		(uuid "01916e5e-9080-431f-87cc-e96dfab7d253")
 	)
 	(label "RegisterB3"
-		(at 191.77 261.62 180)
+		(at 191.77 271.78 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7102,7 +7102,7 @@
 		(uuid "04bd74af-e20b-437c-8a2d-f2b3c69be76e")
 	)
 	(label "RegisterB9"
-		(at 191.77 231.14 180)
+		(at 191.77 241.3 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7122,7 +7122,7 @@
 		(uuid "096eecc3-e685-431c-b996-843177297e84")
 	)
 	(label "RegisterA2"
-		(at 191.77 347.98 180)
+		(at 191.77 358.14 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7172,7 +7172,7 @@
 		(uuid "122e3740-1018-462d-ad6f-69b45fe3ba3e")
 	)
 	(label "RegisterB15"
-		(at 191.77 200.66 180)
+		(at 191.77 210.82 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7212,7 +7212,7 @@
 		(uuid "1dd54cf7-625f-471b-a8d6-f0262c386ff2")
 	)
 	(label "RegisterA6"
-		(at 191.77 327.66 180)
+		(at 191.77 337.82 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7222,7 +7222,7 @@
 		(uuid "1e0c7a7f-2c84-4a89-9fa8-e23e042f5d50")
 	)
 	(label "RegisterB4"
-		(at 191.77 256.54 180)
+		(at 191.77 266.7 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7232,7 +7232,7 @@
 		(uuid "1eba1651-b5f8-47ff-ada7-f04d5facf9f8")
 	)
 	(label "RegisterB12"
-		(at 191.77 215.9 180)
+		(at 191.77 226.06 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7252,7 +7252,7 @@
 		(uuid "2048077d-9f64-4cb7-9171-0554f478d233")
 	)
 	(label "RegisterA7"
-		(at 191.77 322.58 180)
+		(at 191.77 332.74 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7332,7 +7332,7 @@
 		(uuid "32bee51c-f152-4cda-883d-33354754d82c")
 	)
 	(label "RegisterB8"
-		(at 191.77 236.22 180)
+		(at 191.77 246.38 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7342,7 +7342,7 @@
 		(uuid "350c6435-42ff-4be0-b2db-37f150151931")
 	)
 	(label "RegisterB11"
-		(at 191.77 220.98 180)
+		(at 191.77 231.14 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7352,7 +7352,7 @@
 		(uuid "3f306177-1e25-4e2d-9ef3-644c7045bdc2")
 	)
 	(label "RegisterA10"
-		(at 191.77 307.34 180)
+		(at 191.77 317.5 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7362,7 +7362,7 @@
 		(uuid "42649f2b-09c8-40f6-bce7-9b7b0fa52db8")
 	)
 	(label "RegisterA3"
-		(at 191.77 342.9 180)
+		(at 191.77 353.06 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7392,7 +7392,7 @@
 		(uuid "4624b131-eaba-4d37-844f-fc94d73a0ee0")
 	)
 	(label "RegisterA9"
-		(at 191.77 312.42 180)
+		(at 191.77 322.58 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7432,7 +7432,7 @@
 		(uuid "53242f0e-a5e0-4a47-a064-1b1a6ccff51e")
 	)
 	(label "RegisterB6"
-		(at 191.77 246.38 180)
+		(at 191.77 256.54 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7522,7 +7522,7 @@
 		(uuid "6d47696e-8f27-45ae-8daf-d9408c0018f4")
 	)
 	(label "RegisterA1"
-		(at 191.77 353.06 180)
+		(at 191.77 363.22 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7572,7 +7572,7 @@
 		(uuid "7b4d833d-53a9-4e35-8538-311d5aa2037a")
 	)
 	(label "RegisterB0"
-		(at 191.77 276.86 180)
+		(at 191.77 287.02 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7632,7 +7632,7 @@
 		(uuid "7ea653d1-b65a-4806-a783-b3b404e2c557")
 	)
 	(label "RegisterB13"
-		(at 191.77 210.82 180)
+		(at 191.77 220.98 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7652,7 +7652,7 @@
 		(uuid "80c4d5d9-7450-473a-870a-c85a24646154")
 	)
 	(label "RegisterA5"
-		(at 191.77 332.74 180)
+		(at 191.77 342.9 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7692,7 +7692,7 @@
 		(uuid "8a992b89-04ab-44ad-983a-939093499aee")
 	)
 	(label "RegisterA15"
-		(at 191.77 281.94 180)
+		(at 191.77 292.1 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7722,7 +7722,7 @@
 		(uuid "9438469f-014e-4348-b8bb-47b815c9ec69")
 	)
 	(label "RegisterB1"
-		(at 191.77 271.78 180)
+		(at 191.77 281.94 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7732,7 +7732,7 @@
 		(uuid "94706b4c-c9c9-414b-ba8f-defbc519b442")
 	)
 	(label "RegisterB5"
-		(at 191.77 251.46 180)
+		(at 191.77 261.62 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7802,7 +7802,7 @@
 		(uuid "a1c1efa0-154b-4db4-a7fd-a52d056dc7b5")
 	)
 	(label "RegisterA8"
-		(at 191.77 317.5 180)
+		(at 191.77 327.66 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7812,7 +7812,7 @@
 		(uuid "a9810dda-a14e-4b8a-a3f5-eb494d8e7109")
 	)
 	(label "RegisterA11"
-		(at 191.77 302.26 180)
+		(at 191.77 312.42 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7852,7 +7852,7 @@
 		(uuid "bcf5ac64-86cc-45de-9f9f-bf1553c38abf")
 	)
 	(label "RegisterA0"
-		(at 191.77 358.14 180)
+		(at 191.77 368.3 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7872,7 +7872,7 @@
 		(uuid "c0d14432-b91f-4889-a0ed-d0b31e8871db")
 	)
 	(label "RegisterA13"
-		(at 191.77 292.1 180)
+		(at 191.77 302.26 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7882,7 +7882,7 @@
 		(uuid "c499683b-6db4-420e-af54-6cf0619f71a6")
 	)
 	(label "RegisterA14"
-		(at 191.77 287.02 180)
+		(at 191.77 297.18 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7892,7 +7892,7 @@
 		(uuid "c54906fb-9f84-48be-a196-b45bd6830e56")
 	)
 	(label "RegisterB2"
-		(at 191.77 266.7 180)
+		(at 191.77 276.86 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7982,7 +7982,7 @@
 		(uuid "d8790b57-5fdb-4736-8fd4-826349854945")
 	)
 	(label "RegisterA12"
-		(at 191.77 297.18 180)
+		(at 191.77 307.34 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8002,7 +8002,7 @@
 		(uuid "da2e06f5-df36-41ce-80b6-ea5f70f15088")
 	)
 	(label "RegisterB7"
-		(at 191.77 241.3 180)
+		(at 191.77 251.46 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8132,7 +8132,7 @@
 		(uuid "f4a8d564-85a5-444e-a53d-74ccea333089")
 	)
 	(label "RegisterA4"
-		(at 191.77 337.82 180)
+		(at 191.77 347.98 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8142,7 +8142,7 @@
 		(uuid "f5731727-b931-4bfd-9ed4-b948ea494757")
 	)
 	(label "RegisterB10"
-		(at 191.77 226.06 180)
+		(at 191.77 236.22 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8162,7 +8162,7 @@
 		(uuid "f982569e-6047-4c22-8621-ef9783b39721")
 	)
 	(label "RegisterB14"
-		(at 191.77 205.74 180)
+		(at 191.77 215.9 180)
 		(effects
 			(font
 				(size 1.27 1.27)

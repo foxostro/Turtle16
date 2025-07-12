@@ -5,7 +5,7 @@
 	(uuid "8440aa1c-35a0-4293-b61e-2585007d6959")
 	(paper "USLedger" portrait)
 	(title_block
-		(date "2025-07-03")
+		(date "2025-07-10")
 		(rev "A")
 	)
 	(lib_symbols
@@ -5853,16 +5853,6 @@
 	)
 	(wire
 		(pts
-			(xy 184.15 358.14) (xy 149.86 358.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "62621995-fc59-4a43-91ff-2a17dbc96ba4")
-	)
-	(wire
-		(pts
 			(xy 171.45 375.92) (xy 149.86 375.92)
 		)
 		(stroke
@@ -6023,16 +6013,6 @@
 	)
 	(wire
 		(pts
-			(xy 184.15 363.22) (xy 149.86 363.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "82cca76f-07fe-4d3c-9861-d9e032647992")
-	)
-	(wire
-		(pts
 			(xy 90.17 121.92) (xy 124.46 121.92)
 		)
 		(stroke
@@ -6143,7 +6123,7 @@
 	)
 	(wire
 		(pts
-			(xy 184.15 368.3) (xy 149.86 368.3)
+			(xy 90.17 256.54) (xy 124.46 256.54)
 		)
 		(stroke
 			(width 0)
@@ -6580,16 +6560,6 @@
 			(type default)
 		)
 		(uuid "fe4eb91b-bf0b-4633-b2d3-9b7e90340000")
-	)
-	(label "Ctl_EX12"
-		(at 184.15 358.14 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "01836d3b-8b0c-422c-8c36-b44e38dad11b")
 	)
 	(label "Ins_EX6"
 		(at 90.17 172.72 0)
@@ -7191,16 +7161,6 @@
 		)
 		(uuid "d1e88b35-9011-431b-8ebf-111c27073bbd")
 	)
-	(label "Ctl_EX13"
-		(at 184.15 363.22 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "d5ec82e5-8b71-4a6f-90e0-46943a09f18c")
-	)
 	(label "Ins_EX10"
 		(at 90.17 152.4 0)
 		(effects
@@ -7506,12 +7466,12 @@
 	)
 	(hierarchical_label "STALL"
 		(shape input)
-		(at 184.15 368.3 0)
+		(at 90.17 256.54 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
 		(uuid "690ecaa4-3fac-44ea-b09a-5d5f253f2b95")
 	)

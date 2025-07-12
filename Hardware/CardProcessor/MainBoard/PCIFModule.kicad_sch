@@ -5,7 +5,7 @@
 	(uuid "c8014893-29e4-4439-9930-ea776ac428ef")
 	(paper "USLedger" portrait)
 	(title_block
-		(date "2025-07-03")
+		(date "2025-07-10")
 		(rev "A")
 	)
 	(lib_symbols
@@ -5523,7 +5523,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 64.77) (xy 123.19 64.77)
+			(xy 88.9 252.73) (xy 123.19 252.73)
 		)
 		(stroke
 			(width 0)
@@ -7421,7 +7421,7 @@
 	)
 	(hierarchical_label "STALL"
 		(shape input)
-		(at 88.9 64.77 180)
+		(at 88.9 252.73 180)
 		(effects
 			(font
 				(size 1.27 1.27)

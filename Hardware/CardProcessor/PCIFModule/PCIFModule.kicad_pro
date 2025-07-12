@@ -59,7 +59,12 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "items_not_allowed|135800000|125660000|b06c0f3d-f866-4766-b682-1c924f1d0427|00000000-0000-0000-0000-000000000000",
+          "The card edge connector is the thing being chamfered here"
+        ]
+      ],
       "meta": {
         "filename": "board_design_settings.json",
         "version": 2

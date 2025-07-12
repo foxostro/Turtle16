@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "System Bus Connector")
-		(date "2025-07-10")
+		(date "2025-07-11")
 		(rev "A")
 		(comment 4 "Peripheral devices on separate boards connect to the system bus here.")
 	)

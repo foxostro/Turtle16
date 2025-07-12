@@ -144,8 +144,8 @@
         "min_text_thickness": 0.08,
         "min_through_hole_diameter": 0.2,
         "min_track_width": 0.1524,
-        "min_via_annular_width": 0.05,
-        "min_via_diameter": 0.4,
+        "min_via_annular_width": 0.15,
+        "min_via_diameter": 0.35,
         "solder_mask_to_copper_clearance": 0.0,
         "use_height_for_length_calcs": true
       },
@@ -196,7 +196,8 @@
       "track_widths": [
         0.0,
         0.1524,
-        0.3048
+        0.3048,
+        0.6096
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -228,6 +229,10 @@
         {
           "diameter": 0.0,
           "drill": 0.0
+        },
+        {
+          "diameter": 0.35,
+          "drill": 0.2
         }
       ],
       "zones_allow_external_fillets": false,
@@ -240,7 +245,18 @@
       "mfg": "",
       "mpn": ""
     },
-    "layer_pairs": [],
+    "layer_pairs": [
+      {
+        "bottomLayer": 2,
+        "enabled": true,
+        "topLayer": 0
+      },
+      {
+        "bottomLayer": 12,
+        "enabled": true,
+        "topLayer": 6
+      }
+    ],
     "layer_presets": [],
     "viewports": []
   },
@@ -493,8 +509,8 @@
         "priority": 2147483647,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.1524,
-        "via_diameter": 0.65,
-        "via_drill": 0.3,
+        "via_diameter": 0.45,
+        "via_drill": 0.2,
         "wire_width": 6
       }
     ],

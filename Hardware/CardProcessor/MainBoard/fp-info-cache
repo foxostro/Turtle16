@@ -1,4 +1,4 @@
-25644473977170541
+25646224641488933
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -101891,6 +101891,13 @@ Through hole horizontal IDC box header THT 2x32 2.54mm double row
 0
 64
 64
+Turtle16
+MEC5-140-01-L-DV-W1-K_Edge
+140 position card edge for Samtec MEC5-DV
+conn samtec card-edge high-speed
+0
+280
+280
 Turtle16
 MEC514001LDVW1K
 MEC5-140-01-L-DV-W1-K-2

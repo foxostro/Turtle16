@@ -48,7 +48,7 @@
       "drc_warnings",
       "shapes"
     ],
-    "visible_layers": "00000000_00000000_0001ffff_aaaabaef",
+    "visible_layers": "00000000_00000000_0001ffff_aaaafaef",
     "zone_display_mode": 0
   },
   "git": {
@@ -62,8 +62,6 @@
   },
   "net_inspector_panel": {
     "col_hidden": [
-      false,
-      false,
       false,
       false,
       false,
@@ -93,9 +91,7 @@
       10,
       11,
       12,
-      13,
-      14,
-      15
+      13
     ],
     "col_widths": [
       156,
@@ -106,8 +102,6 @@
       103,
       103,
       74,
-      103,
-      103,
       103,
       103,
       103,

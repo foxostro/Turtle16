@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "EX/MEM: Store Operand Register")
-		(date "2025-07-11")
+		(date "2025-07-13")
 		(rev "A")
 	)
 	(lib_symbols

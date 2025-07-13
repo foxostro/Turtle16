@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "Select Right Operand")
-		(date "2025-07-11")
+		(date "2025-07-13")
 		(rev "A")
 		(comment 2 "from an immediate value contained in the instruction word.")
 		(comment 3 "The right operand can either take the value from the B port of the register file, or")

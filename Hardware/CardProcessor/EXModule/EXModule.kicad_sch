@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "Turtle16: EX Module")
-		(date "2025-07-11")
+		(date "2025-07-13")
 		(rev "A")
 		(comment 4 "Microcomputer built from 74xx series logic chips.")
 	)

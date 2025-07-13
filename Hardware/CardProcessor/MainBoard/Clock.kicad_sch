@@ -2891,7 +2891,7 @@
 	)
 	(wire
 		(pts
-			(xy 191.77 114.3) (xy 213.36 114.3)
+			(xy 191.77 114.3) (xy 233.68 114.3)
 		)
 		(stroke
 			(width 0)
@@ -3251,7 +3251,7 @@
 	)
 	(wire
 		(pts
-			(xy 191.77 111.76) (xy 209.55 111.76)
+			(xy 191.77 111.76) (xy 218.44 111.76)
 		)
 		(stroke
 			(width 0)
@@ -4621,21 +4621,21 @@
 		(dnp no)
 		(uuid "0f6ca307-e918-4afe-a653-ae77ef17a39b")
 		(property "Reference" "TP75"
-			(at 203.835 104.521 0)
+			(at 205.74 103.124 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify bottom)
 			)
 		)
-		(property "Value" "~"
-			(at 207.01 107.315 0)
+		(property "Value" "Phi1_0"
+			(at 205.74 104.902 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify bottom)
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
@@ -7573,7 +7573,7 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint")
-		(at 213.36 114.3 0)
+		(at 233.68 114.3 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -7581,26 +7581,25 @@
 		(dnp no)
 		(uuid "e35c4481-24a1-4fb2-ab76-b3ed61585624")
 		(property "Reference" "TP77"
-			(at 210.947 108.966 0)
+			(at 233.68 107.696 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify bottom)
 			)
 		)
-		(property "Value" "TP"
-			(at 214.63 112.395 0)
+		(property "Value" "~{RST_sync0}"
+			(at 233.68 109.982 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
-				(hide yes)
+				(justify bottom)
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 218.44 114.3 0)
+			(at 238.76 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7609,7 +7608,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 114.3 0)
+			(at 238.76 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7618,7 +7617,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 213.36 114.3 0)
+			(at 233.68 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7805,7 +7804,7 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint")
-		(at 209.55 111.76 0)
+		(at 218.44 111.76 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7814,26 +7813,25 @@
 		(dnp no)
 		(uuid "f0af5b6b-10ed-42d8-9f3c-07670e038b6a")
 		(property "Reference" "TP76"
-			(at 212.09 106.68 0)
+			(at 218.44 105.664 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify bottom)
 			)
 		)
-		(property "Value" "TP"
-			(at 208.28 109.855 0)
+		(property "Value" "Phi2_0"
+			(at 218.44 107.442 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
-				(hide yes)
+				(justify bottom)
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 204.47 111.76 0)
+			(at 213.36 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7842,7 +7840,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 204.47 111.76 0)
+			(at 213.36 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7851,7 +7849,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 209.55 111.76 0)
+			(at 218.44 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)

@@ -20,12 +20,12 @@
       "dimensions": false,
       "footprints": false,
       "graphics": false,
-      "keepouts": true,
+      "keepouts": false,
       "lockedItems": true,
       "otherItems": false,
-      "pads": false,
+      "pads": true,
       "text": false,
-      "tracks": false,
+      "tracks": true,
       "vias": false,
       "zones": false
     },
@@ -108,7 +108,7 @@
       103,
       103,
       103,
-      103
+      0
     ],
     "custom_group_rules": [],
     "expanded_rows": [],

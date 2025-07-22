@@ -3086,7 +3086,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe2a65c")
-		(property "Reference" "C8"
+		(property "Reference" "C?"
 			(at 29.591 182.9816 0)
 			(effects
 				(font
@@ -3179,9 +3179,9 @@
 					(unit 1)
 				)
 			)
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/308b00b8-9bc8-4f6d-a97b-a673baac1269"
-					(reference "C64")
+					(reference "C?")
 					(unit 1)
 				)
 			)
@@ -3196,7 +3196,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe2a662")
-		(property "Reference" "#PWR0185"
+		(property "Reference" "#PWR?"
 			(at 26.67 184.15 0)
 			(effects
 				(font
@@ -3250,9 +3250,9 @@
 					(unit 1)
 				)
 			)
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/308b00b8-9bc8-4f6d-a97b-a673baac1269"
-					(reference "#PWR0375")
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -3267,7 +3267,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe2a668")
-		(property "Reference" "#PWR0186"
+		(property "Reference" "#PWR?"
 			(at 26.67 196.85 0)
 			(effects
 				(font
@@ -3321,9 +3321,9 @@
 					(unit 1)
 				)
 			)
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/308b00b8-9bc8-4f6d-a97b-a673baac1269"
-					(reference "#PWR0376")
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -3338,7 +3338,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006085e8d4")
-		(property "Reference" "#PWR0187"
+		(property "Reference" "#PWR?"
 			(at 127 113.03 0)
 			(effects
 				(font
@@ -3393,9 +3393,9 @@
 					(unit 1)
 				)
 			)
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/308b00b8-9bc8-4f6d-a97b-a673baac1269"
-					(reference "#PWR0377")
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -3410,7 +3410,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006085e8db")
-		(property "Reference" "#PWR0188"
+		(property "Reference" "#PWR?"
 			(at 148.59 66.04 0)
 			(effects
 				(font
@@ -3464,9 +3464,9 @@
 					(unit 1)
 				)
 			)
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/308b00b8-9bc8-4f6d-a97b-a673baac1269"
-					(reference "#PWR0378")
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -3481,7 +3481,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006085e8e1")
-		(property "Reference" "#PWR0189"
+		(property "Reference" "#PWR?"
 			(at 148.59 133.35 0)
 			(effects
 				(font
@@ -3535,9 +3535,9 @@
 					(unit 1)
 				)
 			)
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/308b00b8-9bc8-4f6d-a97b-a673baac1269"
-					(reference "#PWR0379")
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -3552,7 +3552,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006085e90c")
-		(property "Reference" "U8"
+		(property "Reference" "U?"
 			(at 148.59 91.44 0)
 			(effects
 				(font
@@ -3781,9 +3781,9 @@
 					(unit 1)
 				)
 			)
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/308b00b8-9bc8-4f6d-a97b-a673baac1269"
-					(reference "U61")
+					(reference "U?")
 					(unit 1)
 				)
 			)

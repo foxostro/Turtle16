@@ -729,7 +729,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "HazardControl.kicad_sch"
+		(property "Sheetfile" "../ControlCard/HazardControl.kicad_sch"
 			(at 91.44 135.2046 0)
 			(effects
 				(font
@@ -899,14 +899,19 @@
 			)
 		)
 		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
-					(page "22")
-				)
-			)
 			(project "ControlModule"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "4")
+				)
+			)
+			(project ""
+				(path "/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "#")
+				)
+			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "16")
 				)
 			)
 		)
@@ -936,7 +941,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "InstructionDecoder.kicad_sch"
+		(property "Sheetfile" "../ControlCard/InstructionDecoder.kicad_sch"
 			(at 81.28 93.2946 0)
 			(effects
 				(font
@@ -1006,14 +1011,19 @@
 			)
 		)
 		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
-					(page "20")
-				)
-			)
 			(project "ControlModule"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "3")
+				)
+			)
+			(project ""
+				(path "/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "#")
+				)
+			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "15")
 				)
 			)
 		)
@@ -1043,7 +1053,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "ID_EX_ControlWord.kicad_sch"
+		(property "Sheetfile" "../ControlCard/ID_EX_ControlWord.kicad_sch"
 			(at 175.895 81.8646 0)
 			(effects
 				(font
@@ -1083,14 +1093,19 @@
 			)
 		)
 		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
-					(page "24")
-				)
-			)
 			(project "ControlModule"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "8")
+				)
+			)
+			(project ""
+				(path "/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "#")
+				)
+			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "20")
 				)
 			)
 		)
@@ -1120,7 +1135,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "ID_EX_InstructionWord.kicad_sch"
+		(property "Sheetfile" "../ControlCard/ID_EX_InstructionWord.kicad_sch"
 			(at 175.26 66.6246 0)
 			(effects
 				(font
@@ -1160,14 +1175,19 @@
 			)
 		)
 		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
-					(page "25")
-				)
-			)
 			(project "ControlModule"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "7")
+				)
+			)
+			(project ""
+				(path "/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "#")
+				)
+			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "19")
 				)
 			)
 		)
@@ -1197,7 +1217,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "IDFlush.kicad_sch"
+		(property "Sheetfile" "../ControlCard/IDFlush.kicad_sch"
 			(at 134.62 86.3096 0)
 			(effects
 				(font
@@ -1247,14 +1267,19 @@
 			)
 		)
 		(instances
-			(project "MainBoard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/101aadd6-c8f8-4873-8d28-86528ab686cf"
-					(page "21")
-				)
-			)
 			(project "ControlModule"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "6")
+				)
+			)
+			(project ""
+				(path "/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "#")
+				)
+			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(page "18")
 				)
 			)
 		)

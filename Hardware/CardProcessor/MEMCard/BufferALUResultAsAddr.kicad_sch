@@ -6,7 +6,7 @@
 	(paper "USLetter")
 	(title_block
 		(title "MEM: Buffer ALUResult")
-		(date "2025-07-01")
+		(date "2025-07-22")
 		(rev "A")
 		(comment 4 "Buffer the effective address before it leaves the main board.")
 	)
@@ -3085,7 +3085,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005ff007e0")
-		(property "Reference" "C12"
+		(property "Reference" "C10"
 			(at 242.951 151.2316 0)
 			(effects
 				(font
@@ -3174,7 +3174,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "C12")
+					(reference "C10")
 					(unit 1)
 				)
 			)
@@ -3195,7 +3195,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005ff007ec")
-		(property "Reference" "#PWR065"
+		(property "Reference" "#PWR067"
 			(at 240.03 152.4 0)
 			(effects
 				(font
@@ -3245,7 +3245,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR065")
+					(reference "#PWR067")
 					(unit 1)
 				)
 			)
@@ -3266,7 +3266,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005ff007f5")
-		(property "Reference" "#PWR066"
+		(property "Reference" "#PWR068"
 			(at 240.03 165.1 0)
 			(effects
 				(font
@@ -3316,7 +3316,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR066")
+					(reference "#PWR068")
 					(unit 1)
 				)
 			)
@@ -3337,7 +3337,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060746adb")
-		(property "Reference" "#PWR063"
+		(property "Reference" "#PWR065"
 			(at 163.83 114.3 0)
 			(effects
 				(font
@@ -3388,7 +3388,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR063")
+					(reference "#PWR065")
 					(unit 1)
 				)
 			)
@@ -3410,7 +3410,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006219d879")
-		(property "Reference" "U11"
+		(property "Reference" "U7"
 			(at 139.7 93.98 0)
 			(effects
 				(font
@@ -3635,7 +3635,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "U11")
+					(reference "U7")
 					(unit 1)
 				)
 			)
@@ -3656,7 +3656,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006219d87f")
-		(property "Reference" "#PWR062"
+		(property "Reference" "#PWR064"
 			(at 146.05 134.62 0)
 			(effects
 				(font
@@ -3706,7 +3706,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR062")
+					(reference "#PWR064")
 					(unit 1)
 				)
 			)
@@ -3727,7 +3727,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006219d885")
-		(property "Reference" "#PWR061"
+		(property "Reference" "#PWR063"
 			(at 139.7 67.31 0)
 			(effects
 				(font
@@ -3777,7 +3777,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR061")
+					(reference "#PWR063")
 					(unit 1)
 				)
 			)
@@ -3798,7 +3798,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "14c21d77-8fa7-44f2-b8c8-f38b843b6f6f")
-		(property "Reference" "#PWR064"
+		(property "Reference" "#PWR066"
 			(at 163.83 120.65 0)
 			(effects
 				(font
@@ -3849,7 +3849,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/f77653f6-20ed-4160-b6ab-9e3d62667a68/00000000-0000-0000-0000-00005fb92c55"
-					(reference "#PWR064")
+					(reference "#PWR066")
 					(unit 1)
 				)
 			)

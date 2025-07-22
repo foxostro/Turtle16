@@ -5,7 +5,7 @@
 	(uuid "0734fc7f-a6cc-4e6e-9f39-47607536bc96")
 	(paper "USLetter")
 	(title_block
-		(date "2025-07-01")
+		(date "2025-07-22")
 		(rev "A")
 	)
 	(lib_symbols)
@@ -1184,7 +1184,7 @@
 			)
 		)
 		(instances
-			(project "MEMModule"
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
 					(page "12")
 				)
@@ -1331,7 +1331,7 @@
 					(page "15")
 				)
 			)
-			(project "MEMModule"
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
 					(page "2")
 				)
@@ -1518,7 +1518,7 @@
 					(page "2")
 				)
 			)
-			(project "MEMModule"
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
 					(page "5")
 				)

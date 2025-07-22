@@ -5,7 +5,7 @@
 	(uuid "91a0ac57-8538-499b-8099-11c7eca7022f")
 	(paper "USLetter")
 	(title_block
-		(date "2025-07-01")
+		(date "2025-07-22")
 		(rev "A")
 	)
 	(lib_symbols
@@ -1899,7 +1899,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "70669778-1e24-4f5b-9397-7e4a34455ce3")
-		(property "Reference" "J2"
+		(property "Reference" "J1"
 			(at 118.11 63.5 0)
 			(effects
 				(font
@@ -1998,7 +1998,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151/058ef19a-b679-4601-88cf-59ae7f711a8b"
-					(reference "J2")
+					(reference "J1")
 					(unit 1)
 				)
 			)
@@ -2093,7 +2093,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "be50876e-0ccb-46c6-9212-cc107e71c9c6")
-		(property "Reference" "J3"
+		(property "Reference" "J2"
 			(at 179.07 63.5 0)
 			(effects
 				(font
@@ -2192,7 +2192,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151/058ef19a-b679-4601-88cf-59ae7f711a8b"
-					(reference "J3")
+					(reference "J2")
 					(unit 1)
 				)
 			)

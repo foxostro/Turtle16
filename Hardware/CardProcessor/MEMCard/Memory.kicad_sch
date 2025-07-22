@@ -5,7 +5,7 @@
 	(uuid "c2e639a8-df6e-4af0-9d6b-1b074ca7eaa0")
 	(paper "USLetter")
 	(title_block
-		(date "2025-07-01")
+		(date "2025-07-22")
 		(rev "A")
 	)
 	(lib_symbols
@@ -3301,7 +3301,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "049197a3-0e1a-43e5-8741-1c16c6eb4545")
-		(property "Reference" "U19"
+		(property "Reference" "U2"
 			(at 122.7933 72.39 0)
 			(effects
 				(font
@@ -3456,7 +3456,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
-					(reference "U19")
+					(reference "U2")
 					(unit 1)
 				)
 			)
@@ -3548,7 +3548,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "3e73b09f-67ff-4b7c-9787-47f6750c5e12")
-		(property "Reference" "U2"
+		(property "Reference" "U1"
 			(at 181.61 107.5182 0)
 			(effects
 				(font
@@ -3671,7 +3671,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
-					(reference "U2")
+					(reference "U1")
 					(unit 4)
 				)
 			)
@@ -3765,7 +3765,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "62f2ecf6-69ac-4a0f-a439-656c821af943")
-		(property "Reference" "C21"
+		(property "Reference" "C2"
 			(at 110.871 58.5216 0)
 			(effects
 				(font
@@ -3854,7 +3854,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
-					(reference "C21")
+					(reference "C2")
 					(unit 1)
 				)
 			)
@@ -3875,7 +3875,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "70684d29-13cb-4c7f-87ca-68beab9a375f")
-		(property "Reference" "C20"
+		(property "Reference" "C1"
 			(at 107.061 116.9416 0)
 			(effects
 				(font
@@ -3964,7 +3964,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
-					(reference "C20")
+					(reference "C1")
 					(unit 1)
 				)
 			)
@@ -4055,7 +4055,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a4015f82-9f1e-46be-8665-890ed943cc64")
-		(property "Reference" "U2"
+		(property "Reference" "U1"
 			(at 85.09 157.0482 0)
 			(effects
 				(font
@@ -4178,7 +4178,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
-					(reference "U2")
+					(reference "U1")
 					(unit 5)
 				)
 			)
@@ -4199,7 +4199,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a54777ee-dcb3-4589-894f-74992f4e387b")
-		(property "Reference" "U2"
+		(property "Reference" "U1"
 			(at 181.61 93.5482 0)
 			(effects
 				(font
@@ -4322,7 +4322,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
-					(reference "U2")
+					(reference "U1")
 					(unit 3)
 				)
 			)
@@ -4488,7 +4488,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "abf1d930-941d-471e-8297-4f6ed336b9d9")
-		(property "Reference" "U20"
+		(property "Reference" "U3"
 			(at 122.7933 123.19 0)
 			(effects
 				(font
@@ -4619,7 +4619,7 @@
 		(instances
 			(project "MEMModule"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
-					(reference "U20")
+					(reference "U3")
 					(unit 1)
 				)
 			)
@@ -5276,7 +5276,7 @@
 					(page "16")
 				)
 			)
-			(project "MEMModule"
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
 					(page "3")
 				)
@@ -5433,7 +5433,7 @@
 					(page "17")
 				)
 			)
-			(project "MEMModule"
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/abd747a2-d45e-4808-b0cb-3286e9a29151"
 					(page "4")
 				)

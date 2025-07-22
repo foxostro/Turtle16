@@ -33,6 +33,7 @@
       "vias",
       "footprint_text",
       "footprint_anchors",
+      "ratsnest",
       "grid",
       "footprints_front",
       "footprints_back",
@@ -56,7 +57,7 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "BypassModule.kicad_prl",
+    "filename": "BypassCard.kicad_prl",
     "version": 5
   },
   "net_inspector_panel": {

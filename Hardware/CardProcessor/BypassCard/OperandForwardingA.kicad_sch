@@ -6504,7 +6504,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0e51")
-		(property "Reference" "C57"
+		(property "Reference" "C1"
 			(at 21.971 184.2516 0)
 			(effects
 				(font
@@ -6591,9 +6591,9 @@
 			(uuid "a0bb38cd-1edd-497e-9744-4b963bb62fe4")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "C57")
+					(reference "C1")
 					(unit 1)
 				)
 			)
@@ -6614,7 +6614,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0f3f")
-		(property "Reference" "#PWR0350"
+		(property "Reference" "#PWR0160"
 			(at 71.12 111.76 0)
 			(effects
 				(font
@@ -6663,9 +6663,9 @@
 			(uuid "e5c4e592-99f1-419e-a159-382f4e9f4e15")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0350")
+					(reference "#PWR0160")
 					(unit 1)
 				)
 			)
@@ -6686,7 +6686,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af110d")
-		(property "Reference" "#PWR0358"
+		(property "Reference" "#PWR0168"
 			(at 229.87 133.35 0)
 			(effects
 				(font
@@ -6734,9 +6734,9 @@
 			(uuid "6d4c67d8-b47d-4d4f-81b2-f7ced4fd644e")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0358")
+					(reference "#PWR0168")
 					(unit 1)
 				)
 			)
@@ -6757,7 +6757,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af1113")
-		(property "Reference" "#PWR0357"
+		(property "Reference" "#PWR0167"
 			(at 218.44 66.04 0)
 			(effects
 				(font
@@ -6805,9 +6805,9 @@
 			(uuid "60c60be7-c12d-4ed5-857e-4e89852a4ccf")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0357")
+					(reference "#PWR0167")
 					(unit 1)
 				)
 			)
@@ -6828,7 +6828,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256ec")
-		(property "Reference" "C58"
+		(property "Reference" "C2"
 			(at 34.671 184.2516 0)
 			(effects
 				(font
@@ -6915,9 +6915,9 @@
 			(uuid "412ec5a3-61f8-4a6e-ad74-07b66a4a3d40")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "C58")
+					(reference "C2")
 					(unit 1)
 				)
 			)
@@ -6938,7 +6938,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256ed")
-		(property "Reference" "#PWR0348"
+		(property "Reference" "#PWR0158"
 			(at 19.05 185.42 0)
 			(effects
 				(font
@@ -6986,9 +6986,9 @@
 			(uuid "48b05ed0-4482-4a5d-afbf-30161a95999f")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0348")
+					(reference "#PWR0158")
 					(unit 1)
 				)
 			)
@@ -7009,7 +7009,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256ee")
-		(property "Reference" "#PWR0349"
+		(property "Reference" "#PWR0159"
 			(at 19.05 198.12 0)
 			(effects
 				(font
@@ -7057,9 +7057,9 @@
 			(uuid "8f31e6fd-8c1c-41a0-980f-d3e0a9b05dd0")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0349")
+					(reference "#PWR0159")
 					(unit 1)
 				)
 			)
@@ -7080,7 +7080,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256ef")
-		(property "Reference" "C59"
+		(property "Reference" "C3"
 			(at 47.371 184.2516 0)
 			(effects
 				(font
@@ -7167,9 +7167,9 @@
 			(uuid "3b9b2dd6-7244-4505-8345-26080d6271fb")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "C59")
+					(reference "C3")
 					(unit 1)
 				)
 			)
@@ -7190,7 +7190,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f0")
-		(property "Reference" "#PWR0351"
+		(property "Reference" "#PWR0161"
 			(at 83.82 64.77 0)
 			(effects
 				(font
@@ -7238,9 +7238,9 @@
 			(uuid "d6eefc5f-167e-4c63-a62b-4d971dc6445d")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0351")
+					(reference "#PWR0161")
 					(unit 1)
 				)
 			)
@@ -7261,7 +7261,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f1")
-		(property "Reference" "#PWR0352"
+		(property "Reference" "#PWR0162"
 			(at 95.25 132.08 0)
 			(effects
 				(font
@@ -7309,9 +7309,9 @@
 			(uuid "ae616bfb-99f9-4445-b2f7-3fd2c15d144e")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0352")
+					(reference "#PWR0162")
 					(unit 1)
 				)
 			)
@@ -7332,7 +7332,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f3")
-		(property "Reference" "U54"
+		(property "Reference" "U1"
 			(at 83.82 91.44 0)
 			(effects
 				(font
@@ -7555,9 +7555,9 @@
 			(uuid "2f6f6bae-0908-415d-ae66-d516e9f4ce0d")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "U54")
+					(reference "U1")
 					(unit 1)
 				)
 			)
@@ -7578,7 +7578,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f4")
-		(property "Reference" "U55"
+		(property "Reference" "U2"
 			(at 151.13 92.71 0)
 			(effects
 				(font
@@ -7801,9 +7801,9 @@
 			(uuid "c2b6c1a7-591a-4401-b746-6d1e53e8513d")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "U55")
+					(reference "U2")
 					(unit 1)
 				)
 			)
@@ -7824,7 +7824,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f5")
-		(property "Reference" "#PWR0353"
+		(property "Reference" "#PWR0163"
 			(at 138.43 113.03 0)
 			(effects
 				(font
@@ -7873,9 +7873,9 @@
 			(uuid "74b2d44a-a96e-4db2-8dd4-9d4b9e1dc283")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0353")
+					(reference "#PWR0163")
 					(unit 1)
 				)
 			)
@@ -7896,7 +7896,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f6")
-		(property "Reference" "#PWR0355"
+		(property "Reference" "#PWR0165"
 			(at 162.56 133.35 0)
 			(effects
 				(font
@@ -7944,9 +7944,9 @@
 			(uuid "48a8a877-5997-4ba6-bad8-71dbb6783842")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0355")
+					(reference "#PWR0165")
 					(unit 1)
 				)
 			)
@@ -7967,7 +7967,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f7")
-		(property "Reference" "#PWR0354"
+		(property "Reference" "#PWR0164"
 			(at 151.13 66.04 0)
 			(effects
 				(font
@@ -8015,9 +8015,9 @@
 			(uuid "8778a8be-9b61-4c48-a1ac-d5477246068d")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0354")
+					(reference "#PWR0164")
 					(unit 1)
 				)
 			)
@@ -8038,7 +8038,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f8")
-		(property "Reference" "U56"
+		(property "Reference" "U3"
 			(at 218.44 92.71 0)
 			(effects
 				(font
@@ -8261,9 +8261,9 @@
 			(uuid "a8ade623-0864-4038-ab7d-9fb8e59f73cc")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "U56")
+					(reference "U3")
 					(unit 1)
 				)
 			)
@@ -8284,7 +8284,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f9")
-		(property "Reference" "#PWR0356"
+		(property "Reference" "#PWR0166"
 			(at 205.74 113.03 0)
 			(effects
 				(font
@@ -8333,9 +8333,9 @@
 			(uuid "363f2d13-189f-4979-b711-3244d1469538")
 		)
 		(instances
-			(project "MainBoard"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe"
-					(reference "#PWR0356")
+					(reference "#PWR0166")
 					(unit 1)
 				)
 			)

@@ -222,16 +222,16 @@
 		)
 		(uuid "e85d4ca2-d7cb-492b-bd33-afddc1dab501")
 	)
-	(hierarchical_label "FWD_A"
+	(hierarchical_label "FWD_MEM_TO_A"
 		(shape input)
-		(at 91.44 85.09 180)
+		(at 91.44 90.17 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "034c7be3-650c-4af1-8730-bd7d7200bb98")
+		(uuid "03e2745e-bd1e-4d72-b49c-4ed86e353762")
 	)
 	(hierarchical_label "Y_MEM[0..15]"
 		(shape input)
@@ -244,38 +244,16 @@
 		)
 		(uuid "0da22159-8bf4-4524-ac6f-e85150513c75")
 	)
-	(hierarchical_label "RegisterB[0..15]"
+	(hierarchical_label "FWD_B"
 		(shape input)
-		(at 91.44 120.65 180)
+		(at 91.44 107.95 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "26a7b487-85f8-436b-8593-baa409f1576d")
-	)
-	(hierarchical_label "FWD_MEM_TO_B"
-		(shape input)
-		(at 91.44 113.03 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "31edeff5-f84b-4a34-9723-35746eaf959a")
-	)
-	(hierarchical_label "FWD_MEM_TO_A"
-		(shape input)
-		(at 91.44 90.17 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "33f16949-47c5-4115-86e4-e7f89dce06c6")
+		(uuid "1bc19a27-4e92-42f5-b3a9-b13eb5880b72")
 	)
 	(hierarchical_label "A[0..15]"
 		(shape output)
@@ -286,18 +264,18 @@
 			)
 			(justify left)
 		)
-		(uuid "3472a4fb-11f8-40f6-904f-dfcc75eeabfe")
+		(uuid "2bdd11cb-b5cb-41b2-87e1-c4cef2354c79")
 	)
-	(hierarchical_label "Phi1d"
+	(hierarchical_label "FWD_EX_TO_A"
 		(shape input)
-		(at 137.16 110.49 180)
+		(at 91.44 87.63 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "423257eb-85b3-4e4f-97bc-2f36046d4f78")
+		(uuid "2eaa1cd9-7625-442e-a694-6d3b9d0226d5")
 	)
 	(hierarchical_label "Y_EX[0..15]"
 		(shape input)
@@ -310,17 +288,6 @@
 		)
 		(uuid "60b99806-709f-4b67-89ee-116f0163a126")
 	)
-	(hierarchical_label "RegisterA[0..15]"
-		(shape input)
-		(at 91.44 92.71 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "7f60df2f-ade9-4b01-bf87-41c38ce0944f")
-	)
 	(hierarchical_label "Y_MEM[0..15]"
 		(shape input)
 		(at 91.44 97.79 180)
@@ -330,18 +297,7 @@
 			)
 			(justify right)
 		)
-		(uuid "80c0b9a5-7512-42ed-bebf-98c79557aff4")
-	)
-	(hierarchical_label "FWD_B"
-		(shape input)
-		(at 91.44 107.95 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "870c7fc5-b798-4e71-87ef-8390149489fe")
+		(uuid "79ad5ee4-7622-4cb0-988d-e4d34f1c3351")
 	)
 	(hierarchical_label "Phi1d"
 		(shape input)
@@ -354,27 +310,60 @@
 		)
 		(uuid "a9f79552-6fb3-4b89-9e93-49178a6938a4")
 	)
-	(hierarchical_label "FWD_EX_TO_B"
+	(hierarchical_label "RegisterB[0..15]"
 		(shape input)
-		(at 91.44 110.49 180)
+		(at 91.44 120.65 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "b24f6ce5-14fe-4587-a986-16fdb58407fb")
+		(uuid "ae83fff2-ec5f-4d21-9f53-2175e11543f9")
 	)
-	(hierarchical_label "FWD_EX_TO_A"
+	(hierarchical_label "RegisterA[0..15]"
 		(shape input)
-		(at 91.44 87.63 180)
+		(at 91.44 92.71 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "bd022bb3-6f30-4cc4-9387-34dd7bde6dbb")
+		(uuid "afcba318-4a60-4ebe-8d40-ec83b18296cf")
+	)
+	(hierarchical_label "FWD_MEM_TO_B"
+		(shape input)
+		(at 91.44 113.03 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b74abf9a-1b67-4a1d-a52a-40d82acbf63a")
+	)
+	(hierarchical_label "B[0..15]"
+		(shape output)
+		(at 189.23 107.95 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b7915988-359a-449d-aa3d-cb2381ea207e")
+	)
+	(hierarchical_label "FWD_A"
+		(shape input)
+		(at 91.44 85.09 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "d9bf42b6-9c66-4944-9818-8ed913f68576")
 	)
 	(hierarchical_label "Y_EX[0..15]"
 		(shape input)
@@ -387,16 +376,27 @@
 		)
 		(uuid "e2f996a1-2ee2-464f-9a6c-a77148c2a882")
 	)
-	(hierarchical_label "B[0..15]"
-		(shape output)
-		(at 189.23 107.95 0)
+	(hierarchical_label "FWD_EX_TO_B"
+		(shape input)
+		(at 91.44 110.49 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify right)
 		)
-		(uuid "fcef788f-a880-4935-93f2-43994a886604")
+		(uuid "ee4e7b8d-3b81-4814-aa0f-bcf6aabc68ea")
+	)
+	(hierarchical_label "Phi1d"
+		(shape input)
+		(at 137.16 110.49 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f66ec99d-a2c0-43db-a30b-2b5fcf981e3d")
 	)
 	(sheet
 		(at 142.24 82.55)
@@ -473,9 +473,9 @@
 					(page "#")
 				)
 			)
-			(project "BypassModule"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4"
-					(page "9")
+					(page "#")
 				)
 			)
 		)
@@ -555,9 +555,9 @@
 					(page "#")
 				)
 			)
-			(project "BypassModule"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4"
-					(page "10")
+					(page "#")
 				)
 			)
 		)
@@ -677,9 +677,9 @@
 					(page "#")
 				)
 			)
-			(project "BypassModule"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4"
-					(page "7")
+					(page "#")
 				)
 			)
 		)
@@ -799,9 +799,9 @@
 					(page "#")
 				)
 			)
-			(project "BypassModule"
+			(project "BypassCard"
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4"
-					(page "8")
+					(page "#")
 				)
 			)
 		)

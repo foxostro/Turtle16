@@ -479,7 +479,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "BypassModule.kicad_pro",
+    "filename": "BypassCard.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -690,15 +690,15 @@
     ],
     [
       "15958ea4-e442-453c-858c-cce8e26c03e4",
-      "Bypass"
-    ],
-    [
-      "bd5bc204-b8c7-4bbb-837e-63cc5182bfbe",
-      "Operand Forwarding A"
+      "Bypass Module"
     ],
     [
       "5dc9cdce-9148-44e5-a58b-96f12f5bac12",
       "CardEdgeBypass"
+    ],
+    [
+      "bd5bc204-b8c7-4bbb-837e-63cc5182bfbe",
+      "Operand Forwarding A"
     ],
     [
       "d57c458c-d6b9-4988-aa86-ff7bb54c7a0d",

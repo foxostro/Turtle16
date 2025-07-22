@@ -27,7 +27,7 @@
       "text": true,
       "tracks": true,
       "vias": true,
-      "zones": false
+      "zones": true
     },
     "visible_items": [
       "vias",
@@ -59,7 +59,7 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "PCIFModule.kicad_prl",
+    "filename": "PCIFCard.kicad_prl",
     "version": 5
   },
   "net_inspector_panel": {

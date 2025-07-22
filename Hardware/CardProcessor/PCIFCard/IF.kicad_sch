@@ -3179,7 +3179,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e7d9dbaf-4cdc-4418-bebf-fc50120c1f4b")
-		(property "Reference" "#PWR0101"
+		(property "Reference" "#PWR01"
 			(at 140.97 184.15 0)
 			(effects
 				(font
@@ -3241,7 +3241,7 @@
 			)
 			(project "PCIFModule"
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
-					(reference "#PWR0101")
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)

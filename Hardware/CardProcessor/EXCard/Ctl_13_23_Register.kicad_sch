@@ -2799,7 +2799,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fc9dc34")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0263"
 			(at 134.62 104.14 0)
 			(effects
 				(font
@@ -2848,9 +2848,9 @@
 			(uuid "880454b9-1310-4b9c-b7f4-dc22262ebd76")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "#PWR?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "#PWR0263")
 					(unit 1)
 				)
 			)
@@ -2865,7 +2865,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fd7318d")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0268"
 			(at 138.43 93.98 0)
 			(effects
 				(font
@@ -2914,9 +2914,9 @@
 			(uuid "375e9461-fa6a-4b98-947d-7e166b85f5dc")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "#PWR?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "#PWR0268")
 					(unit 1)
 				)
 			)
@@ -2931,7 +2931,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000604e0d94")
-		(property "Reference" "C?"
+		(property "Reference" "C13"
 			(at 25.781 180.4416 0)
 			(effects
 				(font
@@ -3018,9 +3018,9 @@
 			(uuid "46da8fd8-d610-4aa1-acd6-a1838e886798")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "C?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "C13")
 					(unit 1)
 				)
 			)
@@ -3035,7 +3035,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000604e0d9a")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0265"
 			(at 22.86 181.61 0)
 			(effects
 				(font
@@ -3083,9 +3083,9 @@
 			(uuid "9caf0963-a285-4eac-a768-9fc2f2d539a8")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "#PWR?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "#PWR0265")
 					(unit 1)
 				)
 			)
@@ -3100,7 +3100,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000604e0da0")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0266"
 			(at 22.86 194.31 0)
 			(effects
 				(font
@@ -3148,9 +3148,9 @@
 			(uuid "fedd388b-10a3-42bc-bc24-159f5743862f")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "#PWR?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "#PWR0266")
 					(unit 1)
 				)
 			)
@@ -3165,7 +3165,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000607352f8")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0264"
 			(at 125.73 119.38 0)
 			(effects
 				(font
@@ -3214,9 +3214,9 @@
 			(uuid "0ce6232d-1acd-4b16-80d3-a4796c77ac86")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "#PWR?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "#PWR0264")
 					(unit 1)
 				)
 			)
@@ -3231,7 +3231,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000607352ff")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0267"
 			(at 148.59 72.39 0)
 			(effects
 				(font
@@ -3279,9 +3279,9 @@
 			(uuid "27588ae4-ed5e-46a2-b156-ff768364950f")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "#PWR?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "#PWR0267")
 					(unit 1)
 				)
 			)
@@ -3296,7 +3296,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060735305")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0262"
 			(at 148.59 139.7 0)
 			(effects
 				(font
@@ -3344,9 +3344,9 @@
 			(uuid "54e7f8c9-b7f7-4616-a539-66629969d5c9")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "#PWR?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "#PWR0262")
 					(unit 1)
 				)
 			)
@@ -3361,7 +3361,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060735330")
-		(property "Reference" "U?"
+		(property "Reference" "U13"
 			(at 148.59 97.79 0)
 			(effects
 				(font
@@ -3584,9 +3584,9 @@
 			(uuid "48fa9970-3360-4459-aaa7-be799526b89c")
 		)
 		(instances
-			(project "EXModule"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fd8d70a"
-					(reference "U?")
+			(project "EXCard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fd8d70a"
+					(reference "U13")
 					(unit 1)
 				)
 			)

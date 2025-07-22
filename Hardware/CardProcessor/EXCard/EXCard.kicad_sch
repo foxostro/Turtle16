@@ -796,7 +796,7 @@
 			)
 		)
 		(instances
-			(project "EXModule"
+			(project "EXCard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "2")
 				)
@@ -988,7 +988,7 @@
 			)
 		)
 		(instances
-			(project "EXModule"
+			(project "EXCard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "17")
 				)

@@ -3901,7 +3901,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "0154d906-69ee-4e80-bd5c-e87e204f1a34")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR072"
 			(at 135.89 144.78 0)
 			(effects
 				(font
@@ -3956,12 +3956,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -3974,7 +3968,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "056c2f38-8c09-4959-b827-2d58679b398f")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR075"
 			(at 156.21 134.62 0)
 			(effects
 				(font
@@ -4029,12 +4023,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4047,7 +4035,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "07405a24-d782-4c75-b440-96139bf6316f")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR070"
 			(at 133.35 45.72 0)
 			(effects
 				(font
@@ -4102,12 +4090,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4119,7 +4101,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "106191d5-dcf4-4ff4-b3b3-5f3751bf1bf3")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR081"
 			(at 180.34 95.25 0)
 			(effects
 				(font
@@ -4174,12 +4156,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4191,7 +4167,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "14fb6430-cca6-4571-8c5d-2eb26889c498")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR059"
 			(at 60.96 113.03 0)
 			(effects
 				(font
@@ -4245,12 +4221,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4262,7 +4232,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "20b1ea93-17a7-4599-ad62-f315eb5e4025")
-		(property "Reference" "C?"
+		(property "Reference" "C13"
 			(at 160.401 161.3916 0)
 			(effects
 				(font
@@ -4355,12 +4325,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "C?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4372,7 +4336,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "491877f6-4352-4a9d-9039-fa49d92ee168")
-		(property "Reference" "C?"
+		(property "Reference" "C11"
 			(at 63.881 101.7016 0)
 			(effects
 				(font
@@ -4465,12 +4429,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "C?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4484,7 +4442,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4ae3a1a5-9fc2-47d8-bdde-c0ba10d44325")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR080"
 			(at 170.18 92.71 0)
 			(effects
 				(font
@@ -4539,12 +4497,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4557,7 +4509,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "67647b61-b620-4739-9e3c-14427304956d")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR062"
 			(at 101.6 92.71 0)
 			(effects
 				(font
@@ -4612,12 +4564,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4630,7 +4576,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6b253139-9f4a-4dba-8a85-c8bd783cfddf")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR063"
 			(at 101.6 95.25 0)
 			(effects
 				(font
@@ -4685,12 +4631,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4702,7 +4642,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7959d000-9737-4bea-9286-b26fc58b069e")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR078"
 			(at 180.34 82.55 0)
 			(effects
 				(font
@@ -4757,12 +4697,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4774,7 +4708,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "800cc0e1-7774-4710-8b26-04a4b93e4c30")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR083"
 			(at 180.34 102.87 0)
 			(effects
 				(font
@@ -4829,12 +4763,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4846,7 +4774,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "89ef6182-0df6-4b8c-9ea8-72469c19f80d")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR068"
 			(at 110.49 172.72 0)
 			(effects
 				(font
@@ -4900,12 +4828,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4917,7 +4839,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8c8c2d5c-ca09-441e-ba0d-aabe31e1f440")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR067"
 			(at 110.49 162.56 0)
 			(effects
 				(font
@@ -4971,12 +4893,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -4989,7 +4905,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a6dde51d-354b-4784-9958-92c1afc39cc5")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR064"
 			(at 91.44 102.87 0)
 			(effects
 				(font
@@ -5044,12 +4960,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5061,7 +4971,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ad32d22b-365c-416d-a554-573db1073ac9")
-		(property "Reference" "IC?"
+		(property "Reference" "IC1"
 			(at 135.89 87.63 0)
 			(effects
 				(font
@@ -5451,12 +5361,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "IC?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5469,7 +5373,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b0c0e032-8de4-453a-8972-76827ecc9a33")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR074"
 			(at 140.97 45.72 0)
 			(effects
 				(font
@@ -5524,12 +5428,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5542,7 +5440,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b79a99a2-62df-430a-97e4-71f312ad1ce6")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR060"
 			(at 91.44 82.55 0)
 			(effects
 				(font
@@ -5597,12 +5495,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5614,7 +5506,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ba5bdc81-7bef-4332-b16f-9f8eb9390f3a")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR077"
 			(at 157.48 172.72 0)
 			(effects
 				(font
@@ -5668,12 +5560,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5686,7 +5572,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c802b6e3-3744-4abb-8b00-07d6b040108f")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR065"
 			(at 91.44 105.41 0)
 			(effects
 				(font
@@ -5741,12 +5627,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5759,7 +5639,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d078571e-0b1a-4656-a3eb-9002b541ea06")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR066"
 			(at 110.49 134.62 0)
 			(effects
 				(font
@@ -5814,12 +5694,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5831,7 +5705,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ddb2d0b2-92f9-4992-9eb2-b5c84697a296")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR071"
 			(at 135.89 35.56 0)
 			(effects
 				(font
@@ -5886,12 +5760,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5905,7 +5773,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "dffdc2ba-e700-4dce-9b2b-4d3dbbddb76a")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR082"
 			(at 170.18 97.79 0)
 			(effects
 				(font
@@ -5960,12 +5828,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -5977,7 +5839,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e109f789-c81e-49a7-abae-61a3c2597cf3")
-		(property "Reference" "C?"
+		(property "Reference" "C12"
 			(at 113.411 161.3916 0)
 			(effects
 				(font
@@ -6070,12 +5932,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "C?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -6088,7 +5944,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e73a99e8-846a-46f7-bb7f-7d9e661c9edc")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR061"
 			(at 91.44 85.09 0)
 			(effects
 				(font
@@ -6143,12 +5999,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -6160,7 +6010,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "eb362a60-de0d-4504-ab44-109abdabfde5")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR076"
 			(at 157.48 162.56 0)
 			(effects
 				(font
@@ -6214,12 +6064,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -6231,7 +6075,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ecededd7-1fa6-4920-baa9-1702030aa9d0")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR058"
 			(at 60.96 102.87 0)
 			(effects
 				(font
@@ -6285,12 +6129,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -6302,7 +6140,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f4bc3694-5efe-41ee-aa8c-f976db22fe60")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR084"
 			(at 180.34 105.41 0)
 			(effects
 				(font
@@ -6357,12 +6195,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -6374,7 +6206,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f50dd27d-c758-4089-96a5-4c458308283d")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR073"
 			(at 138.43 35.56 0)
 			(effects
 				(font
@@ -6429,12 +6261,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -6446,7 +6272,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "fb8946ec-dc28-481a-9cb9-7a0ce54d37d2")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR079"
 			(at 180.34 85.09 0)
 			(effects
 				(font
@@ -6501,12 +6327,6 @@
 					(unit 1)
 				)
 			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
 		)
 	)
 	(symbol
@@ -6518,7 +6338,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "fcdfbacb-273a-40c2-8b83-5339f5e897c1")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR069"
 			(at 128.27 144.78 0)
 			(effects
 				(font
@@ -6570,12 +6390,6 @@
 			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
 					(reference "#PWR069")
-					(unit 1)
-				)
-			)
-			(project "MEMCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/46d35a1a-4867-4988-9941-4b86f9dbec1c"
-					(reference "#PWR?")
 					(unit 1)
 				)
 			)

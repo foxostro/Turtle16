@@ -471,7 +471,7 @@
 		)
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/049197a3-0e1a-43e5-8741-1c16c6eb4545")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -2195,7 +2195,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/62f2ecf6-69ac-4a0f-a439-656c821af943")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -2446,7 +2446,7 @@
 		(property ki_fp_filters "DIP?16*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/abf1d930-941d-471e-8297-4f6ed336b9d9")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -2.735)
@@ -3212,7 +3212,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-000060515402")
 		(sheetname "/MEMModule/MEM/")
-		(sheetfile "MEM.kicad_sch")
+		(sheetfile "../MEMCard/MEM.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -4691,7 +4691,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/70684d29-13cb-4c7f-87ca-68beab9a375f")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -4942,7 +4942,7 @@
 		(property ki_fp_filters "DIP*W7.62mm* SSOP?14* TSSOP?14*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-0000605153ee")
 		(sheetname "/MEMModule/MEM/")
-		(sheetfile "MEM.kicad_sch")
+		(sheetfile "../MEMCard/MEM.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -2.61)
@@ -5478,7 +5478,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/d2e6e70a-220b-437e-bf38-46926150140f")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -10180,7 +10180,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/f8a06f13-b9df-446b-a672-6d793fd4acee")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -10762,7 +10762,7 @@
 		(property ki_fp_filters "DIP?14*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-000060caa449")
 		(sheetname "/MEMModule/MEM/")
-		(sheetfile "MEM.kicad_sch")
+		(sheetfile "../MEMCard/MEM.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -2.61)
@@ -12238,7 +12238,7 @@
 			(layers "F.Cu" "F.Mask")
 			(net 58 "unconnected-(J3-Pad1)")
 			(pinfunction "1")
-			(pintype "passive")
+			(pintype "passive+no_connect")
 			(uuid "f1e560bd-bf25-43ee-b33f-cc4b816fce65")
 		)
 		(pad "2" connect rect
@@ -12247,7 +12247,7 @@
 			(layers "B.Cu" "B.Mask")
 			(net 55 "unconnected-(J3-Pad2)")
 			(pinfunction "2")
-			(pintype "passive")
+			(pintype "passive+no_connect")
 			(uuid "1ca68ddb-6561-46c0-a56a-303b70a4045c")
 		)
 		(pad "3" connect rect
@@ -12256,7 +12256,7 @@
 			(layers "F.Cu" "F.Mask")
 			(net 146 "unconnected-(J3-Pad3)")
 			(pinfunction "3")
-			(pintype "passive")
+			(pintype "passive+no_connect")
 			(uuid "fcb58e7b-b462-49d9-965b-c5551a3fc4f7")
 		)
 		(pad "4" connect rect
@@ -12265,7 +12265,7 @@
 			(layers "B.Cu" "B.Mask")
 			(net 57 "unconnected-(J3-Pad4)")
 			(pinfunction "4")
-			(pintype "passive")
+			(pintype "passive+no_connect")
 			(uuid "c7ac121f-5617-421d-b865-1eedb1b48e8b")
 		)
 		(pad "5" connect rect
@@ -14818,7 +14818,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/7d6e8e4e-0d8a-4061-b21a-277081fe1050")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -14971,7 +14971,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-000060cb6995")
 		(sheetname "/MEMModule/MEM/")
-		(sheetfile "MEM.kicad_sch")
+		(sheetfile "../MEMCard/MEM.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -15727,7 +15727,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/af46fbb0-908d-4c80-b225-ee1c31246437")
 		(sheetname "/MEMModule/Memory/")
-		(sheetfile "Memory.kicad_sch")
+		(sheetfile "../MEMCard/Memory.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)

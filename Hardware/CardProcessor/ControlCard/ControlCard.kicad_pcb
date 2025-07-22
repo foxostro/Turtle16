@@ -367,7 +367,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/ad28026f-b2e6-45a5-aa2e-5beab7b4043b")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -519,7 +519,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/fe43af67-33cb-4f6b-a47f-2fdda4f1a238")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -1394,7 +1394,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff024f6")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -1595,7 +1595,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/dc3fc245-7de7-473d-99a8-59a24e04f56e")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -1698,7 +1698,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/b6fb05b0-43ea-49dd-a062-8a56741c65ef")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -1801,7 +1801,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/da65f8ff-37b1-49cd-9622-caaadf9af378")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -1904,7 +1904,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/ad28f7b4-0cde-49df-ba04-2a68966b6709")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -2601,7 +2601,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-00005fda967f/13173cb6-b8c1-4a70-8659-b8a8218d0ffa")
 		(sheetname "/ID/Hazard Control/")
-		(sheetfile "HazardControl.kicad_sch")
+		(sheetfile "../ControlCard/HazardControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -2753,7 +2753,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/87e44790-81d2-4be1-823b-799ba1609bb0")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -3.385)
@@ -3307,7 +3307,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000607b2a04")
 		(sheetname "/ID/Hazard Control/")
-		(sheetfile "HazardControl.kicad_sch")
+		(sheetfile "../ControlCard/HazardControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -3848,7 +3848,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/7b388540-ec22-4db7-978e-8d7087a9af37")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -3.385)
@@ -4353,7 +4353,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/b5d470bc-713f-46e9-b93f-3d10defc8462")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -5099,7 +5099,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/17aab83d-02e8-4f41-9c01-5786e890f7a1")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -5641,7 +5641,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/d5f9b68e-b909-433b-b218-f2e4ccaa584e")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -5842,7 +5842,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-00005fda967f/bb8ddce6-ec7e-4e7d-a228-5d7e0aa87d01")
 		(sheetname "/ID/Hazard Control/")
-		(sheetfile "HazardControl.kicad_sch")
+		(sheetfile "../ControlCard/HazardControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -5945,7 +5945,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/2a9272fd-ca9e-4d4d-be7d-458ed7b70e3f")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -6097,7 +6097,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/4cc0b3f3-f597-448e-9f35-f823b998bbd1")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -6922,7 +6922,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/d09ebe75-b591-4682-bfcd-7874c361b546")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -7075,7 +7075,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-00005fe3af3c")
 		(sheetname "/ID/Hazard Control/")
-		(sheetfile "HazardControl.kicad_sch")
+		(sheetfile "../ControlCard/HazardControl.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -7325,7 +7325,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-0000607edb1f")
 		(sheetname "/ID/sheet60693B99/")
-		(sheetfile "ID_EX_InstructionWord.kicad_sch")
+		(sheetfile "../ControlCard/ID_EX_InstructionWord.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -8794,7 +8794,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/4a044913-bdd6-45ae-9972-bbe4651e0c4e")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -9045,7 +9045,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff024f0")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -9296,7 +9296,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00005fd1eee5")
 		(sheetname "/ID/sheet60693B98/")
-		(sheetfile "ID_EX_ControlWord.kicad_sch")
+		(sheetfile "../ControlCard/ID_EX_ControlWord.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -9497,7 +9497,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/02181eaf-97d7-427d-8bc6-560e20ebe79e")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -9650,7 +9650,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-00005fd982b9")
 		(sheetname "/ID/sheet60693B99/")
-		(sheetfile "ID_EX_InstructionWord.kicad_sch")
+		(sheetfile "../ControlCard/ID_EX_InstructionWord.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -9954,7 +9954,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/a93e0557-1d37-453b-85bc-2cf62b8e1b79")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -10057,7 +10057,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/a517c213-3683-4527-b07e-e231b680644c")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -10210,7 +10210,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/e872e15c-f428-4635-8576-71ea9a257a2d")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -10461,7 +10461,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/960ada49-cad4-45a9-8c06-0a6f2ac09c81/4a265ee3-16d2-45c9-9547-693f987bc680")
 		(sheetname "/ID/ID Flush/")
-		(sheetfile "IDFlush.kicad_sch")
+		(sheetfile "../ControlCard/IDFlush.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -10662,7 +10662,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/41540a8e-49da-4eed-8377-8b65128dd9ea")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -11359,7 +11359,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/5a333662-3519-4362-89b9-ed219c6799a1")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -11511,7 +11511,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-0000606a67ce")
 		(sheetname "/ID/sheet60693B98/")
-		(sheetfile "ID_EX_ControlWord.kicad_sch")
+		(sheetfile "../ControlCard/ID_EX_ControlWord.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -16008,7 +16008,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/4b6618d1-23bd-487d-b271-33dbcb2cee02")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -16751,7 +16751,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/385117a6-3c2a-4788-ac2b-cc7e747b5157")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -17105,7 +17105,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/3b0e200e-cf95-40b6-9a49-84db12a2071e")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -17208,7 +17208,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/50257e38-d65d-44b6-947a-e74589e2df42")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -17311,7 +17311,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/6f1b00fd-69e5-4e10-b9e9-f5afd8acd9f0")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -17414,7 +17414,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/fc170cdd-b8af-424c-8364-b976719c3c30")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -17670,7 +17670,7 @@
 		(property ki_fp_filters "DIP?20*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00006046bb17")
 		(sheetname "/ID/sheet60693B98/")
-		(sheetfile "ID_EX_ControlWord.kicad_sch")
+		(sheetfile "../ControlCard/ID_EX_ControlWord.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -3.385)
@@ -18476,7 +18476,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff025d3")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -18677,7 +18677,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-00005fda967f/9608fc1c-554d-46d3-a3cb-e05368dceada")
 		(sheetname "/ID/Hazard Control/")
-		(sheetfile "HazardControl.kicad_sch")
+		(sheetfile "../ControlCard/HazardControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -18830,7 +18830,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00005fd1eed2")
 		(sheetname "/ID/sheet60693B98/")
-		(sheetfile "ID_EX_ControlWord.kicad_sch")
+		(sheetfile "../ControlCard/ID_EX_ControlWord.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -19080,7 +19080,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-00005fda9cdf")
 		(sheetname "/ID/Hazard Control/")
-		(sheetfile "HazardControl.kicad_sch")
+		(sheetfile "../ControlCard/HazardControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)
@@ -19622,7 +19622,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-00005fdaf804")
 		(sheetname "/ID/Hazard Control/")
-		(sheetfile "HazardControl.kicad_sch")
+		(sheetfile "../ControlCard/HazardControl.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -19926,7 +19926,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/1990d080-6cb1-4c9d-a1dc-b6932b6e21dd")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -20029,7 +20029,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/1a4a86e1-fdbd-488c-8ca5-ef99b7abcf4c")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -20235,7 +20235,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/d883acd7-345d-4985-8a7b-07c6035a25c4")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -20338,7 +20338,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/c591831c-a521-4f21-a61c-a76f7b3a45d9")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -20692,7 +20692,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/4b72a537-8d81-45e4-ba79-c571970ec121")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -20795,7 +20795,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/6dcae437-1047-4581-9433-e7529ec922f4")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -20947,7 +20947,7 @@
 		)
 		(path "/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693bcf/e9824643-32bc-4f5c-9a17-e4890f603b31")
 		(sheetname "/ID/sheet60693B97/")
-		(sheetfile "InstructionDecoder.kicad_sch")
+		(sheetfile "../ControlCard/InstructionDecoder.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.16 -1.33)

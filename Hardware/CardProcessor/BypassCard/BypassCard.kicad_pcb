@@ -421,7 +421,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe/00000000-0000-0000-0000-000060f256ec")
 		(sheetname "/Bypass Module/Operand Forwarding A/")
-		(sheetfile "OperandForwardingA.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -669,7 +669,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d/00000000-0000-0000-0000-000060af0e58")
 		(sheetname "/Bypass Module/Operand Forwarding B/")
-		(sheetfile "OperandForwardingB.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -916,7 +916,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d/00000000-0000-0000-0000-000060af102e")
 		(sheetname "/Bypass Module/Operand Forwarding B/")
-		(sheetfile "OperandForwardingB.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -1788,7 +1788,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/097a8f3d-04b1-4b7c-9023-b6f6b0c017d7/00000000-0000-0000-0000-00005fe19a84")
 		(sheetname "/Bypass Module/sheet60693B9A/")
-		(sheetfile "ID_EX_A.kicad_sch")
+		(sheetfile "../BypassCard/ID_EX_A.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -2036,7 +2036,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/308b00b8-9bc8-4f6d-a97b-a673baac1269/00000000-0000-0000-0000-00005fe2a65c")
 		(sheetname "/Bypass Module/sheet60693B9B/")
-		(sheetfile "ID_EX_B.kicad_sch")
+		(sheetfile "../BypassCard/ID_EX_B.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -2283,7 +2283,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/308b00b8-9bc8-4f6d-a97b-a673baac1269/00000000-0000-0000-0000-00006085e90c")
 		(sheetname "/Bypass Module/sheet60693B9B/")
-		(sheetfile "ID_EX_B.kicad_sch")
+		(sheetfile "../BypassCard/ID_EX_B.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -3154,7 +3154,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/097a8f3d-04b1-4b7c-9023-b6f6b0c017d7/00000000-0000-0000-0000-00006082b7d9")
 		(sheetname "/Bypass Module/sheet60693B9A/")
-		(sheetfile "ID_EX_A.kicad_sch")
+		(sheetfile "../BypassCard/ID_EX_A.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -4026,7 +4026,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d/00000000-0000-0000-0000-000060f256eb")
 		(sheetname "/Bypass Module/Operand Forwarding B/")
-		(sheetfile "OperandForwardingB.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -4273,7 +4273,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe/00000000-0000-0000-0000-000060f256f4")
 		(sheetname "/Bypass Module/Operand Forwarding A/")
-		(sheetfile "OperandForwardingA.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -5145,7 +5145,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe/00000000-0000-0000-0000-000060f256ef")
 		(sheetname "/Bypass Module/Operand Forwarding A/")
-		(sheetfile "OperandForwardingA.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -9015,7 +9015,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d/00000000-0000-0000-0000-000060af10a0")
 		(sheetname "/Bypass Module/Operand Forwarding B/")
-		(sheetfile "OperandForwardingB.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -9887,7 +9887,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe/00000000-0000-0000-0000-000060af0e51")
 		(sheetname "/Bypass Module/Operand Forwarding A/")
-		(sheetfile "OperandForwardingA.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -10134,7 +10134,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe/00000000-0000-0000-0000-000060f256f8")
 		(sheetname "/Bypass Module/Operand Forwarding A/")
-		(sheetfile "OperandForwardingA.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -11006,7 +11006,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d/00000000-0000-0000-0000-000060af0e70")
 		(sheetname "/Bypass Module/Operand Forwarding B/")
-		(sheetfile "OperandForwardingB.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -11253,7 +11253,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d/00000000-0000-0000-0000-000060af0f47")
 		(sheetname "/Bypass Module/Operand Forwarding B/")
-		(sheetfile "OperandForwardingB.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -12124,7 +12124,7 @@
 		)
 		(path "/15958ea4-e442-453c-858c-cce8e26c03e4/bd5bc204-b8c7-4bbb-837e-63cc5182bfbe/00000000-0000-0000-0000-000060f256f3")
 		(sheetname "/Bypass Module/Operand Forwarding A/")
-		(sheetfile "OperandForwardingA.kicad_sch")
+		(sheetfile "../BypassCard/OperandForwardingA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)

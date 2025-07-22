@@ -484,7 +484,7 @@
 			)
 		)
 		(instances
-			(project "PCIFModule"
+			(project "PCIFCard"
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef"
 					(page "5")
 				)
@@ -641,7 +641,7 @@
 					(page "4")
 				)
 			)
-			(project "PCIFModule"
+			(project "PCIFCard"
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef"
 					(page "2")
 				)

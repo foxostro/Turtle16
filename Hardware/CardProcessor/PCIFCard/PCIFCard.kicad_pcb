@@ -391,7 +391,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fce2082/00000000-0000-0000-0000-00005fb3a072")
 		(sheetname "/IF/sheet5FCE207B/")
-		(sheetfile "IF_ID.kicad_sch")
+		(sheetfile "../PCIFCard/IF_ID.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -845,7 +845,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/64bb8d6a-f90f-4c7f-bc03-2580afd0a42f")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -1754,7 +1754,7 @@
 		)
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fce2082/00000000-0000-0000-0000-0000607314ce")
 		(sheetname "/IF/sheet5FCE207B/")
-		(sheetfile "IF_ID.kicad_sch")
+		(sheetfile "../PCIFCard/IF_ID.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -2630,7 +2630,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fce2082/00000000-0000-0000-0000-00005fb3a078")
 		(sheetname "/IF/sheet5FCE207B/")
-		(sheetfile "IF_ID.kicad_sch")
+		(sheetfile "../PCIFCard/IF_ID.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -3134,7 +3134,7 @@
 		(property ki_fp_filters "DIP*W7.62mm* SSOP?14* TSSOP?14*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/00000000-0000-0000-0000-000060721233")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -2.61)
@@ -3820,7 +3820,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/bc0210b7-c872-4057-8467-ad17cbd429ee")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -3975,7 +3975,7 @@
 		)
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/00000000-0000-0000-0000-00005fbc5ff4")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 15.625 15.625)
@@ -5323,7 +5323,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/00000000-0000-0000-0000-00005fbc5fd6")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -5574,7 +5574,7 @@
 		)
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fce2082/00000000-0000-0000-0000-00006075dd7a")
 		(sheetname "/IF/sheet5FCE207B/")
-		(sheetfile "IF_ID.kicad_sch")
+		(sheetfile "../PCIFCard/IF_ID.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -3.16 -6.36)
@@ -6954,7 +6954,7 @@
 		(property ki_fp_filters "DIP?14*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/00000000-0000-0000-0000-000060cb6c21")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 0 -2.61)
@@ -7438,7 +7438,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fce2082/00000000-0000-0000-0000-0000606d734b")
 		(sheetname "/IF/sheet5FCE207B/")
-		(sheetfile "IF_ID.kicad_sch")
+		(sheetfile "../PCIFCard/IF_ID.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -7690,7 +7690,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/00000000-0000-0000-0000-000060d2e6bd")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -7942,7 +7942,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fe3da1c/00000000-0000-0000-0000-00005fbc5fdc")
 		(sheetname "/IF/sheet5FE3DA15/")
-		(sheetfile "Program Counter.kicad_sch")
+		(sheetfile "../PCIFCard/Program Counter.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -11767,7 +11767,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/a8b9f505-34a5-4db7-8e08-bd57966a9d15/00000000-0000-0000-0000-00005fce2082/08cfd762-427c-47c8-bafd-b434eb13325d")
 		(sheetname "/IF/sheet5FCE207B/")
-		(sheetfile "IF_ID.kicad_sch")
+		(sheetfile "../PCIFCard/IF_ID.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)

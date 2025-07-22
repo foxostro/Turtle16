@@ -2101,7 +2101,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe1acc2")
-		(property "Reference" "U1"
+		(property "Reference" "U?"
 			(at 207.01 105.41 0)
 			(effects
 				(font
@@ -2240,9 +2240,9 @@
 			(uuid "589f12ad-7ce8-41b5-8418-ea13d8fe4fab")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "U1")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "U?")
 					(unit 1)
 				)
 			)
@@ -2257,7 +2257,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe1b681")
-		(property "Reference" "#PWR0206"
+		(property "Reference" "#PWR?"
 			(at 214.63 109.22 0)
 			(effects
 				(font
@@ -2305,9 +2305,9 @@
 			(uuid "ff853204-d52c-44b4-b334-93a059369bf0")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0206")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -2322,7 +2322,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe1bd7a")
-		(property "Reference" "#PWR0211"
+		(property "Reference" "#PWR?"
 			(at 214.63 152.4 0)
 			(effects
 				(font
@@ -2370,9 +2370,9 @@
 			(uuid "f3c69feb-ba16-4b75-aab4-d92e0580bb02")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0211")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -2387,7 +2387,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe21f4c")
-		(property "Reference" "#PWR0209"
+		(property "Reference" "#PWR?"
 			(at 195.58 123.19 0)
 			(effects
 				(font
@@ -2436,9 +2436,9 @@
 			(uuid "0e10d37e-200a-48ad-ae9a-87693c7ce367")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0209")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -2453,7 +2453,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe2214d")
-		(property "Reference" "#PWR0207"
+		(property "Reference" "#PWR?"
 			(at 195.58 125.73 0)
 			(effects
 				(font
@@ -2502,9 +2502,9 @@
 			(uuid "4e53d1f7-fad6-42a8-ac48-da63598cf2ee")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0207")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -2519,7 +2519,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe222c6")
-		(property "Reference" "#PWR0208"
+		(property "Reference" "#PWR?"
 			(at 195.58 128.27 0)
 			(effects
 				(font
@@ -2568,9 +2568,9 @@
 			(uuid "b41681ea-6dbd-405b-96fe-4e0b929d2ae1")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0208")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -2585,7 +2585,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fe2243f")
-		(property "Reference" "#PWR0210"
+		(property "Reference" "#PWR?"
 			(at 195.58 130.81 0)
 			(effects
 				(font
@@ -2634,9 +2634,9 @@
 			(uuid "a7c5a7ab-88a6-4564-ba05-6291d04a949c")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0210")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -2651,7 +2651,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000600839bf")
-		(property "Reference" "C1"
+		(property "Reference" "C?"
 			(at 27.051 186.7916 0)
 			(effects
 				(font
@@ -2738,9 +2738,9 @@
 			(uuid "0b58b26c-d053-46e3-9bd0-5e2e3ff4a4ff")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "C1")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "C?")
 					(unit 1)
 				)
 			)
@@ -2755,7 +2755,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000600839cb")
-		(property "Reference" "#PWR0204"
+		(property "Reference" "#PWR?"
 			(at 24.13 187.96 0)
 			(effects
 				(font
@@ -2803,9 +2803,9 @@
 			(uuid "950ec5e5-e131-4ada-ac86-da339646bd32")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0204")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -2820,7 +2820,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000600839d4")
-		(property "Reference" "#PWR0205"
+		(property "Reference" "#PWR?"
 			(at 24.13 200.66 0)
 			(effects
 				(font
@@ -2868,9 +2868,9 @@
 			(uuid "7bad0b8d-8fbb-48d3-a585-3e38399ca9bd")
 		)
 		(instances
-			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/43096b5e-2581-4688-8be9-9209d6e0ed88"
-					(reference "#PWR0205")
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)

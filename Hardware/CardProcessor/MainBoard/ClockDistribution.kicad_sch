@@ -1441,7 +1441,7 @@
 			(uuid "c0f5f0ac-9d44-470e-86c8-2797203231b1")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0404")
 					(unit 1)
@@ -1546,7 +1546,7 @@
 			(uuid "eff7de0d-4c11-4461-98e3-4f1c1e5374a8")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "C70")
 					(unit 1)
@@ -1613,7 +1613,7 @@
 			(uuid "1be13927-fbcb-41d6-b45d-205e21afc14e")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0401")
 					(unit 1)
@@ -1678,7 +1678,7 @@
 			(uuid "51d477d7-bf6a-4c99-8336-540817147f82")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "TP81")
 					(unit 1)
@@ -1743,7 +1743,7 @@
 			(uuid "666b760d-a8b5-4e1b-9b21-e0221ecb3447")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "TP80")
 					(unit 1)
@@ -1810,7 +1810,7 @@
 			(uuid "bb36e4b1-fd55-47f3-b645-47fab61fd952")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0403")
 					(unit 1)
@@ -1877,7 +1877,7 @@
 			(uuid "bca286ce-6b2d-4cbb-b6f3-48343bbf6248")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0402")
 					(unit 1)
@@ -1944,7 +1944,7 @@
 			(uuid "10418c6a-0f59-48a8-ba4e-efb07366f5e0")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0400")
 					(unit 1)
@@ -2009,7 +2009,7 @@
 			(uuid "83d36bfa-1833-4523-a2be-a1f3586c72e3")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "TP83")
 					(unit 1)
@@ -2074,7 +2074,7 @@
 			(uuid "3e67e8e7-9290-4906-9a6b-7a496be0cd02")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "TP84")
 					(unit 1)
@@ -2139,7 +2139,7 @@
 			(uuid "91a51bf9-3600-4772-ab6b-b8d1131587fa")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "TP79")
 					(unit 1)
@@ -2204,7 +2204,7 @@
 			(uuid "724e7c03-4294-4653-8280-12a38f5805c1")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "TP82")
 					(unit 1)
@@ -2270,7 +2270,7 @@
 			(uuid "3dbb6311-e42d-457a-91af-51a4ad3e6e36")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0399")
 					(unit 1)
@@ -2335,7 +2335,7 @@
 			(uuid "1d03e574-9354-45ba-848e-c84e6726245c")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0398")
 					(unit 1)
@@ -2493,7 +2493,7 @@
 			(uuid "ae78fc1c-6b0d-427e-baa8-50caa0996032")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "U65")
 					(unit 1)
@@ -2558,7 +2558,7 @@
 			(uuid "7240ac42-2ee1-4b05-afdb-1fd51a4062bf")
 		)
 		(instances
-			(project "MainBoard"
+			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/511f3e06-8e12-4701-ab9d-b334fc302cdf"
 					(reference "#PWR0405")
 					(unit 1)

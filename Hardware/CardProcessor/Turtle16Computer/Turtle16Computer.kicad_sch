@@ -5333,7 +5333,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "System Bus Connector.kicad_sch"
+		(property "Sheetfile" "../MainBoard/System Bus Connector.kicad_sch"
 			(at 227.33 90.7546 0)
 			(effects
 				(font
@@ -5839,7 +5839,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "ExpansionSlotA.kicad_sch"
+		(property "Sheetfile" "../MainBoard/ExpansionSlotA.kicad_sch"
 			(at 227.33 125.0446 0)
 			(effects
 				(font
@@ -6345,7 +6345,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "ClockDistribution.kicad_sch"
+		(property "Sheetfile" "../MainBoard/ClockDistribution.kicad_sch"
 			(at 26.67 33.6046 0)
 			(effects
 				(font
@@ -6467,7 +6467,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "Clock.kicad_sch"
+		(property "Sheetfile" "../MainBoard/Clock.kicad_sch"
 			(at 26.67 56.5696 0)
 			(effects
 				(font
@@ -6943,7 +6943,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "ExpansionSlotB.kicad_sch"
+		(property "Sheetfile" "../MainBoard/ExpansionSlotB.kicad_sch"
 			(at 227.33 159.3346 0)
 			(effects
 				(font

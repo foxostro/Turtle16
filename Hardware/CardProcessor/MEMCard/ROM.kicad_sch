@@ -1899,7 +1899,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "70669778-1e24-4f5b-9397-7e4a34455ce3")
-		(property "Reference" "J1"
+		(property "Reference" "J?"
 			(at 118.11 63.5 0)
 			(effects
 				(font
@@ -2002,6 +2002,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/058ef19a-b679-4601-88cf-59ae7f711a8b"
+					(reference "J?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2014,7 +2020,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "aa186070-a4d5-4672-b6db-a1318c2544b2")
-		(property "Reference" "#PWR056"
+		(property "Reference" "#PWR?"
 			(at 138.43 110.49 0)
 			(effects
 				(font
@@ -2069,6 +2075,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/058ef19a-b679-4601-88cf-59ae7f711a8b"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2081,7 +2093,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "be50876e-0ccb-46c6-9212-cc107e71c9c6")
-		(property "Reference" "J2"
+		(property "Reference" "J?"
 			(at 179.07 63.5 0)
 			(effects
 				(font
@@ -2184,6 +2196,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/058ef19a-b679-4601-88cf-59ae7f711a8b"
+					(reference "J?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2196,7 +2214,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f8a09b33-4c98-417e-b356-22df728381ad")
-		(property "Reference" "#PWR057"
+		(property "Reference" "#PWR?"
 			(at 128.27 113.03 0)
 			(effects
 				(font
@@ -2248,6 +2266,12 @@
 			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/8a8d619e-78bf-4671-8e03-c8182d362e62/058ef19a-b679-4601-88cf-59ae7f711a8b"
 					(reference "#PWR057")
+					(unit 1)
+				)
+			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/8a8d619e-78bf-4671-8e03-c8182d362e62/058ef19a-b679-4601-88cf-59ae7f711a8b"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)

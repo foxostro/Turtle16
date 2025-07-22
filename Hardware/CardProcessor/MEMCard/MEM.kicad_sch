@@ -2717,13 +2717,13 @@
 	(symbol
 		(lib_id "Turtle16:74AHCT04")
 		(at -21.59 166.37 0)
-		(unit 7)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153b1")
-		(property "Reference" "U1"
+		(property "Reference" "U?"
 			(at -21.59 165.1 0)
 			(effects
 				(font
@@ -2850,18 +2850,24 @@
 					(unit 7)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
 		(lib_id "Turtle16:74AHCT04")
 		(at -13.97 146.05 0)
-		(unit 6)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153b8")
-		(property "Reference" "U1"
+		(property "Reference" "U?"
 			(at -13.97 137.9982 0)
 			(effects
 				(font
@@ -2988,6 +2994,12 @@
 					(unit 6)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2999,7 +3011,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153d5")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR?"
 			(at -21.59 101.6 0)
 			(effects
 				(font
@@ -3053,6 +3065,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3065,7 +3083,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153e1")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR?"
 			(at -21.59 186.69 0)
 			(effects
 				(font
@@ -3119,18 +3137,24 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
 		(lib_id "Turtle16:74AHCT04")
 		(at 63.5 33.02 0)
-		(unit 2)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153ee")
-		(property "Reference" "U1"
+		(property "Reference" "U?"
 			(at 63.5 24.9682 0)
 			(effects
 				(font
@@ -3257,6 +3281,12 @@
 					(unit 2)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3268,7 +3298,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153f5")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR?"
 			(at 22.86 196.85 0)
 			(effects
 				(font
@@ -3322,6 +3352,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3333,7 +3369,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153fb")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR?"
 			(at 22.86 186.69 0)
 			(effects
 				(font
@@ -3387,6 +3423,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3398,7 +3440,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060515402")
-		(property "Reference" "C3"
+		(property "Reference" "C?"
 			(at 25.781 185.5216 0)
 			(effects
 				(font
@@ -3491,6 +3533,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "C?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3502,7 +3550,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca967d")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR?"
 			(at -44.45 102.87 0)
 			(effects
 				(font
@@ -3556,6 +3604,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -3567,7 +3621,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca9695")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR?"
 			(at -44.45 185.42 0)
 			(effects
 				(font
@@ -3621,18 +3675,24 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
 		(lib_id "Turtle16:74ABT32")
 		(at -34.29 113.665 0)
-		(unit 2)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca969f")
-		(property "Reference" "U4"
+		(property "Reference" "U?"
 			(at -34.29 105.41 0)
 			(effects
 				(font
@@ -3759,18 +3819,24 @@
 					(unit 2)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
 		(lib_id "Turtle16:74ABT32")
 		(at -34.29 128.27 0)
-		(unit 3)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca96a6")
-		(property "Reference" "U4"
+		(property "Reference" "U?"
 			(at -34.29 120.015 0)
 			(effects
 				(font
@@ -3897,18 +3963,24 @@
 					(unit 3)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
 		(lib_id "Turtle16:74ABT32")
 		(at -34.29 143.51 0)
-		(unit 4)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca96ad")
-		(property "Reference" "U4"
+		(property "Reference" "U?"
 			(at -34.29 135.255 0)
 			(effects
 				(font
@@ -4035,18 +4107,24 @@
 					(unit 4)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
 		(lib_id "Turtle16:74ABT32")
 		(at -44.45 165.1 0)
-		(unit 5)
+		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca96b4")
-		(property "Reference" "U4"
+		(property "Reference" "U?"
 			(at -45.974 163.83 0)
 			(effects
 				(font
@@ -4175,6 +4253,12 @@
 					(unit 5)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -4187,7 +4271,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060caa449")
-		(property "Reference" "U4"
+		(property "Reference" "U?"
 			(at 78.74 85.725 0)
 			(effects
 				(font
@@ -4314,6 +4398,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -4325,7 +4415,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cb6995")
-		(property "Reference" "C4"
+		(property "Reference" "C?"
 			(at 38.481 185.5216 0)
 			(effects
 				(font
@@ -4418,6 +4508,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "C?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -4429,7 +4525,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "06471ed7-de6b-4f51-8698-817c7c60b598")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR?"
 			(at 35.56 196.85 0)
 			(effects
 				(font
@@ -4483,6 +4579,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -4494,7 +4596,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a7a0acb3-6354-4466-8d6b-c72373718f1d")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR?"
 			(at 35.56 186.69 0)
 			(effects
 				(font
@@ -4548,6 +4650,12 @@
 					(unit 1)
 				)
 			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -4559,7 +4667,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d07b148a-6f07-48f4-90b2-2b855e982459")
-		(property "Reference" "U1"
+		(property "Reference" "U?"
 			(at -13.97 125.9332 0)
 			(effects
 				(font
@@ -4683,6 +4791,12 @@
 			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+			(project "Turtle16Computer"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce"
+					(reference "U?")
 					(unit 1)
 				)
 			)

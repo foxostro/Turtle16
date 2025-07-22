@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "83c5181e-f5ee-453c-ae5c-d7256ba8837d")
+	(uuid "aed54103-805f-4793-b9a6-374024067da8")
 	(paper "USLetter")
 	(title_block
 		(title "Turtle16: EX Module")
@@ -797,7 +797,7 @@
 		)
 		(instances
 			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+				(path "/aed54103-805f-4793-b9a6-374024067da8"
 					(page "2")
 				)
 			)
@@ -989,7 +989,7 @@
 		)
 		(instances
 			(project "EXCard"
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+				(path "/aed54103-805f-4793-b9a6-374024067da8"
 					(page "17")
 				)
 			)

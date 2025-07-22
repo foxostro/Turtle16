@@ -6504,7 +6504,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0e58")
-		(property "Reference" "C?"
+		(property "Reference" "C47"
 			(at 34.671 184.2516 0)
 			(effects
 				(font
@@ -6591,7 +6591,7 @@
 			(uuid "15ce3090-0771-4a0d-86a2-59e41a2d0947")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "C5")
 					(unit 1)
@@ -6599,7 +6599,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "C?")
+					(reference "C47")
 					(unit 1)
 				)
 			)
@@ -6614,7 +6614,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0e5e")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0696"
 			(at 19.05 185.42 0)
 			(effects
 				(font
@@ -6662,7 +6662,7 @@
 			(uuid "c65138e8-6c36-467c-9ba0-86b6fd446aa8")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0169")
 					(unit 1)
@@ -6670,7 +6670,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0696")
 					(unit 1)
 				)
 			)
@@ -6685,7 +6685,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0e67")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0697"
 			(at 19.05 198.12 0)
 			(effects
 				(font
@@ -6733,7 +6733,7 @@
 			(uuid "c843d5ac-fa73-4977-9850-e7cac67b5767")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0170")
 					(unit 1)
@@ -6741,7 +6741,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0697")
 					(unit 1)
 				)
 			)
@@ -6756,7 +6756,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0e70")
-		(property "Reference" "C?"
+		(property "Reference" "C48"
 			(at 47.371 184.2516 0)
 			(effects
 				(font
@@ -6843,7 +6843,7 @@
 			(uuid "121bbfc3-24b1-42e1-b83f-54ff29b079fd")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "C6")
 					(unit 1)
@@ -6851,7 +6851,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "C?")
+					(reference "C48")
 					(unit 1)
 				)
 			)
@@ -6866,7 +6866,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0f33")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0687"
 			(at 83.82 64.77 0)
 			(effects
 				(font
@@ -6914,7 +6914,7 @@
 			(uuid "1985d966-fe33-4484-9c26-8484edbeff73")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0172")
 					(unit 1)
@@ -6922,7 +6922,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0687")
 					(unit 1)
 				)
 			)
@@ -6937,7 +6937,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0f39")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0693"
 			(at 95.25 132.08 0)
 			(effects
 				(font
@@ -6985,7 +6985,7 @@
 			(uuid "f6fd3eb3-b576-4b06-8e11-9ac953882a95")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0173")
 					(unit 1)
@@ -6993,7 +6993,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0693")
 					(unit 1)
 				)
 			)
@@ -7008,7 +7008,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af0f47")
-		(property "Reference" "U?"
+		(property "Reference" "U41"
 			(at 83.82 91.44 0)
 			(effects
 				(font
@@ -7231,7 +7231,7 @@
 			(uuid "3e0e74fb-31fd-4650-9c9a-d7c34bcc86f1")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "U4")
 					(unit 1)
@@ -7239,7 +7239,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "U?")
+					(reference "U41")
 					(unit 1)
 				)
 			)
@@ -7254,7 +7254,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af102e")
-		(property "Reference" "U?"
+		(property "Reference" "U42"
 			(at 151.13 92.71 0)
 			(effects
 				(font
@@ -7477,7 +7477,7 @@
 			(uuid "43f239b6-c805-46bb-9b6c-a3d7415617f0")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "U5")
 					(unit 1)
@@ -7485,7 +7485,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "U?")
+					(reference "U42")
 					(unit 1)
 				)
 			)
@@ -7500,7 +7500,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af1034")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0691"
 			(at 138.43 113.03 0)
 			(effects
 				(font
@@ -7549,7 +7549,7 @@
 			(uuid "185afe0b-3e92-42de-a5c9-77bf67bc2fb8")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0174")
 					(unit 1)
@@ -7557,7 +7557,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0691")
 					(unit 1)
 				)
 			)
@@ -7572,7 +7572,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af103a")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0694"
 			(at 162.56 133.35 0)
 			(effects
 				(font
@@ -7620,7 +7620,7 @@
 			(uuid "780932d1-0196-459c-8734-3641abbca104")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0176")
 					(unit 1)
@@ -7628,7 +7628,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0694")
 					(unit 1)
 				)
 			)
@@ -7643,7 +7643,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af1040")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0688"
 			(at 151.13 66.04 0)
 			(effects
 				(font
@@ -7691,7 +7691,7 @@
 			(uuid "3b7df97b-d895-4676-b4e1-94555f307895")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0175")
 					(unit 1)
@@ -7699,7 +7699,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0688")
 					(unit 1)
 				)
 			)
@@ -7714,7 +7714,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af10a0")
-		(property "Reference" "U?"
+		(property "Reference" "U43"
 			(at 218.44 92.71 0)
 			(effects
 				(font
@@ -7937,7 +7937,7 @@
 			(uuid "82627fe1-212a-45d9-9faa-4556621641e1")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "U6")
 					(unit 1)
@@ -7945,7 +7945,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "U?")
+					(reference "U43")
 					(unit 1)
 				)
 			)
@@ -7960,7 +7960,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060af1107")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0692"
 			(at 205.74 113.03 0)
 			(effects
 				(font
@@ -8009,7 +8009,7 @@
 			(uuid "5b4bba98-cc45-4636-b750-1e5452750aa4")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0177")
 					(unit 1)
@@ -8017,7 +8017,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0692")
 					(unit 1)
 				)
 			)
@@ -8032,7 +8032,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256eb")
-		(property "Reference" "C?"
+		(property "Reference" "C46"
 			(at 21.971 184.2516 0)
 			(effects
 				(font
@@ -8119,7 +8119,7 @@
 			(uuid "dfd07ff3-a5a6-40cf-baff-fc024c085db7")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "C4")
 					(unit 1)
@@ -8127,7 +8127,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "C?")
+					(reference "C46")
 					(unit 1)
 				)
 			)
@@ -8142,7 +8142,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256f2")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0690"
 			(at 71.12 111.76 0)
 			(effects
 				(font
@@ -8191,7 +8191,7 @@
 			(uuid "415df5e6-21c3-4c5f-85a8-91cb8d604cd6")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0171")
 					(unit 1)
@@ -8199,7 +8199,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0690")
 					(unit 1)
 				)
 			)
@@ -8214,7 +8214,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256fa")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0695"
 			(at 229.87 133.35 0)
 			(effects
 				(font
@@ -8262,7 +8262,7 @@
 			(uuid "621fcccc-bc7f-48fd-98fc-7fd918b729cc")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0179")
 					(unit 1)
@@ -8270,7 +8270,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0695")
 					(unit 1)
 				)
 			)
@@ -8285,7 +8285,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060f256fb")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0689"
 			(at 218.44 66.04 0)
 			(effects
 				(font
@@ -8333,7 +8333,7 @@
 			(uuid "83871565-2666-4fcc-b169-6804b5c594b4")
 		)
 		(instances
-			(project "BypassCard"
+			(project ""
 				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/15958ea4-e442-453c-858c-cce8e26c03e4/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
 					(reference "#PWR0178")
 					(unit 1)
@@ -8341,7 +8341,7 @@
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9/d57c458c-d6b9-4988-aa86-ff7bb54c7a0d"
-					(reference "#PWR?")
+					(reference "#PWR0689")
 					(unit 1)
 				)
 			)

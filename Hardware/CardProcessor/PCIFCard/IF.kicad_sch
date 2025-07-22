@@ -1787,7 +1787,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "07cdd377-4efc-4753-86a6-120d3dfb2631")
-		(property "Reference" "R?"
+		(property "Reference" "R15"
 			(at 134.8486 170.2816 0)
 			(effects
 				(font
@@ -1874,19 +1874,19 @@
 			(uuid "d5230460-3ed6-45dc-99e1-6865aaf2a4e1")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R15")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R15")
 					(unit 1)
@@ -1903,7 +1903,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "268fc863-b6a3-4d24-8f97-f3391be87f7e")
-		(property "Reference" "R?"
+		(property "Reference" "R6"
 			(at 66.2686 170.2816 0)
 			(effects
 				(font
@@ -1990,19 +1990,19 @@
 			(uuid "b76ce40e-d305-4e31-800e-14beab32b7da")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R6")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R6")
 					(unit 1)
@@ -2019,7 +2019,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "33c712a4-cd0b-40fd-84ac-9ed45ded71f6")
-		(property "Reference" "R?"
+		(property "Reference" "R12"
 			(at 111.9886 170.2816 0)
 			(effects
 				(font
@@ -2106,19 +2106,19 @@
 			(uuid "96978eb7-068d-419f-9a69-e258949ef758")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R12")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R12")
 					(unit 1)
@@ -2135,7 +2135,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "36182f40-759d-40bc-b47b-98a4e41b9fe1")
-		(property "Reference" "R?"
+		(property "Reference" "R10"
 			(at 96.7486 170.2816 0)
 			(effects
 				(font
@@ -2222,19 +2222,19 @@
 			(uuid "f495cb17-9936-43ac-87a5-71faed878365")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R10")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R10")
 					(unit 1)
@@ -2251,7 +2251,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "45f7999f-e660-4442-b551-eec72e14d7c6")
-		(property "Reference" "R?"
+		(property "Reference" "R13"
 			(at 119.6086 170.2816 0)
 			(effects
 				(font
@@ -2338,19 +2338,19 @@
 			(uuid "e931a666-f064-42ff-8fac-1fab23d89458")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R13")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R13")
 					(unit 1)
@@ -2367,7 +2367,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "472f917a-d153-42e0-b07f-bac8e646321a")
-		(property "Reference" "R?"
+		(property "Reference" "R9"
 			(at 89.1286 170.2816 0)
 			(effects
 				(font
@@ -2454,19 +2454,19 @@
 			(uuid "876a94d0-f9a8-4693-a46b-e03414fc5428")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R9")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R9")
 					(unit 1)
@@ -2483,7 +2483,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6f3b8a7d-8c9c-4d7a-a44c-89854ee0de1f")
-		(property "Reference" "R?"
+		(property "Reference" "R5"
 			(at 58.6486 170.2816 0)
 			(effects
 				(font
@@ -2570,19 +2570,19 @@
 			(uuid "0641c50d-36e2-44cd-9d2e-42fda584b984")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R5")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R5")
 					(unit 1)
@@ -2599,7 +2599,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "78f64ccc-9756-47bc-a9bc-c25f2ca74e1b")
-		(property "Reference" "R?"
+		(property "Reference" "R11"
 			(at 104.3686 170.2816 0)
 			(effects
 				(font
@@ -2686,19 +2686,19 @@
 			(uuid "3c3a4e7a-037e-4e2a-94e4-ae51c98d2158")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R11")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R11")
 					(unit 1)
@@ -2715,7 +2715,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b625709a-0d0a-4abe-8cf3-821c42c7ccce")
-		(property "Reference" "R?"
+		(property "Reference" "R3"
 			(at 43.4086 170.2816 0)
 			(effects
 				(font
@@ -2802,19 +2802,19 @@
 			(uuid "ad15cae3-146f-4c90-b6f9-fe858cfae3f6")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R3")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R3")
 					(unit 1)
@@ -2831,7 +2831,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "bd75fcd6-50b2-4da7-8c90-d660b80a46e3")
-		(property "Reference" "R?"
+		(property "Reference" "R7"
 			(at 73.8886 170.2816 0)
 			(effects
 				(font
@@ -2918,19 +2918,19 @@
 			(uuid "f8073aec-894f-4a99-8b9d-ac397d497e23")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R7")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R7")
 					(unit 1)
@@ -2947,7 +2947,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "be06734f-27a7-4eed-90d6-174e0af4f47d")
-		(property "Reference" "R?"
+		(property "Reference" "R4"
 			(at 51.0286 170.2816 0)
 			(effects
 				(font
@@ -3034,19 +3034,19 @@
 			(uuid "26a1a6a4-a7ef-42ff-adee-ca943e53aef6")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R4")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R4")
 					(unit 1)
@@ -3063,7 +3063,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "dffecfa9-fc80-4e80-b544-455bfd86b534")
-		(property "Reference" "R?"
+		(property "Reference" "R2"
 			(at 35.7886 170.2816 0)
 			(effects
 				(font
@@ -3150,19 +3150,19 @@
 			(uuid "ea2b8eed-04f8-41d9-9ece-841160e19e23")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R2")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R2")
 					(unit 1)
@@ -3179,7 +3179,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e7d9dbaf-4cdc-4418-bebf-fc50120c1f4b")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0708"
 			(at 140.97 184.15 0)
 			(effects
 				(font
@@ -3227,19 +3227,19 @@
 			(uuid "08c25a80-d996-4af6-a88d-9c7e3b786b09")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "#PWR?")
+					(reference "#PWR0708")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "#PWR?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "#PWR01")
 					(unit 1)
@@ -3256,7 +3256,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f61d4549-68a9-47e6-ae74-8507c728b113")
-		(property "Reference" "R?"
+		(property "Reference" "R8"
 			(at 81.5086 170.2816 0)
 			(effects
 				(font
@@ -3343,19 +3343,19 @@
 			(uuid "2d7af437-ab2f-4902-834d-449f6fd78e7b")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R8")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R8")
 					(unit 1)
@@ -3372,7 +3372,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f83905a1-386f-47ac-883d-da707e41624d")
-		(property "Reference" "R?"
+		(property "Reference" "R14"
 			(at 127.2286 170.2816 0)
 			(effects
 				(font
@@ -3459,19 +3459,19 @@
 			(uuid "3786438a-0890-4554-a2ad-284b75c78cf6")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R14")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R14")
 					(unit 1)
@@ -3488,7 +3488,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f904da1d-7132-4fcc-9dc0-aca296c68af3")
-		(property "Reference" "R?"
+		(property "Reference" "R1"
 			(at 28.1686 170.2816 0)
 			(effects
 				(font
@@ -3575,19 +3575,19 @@
 			(uuid "33dc8e3f-749b-4206-8961-d601eebdef91")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R1")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R1")
 					(unit 1)
@@ -3604,7 +3604,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "fc07a11e-a8bb-48d7-8172-355971e8d036")
-		(property "Reference" "R?"
+		(property "Reference" "R16"
 			(at 142.4686 170.2816 0)
 			(effects
 				(font
@@ -3691,19 +3691,19 @@
 			(uuid "59ab0dfc-0c89-48bb-a3db-4de774971eda")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
-					(reference "R?")
+					(reference "R16")
 					(unit 1)
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(reference "R?")
 					(unit 1)
 				)
 			)
-			(project "PCIFModule"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(reference "R16")
 					(unit 1)
@@ -3806,12 +3806,12 @@
 			)
 		)
 		(instances
-			(project "PCIFCard"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(page "4")
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(page "3")
 				)
@@ -3943,12 +3943,12 @@
 			)
 		)
 		(instances
-			(project "PCIFCard"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef/a8b9f505-34a5-4db7-8e08-bd57966a9d15"
 					(page "3")
 				)
 			)
-			(project "IF"
+			(project ""
 				(path "/8dbd1a68-f406-4c7f-8b06-9547e6122f38"
 					(page "2")
 				)

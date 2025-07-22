@@ -764,12 +764,12 @@
 			)
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(page "19")
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
 					(page "2")
 				)
@@ -991,7 +991,7 @@
 			)
 		)
 		(instances
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
 					(page "9")
 				)

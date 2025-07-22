@@ -944,7 +944,7 @@
 			)
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
 					(page "12")
 				)
@@ -1166,7 +1166,7 @@
 			)
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
 					(page "13")
 				)

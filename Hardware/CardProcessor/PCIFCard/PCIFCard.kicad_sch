@@ -484,7 +484,7 @@
 			)
 		)
 		(instances
-			(project "PCIFCard"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef"
 					(page "5")
 				)
@@ -636,12 +636,12 @@
 			)
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/445562cf-aa14-4ea1-8943-4ec5616008cb"
 					(page "4")
 				)
 			)
-			(project "PCIFCard"
+			(project ""
 				(path "/c8014893-29e4-4439-9930-ea776ac428ef"
 					(page "2")
 				)

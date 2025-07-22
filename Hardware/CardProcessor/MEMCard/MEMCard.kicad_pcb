@@ -348,29 +348,29 @@
 	(net 170 "/Phi1b")
 	(net 171 "/StoreOp_WB13")
 	(net 172 "/MEMModule/MEM/Buffer StoreOp As Bus I/O/~{AssertData}")
-	(net 173 "Net-(U3-Mr)")
-	(net 174 "unconnected-(U1-Pad12)")
-	(net 175 "unconnected-(U1-Pad2)")
-	(net 176 "Net-(U3-E1)")
-	(net 177 "unconnected-(U3-Q3-Pad6)")
-	(net 178 "unconnected-(U4-Pad11)")
-	(net 179 "unconnected-(U4-Pad8)")
-	(net 180 "unconnected-(U4-Pad6)")
-	(net 181 "unconnected-(U5-B7-Pad11)")
+	(net 173 "unconnected-(U1-Pad11)")
+	(net 174 "unconnected-(U1-Pad8)")
+	(net 175 "unconnected-(U1-Pad6)")
+	(net 176 "Net-(U10-Mr)")
+	(net 177 "unconnected-(U2-Pad12)")
+	(net 178 "unconnected-(U2-Pad2)")
+	(net 179 "unconnected-(U3-Q0-Pad19)")
+	(net 180 "unconnected-(U8-B7-Pad11)")
+	(net 181 "unconnected-(U8-B5-Pad13)")
 	(net 182 "/MEMModule/MEM/~{AssertCtl}")
-	(net 183 "unconnected-(U5-B5-Pad13)")
-	(net 184 "unconnected-(U5-B4-Pad14)")
-	(net 185 "unconnected-(U5-B6-Pad12)")
-	(net 186 "unconnected-(U5-B2-Pad16)")
-	(net 187 "unconnected-(U5-B3-Pad15)")
-	(net 188 "unconnected-(U8-Q0-Pad19)")
+	(net 183 "unconnected-(U8-B4-Pad14)")
+	(net 184 "unconnected-(U8-B6-Pad12)")
+	(net 185 "unconnected-(U8-B2-Pad16)")
+	(net 186 "unconnected-(U8-B3-Pad15)")
+	(net 187 "Net-(U10-E1)")
+	(net 188 "unconnected-(U10-Q3-Pad6)")
 	(footprint "Package_DIP:DIP-24_W7.62mm_Socket"
 		(layer "F.Cu")
 		(uuid "06ccdcc3-5b37-4621-ae88-d5424dc4d5b1")
 		(at 120.49 62.5)
 		(descr "24-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
-		(property "Reference" "U2"
+		(property "Reference" "U9"
 			(at 3.81 -2.33 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -855,7 +855,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 176 "Net-(U3-E1)")
+			(net 187 "Net-(U10-E1)")
 			(pinfunction "I/O")
 			(pintype "passive")
 			(uuid "82439573-ca9d-4be3-9a97-2cfd64edbbc7")
@@ -1414,7 +1414,7 @@
 		(at 79.3275 63.5)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C10"
+		(property "Reference" "C7"
 			(at 0 -1.43 0)
 			(layer "F.SilkS")
 			(uuid "12a27045-7499-4be0-ab6f-d70fdab87eef")
@@ -2094,7 +2094,7 @@
 		(at 128.765 60)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C2"
+		(property "Reference" "C10"
 			(at 0 -1.43 0)
 			(layer "F.SilkS")
 			(uuid "7f8f20e1-9bc3-4128-b792-483b2b5ec087")
@@ -2345,7 +2345,7 @@
 		(at 88.0525 109.975)
 		(descr "TSSOP, 16 Pin (https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO JEDEC-MO-153-AB Texas_PW0016A Microchip-ST Toshiba-TSSOP16-P-0044-0.65A NXP-SOT403-1 Infineon-P-TSSOP-16-800")
-		(property "Reference" "U3"
+		(property "Reference" "U10"
 			(at 0 -3.45 0)
 			(layer "F.SilkS")
 			(uuid "6c9c4aba-4ee0-42c4-a06f-85150bbabe89")
@@ -2736,7 +2736,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 177 "unconnected-(U3-Q3-Pad6)")
+			(net 188 "unconnected-(U10-Q3-Pad6)")
 			(pinfunction "Q3")
 			(pintype "tri_state+no_connect")
 			(uuid "f4e77cdf-f86f-4ac2-809c-713fc6d9bde8")
@@ -2766,7 +2766,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 176 "Net-(U3-E1)")
+			(net 187 "Net-(U10-E1)")
 			(pinfunction "E1")
 			(pintype "input")
 			(uuid "e87bdb43-0cef-4f89-9669-576df6cb6d5d")
@@ -2826,7 +2826,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 173 "Net-(U3-Mr)")
+			(net 176 "Net-(U10-Mr)")
 			(pinfunction "Mr")
 			(pintype "input")
 			(uuid "d7e5d63f-886c-4454-bf5a-e27f5eff69e5")
@@ -2860,7 +2860,7 @@
 		(at 92.965 80.925)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C8"
+		(property "Reference" "C3"
 			(at 0 -1.43 0)
 			(layer "F.SilkS")
 			(uuid "1efa445a-37d3-4402-b19a-487c72aa3ef3")
@@ -3111,7 +3111,7 @@
 		(at 146.09 92.975 -90)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C3"
+		(property "Reference" "C1"
 			(at 0 -1.43 90)
 			(layer "F.SilkS")
 			(uuid "60d3b3ac-1f07-43ea-b84b-f6fec8013456")
@@ -3362,7 +3362,7 @@
 		(at 87.9025 88.25)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U6"
+		(property "Reference" "U5"
 			(at 0 -7.2 0)
 			(layer "F.SilkS")
 			(uuid "53313d1a-85ff-4ec0-a43c-208a1734fee4")
@@ -4236,7 +4236,7 @@
 		(at 67.0525 84.5)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP6"
+		(property "Reference" "TP3"
 			(at 0 -1.448 0)
 			(layer "F.SilkS")
 			(uuid "ca52b5f7-d992-48ea-b283-c599bb92ecce")
@@ -4339,7 +4339,7 @@
 		(at 140.815 83.7 180)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C5"
+		(property "Reference" "C8"
 			(at 0 1.4 0)
 			(layer "F.SilkS")
 			(uuid "0d1de3b6-c068-4be5-a98f-897f2f0895b1")
@@ -4590,7 +4590,7 @@
 		(at 91.965 106.2)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C1"
+		(property "Reference" "C9"
 			(at 0 -1.43 0)
 			(layer "F.SilkS")
 			(uuid "02d29e13-280f-420b-9b02-2acea4d7dacc")
@@ -4841,7 +4841,7 @@
 		(at 143.69 63.55)
 		(descr "TSSOP, 14 Pin (JEDEC MO-153 variation AB-1, 1.00mm body thickness, https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U1"
+		(property "Reference" "U2"
 			(at 0 -3.45 0)
 			(layer "F.SilkS")
 			(uuid "c8742cd7-52eb-4dc3-bd37-6fe8ebca20e9")
@@ -5191,7 +5191,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 175 "unconnected-(U1-Pad2)")
+			(net 178 "unconnected-(U2-Pad2)")
 			(pintype "output+no_connect")
 			(uuid "f6696e22-f257-4302-b3bf-010164b50e81")
 		)
@@ -5264,7 +5264,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 173 "Net-(U3-Mr)")
+			(net 176 "Net-(U10-Mr)")
 			(pintype "output")
 			(uuid "2a9ff2ed-4ddc-497a-a761-65c60b92b6bc")
 		)
@@ -5282,7 +5282,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 174 "unconnected-(U1-Pad12)")
+			(net 177 "unconnected-(U2-Pad12)")
 			(pintype "output+no_connect")
 			(uuid "d4dbdffe-d759-48f4-9587-1ba95a8e4270")
 		)
@@ -5324,7 +5324,7 @@
 		(at 67.5525 66)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP7"
+		(property "Reference" "TP1"
 			(at 0 -1.448 0)
 			(layer "F.SilkS")
 			(uuid "2eeb213b-d7fb-48a8-b928-22df75d4f028")
@@ -5427,7 +5427,7 @@
 		(at 135.19 61.5)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP1"
+		(property "Reference" "TP4"
 			(at 0 -1.448 0)
 			(layer "F.SilkS")
 			(uuid "df51369d-1969-4392-b42a-a7c1037c9f99")
@@ -5530,7 +5530,7 @@
 		(at 103.99 88.25 180)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U9"
+		(property "Reference" "U6"
 			(at 0 -7.2 0)
 			(layer "F.SilkS")
 			(uuid "b4290196-48c1-4e3d-a4c1-7a538d36a587")
@@ -6404,7 +6404,7 @@
 		(at 104.065 67.325)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U7"
+		(property "Reference" "U4"
 			(at 0 -7.2 0)
 			(layer "F.SilkS")
 			(uuid "9bbe1a8c-d114-4691-9b57-afea1cebbc57")
@@ -9004,7 +9004,7 @@
 		(at 92.965 60)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C9"
+		(property "Reference" "C6"
 			(at 0 -1.43 0)
 			(layer "F.SilkS")
 			(uuid "dd09e0cc-2109-4c65-a1df-2002731bf5b0")
@@ -9255,7 +9255,7 @@
 		(at 87.9025 67.325)
 		(descr "TSSOP, 48 Pin (JEDEC MO-153 Var ED https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U10"
+		(property "Reference" "U7"
 			(at 0 -7.2 0)
 			(layer "F.SilkS")
 			(uuid "53d182a9-29bf-4c5f-887c-e2b17abdb27c")
@@ -10129,7 +10129,7 @@
 		(at 135.19 65)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP2"
+		(property "Reference" "TP5"
 			(at 0 -1.448 0)
 			(layer "F.SilkS")
 			(uuid "2d996895-909a-4591-9325-60c962b36422")
@@ -10661,7 +10661,7 @@
 		(at 75.0525 67)
 		(descr "TSSOP, 14 Pin (JEDEC MO-153 variation AB-1, 1.00mm body thickness, https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U4"
+		(property "Reference" "U1"
 			(at 0 -3.45 0)
 			(layer "F.SilkS")
 			(uuid "37c6ed4e-e32a-4a10-a5d1-103b75e35c8b")
@@ -11047,7 +11047,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 180 "unconnected-(U4-Pad6)")
+			(net 175 "unconnected-(U1-Pad6)")
 			(pintype "output+no_connect")
 			(uuid "f0292180-3c80-4f10-abdf-f9b09139180f")
 		)
@@ -11066,7 +11066,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 179 "unconnected-(U4-Pad8)")
+			(net 174 "unconnected-(U1-Pad8)")
 			(pintype "output+no_connect")
 			(uuid "723bf99a-e65e-4421-b596-c8390f9e3acc")
 		)
@@ -11093,7 +11093,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 178 "unconnected-(U4-Pad11)")
+			(net 173 "unconnected-(U1-Pad11)")
 			(pintype "output+no_connect")
 			(uuid "336e6f8f-5c68-47db-82e8-163212fcab98")
 		)
@@ -14767,7 +14767,7 @@
 		(at 153.69 61.5)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP4"
+		(property "Reference" "TP7"
 			(at 0 -1.448 0)
 			(layer "F.SilkS")
 			(uuid "a65a9b69-1d75-411e-a41a-31417232732b")
@@ -14870,7 +14870,7 @@
 		(at 155.09 92.975 -90)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C4"
+		(property "Reference" "C2"
 			(at 0 -1.43 90)
 			(layer "F.SilkS")
 			(uuid "d5a80f17-1f2d-4243-a53f-7b56af12344f")
@@ -15121,7 +15121,7 @@
 		(at 75.0525 98.075)
 		(descr "TSSOP, 20 Pin (JEDEC MO-153 Var AC https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U8"
+		(property "Reference" "U3"
 			(at 0 -4.2 0)
 			(layer "F.SilkS")
 			(uuid "eee8b8bc-4eb7-4724-b914-59b54ec6d943")
@@ -15642,7 +15642,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 188 "unconnected-(U8-Q0-Pad19)")
+			(net 179 "unconnected-(U3-Q0-Pad19)")
 			(pinfunction "Q0")
 			(pintype "tri_state+no_connect")
 			(uuid "2684d478-892a-44b4-8279-3ea874598dbe")
@@ -15676,7 +15676,7 @@
 		(at 153.69 65)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP3"
+		(property "Reference" "TP6"
 			(at 0 -1.448 0)
 			(layer "F.SilkS")
 			(uuid "015d33fc-98c5-4489-9af5-2802b3cf2593")
@@ -15779,7 +15779,7 @@
 		(at 147.965 60.05)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C6"
+		(property "Reference" "C5"
 			(at 0 -1.43 0)
 			(layer "F.SilkS")
 			(uuid "82373713-36f0-4900-afca-66e11ffd394b")
@@ -16030,7 +16030,7 @@
 		(at 78.8275 93.5)
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
-		(property "Reference" "C7"
+		(property "Reference" "C4"
 			(at 0 -1.43 0)
 			(layer "F.SilkS")
 			(uuid "30410ae8-4ee5-4caa-9d09-8d1210afb5b0")
@@ -16281,7 +16281,7 @@
 		(at 75.0525 82)
 		(descr "TSSOP, 20 Pin (JEDEC MO-153 Var AC https://www.jedec.org/document_search?search_api_views_fulltext=MO-153), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "TSSOP SO")
-		(property "Reference" "U5"
+		(property "Reference" "U8"
 			(at 0 -4.2 0)
 			(layer "F.SilkS")
 			(uuid "bf841385-e234-4a99-9eac-402fc5fc5fdc")
@@ -16721,7 +16721,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 181 "unconnected-(U5-B7-Pad11)")
+			(net 180 "unconnected-(U8-B7-Pad11)")
 			(pinfunction "B7")
 			(pintype "tri_state+no_connect")
 			(uuid "29ddf451-0983-40f9-8132-b9045472179c")
@@ -16731,7 +16731,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 185 "unconnected-(U5-B6-Pad12)")
+			(net 184 "unconnected-(U8-B6-Pad12)")
 			(pinfunction "B6")
 			(pintype "tri_state+no_connect")
 			(uuid "ba72f54a-840f-4786-ac51-27e1fec414bc")
@@ -16741,7 +16741,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 183 "unconnected-(U5-B5-Pad13)")
+			(net 181 "unconnected-(U8-B5-Pad13)")
 			(pinfunction "B5")
 			(pintype "tri_state+no_connect")
 			(uuid "58d7387a-d4d4-4a1c-8434-8ec223dee070")
@@ -16751,7 +16751,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 184 "unconnected-(U5-B4-Pad14)")
+			(net 183 "unconnected-(U8-B4-Pad14)")
 			(pinfunction "B4")
 			(pintype "tri_state+no_connect")
 			(uuid "65b0dd8e-6b49-4e83-804e-bb81396501ac")
@@ -16761,7 +16761,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 187 "unconnected-(U5-B3-Pad15)")
+			(net 186 "unconnected-(U8-B3-Pad15)")
 			(pinfunction "B3")
 			(pintype "tri_state+no_connect")
 			(uuid "dbf639df-5678-499c-9fcb-1881f949554d")
@@ -16771,7 +16771,7 @@
 			(size 1.475 0.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
-			(net 186 "unconnected-(U5-B2-Pad16)")
+			(net 185 "unconnected-(U8-B2-Pad16)")
 			(pinfunction "B2")
 			(pintype "tri_state+no_connect")
 			(uuid "bd017156-9122-4703-bd76-ff1f70636b35")
@@ -16835,7 +16835,7 @@
 		(at 67.0525 80)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP5"
+		(property "Reference" "TP2"
 			(at 0 -1.448 0)
 			(layer "F.SilkS")
 			(uuid "45aed339-2c57-4527-83c5-ecfa3d5ace91")
@@ -46440,7 +46440,7 @@
 		(end 146.5525 64.2)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "2319271b-a75f-4ab5-b5c3-c469ed6f7c34")
 	)
 	(segment
@@ -46448,7 +46448,7 @@
 		(end 91.9717 107.9203)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "37fbbff9-4c7a-4f06-9228-41fda300572e")
 	)
 	(segment
@@ -46456,7 +46456,7 @@
 		(end 91.9717 104.1793)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "5da0fae0-9f06-4fcf-abe8-6f21c9f082a1")
 	)
 	(segment
@@ -46464,7 +46464,7 @@
 		(end 90.915 108.35)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "782cf86c-fce8-4be4-b8c3-93b90956a7b2")
 	)
 	(segment
@@ -46472,7 +46472,7 @@
 		(end 131.2258 67.1561)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "99c90bfd-ee86-47d7-981b-4638f1fbd373")
 	)
 	(segment
@@ -46480,7 +46480,7 @@
 		(end 141.8382 67.1561)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "a700656d-91ab-4199-aaeb-f7db6e132a91")
 	)
 	(segment
@@ -46488,7 +46488,7 @@
 		(end 91.542 108.35)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "b6631932-60d8-48f6-adf7-0a0dcfd09d61")
 	)
 	(segment
@@ -46496,7 +46496,7 @@
 		(end 120.2538 66.31)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "cb2e4a50-10f4-4772-b6d0-8c6591c04787")
 	)
 	(segment
@@ -46504,7 +46504,7 @@
 		(end 144.7943 64.2)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "e4831700-79d7-422b-8dea-32b0f3819dad")
 	)
 	(segment
@@ -46512,7 +46512,7 @@
 		(end 130.3797 66.31)
 		(width 0.1524)
 		(layer "F.Cu")
-		(net 173)
+		(net 176)
 		(uuid "fadb9a17-355d-4306-acda-4046c8a769f3")
 	)
 	(via
@@ -46520,7 +46520,7 @@
 		(size 0.45)
 		(drill 0.2)
 		(layers "F.Cu" "B.Cu")
-		(net 173)
+		(net 176)
 		(uuid "148525be-6594-44d4-a8da-e371916c9e8d")
 	)
 	(via
@@ -46528,7 +46528,7 @@
 		(size 0.45)
 		(drill 0.2)
 		(layers "F.Cu" "B.Cu")
-		(net 173)
+		(net 176)
 		(uuid "2b301274-37c5-43aa-810d-40a4406a5cf4")
 	)
 	(segment
@@ -46536,7 +46536,7 @@
 		(end 98.5908 81.593)
 		(width 0.1524)
 		(layer "B.Cu")
-		(net 173)
+		(net 176)
 		(uuid "3c484514-ffa5-4ee4-ac27-9ee8c7485865")
 	)
 	(segment
@@ -46544,7 +46544,7 @@
 		(end 94.7508 94.5917)
 		(width 0.1524)
 		(layer "B.Cu")
-		(net 173)
+		(net 176)
 		(uuid "4fd88e99-5657-48ab-a7ac-54dfbf1bae77")
 	)
 	(segment
@@ -46552,7 +46552,7 @@
 		(end 115.5257 64.6581)
 		(width 0.1524)
 		(layer "B.Cu")
-		(net 173)
+		(net 176)
 		(uuid "746fdcaa-ded4-4818-9fc4-eb8f7e34f50d")
 	)
 	(segment
@@ -46560,7 +46560,7 @@
 		(end 98.5908 90.7517)
 		(width 0.1524)
 		(layer "B.Cu")
-		(net 173)
+		(net 176)
 		(uuid "d0fbab74-9b21-490e-b651-1e5fd11500c6")
 	)
 	(segment
@@ -46568,64 +46568,8 @@
 		(end 118.6019 64.6581)
 		(width 0.1524)
 		(layer "B.Cu")
-		(net 173)
+		(net 176)
 		(uuid "da23c38f-ec4f-45e0-b383-6aefd31a0440")
-	)
-	(segment
-		(start 112.8549 112.25)
-		(end 127.5891 97.5158)
-		(width 0.1524)
-		(layer "F.Cu")
-		(net 176)
-		(uuid "3d64f560-ead6-4d09-8abe-af1f1afb54c4")
-	)
-	(segment
-		(start 90.915 112.25)
-		(end 112.8549 112.25)
-		(width 0.1524)
-		(layer "F.Cu")
-		(net 176)
-		(uuid "cb638b03-8da0-4641-a7cd-6cb5976a1626")
-	)
-	(via
-		(at 127.5891 97.5158)
-		(size 0.45)
-		(drill 0.2)
-		(layers "F.Cu" "B.Cu")
-		(net 176)
-		(uuid "60ef325b-c4bb-4c81-aa28-ca01bd84f15c")
-	)
-	(segment
-		(start 128.11 70.12)
-		(end 126.2073 72.0227)
-		(width 0.1524)
-		(layer "In2.Cu")
-		(net 176)
-		(uuid "47531336-6f3e-4a42-aeb2-bb797bee06d0")
-	)
-	(segment
-		(start 127.5891 94.5678)
-		(end 127.5891 97.5158)
-		(width 0.1524)
-		(layer "In2.Cu")
-		(net 176)
-		(uuid "74a8ee2f-98f1-480d-835c-cb69e19f1065")
-	)
-	(segment
-		(start 126.2073 93.186)
-		(end 127.5891 94.5678)
-		(width 0.1524)
-		(layer "In2.Cu")
-		(net 176)
-		(uuid "7e9249c5-07a3-4f19-9abe-36aaf6476ab9")
-	)
-	(segment
-		(start 126.2073 72.0227)
-		(end 126.2073 93.186)
-		(width 0.1524)
-		(layer "In2.Cu")
-		(net 176)
-		(uuid "f5263284-b00e-490c-b9a7-9a67f929920d")
 	)
 	(segment
 		(start 126.1375 59.2654)
@@ -46714,6 +46658,62 @@
 		(layer "F.Cu")
 		(net 182)
 		(uuid "b9ec6b40-2be4-4bd5-959d-2418d4be697a")
+	)
+	(segment
+		(start 112.8549 112.25)
+		(end 127.5891 97.5158)
+		(width 0.1524)
+		(layer "F.Cu")
+		(net 187)
+		(uuid "3d64f560-ead6-4d09-8abe-af1f1afb54c4")
+	)
+	(segment
+		(start 90.915 112.25)
+		(end 112.8549 112.25)
+		(width 0.1524)
+		(layer "F.Cu")
+		(net 187)
+		(uuid "cb638b03-8da0-4641-a7cd-6cb5976a1626")
+	)
+	(via
+		(at 127.5891 97.5158)
+		(size 0.45)
+		(drill 0.2)
+		(layers "F.Cu" "B.Cu")
+		(net 187)
+		(uuid "60ef325b-c4bb-4c81-aa28-ca01bd84f15c")
+	)
+	(segment
+		(start 128.11 70.12)
+		(end 126.2073 72.0227)
+		(width 0.1524)
+		(layer "In2.Cu")
+		(net 187)
+		(uuid "47531336-6f3e-4a42-aeb2-bb797bee06d0")
+	)
+	(segment
+		(start 127.5891 94.5678)
+		(end 127.5891 97.5158)
+		(width 0.1524)
+		(layer "In2.Cu")
+		(net 187)
+		(uuid "74a8ee2f-98f1-480d-835c-cb69e19f1065")
+	)
+	(segment
+		(start 126.2073 93.186)
+		(end 127.5891 94.5678)
+		(width 0.1524)
+		(layer "In2.Cu")
+		(net 187)
+		(uuid "7e9249c5-07a3-4f19-9abe-36aaf6476ab9")
+	)
+	(segment
+		(start 126.2073 72.0227)
+		(end 126.2073 93.186)
+		(width 0.1524)
+		(layer "In2.Cu")
+		(net 187)
+		(uuid "f5263284-b00e-490c-b9a7-9a67f929920d")
 	)
 	(zone
 		(net 0)

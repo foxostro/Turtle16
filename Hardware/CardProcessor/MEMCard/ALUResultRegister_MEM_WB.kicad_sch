@@ -3097,7 +3097,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fdab460")
-		(property "Reference" "C?"
+		(property "Reference" "C42"
 			(at 25.781 180.4416 0)
 			(effects
 				(font
@@ -3175,15 +3175,15 @@
 			(uuid "53a72a1c-b1a3-4e27-9408-d16cdb9a71de")
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "C10")
+					(reference "C7")
 					(unit 1)
 				)
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "C?")
+					(reference "C42")
 					(unit 1)
 				)
 			)
@@ -3198,7 +3198,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fdab466")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0674"
 			(at 22.86 181.61 0)
 			(effects
 				(font
@@ -3246,15 +3246,15 @@
 			(uuid "df9b3884-ecc0-4385-98fd-acb346d4b446")
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR051")
+					(reference "#PWR031")
 					(unit 1)
 				)
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR?")
+					(reference "#PWR0674")
 					(unit 1)
 				)
 			)
@@ -3269,7 +3269,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fdab46c")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0675"
 			(at 22.86 194.31 0)
 			(effects
 				(font
@@ -3317,15 +3317,15 @@
 			(uuid "764f56a1-2e0f-4800-9c0f-a4db7545a9d5")
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR052")
+					(reference "#PWR032")
 					(unit 1)
 				)
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR?")
+					(reference "#PWR0675")
 					(unit 1)
 				)
 			)
@@ -3340,7 +3340,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060762391")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0672"
 			(at 121.92 121.92 0)
 			(effects
 				(font
@@ -3389,15 +3389,15 @@
 			(uuid "4e8276b5-f5ca-4f68-9164-bbbad0f58984")
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR053")
+					(reference "#PWR033")
 					(unit 1)
 				)
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR?")
+					(reference "#PWR0672")
 					(unit 1)
 				)
 			)
@@ -3412,7 +3412,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060762398")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0671"
 			(at 144.78 74.93 0)
 			(effects
 				(font
@@ -3460,15 +3460,15 @@
 			(uuid "712820b1-08e1-4e07-8c00-a83db17c53d9")
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR054")
+					(reference "#PWR034")
 					(unit 1)
 				)
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR?")
+					(reference "#PWR0671")
 					(unit 1)
 				)
 			)
@@ -3483,7 +3483,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00006076239e")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0673"
 			(at 144.78 142.24 0)
 			(effects
 				(font
@@ -3531,15 +3531,15 @@
 			(uuid "1bb4a785-5d91-484c-be0d-d7ae44bf0ad3")
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR055")
+					(reference "#PWR035")
 					(unit 1)
 				)
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "#PWR?")
+					(reference "#PWR0673")
 					(unit 1)
 				)
 			)
@@ -3554,7 +3554,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000607623c9")
-		(property "Reference" "U?"
+		(property "Reference" "U37"
 			(at 144.78 100.33 0)
 			(effects
 				(font
@@ -3777,15 +3777,15 @@
 			(uuid "89fb2c1c-8691-41e5-bf67-bb6fe3b6a308")
 		)
 		(instances
-			(project "MEMCard"
+			(project ""
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "U10")
+					(reference "U7")
 					(unit 1)
 				)
 			)
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fd9efdb"
-					(reference "U?")
+					(reference "U37")
 					(unit 1)
 				)
 			)

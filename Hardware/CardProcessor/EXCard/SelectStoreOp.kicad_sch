@@ -1898,12 +1898,6 @@
 		(uuid "5ef603f2-8407-4088-9f29-0b64dd4b046f")
 	)
 	(junction
-		(at 156.21 157.48)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "621c8eb9-ae87-439a-b350-badb5d559a5a")
-	)
-	(junction
 		(at 171.45 102.87)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2028,6 +2022,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a25ec672-f935-4d0c-ae67-7c3ebe078d85")
+	)
+	(junction
+		(at 156.21 157.48)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a98804bd-607e-4da4-b32d-b575ac0a5f30")
 	)
 	(junction
 		(at 227.33 104.14)
@@ -6317,6 +6317,16 @@
 	)
 	(wire
 		(pts
+			(xy 156.21 154.94) (xy 156.21 157.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bb854644-df1f-4732-95dd-fd91d0c26e8f")
+	)
+	(wire
+		(pts
 			(xy 170.18 104.14) (xy 170.18 102.87)
 		)
 		(stroke
@@ -8874,7 +8884,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce3317")
-		(property "Reference" "C?"
+		(property "Reference" "C62"
 			(at 159.131 160.1216 0)
 			(effects
 				(font
@@ -8963,7 +8973,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "C?")
+					(reference "C62")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "C62")
 					(unit 1)
 				)
 			)
@@ -8978,7 +8994,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce331e")
-		(property "Reference" "C?"
+		(property "Reference" "C63"
 			(at 171.831 160.1216 0)
 			(effects
 				(font
@@ -9067,7 +9083,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "C?")
+					(reference "C63")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "C63")
 					(unit 1)
 				)
 			)
@@ -9075,15 +9097,15 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 156.21 157.48 0)
+		(at 156.21 154.94 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce3324")
-		(property "Reference" "#PWR?"
-			(at 156.21 161.29 0)
+		(property "Reference" "#PWR0749"
+			(at 156.21 158.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9092,7 +9114,7 @@
 			)
 		)
 		(property "Value" "VCC"
-			(at 156.6418 153.0858 0)
+			(at 156.6418 150.5458 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9100,7 +9122,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 156.21 157.48 0)
+			(at 156.21 154.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9109,7 +9131,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 156.21 157.48 0)
+			(at 156.21 154.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9118,7 +9140,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 156.21 157.48 0)
+			(at 156.21 154.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9132,7 +9154,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0749")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0749")
 					(unit 1)
 				)
 			)
@@ -9147,7 +9175,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce332d")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0751"
 			(at 156.21 173.99 0)
 			(effects
 				(font
@@ -9197,7 +9225,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0751")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0751")
 					(unit 1)
 				)
 			)
@@ -9212,7 +9246,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce3336")
-		(property "Reference" "C?"
+		(property "Reference" "C64"
 			(at 184.531 160.1216 0)
 			(effects
 				(font
@@ -9301,7 +9335,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "C?")
+					(reference "C64")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "C64")
 					(unit 1)
 				)
 			)
@@ -9316,7 +9356,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce333d")
-		(property "Reference" "C?"
+		(property "Reference" "C65"
 			(at 197.231 160.1216 0)
 			(effects
 				(font
@@ -9405,7 +9445,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "C?")
+					(reference "C65")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "C65")
 					(unit 1)
 				)
 			)
@@ -9420,7 +9466,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce33ad")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0755"
 			(at 101.6 203.2 0)
 			(effects
 				(font
@@ -9470,7 +9516,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0755")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0755")
 					(unit 1)
 				)
 			)
@@ -9485,7 +9537,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce33b3")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0750"
 			(at 101.6 163.83 0)
 			(effects
 				(font
@@ -9535,7 +9587,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0750")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0750")
 					(unit 1)
 				)
 			)
@@ -9550,7 +9608,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce33ba")
-		(property "Reference" "U?"
+		(property "Reference" "U59"
 			(at 93.98 161.29 0)
 			(effects
 				(font
@@ -9679,7 +9737,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "U?")
+					(reference "U59")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "U59")
 					(unit 1)
 				)
 			)
@@ -9694,7 +9758,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce33c6")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0752"
 			(at 80.01 173.99 0)
 			(effects
 				(font
@@ -9744,7 +9808,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0752")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0752")
 					(unit 1)
 				)
 			)
@@ -9759,7 +9829,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce33d0")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0754"
 			(at 80.01 185.42 0)
 			(effects
 				(font
@@ -9809,7 +9879,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0754")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0754")
 					(unit 1)
 				)
 			)
@@ -9824,7 +9900,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce33d6")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0753"
 			(at 90.17 181.61 0)
 			(effects
 				(font
@@ -9875,7 +9951,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0753")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0753")
 					(unit 1)
 				)
 			)
@@ -9890,7 +9972,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce33f0")
-		(property "Reference" "C?"
+		(property "Reference" "C66"
 			(at 209.931 160.1216 0)
 			(effects
 				(font
@@ -9979,7 +10061,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "C?")
+					(reference "C66")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "C66")
 					(unit 1)
 				)
 			)
@@ -9994,7 +10082,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce3404")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0739"
 			(at 45.72 45.72 0)
 			(effects
 				(font
@@ -10044,7 +10132,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0739")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0739")
 					(unit 1)
 				)
 			)
@@ -10059,7 +10153,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce340a")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0748"
 			(at 48.26 113.03 0)
 			(effects
 				(font
@@ -10109,7 +10203,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0748")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0748")
 					(unit 1)
 				)
 			)
@@ -10124,7 +10224,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fce3410")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0744"
 			(at 33.02 92.71 0)
 			(effects
 				(font
@@ -10175,7 +10275,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0744")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0744")
 					(unit 1)
 				)
 			)
@@ -10190,7 +10296,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000600697cf")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0740"
 			(at 204.47 55.88 0)
 			(effects
 				(font
@@ -10240,7 +10346,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0740")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0740")
 					(unit 1)
 				)
 			)
@@ -10255,7 +10367,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000608616aa")
-		(property "Reference" "U?"
+		(property "Reference" "U58"
 			(at 45.72 72.39 0)
 			(effects
 				(font
@@ -10480,7 +10592,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "U?")
+					(reference "U58")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "U58")
 					(unit 1)
 				)
 			)
@@ -10495,7 +10613,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060c4981d")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0737"
 			(at 106.68 44.45 0)
 			(effects
 				(font
@@ -10545,7 +10663,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0737")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0737")
 					(unit 1)
 				)
 			)
@@ -10560,7 +10684,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060c49823")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0746"
 			(at 109.22 111.76 0)
 			(effects
 				(font
@@ -10610,7 +10734,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0746")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0746")
 					(unit 1)
 				)
 			)
@@ -10625,7 +10755,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060c49829")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0742"
 			(at 93.98 91.44 0)
 			(effects
 				(font
@@ -10676,7 +10806,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0742")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0742")
 					(unit 1)
 				)
 			)
@@ -10691,7 +10827,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060c4988e")
-		(property "Reference" "U?"
+		(property "Reference" "U56"
 			(at 106.68 71.12 0)
 			(effects
 				(font
@@ -10916,7 +11052,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "U?")
+					(reference "U56")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "U56")
 					(unit 1)
 				)
 			)
@@ -10931,7 +11073,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cd12ff")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0736"
 			(at 167.64 43.18 0)
 			(effects
 				(font
@@ -10981,7 +11123,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0736")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0736")
 					(unit 1)
 				)
 			)
@@ -10996,7 +11144,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cd1305")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0745"
 			(at 170.18 110.49 0)
 			(effects
 				(font
@@ -11046,7 +11194,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0745")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0745")
 					(unit 1)
 				)
 			)
@@ -11061,7 +11215,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cd130b")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0741"
 			(at 154.94 90.17 0)
 			(effects
 				(font
@@ -11112,7 +11266,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0741")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0741")
 					(unit 1)
 				)
 			)
@@ -11127,7 +11287,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cd1370")
-		(property "Reference" "U?"
+		(property "Reference" "U55"
 			(at 167.64 69.85 0)
 			(effects
 				(font
@@ -11352,7 +11512,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "U?")
+					(reference "U55")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "U55")
 					(unit 1)
 				)
 			)
@@ -11367,7 +11533,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cf7ba7")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0738"
 			(at 228.6 44.45 0)
 			(effects
 				(font
@@ -11417,7 +11583,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0738")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0738")
 					(unit 1)
 				)
 			)
@@ -11432,7 +11604,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cf7bad")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0747"
 			(at 231.14 111.76 0)
 			(effects
 				(font
@@ -11482,7 +11654,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0747")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0747")
 					(unit 1)
 				)
 			)
@@ -11497,7 +11675,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cf7bb3")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0743"
 			(at 215.9 91.44 0)
 			(effects
 				(font
@@ -11548,7 +11726,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "#PWR?")
+					(reference "#PWR0743")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "#PWR0743")
 					(unit 1)
 				)
 			)
@@ -11563,7 +11747,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cf7c18")
-		(property "Reference" "U?"
+		(property "Reference" "U57"
 			(at 228.6 71.12 0)
 			(effects
 				(font
@@ -11788,7 +11972,13 @@
 		(instances
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/637456a4-4ee5-48ca-bb06-9734ef3462ed/00000000-0000-0000-0000-00005fdde458"
-					(reference "U?")
+					(reference "U57")
+					(unit 1)
+				)
+			)
+			(project "EXCard"
+				(path "/aed54103-805f-4793-b9a6-374024067da8/43096b5e-2581-4688-8be9-9209d6e0ed88/00000000-0000-0000-0000-00005fdde458"
+					(reference "U57")
 					(unit 1)
 				)
 			)

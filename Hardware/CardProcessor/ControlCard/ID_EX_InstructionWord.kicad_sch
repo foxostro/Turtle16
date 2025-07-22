@@ -2834,7 +2834,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fd98282")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0580"
 			(at 125.73 114.3 0)
 			(effects
 				(font
@@ -2883,15 +2883,15 @@
 			(uuid "0a6a9c95-5ebb-4e22-857d-8b679476c3cc")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR?")
+					(reference "#PWR0580")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR0162")
+					(reference "#PWR065")
 					(unit 1)
 				)
 			)
@@ -2906,7 +2906,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fd982b9")
-		(property "Reference" "C?"
+		(property "Reference" "C27"
 			(at 28.321 189.3316 0)
 			(effects
 				(font
@@ -2993,13 +2993,13 @@
 			(uuid "31e16209-a3c4-4df5-a718-52bbc718044a")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "C?")
+					(reference "C27")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
 					(reference "C14")
 					(unit 1)
@@ -3016,7 +3016,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fd982bf")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0582"
 			(at 25.4 190.5 0)
 			(effects
 				(font
@@ -3064,15 +3064,15 @@
 			(uuid "5d482a6e-42be-41dd-8f6a-20f42d1a685a")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR?")
+					(reference "#PWR0582")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR0165")
+					(reference "#PWR062")
 					(unit 1)
 				)
 			)
@@ -3087,7 +3087,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fd982c5")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0583"
 			(at 25.4 203.2 0)
 			(effects
 				(font
@@ -3135,15 +3135,15 @@
 			(uuid "dba55c1c-b020-47ad-adb4-dc44ec0ec960")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR?")
+					(reference "#PWR0583")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR0166")
+					(reference "#PWR063")
 					(unit 1)
 				)
 			)
@@ -3158,7 +3158,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-00005fd983df")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0579"
 			(at 133.35 104.14 0)
 			(effects
 				(font
@@ -3207,15 +3207,15 @@
 			(uuid "89fd5a33-c54c-4ad1-9b82-dbf82f313b6f")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR?")
+					(reference "#PWR0579")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR0163")
+					(reference "#PWR064")
 					(unit 1)
 				)
 			)
@@ -3230,7 +3230,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000607edaee")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0578"
 			(at 147.32 67.31 0)
 			(effects
 				(font
@@ -3278,15 +3278,15 @@
 			(uuid "e820bea5-5c8f-47b2-95d2-9edcf92ac038")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR?")
+					(reference "#PWR0578")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR0167")
+					(reference "#PWR066")
 					(unit 1)
 				)
 			)
@@ -3301,7 +3301,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000607edaf4")
-		(property "Reference" "#PWR?"
+		(property "Reference" "#PWR0581"
 			(at 147.32 134.62 0)
 			(effects
 				(font
@@ -3349,15 +3349,15 @@
 			(uuid "1ed18200-e059-40a1-a1fb-bdbf1332ea85")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR?")
+					(reference "#PWR0581")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
-					(reference "#PWR0164")
+					(reference "#PWR067")
 					(unit 1)
 				)
 			)
@@ -3372,7 +3372,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000607edb1f")
-		(property "Reference" "U?"
+		(property "Reference" "U25"
 			(at 147.32 92.71 0)
 			(effects
 				(font
@@ -3595,13 +3595,13 @@
 			(uuid "a052fe42-e200-4330-91a6-8ddf0e332599")
 		)
 		(instances
-			(project "MainBoard"
+			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698/00000000-0000-0000-0000-000060693be5"
-					(reference "U?")
+					(reference "U25")
 					(unit 1)
 				)
 			)
-			(project "ControlModule"
+			(project ""
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf/00000000-0000-0000-0000-000060693be5"
 					(reference "U14")
 					(unit 1)

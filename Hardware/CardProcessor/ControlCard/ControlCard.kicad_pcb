@@ -8,7 +8,7 @@
 	)
 	(paper "USLetter")
 	(title_block
-		(title "Turtle16: Control Module Card")
+		(title "Turtle16: Control Card")
 		(date "2025-07-19")
 		(rev "A")
 		(comment 4 "Processor control module")
@@ -21804,7 +21804,7 @@
 		(layer "Edge.Cuts")
 		(uuid "fb755502-f903-40a2-bbe4-581e3964ac26")
 	)
-	(gr_text "Turtle16: Control Module Card, Rev A\nCopyright © 2025 Andrew Fox"
+	(gr_text "Turtle16: Control Card, Rev A\nCopyright © 2025 Andrew Fox"
 		(locked yes)
 		(at 65.778 118 0)
 		(layer "F.SilkS")

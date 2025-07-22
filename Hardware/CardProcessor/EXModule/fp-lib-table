@@ -1,4 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "Turtle16")(type "KiCad")(uri "${KIPRJMOD}/Turtle16.pretty")(options "")(descr ""))
-)

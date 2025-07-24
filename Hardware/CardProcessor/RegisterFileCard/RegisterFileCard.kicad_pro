@@ -196,6 +196,7 @@
       "track_widths": [
         0.0,
         0.1524,
+        0.2032,
         0.3048,
         0.6096
       ],
@@ -521,7 +522,7 @@
       "netlist": "",
       "plot": "",
       "pos_files": "",
-      "specctra_dsn": "../../../../../Desktop/RegisterFileModule.dsn",
+      "specctra_dsn": "../../../../../Desktop/RegisterFileCard.dsn",
       "step": "",
       "svg": "",
       "vrml": ""

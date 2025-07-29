@@ -72,6 +72,7 @@
 			(layer "B.SilkS"
 				(type "Bottom Silk Screen")
 			)
+			(copper_finish "None")
 			(dielectric_constraints no)
 		)
 		(pad_to_mask_clearance 0)
@@ -79,7 +80,7 @@
 		(tenting front back)
 		(grid_origin 0 279.4)
 		(pcbplotparams
-			(layerselection 0x00000000_00000000_55555555_5755f5ff)
+			(layerselection 0x00000000_00000000_55555555_575555ff)
 			(plot_on_all_layers_selection 0x00000000_00000000_00000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
@@ -115,7 +116,7 @@
 			(mirror no)
 			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "../Archive/ProcessorBoard_Rev_A_e14d4976/")
+			(outputdirectory "../../Archive/BasePlate_Rev_A_bb13e03b/")
 		)
 	)
 	(net 0 "")

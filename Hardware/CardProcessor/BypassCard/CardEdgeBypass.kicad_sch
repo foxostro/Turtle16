@@ -5838,7 +5838,7 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 53.34) (xy 132.08 53.34)
+			(xy 97.79 55.88) (xy 132.08 55.88)
 		)
 		(stroke
 			(width 0)
@@ -7858,7 +7858,7 @@
 	)
 	(wire
 		(pts
-			(xy 110.49 55.88) (xy 132.08 55.88)
+			(xy 110.49 53.34) (xy 132.08 53.34)
 		)
 		(stroke
 			(width 0)
@@ -9558,7 +9558,7 @@
 	)
 	(hierarchical_label "FWD_A"
 		(shape input)
-		(at 97.79 53.34 180)
+		(at 97.79 55.88 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -20947,7 +20947,8 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 110.49 55.88 270)
+		(at 110.49 53.34 270)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -20956,7 +20957,7 @@
 		(fields_autoplaced yes)
 		(uuid "e570d1aa-6cca-4d49-b858-7c5c0eec3274")
 		(property "Reference" "#PWR08"
-			(at 104.14 55.88 0)
+			(at 104.14 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20965,7 +20966,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 106.68 55.8799 90)
+			(at 106.68 53.3401 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20974,7 +20975,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 110.49 55.88 0)
+			(at 110.49 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20983,7 +20984,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 110.49 55.88 0)
+			(at 110.49 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20992,7 +20993,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 110.49 55.88 0)
+			(at 110.49 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)

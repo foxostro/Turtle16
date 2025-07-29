@@ -255,6 +255,131 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:R_Small"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 0 0 90)
+				(effects
+					(font
+						(size 1.016 1.016)
+					)
+				)
+			)
+			(property "Value" "R_Small"
+				(at 1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor, small symbol"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_Small_0_1"
+				(rectangle
+					(start -0.762 1.778)
+					(end 0.762 -1.778)
+					(stroke
+						(width 0.2032)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_Small_1_1"
+				(pin passive line
+					(at 0 2.54 270)
+					(length 0.762)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 0.762)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Turtle16:74ABT245"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -966,6 +1091,17 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Pads provided for optional\nseries termination of these\nmemory control signals. If\nneeded, swap the zero Ohm\nresistors for a different\nvalue."
+		(exclude_from_sim no)
+		(at 166.116 73.406 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e9558332-4304-4e6c-a494-d4a2ab9ed809")
+	)
 	(junction
 		(at 99.06 88.9)
 		(diameter 0)
@@ -1014,23 +1150,23 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 88.9) (xy 214.63 88.9)
+			(xy 167.64 95.25) (xy 171.45 95.25)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "2069990d-6014-4631-8e6f-d382b53b2ed1")
+		(uuid "3447a707-93f1-4502-a8fc-bae675dc42e4")
 	)
 	(wire
 		(pts
-			(xy 160.02 91.44) (xy 214.63 91.44)
+			(xy 176.53 95.25) (xy 180.34 95.25)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "2d9eeeec-9b58-4b2a-bc33-b5b8498b0fa3")
+		(uuid "3be11a6f-59d0-4af9-b069-c8d2a5b4de5f")
 	)
 	(wire
 		(pts
@@ -1044,6 +1180,26 @@
 	)
 	(wire
 		(pts
+			(xy 160.02 88.9) (xy 171.45 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8ef29bce-f325-4718-921a-16834ea05a3d")
+	)
+	(wire
+		(pts
+			(xy 160.02 91.44) (xy 167.64 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "901d2b18-d72a-450b-a695-78f3339d4260")
+	)
+	(wire
+		(pts
 			(xy 92.71 91.44) (xy 99.06 91.44)
 		)
 		(stroke
@@ -1051,6 +1207,16 @@
 			(type default)
 		)
 		(uuid "a7298114-aaca-4638-99f8-608a3e4d556d")
+	)
+	(wire
+		(pts
+			(xy 167.64 91.44) (xy 167.64 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d3ca7ac8-d74e-4f04-a807-74b020083d78")
 	)
 	(wire
 		(pts
@@ -1082,9 +1248,19 @@
 		)
 		(uuid "f1315c46-66e0-4345-ab39-829408f3ab96")
 	)
+	(wire
+		(pts
+			(xy 176.53 88.9) (xy 180.34 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f3c656e9-31f3-436d-8339-3314112b8632")
+	)
 	(hierarchical_label "~{MemLoad}"
 		(shape tri_state)
-		(at 214.63 91.44 0)
+		(at 180.34 95.25 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1128,7 +1304,7 @@
 	)
 	(hierarchical_label "~{MemStore}"
 		(shape tri_state)
-		(at 214.63 88.9 0)
+		(at 180.34 88.9 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2333,6 +2509,214 @@
 			(project "Turtle16Computer"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fb90806"
 					(reference "TP45")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 173.99 95.25 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f4eeb09c-37fd-47d2-9282-8f8ad3697cff")
+		(property "Reference" "R2"
+			(at 173.99 90.932 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Value" "0R"
+			(at 173.99 92.71 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 167.64 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.mouser.com/datasheet/2/54/cr-1858361.pdf"
+			(at 167.64 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 173.99 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Bourns"
+			(at 167.64 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer#" "CR0603-FX-1002ELF"
+			(at 167.64 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser#" "652-CR0603FX-1002ELF"
+			(at 167.64 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Digikey#" "CR0603-FX-1002ELFCT-N"
+			(at 167.64 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6776edf2-e846-43af-9487-a109f84825ed")
+		)
+		(pin "2"
+			(uuid "824bd9e5-e88d-423b-8b8f-2d3814414e80")
+		)
+		(instances
+			(project "MEMCard"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fb90806"
+					(reference "R2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 173.99 88.9 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f69ed2b8-dd2d-4d66-96b5-f215d821a78d")
+		(property "Reference" "R1"
+			(at 173.99 84.582 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Value" "0R"
+			(at 173.99 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 167.64 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.mouser.com/datasheet/2/54/cr-1858361.pdf"
+			(at 167.64 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 173.99 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "Bourns"
+			(at 167.64 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer#" "CR0603-FX-1002ELF"
+			(at 167.64 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser#" "652-CR0603FX-1002ELF"
+			(at 167.64 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Digikey#" "CR0603-FX-1002ELFCT-N"
+			(at 167.64 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fd66e863-6804-46ea-ae80-6fc1ee994087")
+		)
+		(pin "2"
+			(uuid "cf9b1505-753a-4fe5-994a-62c14dacca76")
+		)
+		(instances
+			(project "MEMCard"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce/00000000-0000-0000-0000-00005fb90806"
+					(reference "R1")
 					(unit 1)
 				)
 			)

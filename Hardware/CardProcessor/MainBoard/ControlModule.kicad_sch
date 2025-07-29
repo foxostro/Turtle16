@@ -5581,16 +5581,6 @@
 		)
 		(uuid "0b3f2f4f-8999-4ea5-a0e4-2014e65960ba")
 	)
-	(wire
-		(pts
-			(xy 102.87 63.5) (xy 124.46 63.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0b7434cc-273b-47ad-b1a6-5d58d9a98209")
-	)
 	(bus
 		(pts
 			(xy 34.29 22.86) (xy 36.83 22.86)
@@ -5743,6 +5733,16 @@
 	)
 	(wire
 		(pts
+			(xy 102.87 45.72) (xy 124.46 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "15d9dfe3-4d13-4800-883b-d1fefd2dfa50")
+	)
+	(wire
+		(pts
 			(xy 102.87 317.5) (xy 124.46 317.5)
 		)
 		(stroke
@@ -5823,16 +5823,6 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 53.34) (xy 124.46 53.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "19b06afd-73bf-4aee-9e88-6a304e84cb5e")
-	)
-	(wire
-		(pts
 			(xy 184.15 200.66) (xy 149.86 200.66)
 		)
 		(stroke
@@ -5893,13 +5883,23 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 55.88) (xy 124.46 55.88)
+			(xy 102.87 43.18) (xy 124.46 43.18)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "2155ff90-7efb-45d8-9c53-41cd8d9b7fdc")
+		(uuid "20928269-fa6e-4c77-92a6-84e9a065d569")
+	)
+	(wire
+		(pts
+			(xy 90.17 58.42) (xy 124.46 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2524d525-c941-4fc4-8e22-79b7fd8eb402")
 	)
 	(wire
 		(pts
@@ -5993,16 +5993,6 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 60.96) (xy 124.46 60.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2c4fe9a9-3c86-40a6-b9d4-c5bb6fa3b94b")
-	)
-	(wire
-		(pts
 			(xy 171.45 213.36) (xy 149.86 213.36)
 		)
 		(stroke
@@ -6043,16 +6033,6 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 43.18) (xy 124.46 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "335489d4-27a9-4a74-a254-aa7d326154e4")
-	)
-	(wire
-		(pts
 			(xy 184.15 177.8) (xy 149.86 177.8)
 		)
 		(stroke
@@ -6090,16 +6070,6 @@
 			(type default)
 		)
 		(uuid "35a748a6-cbeb-4f15-a638-fe381bfa6ae1")
-	)
-	(wire
-		(pts
-			(xy 90.17 66.04) (xy 124.46 66.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "362944f5-7f8c-4877-8582-8c46cd3b07db")
 	)
 	(wire
 		(pts
@@ -6200,6 +6170,16 @@
 			(type default)
 		)
 		(uuid "41c8ef32-8e94-4337-8a9b-15119930dcb3")
+	)
+	(wire
+		(pts
+			(xy 90.17 66.04) (xy 124.46 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "44587c2d-4e31-4568-b049-ed390f91f19d")
 	)
 	(wire
 		(pts
@@ -6603,16 +6583,6 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 38.1) (xy 124.46 38.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6adb030d-4a1a-4dab-ae35-35e71f548f51")
-	)
-	(wire
-		(pts
 			(xy 121.92 27.94) (xy 124.46 27.94)
 		)
 		(stroke
@@ -6650,6 +6620,16 @@
 			(type default)
 		)
 		(uuid "6ddb11bd-e571-4bae-91e0-577cb157e040")
+	)
+	(wire
+		(pts
+			(xy 102.87 50.8) (xy 124.46 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6e23ceb5-1689-4e64-9ea0-28e6a28eee18")
 	)
 	(wire
 		(pts
@@ -6710,6 +6690,16 @@
 			(type default)
 		)
 		(uuid "723a41a8-ed8b-4890-98cc-29ec05cb3b9f")
+	)
+	(wire
+		(pts
+			(xy 102.87 53.34) (xy 124.46 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7287025c-4bac-4dc5-8dcd-aa99358363a1")
 	)
 	(wire
 		(pts
@@ -6860,16 +6850,6 @@
 			(type default)
 		)
 		(uuid "82794e2a-cab3-4d6a-904c-c4f1732e581e")
-	)
-	(wire
-		(pts
-			(xy 102.87 58.42) (xy 124.46 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "82def1c4-6fa4-4bea-99b4-3a445bcf23ee")
 	)
 	(wire
 		(pts
@@ -7053,6 +7033,16 @@
 	)
 	(wire
 		(pts
+			(xy 102.87 38.1) (xy 124.46 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9071bcab-f8c9-4167-b9bd-c9f8cc694f31")
+	)
+	(wire
+		(pts
 			(xy 90.17 132.08) (xy 124.46 132.08)
 		)
 		(stroke
@@ -7110,6 +7100,16 @@
 			(type default)
 		)
 		(uuid "94a10148-d159-4222-a1a3-7fbdafac4585")
+	)
+	(wire
+		(pts
+			(xy 90.17 55.88) (xy 124.46 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "94e52b49-cbf4-401c-83ae-9c4b8bae2666")
 	)
 	(wire
 		(pts
@@ -7213,16 +7213,6 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 35.56) (xy 124.46 35.56)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9a824531-1490-4c8a-8a45-de7a649f1b32")
-	)
-	(wire
-		(pts
 			(xy 171.45 53.34) (xy 149.86 53.34)
 		)
 		(stroke
@@ -7250,6 +7240,16 @@
 			(type default)
 		)
 		(uuid "9cb041ac-e075-47d0-af3f-4d50a03ee3c1")
+	)
+	(wire
+		(pts
+			(xy 90.17 60.96) (xy 124.46 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9d57e2e6-1365-4fb5-96b6-7c0ddefd6e2e")
 	)
 	(wire
 		(pts
@@ -7310,6 +7310,16 @@
 			(type default)
 		)
 		(uuid "a2090665-d5d7-4b80-aea3-dd91c45c32a5")
+	)
+	(wire
+		(pts
+			(xy 102.87 48.26) (xy 124.46 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a2953fbe-1bd5-4c49-809b-877f99b75f6d")
 	)
 	(wire
 		(pts
@@ -7460,16 +7470,6 @@
 			(type default)
 		)
 		(uuid "ae9b3247-2906-4547-bb0d-6fa79d7bc597")
-	)
-	(wire
-		(pts
-			(xy 90.17 45.72) (xy 124.46 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "aed29a18-add8-4fe0-a62b-2e4b217be4e9")
 	)
 	(wire
 		(pts
@@ -7640,16 +7640,6 @@
 			(type default)
 		)
 		(uuid "bb9cd7a2-9f89-480f-9b9d-3ee7cd83b6e4")
-	)
-	(wire
-		(pts
-			(xy 90.17 48.26) (xy 124.46 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bccb49dd-e50b-4a52-ac81-5184bf006502")
 	)
 	(wire
 		(pts
@@ -7933,16 +7923,6 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 40.64) (xy 124.46 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d16ad3a7-1d2a-40d3-9c56-799bd3461d2a")
-	)
-	(wire
-		(pts
 			(xy 90.17 248.92) (xy 124.46 248.92)
 		)
 		(stroke
@@ -8000,6 +7980,16 @@
 			(type default)
 		)
 		(uuid "d71c1d39-79b5-468e-850e-51733ab9aaa5")
+	)
+	(wire
+		(pts
+			(xy 102.87 40.64) (xy 124.46 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d7c1e2e8-0c83-406a-8d9e-88f7595edb56")
 	)
 	(wire
 		(pts
@@ -8110,6 +8100,16 @@
 			(type default)
 		)
 		(uuid "e2e3c785-55f0-40d6-af5c-530970763947")
+	)
+	(wire
+		(pts
+			(xy 102.87 35.56) (xy 124.46 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e3a3769e-d30b-4066-bcc9-3f015e842749")
 	)
 	(wire
 		(pts
@@ -8253,16 +8253,6 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 50.8) (xy 124.46 50.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f28a1a09-6f79-4d2e-8128-190a524049b4")
-	)
-	(wire
-		(pts
 			(xy 184.15 154.94) (xy 149.86 154.94)
 		)
 		(stroke
@@ -8270,6 +8260,16 @@
 			(type default)
 		)
 		(uuid "f644b21a-e3cd-4494-8af1-83971534ce72")
+	)
+	(wire
+		(pts
+			(xy 90.17 63.5) (xy 124.46 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f65dcfef-6cbb-47fc-bd8e-452a7555c064")
 	)
 	(wire
 		(pts
@@ -9174,17 +9174,6 @@
 		)
 		(uuid "1b38c4f1-3c05-4173-9d27-e0ed9d6228f0")
 	)
-	(hierarchical_label "FWD_A"
-		(shape output)
-		(at 90.17 50.8 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "23eebe0f-8781-4342-b9f7-0a00e0d51c3e")
-	)
 	(hierarchical_label "OVF"
 		(shape input)
 		(at 90.17 91.44 180)
@@ -9207,6 +9196,17 @@
 		)
 		(uuid "2c58a9c5-9d0c-4239-a99e-ca08d8f67562")
 	)
+	(hierarchical_label "FWD_EX_TO_A"
+		(shape output)
+		(at 90.17 60.96 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "2e373f18-615a-4079-9bc2-f2f47c1016c2")
+	)
 	(hierarchical_label "FWD_EX_TO_B"
 		(shape output)
 		(at 90.17 71.12 180)
@@ -9217,6 +9217,17 @@
 			(justify right)
 		)
 		(uuid "36165a9d-0116-4404-a9d8-f27301e3dfe4")
+	)
+	(hierarchical_label "FWD_A"
+		(shape output)
+		(at 90.17 58.42 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "3780299c-c9b8-4435-8f62-e534f5d70ee1")
 	)
 	(hierarchical_label "SelC_MEM[0..2]"
 		(shape input)
@@ -9240,17 +9251,6 @@
 		)
 		(uuid "43630215-56e5-4374-8f80-0cfddec7a7ba")
 	)
-	(hierarchical_label "~{RST_sync}"
-		(shape input)
-		(at 90.17 48.26 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "44a21176-1231-4ba7-8a56-e4cebd4e88f5")
-	)
 	(hierarchical_label "Z"
 		(shape input)
 		(at 90.17 86.36 180)
@@ -9273,17 +9273,6 @@
 		)
 		(uuid "5e9907b3-70c9-4744-ae0d-a5f807de1d20")
 	)
-	(hierarchical_label "FWD_EX_TO_A"
-		(shape output)
-		(at 90.17 55.88 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "66eca54f-0a69-4a7a-b4e8-6741d4c7e74b")
-	)
 	(hierarchical_label "STALL"
 		(shape input)
 		(at 90.17 256.54 180)
@@ -9294,6 +9283,17 @@
 			(justify right)
 		)
 		(uuid "690ecaa4-3fac-44ea-b09a-5d5f253f2b95")
+	)
+	(hierarchical_label "~{RST_sync}"
+		(shape input)
+		(at 90.17 55.88 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "8d704463-ff40-4af0-87ca-b358875cedb4")
 	)
 	(hierarchical_label "Ctl_MEM[14..20]"
 		(shape input)
@@ -9306,28 +9306,6 @@
 		)
 		(uuid "960d17e2-a16a-4bc8-850b-d9ed1838678f")
 	)
-	(hierarchical_label "FWD_MEM_TO_A"
-		(shape output)
-		(at 90.17 60.96 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "a2a2a8db-c537-467d-a641-03e0fa480bce")
-	)
-	(hierarchical_label "FWD_B"
-		(shape output)
-		(at 90.17 66.04 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "a99250a5-2778-480e-a177-62b46faa7b52")
-	)
 	(hierarchical_label "Phi1c"
 		(shape input)
 		(at 184.15 373.38 0)
@@ -9339,16 +9317,27 @@
 		)
 		(uuid "c25a061c-fc71-47c3-9b1e-460fc917f25d")
 	)
-	(hierarchical_label "~{RST_sync}"
-		(shape input)
-		(at 90.17 45.72 180)
+	(hierarchical_label "FWD_MEM_TO_A"
+		(shape output)
+		(at 90.17 63.5 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "fd60142c-cbeb-463a-b127-d19308a84918")
+		(uuid "c4ce97d3-f28f-41ad-b3b2-3c746bb47f63")
+	)
+	(hierarchical_label "FWD_B"
+		(shape output)
+		(at 90.17 66.04 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c8b70f74-4281-4b0c-bd92-4195a42ec2d7")
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -9413,6 +9402,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01031")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -9484,6 +9479,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -9552,6 +9553,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -9616,6 +9623,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0958")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -9687,6 +9700,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -9752,6 +9771,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01035")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -9823,6 +9848,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -9890,6 +9921,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -9954,6 +9991,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0954")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -10025,6 +10068,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10090,6 +10139,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01038")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -10161,6 +10216,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10226,6 +10287,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01046")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -10297,6 +10364,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10364,6 +10437,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10428,6 +10507,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0997")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -10499,6 +10584,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10567,6 +10658,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10631,6 +10728,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0959")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -10702,6 +10805,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10767,6 +10876,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01039")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -10837,6 +10952,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -10901,6 +11022,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0951")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -10972,6 +11099,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11036,6 +11169,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0967")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -11107,6 +11246,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11172,6 +11317,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01076")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -11243,6 +11394,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11307,6 +11464,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01004")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -11378,6 +11541,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11442,6 +11611,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0944")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -11513,6 +11688,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11578,6 +11759,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01079")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -11648,6 +11835,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11715,6 +11908,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11779,6 +11978,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0942")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -11850,6 +12055,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -11915,6 +12126,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01050")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -11986,6 +12203,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12053,6 +12276,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12117,6 +12346,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01006")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -12188,6 +12423,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12252,6 +12493,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0937")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -12323,6 +12570,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12391,6 +12644,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12455,6 +12714,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0995")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -12526,6 +12791,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12590,6 +12861,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0961")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -12660,6 +12937,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12724,6 +13007,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0999")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -12795,6 +13084,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12860,6 +13155,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01099")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -12931,6 +13232,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -12995,6 +13302,85 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0943")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 102.87 50.8 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3f481a0f-6f47-44fc-9ada-d33e672f1ed1")
+		(property "Reference" "#PWR015"
+			(at 96.52 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 99.06 50.7999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 102.87 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d53868cb-6706-46d8-ad04-9fe320d55596")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR015")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -13066,6 +13452,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -13131,6 +13523,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01025")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -13202,6 +13600,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -13266,6 +13670,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0977")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -13336,6 +13746,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -13403,70 +13819,9 @@
 					(unit 1)
 				)
 			)
-		)
-	)
-	(symbol
-		(lib_id "power:VCC")
-		(at 102.87 40.64 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4e884828-e96a-486d-b9e5-81e20996ab3b")
-		(property "Reference" "#PWR0928"
-			(at 106.68 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "VCC"
-			(at 99.06 40.6399 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 102.87 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "81312a55-cf19-437f-8e4d-fccc48d9575d")
-		)
-		(instances
-			(project ""
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
-					(reference "#PWR0928")
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -13534,6 +13889,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01003")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -13605,6 +13966,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -13673,6 +14040,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -13737,6 +14110,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0946")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -13808,6 +14187,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -13872,6 +14257,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0968")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -13943,6 +14334,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14007,6 +14404,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0975")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -14078,6 +14481,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14146,6 +14555,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14210,6 +14625,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0941")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -14281,6 +14702,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14346,6 +14773,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01109")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -14417,6 +14850,85 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 102.87 53.34 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6b66dbe1-0714-4584-9841-c649eff3cda3")
+		(property "Reference" "#PWR016"
+			(at 96.52 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 99.06 53.3399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 102.87 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2f41743d-d0c6-4e77-8dde-ae9aaaa2478d")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR016")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR06")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14485,6 +14997,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14549,6 +15067,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0938")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -14620,6 +15144,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14684,6 +15214,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0940")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -14755,6 +15291,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14819,6 +15361,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0989")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -14890,6 +15438,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -14958,6 +15512,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15022,6 +15582,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0935")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -15093,6 +15659,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15158,6 +15730,85 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01057")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 102.87 48.26 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "80da227d-e4fb-4926-89e1-0d24e20403bc")
+		(property "Reference" "#PWR014"
+			(at 96.52 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 99.06 48.2599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 102.87 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2acf5e4e-132a-49e6-b388-979b6013f93e")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR014")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
@@ -15228,6 +15879,85 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 102.87 45.72 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "84081092-e3fc-42bb-a116-6e9a151c72db")
+		(property "Reference" "#PWR013"
+			(at 96.52 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 99.06 45.7199 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 102.87 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3f149c3a-3148-4ef8-9cb8-1d20e5c37f04")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR013")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR01")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15292,6 +16022,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0952")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -15363,6 +16099,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15427,6 +16169,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01005")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -15498,6 +16246,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15566,70 +16320,9 @@
 					(unit 1)
 				)
 			)
-		)
-	)
-	(symbol
-		(lib_id "power:VCC")
-		(at 102.87 43.18 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "87e1920d-168f-4e16-a372-c1f0020eac10")
-		(property "Reference" "#PWR0929"
-			(at 106.68 43.18 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "VCC"
-			(at 99.06 43.1799 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 43.18 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 43.18 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 102.87 43.18 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "85b3b98d-31fb-464c-aeee-2dc3c5d1faf4")
-		)
-		(instances
-			(project ""
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
-					(reference "#PWR0929")
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -15700,6 +16393,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15767,6 +16466,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15831,6 +16536,85 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0960")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 102.87 43.18 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8d1f8fc1-0909-4c17-b42b-5a054ecab431")
+		(property "Reference" "#PWR012"
+			(at 106.68 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 99.06 43.1799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 102.87 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "95910ec5-f757-4d6f-86d3-abd8b512c63c")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR012")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR04")
 					(unit 1)
 				)
 			)
@@ -15902,6 +16686,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -15966,6 +16756,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0979")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -16037,6 +16833,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16102,6 +16904,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01060")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -16173,6 +16981,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16238,6 +17052,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01088")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -16308,6 +17128,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16375,6 +17201,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16439,6 +17271,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0994")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -16510,6 +17348,85 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 102.87 35.56 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9e480aa1-98dc-41b6-919a-d37c6e099c8b")
+		(property "Reference" "#PWR09"
+			(at 106.68 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 99.06 35.5599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 102.87 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f880cf2f-a542-4f17-8eba-98adcaea6046")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR09")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR01")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16575,6 +17492,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01075")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -16646,6 +17569,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16714,6 +17643,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16778,6 +17713,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0993")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -16849,6 +17790,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -16914,6 +17861,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01073")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -16985,6 +17938,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -17049,6 +18008,85 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01001")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 102.87 40.64 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a7a631b8-f43b-4df9-b529-7ef3f73a31f8")
+		(property "Reference" "#PWR011"
+			(at 106.68 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 99.06 40.6399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 102.87 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9759565a-0db2-48f2-9217-8791280fbef6")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR011")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR03")
 					(unit 1)
 				)
 			)
@@ -17120,137 +18158,9 @@
 					(unit 1)
 				)
 			)
-		)
-	)
-	(symbol
-		(lib_id "power:VCC")
-		(at 102.87 38.1 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a94832b3-4c39-4e85-bd85-b2e58e987ab0")
-		(property "Reference" "#PWR0927"
-			(at 106.68 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "VCC"
-			(at 99.06 38.0999 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 102.87 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ccb9f25a-7029-4aba-a122-30090595840f")
-		)
-		(instances
-			(project ""
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
-					(reference "#PWR0927")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 102.87 63.5 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a9f8d9f3-a169-436a-bfb3-cc5bfae42fc7")
-		(property "Reference" "#PWR0932"
-			(at 96.52 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 99.06 63.4999 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 102.87 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "5983aa4b-ddc3-436f-9075-2fa5ab4718eb")
-		)
-		(instances
-			(project ""
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
-					(reference "#PWR0932")
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -17322,6 +18232,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -17387,6 +18303,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01056")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -17458,6 +18380,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -17522,6 +18450,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0964")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -17592,6 +18526,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -17659,6 +18599,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -17723,6 +18669,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0965")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -17794,6 +18746,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -17858,6 +18816,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0971")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -17929,6 +18893,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -17997,6 +18967,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -18061,6 +19037,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0955")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -18132,6 +19114,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -18196,6 +19184,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0991")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -18267,70 +19261,9 @@
 					(unit 1)
 				)
 			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 102.87 53.34 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c2966880-fb58-4ca7-bb53-7f64b820fe69")
-		(property "Reference" "#PWR0930"
-			(at 96.52 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 99.06 53.3399 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 102.87 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1aec46e3-a3bd-40b6-8bd6-e1381d049b7f")
-		)
-		(instances
-			(project ""
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
-					(reference "#PWR0930")
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -18398,6 +19331,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0950")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -18469,6 +19408,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -18534,6 +19479,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01007")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -18605,6 +19556,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -18669,6 +19626,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0984")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -18740,6 +19703,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -18805,6 +19774,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01089")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -18876,6 +19851,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -18944,6 +19925,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19008,6 +19995,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0983")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -19079,70 +20072,9 @@
 					(unit 1)
 				)
 			)
-		)
-	)
-	(symbol
-		(lib_id "power:VCC")
-		(at 102.87 35.56 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d15fa28d-c80e-4df1-83d3-3ab4b7bdca18")
-		(property "Reference" "#PWR0926"
-			(at 106.68 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "VCC"
-			(at 99.06 35.5599 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"VCC\""
-			(at 102.87 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "6e7fdf56-fffd-431d-badc-0f7c4e991bc4")
-		)
-		(instances
-			(project ""
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
-					(reference "#PWR0926")
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -19213,6 +20145,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19280,6 +20218,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19344,6 +20288,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0969")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -19415,6 +20365,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19480,6 +20436,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01083")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -19550,6 +20512,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19617,6 +20585,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19681,6 +20655,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0939")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -19752,6 +20732,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19817,6 +20803,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01058")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -19887,6 +20879,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -19954,6 +20952,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20018,6 +21022,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0998")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -20089,6 +21099,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20157,70 +21173,9 @@
 					(unit 1)
 				)
 			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 102.87 58.42 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "e4c692f1-29a7-4203-9f46-c1bb9baa4890")
-		(property "Reference" "#PWR0931"
-			(at 96.52 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 99.06 58.4199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 102.87 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 102.87 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 102.87 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "9a6b5925-2911-4532-ac60-9e78e5ab6056")
-		)
-		(instances
-			(project ""
-				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
-					(reference "#PWR0931")
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -20292,6 +21247,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20357,6 +21318,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01106")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -20428,6 +21395,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20493,6 +21466,85 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01021")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 102.87 38.1 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e9a32201-78a8-4c25-8594-f98abf09fa46")
+		(property "Reference" "#PWR010"
+			(at 106.68 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 99.06 38.0999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 102.87 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 102.87 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1b1d76ac-b3fe-4d66-b079-ec9a04424720")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
+					(reference "#PWR010")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
@@ -20564,6 +21616,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20629,6 +21687,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01104")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -20700,6 +21764,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20767,6 +21837,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20831,6 +21907,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0957")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -20902,6 +21984,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -20966,6 +22054,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0933")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -21037,6 +22131,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -21102,6 +22202,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01020")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -21173,6 +22279,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -21238,6 +22350,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01016")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -22207,6 +23325,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "J?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -22275,6 +23399,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -22339,6 +23469,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0934")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -22410,6 +23546,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -22475,6 +23617,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01061")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -22546,6 +23694,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -22611,6 +23765,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01054")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -22681,6 +23841,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -22748,6 +23914,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -22812,6 +23984,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0988")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -22883,6 +24061,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -22948,6 +24132,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR01114")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -23019,6 +24209,12 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -23083,6 +24279,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/333b4292-93f5-442d-a859-8b1da2cd4698"
 					(reference "#PWR0948")
+					(unit 1)
+				)
+			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)
@@ -23153,6 +24355,18 @@
 					(unit 1)
 				)
 			)
+			(project "ControlModule"
+				(path "/8440aa1c-35a0-4293-b61e-2585007d6959"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 		)
 	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
 )

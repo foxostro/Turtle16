@@ -5493,16 +5493,16 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "4-bit card identification code"
+	(text "4-bit card identification code: 0b0011"
 		(exclude_from_sim no)
-		(at 126.492 29.21 0)
+		(at 125.73 21.844 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "5f91b2fe-0b56-4ecf-b894-c1b0c718d17b")
+		(uuid "4c4558b9-1bf2-45e2-8c49-1dadb274fd07")
 	)
 	(text "Ctl_EX13 is unused"
 		(exclude_from_sim no)
@@ -5550,28 +5550,12 @@
 		(uuid "d9546dfe-f76c-40df-81cf-c1465f21384e")
 	)
 	(no_connect
-		(at 128.27 25.4)
-		(uuid "290e1d35-8521-4392-86d9-17e631c8d9fe")
-	)
-	(no_connect
 		(at 110.49 312.42)
 		(uuid "576c996a-1bc8-42f4-84e0-169fd447790f")
 	)
 	(no_connect
-		(at 128.27 30.48)
-		(uuid "65d0a6cb-5791-4cf5-9f3e-c10c41439529")
-	)
-	(no_connect
 		(at 110.49 246.38)
 		(uuid "791d0d0b-00b7-440f-8519-1729caa7ae63")
-	)
-	(no_connect
-		(at 128.27 27.94)
-		(uuid "b42246a2-12b1-4dc0-83b6-ff2a10f277c3")
-	)
-	(no_connect
-		(at 128.27 33.02)
-		(uuid "bcc09918-f29d-48e5-9512-58e273117c81")
 	)
 	(no_connect
 		(at 110.49 251.46)
@@ -5866,6 +5850,16 @@
 			(type default)
 		)
 		(uuid "15b63852-fc7e-4422-9ac5-7e35016d94b2")
+	)
+	(wire
+		(pts
+			(xy 127 33.02) (xy 130.81 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1670dc47-0c24-4bb4-a068-8a34b079d95b")
 	)
 	(wire
 		(pts
@@ -6519,6 +6513,16 @@
 	)
 	(wire
 		(pts
+			(xy 127 25.4) (xy 130.81 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4fab28f3-eb86-4987-bf86-97679a9de470")
+	)
+	(wire
+		(pts
 			(xy 177.8 314.96) (xy 156.21 314.96)
 		)
 		(stroke
@@ -6576,16 +6580,6 @@
 			(type default)
 		)
 		(uuid "52e8be4d-c88b-4b9c-8b8d-1314d6082f06")
-	)
-	(wire
-		(pts
-			(xy 128.27 33.02) (xy 130.81 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "556f44da-0a53-4e45-a340-5b8998abeb5b")
 	)
 	(wire
 		(pts
@@ -7089,6 +7083,16 @@
 	)
 	(wire
 		(pts
+			(xy 127 30.48) (xy 130.81 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e510ecf-f251-4871-88f1-c3de241b1139")
+	)
+	(wire
+		(pts
 			(xy 177.8 309.88) (xy 156.21 309.88)
 		)
 		(stroke
@@ -7359,16 +7363,6 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 25.4) (xy 130.81 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9c8ecd98-b5ef-4dfb-ba52-957d7f16e5ea")
-	)
-	(wire
-		(pts
 			(xy 156.21 358.14) (xy 190.5 358.14)
 		)
 		(stroke
@@ -7376,16 +7370,6 @@
 			(type default)
 		)
 		(uuid "9cefd93d-d9e4-4da3-900e-085966e34f81")
-	)
-	(wire
-		(pts
-			(xy 128.27 27.94) (xy 130.81 27.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d7c167a-fdec-4a4c-abed-f75cfa05902b")
 	)
 	(wire
 		(pts
@@ -8159,6 +8143,16 @@
 	)
 	(wire
 		(pts
+			(xy 127 27.94) (xy 130.81 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dcfce1c3-c066-4e08-aede-bda37770bec7")
+	)
+	(wire
+		(pts
 			(xy 156.21 195.58) (xy 190.5 195.58)
 		)
 		(stroke
@@ -8506,16 +8500,6 @@
 			(type default)
 		)
 		(uuid "fc32db57-3e6f-4439-a95d-fbc0ed5f5eca")
-	)
-	(wire
-		(pts
-			(xy 128.27 30.48) (xy 130.81 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fdd5ea87-962f-4c34-9389-17a6f43fc21c")
 	)
 	(wire
 		(pts
@@ -10322,7 +10306,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "07c9e893-409f-4a8f-b185-7ac55a64b6bf")
-		(property "Reference" "#PWR0162"
+		(property "Reference" "#PWR?"
 			(at 102.87 325.12 0)
 			(effects
 				(font
@@ -10377,6 +10361,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0162")
@@ -10396,7 +10386,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "08d5cf9d-94c6-4d14-aeb2-75fd51865584")
-		(property "Reference" "#PWR0126"
+		(property "Reference" "#PWR?"
 			(at 184.15 142.24 0)
 			(effects
 				(font
@@ -10451,6 +10441,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0126")
@@ -10469,7 +10465,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0c31d962-45f9-41fe-9f65-60eeff061ebb")
-		(property "Reference" "#PWR0186"
+		(property "Reference" "#PWR?"
 			(at 102.87 350.52 0)
 			(effects
 				(font
@@ -10524,6 +10520,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0186")
@@ -10543,7 +10545,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0c6c20e7-2ed7-45cc-ab96-b3af17ffc276")
-		(property "Reference" "#PWR0168"
+		(property "Reference" "#PWR?"
 			(at 184.15 360.68 0)
 			(effects
 				(font
@@ -10598,6 +10600,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0168")
@@ -10616,7 +10624,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1077f02c-3e18-448f-81d4-3aef6189dc22")
-		(property "Reference" "#FLG0101"
+		(property "Reference" "#FLG?"
 			(at 86.995 33.02 0)
 			(effects
 				(font
@@ -10671,6 +10679,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#FLG?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#FLG0101")
@@ -10690,7 +10704,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "12251482-e21a-44b3-a9d8-1d7c3c8dd763")
-		(property "Reference" "#PWR0118"
+		(property "Reference" "#PWR?"
 			(at 184.15 127 0)
 			(effects
 				(font
@@ -10745,9 +10759,82 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0118")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 127 25.4 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "12bddbde-ff4a-4be2-b4be-20d876d49b8f")
+		(property "Reference" "#PWR01"
+			(at 130.81 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 123.19 25.3999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 127 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 127 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 127 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a40a0eff-cd29-4923-8aaa-892af0dfe0b1")
+		)
+		(instances
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)
@@ -10764,7 +10851,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "143a2365-40ec-415b-8906-fb7e03e24f50")
-		(property "Reference" "#PWR0169"
+		(property "Reference" "#PWR?"
 			(at 184.15 350.52 0)
 			(effects
 				(font
@@ -10819,6 +10906,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0169")
@@ -10837,7 +10930,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "15366068-38ae-41cd-bb18-d23f04455691")
-		(property "Reference" "#PWR0215"
+		(property "Reference" "#PWR?"
 			(at 113.03 38.1 0)
 			(effects
 				(font
@@ -10892,6 +10985,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0215")
@@ -10910,7 +11009,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1583b42b-d37e-4f9c-a8f4-cd321812fdfc")
-		(property "Reference" "#PWR0196"
+		(property "Reference" "#PWR?"
 			(at 102.87 66.04 0)
 			(effects
 				(font
@@ -10965,6 +11064,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0196")
@@ -10983,7 +11088,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1943b3b8-556e-4967-9497-c106e8960de7")
-		(property "Reference" "#PWR0167"
+		(property "Reference" "#PWR?"
 			(at 102.87 330.2 0)
 			(effects
 				(font
@@ -11038,6 +11143,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0167")
@@ -11057,7 +11168,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1c7c64a7-679e-43db-9cea-8a741cebe7af")
-		(property "Reference" "#PWR0115"
+		(property "Reference" "#PWR?"
 			(at 184.15 106.68 0)
 			(effects
 				(font
@@ -11112,6 +11223,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0115")
@@ -11131,7 +11248,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1d712cd0-0286-43cc-9642-782b867a38fb")
-		(property "Reference" "#PWR0171"
+		(property "Reference" "#PWR?"
 			(at 184.15 345.44 0)
 			(effects
 				(font
@@ -11186,6 +11303,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0171")
@@ -11205,7 +11328,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "20a7184b-a9f2-44a1-a825-ac7955061181")
-		(property "Reference" "#PWR0122"
+		(property "Reference" "#PWR?"
 			(at 184.15 172.72 0)
 			(effects
 				(font
@@ -11260,6 +11383,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0122")
@@ -11278,7 +11407,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "241cc5a1-680e-486d-b3aa-e4909d78268a")
-		(property "Reference" "#PWR0197"
+		(property "Reference" "#PWR?"
 			(at 102.87 63.5 0)
 			(effects
 				(font
@@ -11333,6 +11462,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0197")
@@ -11352,7 +11487,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "25e42797-d778-401d-baf8-250920f5a340")
-		(property "Reference" "#PWR0147"
+		(property "Reference" "#PWR?"
 			(at 184.15 274.32 0)
 			(effects
 				(font
@@ -11407,6 +11542,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0147")
@@ -11425,7 +11566,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2916a3ed-0e6d-4fc2-b0de-be298b84b619")
-		(property "Reference" "#PWR0187"
+		(property "Reference" "#PWR?"
 			(at 102.87 370.84 0)
 			(effects
 				(font
@@ -11480,6 +11621,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0187")
@@ -11498,7 +11645,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2982ff9f-207d-4257-a84c-c1e720c893e6")
-		(property "Reference" "#PWR0213"
+		(property "Reference" "#PWR?"
 			(at 113.03 35.56 0)
 			(effects
 				(font
@@ -11553,6 +11700,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0213")
@@ -11572,7 +11725,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "38822fb9-a389-46ec-b178-75e8896b89ff")
-		(property "Reference" "#PWR0135"
+		(property "Reference" "#PWR?"
 			(at 184.15 96.52 0)
 			(effects
 				(font
@@ -11627,6 +11780,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0135")
@@ -11646,7 +11805,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "391e7a57-f5a4-4265-8f4a-472e84ef6cc0")
-		(property "Reference" "#PWR0141"
+		(property "Reference" "#PWR?"
 			(at 184.15 223.52 0)
 			(effects
 				(font
@@ -11701,6 +11860,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0141")
@@ -11720,7 +11885,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "39668bf7-ea3c-460c-9792-f3768b2e0371")
-		(property "Reference" "#PWR0123"
+		(property "Reference" "#PWR?"
 			(at 184.15 152.4 0)
 			(effects
 				(font
@@ -11775,6 +11940,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0123")
@@ -11794,7 +11965,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3991ba0b-ef00-48aa-96e2-e0ca1cf4cc3e")
-		(property "Reference" "#PWR0146"
+		(property "Reference" "#PWR?"
 			(at 184.15 284.48 0)
 			(effects
 				(font
@@ -11849,6 +12020,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0146")
@@ -11867,7 +12044,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3a5546c0-9236-493f-8064-5e7f6d14ce2e")
-		(property "Reference" "#PWR0194"
+		(property "Reference" "#PWR?"
 			(at 102.87 73.66 0)
 			(effects
 				(font
@@ -11922,6 +12099,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0194")
@@ -11941,7 +12124,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3cf113a5-b15c-4ec0-9826-3505dbeadb3d")
-		(property "Reference" "#PWR0143"
+		(property "Reference" "#PWR?"
 			(at 184.15 233.68 0)
 			(effects
 				(font
@@ -11996,6 +12179,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0143")
@@ -12015,7 +12204,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "437dce53-d63f-467a-975d-7488b07dc833")
-		(property "Reference" "#PWR0148"
+		(property "Reference" "#PWR?"
 			(at 184.15 243.84 0)
 			(effects
 				(font
@@ -12070,6 +12259,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0148")
@@ -12089,7 +12284,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "44149b83-71c4-4fd1-85dc-afff0f628a87")
-		(property "Reference" "#PWR0176"
+		(property "Reference" "#PWR?"
 			(at 184.15 335.28 0)
 			(effects
 				(font
@@ -12144,6 +12339,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0176")
@@ -12162,7 +12363,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "47b86457-d43d-42ee-98ec-246d84ed780a")
-		(property "Reference" "#PWR0198"
+		(property "Reference" "#PWR?"
 			(at 102.87 68.58 0)
 			(effects
 				(font
@@ -12217,6 +12418,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0198")
@@ -12235,7 +12442,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4d767513-5bad-498a-bb0e-7d2c6b1f1e47")
-		(property "Reference" "#PWR0203"
+		(property "Reference" "#PWR?"
 			(at 102.87 53.34 0)
 			(effects
 				(font
@@ -12290,6 +12497,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0203")
@@ -12309,7 +12522,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "505f0717-a078-400c-be50-2fd46747d6cb")
-		(property "Reference" "#PWR0145"
+		(property "Reference" "#PWR?"
 			(at 184.15 279.4 0)
 			(effects
 				(font
@@ -12364,6 +12577,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0145")
@@ -12383,7 +12602,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "51fd0bab-5b09-4f96-8215-7c921af0d059")
-		(property "Reference" "#PWR0142"
+		(property "Reference" "#PWR?"
 			(at 184.15 213.36 0)
 			(effects
 				(font
@@ -12438,6 +12657,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0142")
@@ -12456,7 +12681,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "535a4975-372a-4983-b679-f793d019ff74")
-		(property "Reference" "#PWR0211"
+		(property "Reference" "#PWR?"
 			(at 102.87 96.52 0)
 			(effects
 				(font
@@ -12511,6 +12736,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0211")
@@ -12530,7 +12761,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5372a92c-2833-4a6e-8426-0e32473006b8")
-		(property "Reference" "#PWR0153"
+		(property "Reference" "#PWR?"
 			(at 184.15 264.16 0)
 			(effects
 				(font
@@ -12585,6 +12816,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0153")
@@ -12604,7 +12841,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "573a287c-4ae0-4e87-b603-a61796ac495c")
-		(property "Reference" "#PWR0156"
+		(property "Reference" "#PWR?"
 			(at 184.15 177.8 0)
 			(effects
 				(font
@@ -12659,6 +12896,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0156")
@@ -12677,7 +12920,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "582bb1b4-f8e4-4722-b78a-5ffe106767a8")
-		(property "Reference" "#PWR0164"
+		(property "Reference" "#PWR?"
 			(at 102.87 320.04 0)
 			(effects
 				(font
@@ -12732,6 +12975,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0164")
@@ -12751,7 +13000,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5cb7f868-25ae-41c8-8739-f6fbdb178b0e")
-		(property "Reference" "#PWR0132"
+		(property "Reference" "#PWR?"
 			(at 184.15 55.88 0)
 			(effects
 				(font
@@ -12806,6 +13055,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0132")
@@ -12824,7 +13079,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5ef5ad15-8854-4bf9-bc83-421a161fd5c8")
-		(property "Reference" "#PWR0208"
+		(property "Reference" "#PWR?"
 			(at 102.87 78.74 0)
 			(effects
 				(font
@@ -12879,6 +13134,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0208")
@@ -12898,7 +13159,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "60d56c5a-4a43-4e05-808e-e19a8f7a4822")
-		(property "Reference" "#PWR0117"
+		(property "Reference" "#PWR?"
 			(at 184.15 121.92 0)
 			(effects
 				(font
@@ -12953,6 +13214,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0117")
@@ -12971,7 +13238,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "66a56c98-f0c8-4934-8730-023f2dfaa318")
-		(property "Reference" "#PWR0210"
+		(property "Reference" "#PWR?"
 			(at 102.87 91.44 0)
 			(effects
 				(font
@@ -13026,6 +13293,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0210")
@@ -13044,7 +13317,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "67c955dc-ee39-499a-88fc-67483c89a595")
-		(property "Reference" "#PWR0204"
+		(property "Reference" "#PWR?"
 			(at 102.87 50.8 0)
 			(effects
 				(font
@@ -13099,6 +13372,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0204")
@@ -13118,7 +13397,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6cf745df-8a10-4684-aa89-b21818f9c70f")
-		(property "Reference" "#PWR0151"
+		(property "Reference" "#PWR?"
 			(at 184.15 248.92 0)
 			(effects
 				(font
@@ -13173,6 +13452,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0151")
@@ -13192,7 +13477,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6d6ea770-50cb-46d6-bfe0-15592558e740")
-		(property "Reference" "#PWR0180"
+		(property "Reference" "#PWR?"
 			(at 184.15 289.56 0)
 			(effects
 				(font
@@ -13247,9 +13532,82 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0180")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 127 33.02 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6ddca8c5-e439-484e-9dfb-507f5b2ddb1c")
+		(property "Reference" "#PWR0191"
+			(at 120.65 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 123.19 33.0199 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 127 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 127 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 127 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5d791d07-5b65-457d-9cbb-73f1b5822d8b")
+		)
+		(instances
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR0191")
 					(unit 1)
 				)
 			)
@@ -13266,7 +13624,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6e2cff5e-4aaa-4a4a-9bba-a3c783fca43c")
-		(property "Reference" "#PWR0137"
+		(property "Reference" "#PWR?"
 			(at 184.15 76.2 0)
 			(effects
 				(font
@@ -13321,6 +13679,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0137")
@@ -13340,7 +13704,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "70c7009b-e4cf-4607-8b6d-3e17d87360c4")
-		(property "Reference" "#PWR0128"
+		(property "Reference" "#PWR?"
 			(at 184.15 162.56 0)
 			(effects
 				(font
@@ -13395,6 +13759,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0128")
@@ -13414,7 +13784,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "712787ef-9aaa-4ea4-9900-85e31d953a9d")
-		(property "Reference" "#PWR0113"
+		(property "Reference" "#PWR?"
 			(at 184.15 45.72 0)
 			(effects
 				(font
@@ -13469,6 +13839,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0113")
@@ -13488,7 +13864,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "71a4adc1-7b59-4ad8-b722-92c746e464c8")
-		(property "Reference" "#PWR0184"
+		(property "Reference" "#PWR?"
 			(at 184.15 314.96 0)
 			(effects
 				(font
@@ -13543,6 +13919,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0184")
@@ -13562,7 +13944,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7aedc728-ae53-45a2-ae6b-43c6eae171c5")
-		(property "Reference" "#PWR0124"
+		(property "Reference" "#PWR?"
 			(at 184.15 157.48 0)
 			(effects
 				(font
@@ -13617,6 +13999,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0124")
@@ -13636,7 +14024,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7d825425-44d5-4542-b33e-c6af25dd4054")
-		(property "Reference" "#PWR0129"
+		(property "Reference" "#PWR?"
 			(at 184.15 91.44 0)
 			(effects
 				(font
@@ -13691,6 +14079,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0129")
@@ -13710,7 +14104,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7ddb0c04-a6a8-470a-a8ed-d5662a870f9c")
-		(property "Reference" "#PWR0109"
+		(property "Reference" "#PWR?"
 			(at 184.15 25.4 0)
 			(effects
 				(font
@@ -13765,6 +14159,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0109")
@@ -13783,7 +14183,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7e5bd6a9-abef-4276-a526-577409564611")
-		(property "Reference" "#PWR0212"
+		(property "Reference" "#PWR?"
 			(at 113.03 43.18 0)
 			(effects
 				(font
@@ -13838,9 +14238,82 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0212")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 127 30.48 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "86d510d1-9438-4243-b56f-218579358dc0")
+		(property "Reference" "#PWR0190"
+			(at 120.65 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 123.19 30.4799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 127 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 127 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 127 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ce74510b-82cf-402c-a10e-d5c98106f733")
+		)
+		(instances
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR0190")
 					(unit 1)
 				)
 			)
@@ -13857,7 +14330,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "87650895-e3ad-4472-a04d-e8ffd4f34295")
-		(property "Reference" "#PWR0111"
+		(property "Reference" "#PWR?"
 			(at 184.15 38.1 0)
 			(effects
 				(font
@@ -13912,6 +14385,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0111")
@@ -13931,7 +14410,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8944b517-83bd-4159-ae3a-74874ffb8dea")
-		(property "Reference" "#PWR0178"
+		(property "Reference" "#PWR?"
 			(at 184.15 309.88 0)
 			(effects
 				(font
@@ -13986,6 +14465,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0178")
@@ -14005,7 +14490,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "89b13fa5-cb7d-4bae-9538-5eb98264dab5")
-		(property "Reference" "#PWR0110"
+		(property "Reference" "#PWR?"
 			(at 184.15 30.48 0)
 			(effects
 				(font
@@ -14060,6 +14545,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0110")
@@ -14079,7 +14570,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8c9d9739-4909-411e-9ab4-690a1d87288a")
-		(property "Reference" "#PWR0173"
+		(property "Reference" "#PWR?"
 			(at 184.15 365.76 0)
 			(effects
 				(font
@@ -14134,6 +14625,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0173")
@@ -14152,7 +14649,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8d8be74a-efb1-4a8c-8ec1-31a053ebcfa4")
-		(property "Reference" "#PWR0209"
+		(property "Reference" "#PWR?"
 			(at 102.87 86.36 0)
 			(effects
 				(font
@@ -14207,6 +14704,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0209")
@@ -14225,7 +14728,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8deecc51-8aea-4262-aff9-0c456addd95f")
-		(property "Reference" "#PWR0189"
+		(property "Reference" "#PWR?"
 			(at 102.87 345.44 0)
 			(effects
 				(font
@@ -14280,6 +14783,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0189")
@@ -14298,7 +14807,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8eebe926-cb53-4d31-9e59-1ddb328c82b8")
-		(property "Reference" "#PWR0205"
+		(property "Reference" "#PWR?"
 			(at 102.87 55.88 0)
 			(effects
 				(font
@@ -14353,6 +14862,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0205")
@@ -14371,7 +14886,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "92bff5dd-55f2-44da-a89e-9f10fcfcf5ad")
-		(property "Reference" "#PWR0163"
+		(property "Reference" "#PWR?"
 			(at 102.87 340.36 0)
 			(effects
 				(font
@@ -14426,6 +14941,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0163")
@@ -14445,7 +14966,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "943205e4-9d03-470e-a1c3-942e5c8913a8")
-		(property "Reference" "#PWR0157"
+		(property "Reference" "#PWR?"
 			(at 184.15 193.04 0)
 			(effects
 				(font
@@ -14500,6 +15021,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0157")
@@ -14519,7 +15046,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "96ad5cd3-24be-47c3-bec6-6b68145c4f83")
-		(property "Reference" "#PWR0183"
+		(property "Reference" "#PWR?"
 			(at 184.15 325.12 0)
 			(effects
 				(font
@@ -14574,6 +15101,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0183")
@@ -14593,7 +15126,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "99d74396-59ca-40bd-82f8-b79f5d94b7f9")
-		(property "Reference" "#PWR0136"
+		(property "Reference" "#PWR?"
 			(at 184.15 101.6 0)
 			(effects
 				(font
@@ -14648,6 +15181,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0136")
@@ -14666,7 +15205,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9db2611d-1323-4b6d-8340-31aa4d23b5e9")
-		(property "Reference" "#PWR0195"
+		(property "Reference" "#PWR?"
 			(at 102.87 71.12 0)
 			(effects
 				(font
@@ -14721,6 +15260,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0195")
@@ -14740,7 +15285,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a0337b4d-8e6d-4861-a2ea-17435f224fa7")
-		(property "Reference" "#PWR0138"
+		(property "Reference" "#PWR?"
 			(at 184.15 81.28 0)
 			(effects
 				(font
@@ -14795,6 +15340,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0138")
@@ -14814,7 +15365,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a33f8424-5ed7-4009-a5c7-3f0424f4a6c7")
-		(property "Reference" "#PWR0172"
+		(property "Reference" "#PWR?"
 			(at 184.15 340.36 0)
 			(effects
 				(font
@@ -14869,6 +15420,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0172")
@@ -14888,7 +15445,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a3cf2e90-6727-47bc-8378-363075e96a11")
-		(property "Reference" "#PWR0158"
+		(property "Reference" "#PWR?"
 			(at 184.15 187.96 0)
 			(effects
 				(font
@@ -14943,6 +15500,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0158")
@@ -14961,7 +15524,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a450fd19-06a5-4947-b1ce-26e4310ccf86")
-		(property "Reference" "#PWR0201"
+		(property "Reference" "#PWR?"
 			(at 102.87 48.26 0)
 			(effects
 				(font
@@ -15016,6 +15579,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0201")
@@ -15035,7 +15604,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a7f3aef9-a08d-476e-a054-0ae6197d5ca8")
-		(property "Reference" "#PWR0133"
+		(property "Reference" "#PWR?"
 			(at 184.15 50.8 0)
 			(effects
 				(font
@@ -15090,6 +15659,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0133")
@@ -15109,7 +15684,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a8744f4b-a4d5-41a2-8b7a-e9ecec81bb55")
-		(property "Reference" "#PWR0160"
+		(property "Reference" "#PWR?"
 			(at 184.15 203.2 0)
 			(effects
 				(font
@@ -15164,6 +15739,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0160")
@@ -15183,7 +15764,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a9d691ce-3068-4cbd-a783-7efccf9ecfe8")
-		(property "Reference" "#PWR0174"
+		(property "Reference" "#PWR?"
 			(at 184.15 368.3 0)
 			(effects
 				(font
@@ -15238,6 +15819,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0174")
@@ -15257,7 +15844,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "aab52753-8ec7-4c38-b259-14266e9c28d5")
-		(property "Reference" "#PWR0131"
+		(property "Reference" "#PWR?"
 			(at 184.15 66.04 0)
 			(effects
 				(font
@@ -15312,6 +15899,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0131")
@@ -15330,7 +15923,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "abd608fc-4531-48d7-a03a-7fd280f9290c")
-		(property "Reference" "#PWR0165"
+		(property "Reference" "#PWR?"
 			(at 102.87 314.96 0)
 			(effects
 				(font
@@ -15385,6 +15978,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0165")
@@ -15404,7 +16003,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "abd9996a-6b55-441a-b9c5-fbd88662b8c9")
-		(property "Reference" "#PWR0149"
+		(property "Reference" "#PWR?"
 			(at 184.15 238.76 0)
 			(effects
 				(font
@@ -15459,6 +16058,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0149")
@@ -15478,7 +16083,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ad0d8cbf-8619-41db-90db-e63571218121")
-		(property "Reference" "#PWR0130"
+		(property "Reference" "#PWR?"
 			(at 184.15 71.12 0)
 			(effects
 				(font
@@ -15533,9 +16138,82 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0130")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 127 27.94 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ad6e3932-8b82-431b-ae3a-ee9c5edf34cc")
+		(property "Reference" "#PWR0193"
+			(at 130.81 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 123.19 27.9399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 127 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 127 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 127 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7e3c33b4-5420-4f07-962a-3a690f79aed3")
+		)
+		(instances
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR0193")
 					(unit 1)
 				)
 			)
@@ -15551,7 +16229,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ae987e61-fbd1-4e82-adc0-2d4ffb2157eb")
-		(property "Reference" "#PWR0202"
+		(property "Reference" "#PWR?"
 			(at 102.87 45.72 0)
 			(effects
 				(font
@@ -15606,6 +16284,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0202")
@@ -15625,7 +16309,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b0eba196-dd1c-4128-9a23-95abd018289d")
-		(property "Reference" "#PWR0119"
+		(property "Reference" "#PWR?"
 			(at 184.15 116.84 0)
 			(effects
 				(font
@@ -15680,6 +16364,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0119")
@@ -15699,7 +16389,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b2f4f37e-03b3-4d61-b9a5-e6fc67baa683")
-		(property "Reference" "#PWR0112"
+		(property "Reference" "#PWR?"
 			(at 184.15 35.56 0)
 			(effects
 				(font
@@ -15754,6 +16444,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0112")
@@ -15773,7 +16469,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b39aa86e-04e5-40ae-b7ae-3e77648b58b9")
-		(property "Reference" "#PWR0114"
+		(property "Reference" "#PWR?"
 			(at 184.15 40.64 0)
 			(effects
 				(font
@@ -15828,6 +16524,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0114")
@@ -15847,7 +16549,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b5d266f0-f7a6-459c-881e-2d3c1cde3ba1")
-		(property "Reference" "#PWR0150"
+		(property "Reference" "#PWR?"
 			(at 184.15 259.08 0)
 			(effects
 				(font
@@ -15902,6 +16604,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0150")
@@ -15920,7 +16628,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b5ecdf94-bcd7-4846-8532-023c518147df")
-		(property "Reference" "#PWR0192"
+		(property "Reference" "#PWR?"
 			(at 102.87 360.68 0)
 			(effects
 				(font
@@ -15975,6 +16683,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0192")
@@ -15993,7 +16707,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bce195ce-3947-4ffb-9173-4d3eec5e6e9f")
-		(property "Reference" "#PWR0214"
+		(property "Reference" "#PWR?"
 			(at 113.03 40.64 0)
 			(effects
 				(font
@@ -16048,6 +16762,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0214")
@@ -16066,7 +16786,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bdc1e536-2e05-4543-895f-e12bc4271209")
-		(property "Reference" "#FLG0102"
+		(property "Reference" "#FLG?"
 			(at 86.995 30.48 0)
 			(effects
 				(font
@@ -16121,6 +16841,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#FLG?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#FLG0102")
@@ -16140,7 +16866,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bf4aeeb3-52c0-4684-b095-f158943404f3")
-		(property "Reference" "#PWR0140"
+		(property "Reference" "#PWR?"
 			(at 184.15 218.44 0)
 			(effects
 				(font
@@ -16195,6 +16921,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0140")
@@ -16213,7 +16945,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c35885ae-0962-4221-b985-0268b89baece")
-		(property "Reference" "#PWR0190"
+		(property "Reference" "#PWR?"
 			(at 102.87 375.92 0)
 			(effects
 				(font
@@ -16268,6 +17000,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0190")
@@ -16287,7 +17025,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c37c57f1-c91d-495a-9caf-deb12883cfc2")
-		(property "Reference" "#PWR0127"
+		(property "Reference" "#PWR?"
 			(at 184.15 167.64 0)
 			(effects
 				(font
@@ -16342,6 +17080,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0127")
@@ -16360,7 +17104,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c45cef2c-7302-4bc3-ad52-b9ac0c5308e3")
-		(property "Reference" "#PWR0166"
+		(property "Reference" "#PWR?"
 			(at 102.87 335.28 0)
 			(effects
 				(font
@@ -16415,6 +17159,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0166")
@@ -16433,7 +17183,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c5b92e63-c35f-4d6b-96e5-658474e6da5b")
-		(property "Reference" "#PWR0200"
+		(property "Reference" "#PWR?"
 			(at 102.87 76.2 0)
 			(effects
 				(font
@@ -16488,6 +17238,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0200")
@@ -16507,7 +17263,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c611b54d-e5a4-414a-8408-5d34d1874125")
-		(property "Reference" "#PWR0134"
+		(property "Reference" "#PWR?"
 			(at 184.15 60.96 0)
 			(effects
 				(font
@@ -16562,6 +17318,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0134")
@@ -16581,7 +17343,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c967ede5-d219-4f60-9d63-fddf93126f74")
-		(property "Reference" "#PWR0175"
+		(property "Reference" "#PWR?"
 			(at 184.15 370.84 0)
 			(effects
 				(font
@@ -16636,6 +17398,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0175")
@@ -16655,7 +17423,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cc8e740d-8450-41ea-80d5-34d5459ddf7a")
-		(property "Reference" "#PWR0177"
+		(property "Reference" "#PWR?"
 			(at 184.15 330.2 0)
 			(effects
 				(font
@@ -16710,6 +17478,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0177")
@@ -16729,7 +17503,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cdd8ec7b-d949-433c-a470-7f0be73cbbf8")
-		(property "Reference" "#PWR0154"
+		(property "Reference" "#PWR?"
 			(at 184.15 269.24 0)
 			(effects
 				(font
@@ -16784,6 +17558,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0154")
@@ -16803,7 +17583,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d0799edd-a909-4bbd-ace4-224d41911aca")
-		(property "Reference" "#PWR0120"
+		(property "Reference" "#PWR?"
 			(at 184.15 132.08 0)
 			(effects
 				(font
@@ -16858,6 +17638,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0120")
@@ -16876,7 +17662,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d13514cd-a110-408a-8108-5bee6818c5e2")
-		(property "Reference" "#PWR0206"
+		(property "Reference" "#PWR?"
 			(at 102.87 58.42 0)
 			(effects
 				(font
@@ -16931,6 +17717,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0206")
@@ -16950,7 +17742,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d14d46b3-04de-44b7-a496-b3ebad8de4b5")
-		(property "Reference" "#PWR0155"
+		(property "Reference" "#PWR?"
 			(at 184.15 208.28 0)
 			(effects
 				(font
@@ -17005,6 +17797,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0155")
@@ -17024,7 +17822,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d64394bb-4d3b-42d9-b292-3c6beb1015e5")
-		(property "Reference" "#PWR0179"
+		(property "Reference" "#PWR?"
 			(at 184.15 304.8 0)
 			(effects
 				(font
@@ -17079,6 +17877,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0179")
@@ -17098,7 +17902,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "dc01de0e-527a-411f-9834-ab0f47ec0ac3")
-		(property "Reference" "#PWR0139"
+		(property "Reference" "#PWR?"
 			(at 184.15 86.36 0)
 			(effects
 				(font
@@ -17153,6 +17957,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0139")
@@ -17171,7 +17981,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ddbad84e-337e-4d3e-a8ef-6445b3d868a6")
-		(property "Reference" "J1"
+		(property "Reference" "J?"
 			(at 143.51 17.78 0)
 			(effects
 				(font
@@ -18137,7 +18947,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e04b6b83-5966-4517-b0d7-f61b9a3e4339")
-		(property "Reference" "#PWR0207"
+		(property "Reference" "#PWR?"
 			(at 102.87 81.28 0)
 			(effects
 				(font
@@ -18192,6 +19002,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0207")
@@ -18211,7 +19027,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e41a1b39-77c1-4024-ab8e-906543058f4c")
-		(property "Reference" "#PWR0161"
+		(property "Reference" "#PWR?"
 			(at 184.15 198.12 0)
 			(effects
 				(font
@@ -18266,6 +19082,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0161")
@@ -18285,7 +19107,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e893db94-1ef8-42c3-949d-f8715925bafc")
-		(property "Reference" "#PWR0144"
+		(property "Reference" "#PWR?"
 			(at 184.15 228.6 0)
 			(effects
 				(font
@@ -18340,6 +19162,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0144")
@@ -18358,7 +19186,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "eb592e67-5993-47da-91ea-374973b69aa5")
-		(property "Reference" "#PWR0199"
+		(property "Reference" "#PWR?"
 			(at 102.87 60.96 0)
 			(effects
 				(font
@@ -18413,6 +19241,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0199")
@@ -18431,7 +19265,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ec65b215-c676-4d16-a5a6-da7710d3e062")
-		(property "Reference" "#PWR0188"
+		(property "Reference" "#PWR?"
 			(at 102.87 365.76 0)
 			(effects
 				(font
@@ -18486,6 +19320,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0188")
@@ -18505,7 +19345,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ee76bba1-92bc-4a6e-98d3-9bef31428751")
-		(property "Reference" "#PWR0185"
+		(property "Reference" "#PWR?"
 			(at 184.15 320.04 0)
 			(effects
 				(font
@@ -18560,6 +19400,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0185")
@@ -18579,7 +19425,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "eeba9e42-9a96-49a6-a3b3-67556119600d")
-		(property "Reference" "#PWR0181"
+		(property "Reference" "#PWR?"
 			(at 184.15 299.72 0)
 			(effects
 				(font
@@ -18634,6 +19480,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0181")
@@ -18652,7 +19504,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "eee5b2d6-e001-42ea-9b0a-9e85de6b4661")
-		(property "Reference" "#PWR0193"
+		(property "Reference" "#PWR?"
 			(at 102.87 355.6 0)
 			(effects
 				(font
@@ -18707,6 +19559,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0193")
@@ -18726,7 +19584,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f1d8e1ce-ae66-4a77-98f4-2afa0e7d6a88")
-		(property "Reference" "#PWR0121"
+		(property "Reference" "#PWR?"
 			(at 184.15 137.16 0)
 			(effects
 				(font
@@ -18781,6 +19639,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0121")
@@ -18800,7 +19664,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f2d0fd3f-249c-4eb7-8f8d-9b6ba267b4e5")
-		(property "Reference" "#PWR0170"
+		(property "Reference" "#PWR?"
 			(at 184.15 355.6 0)
 			(effects
 				(font
@@ -18855,6 +19719,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0170")
@@ -18874,7 +19744,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f34c2b57-9db8-4e84-aa5e-5e76b0d12494")
-		(property "Reference" "#PWR0182"
+		(property "Reference" "#PWR?"
 			(at 184.15 294.64 0)
 			(effects
 				(font
@@ -18929,6 +19799,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0182")
@@ -18948,7 +19824,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f5de68bc-4ab2-4a5c-97dc-04a7b0af0187")
-		(property "Reference" "#PWR0159"
+		(property "Reference" "#PWR?"
 			(at 184.15 182.88 0)
 			(effects
 				(font
@@ -19003,6 +19879,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0159")
@@ -19022,7 +19904,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f8443d63-0cbb-413e-9382-a5724a969e0e")
-		(property "Reference" "#PWR0152"
+		(property "Reference" "#PWR?"
 			(at 184.15 254 0)
 			(effects
 				(font
@@ -19077,6 +19959,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0152")
@@ -19096,7 +19984,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fabdb3b2-a2b9-476e-a4f3-eed14b5fd88b")
-		(property "Reference" "#PWR0116"
+		(property "Reference" "#PWR?"
 			(at 184.15 111.76 0)
 			(effects
 				(font
@@ -19151,6 +20039,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0116")
@@ -19169,7 +20063,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fb231296-e670-4d60-a82d-b5c49ca05320")
-		(property "Reference" "#PWR0191"
+		(property "Reference" "#PWR?"
 			(at 102.87 381 0)
 			(effects
 				(font
@@ -19224,6 +20118,12 @@
 					(unit 1)
 				)
 			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
 			(project "EXCard"
 				(path "/aed54103-805f-4793-b9a6-374024067da8/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR0191")
@@ -19243,7 +20143,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fddcb157-3db3-446e-b30f-1f62eba15df8")
-		(property "Reference" "#PWR0125"
+		(property "Reference" "#PWR?"
 			(at 184.15 147.32 0)
 			(effects
 				(font
@@ -19295,6 +20195,12 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/afc06ae5-ba96-4fd0-a049-921ebd0a48e2"
 					(reference "#PWR056")
+					(unit 1)
+				)
+			)
+			(project "CardEdgeEX"
+				(path "/8b7400fb-8e9d-4842-8352-d73f66f26168"
+					(reference "#PWR?")
 					(unit 1)
 				)
 			)

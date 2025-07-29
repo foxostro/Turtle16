@@ -484,7 +484,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "RegisterFileCard"
 				(path "/6c5cb52f-f47e-48fe-bc5d-becbd5c588d3"
 					(page "5")
 				)
@@ -641,7 +641,7 @@
 					(page "7")
 				)
 			)
-			(project ""
+			(project "RegisterFileCard"
 				(path "/6c5cb52f-f47e-48fe-bc5d-becbd5c588d3"
 					(page "2")
 				)

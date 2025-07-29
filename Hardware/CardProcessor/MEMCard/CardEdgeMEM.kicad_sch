@@ -5493,16 +5493,16 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "4-bit card identification code"
+	(text "4-bit card identification code: 0b0100"
 		(exclude_from_sim no)
-		(at 119.38 22.86 0)
+		(at 118.11 19.304 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "0ca53b23-b139-4145-8025-b156e28e3166")
+		(uuid "f3b00538-23f9-40b4-aedd-30519f2cde1f")
 	)
 	(junction
 		(at 105.41 43.18)
@@ -5515,22 +5515,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ef1b20bb-c712-4b23-b3be-77c6c0335e5f")
-	)
-	(no_connect
-		(at 123.19 22.86)
-		(uuid "05e2a2e6-ed4b-4f36-9a76-0027ceb80b63")
-	)
-	(no_connect
-		(at 123.19 30.48)
-		(uuid "06b45500-bcce-4260-be67-059853795dfe")
-	)
-	(no_connect
-		(at 123.19 27.94)
-		(uuid "ba026fa1-2e53-4933-ac57-07089632875c")
-	)
-	(no_connect
-		(at 123.19 25.4)
-		(uuid "ddaf7070-034f-470d-9c50-4a11754b1e3c")
 	)
 	(wire
 		(pts
@@ -6204,6 +6188,16 @@
 	)
 	(wire
 		(pts
+			(xy 119.38 27.94) (xy 123.19 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3505181e-61e6-4443-a477-b4ec2edd0382")
+	)
+	(wire
+		(pts
 			(xy 101.6 330.2) (xy 123.19 330.2)
 		)
 		(stroke
@@ -6804,6 +6798,16 @@
 	)
 	(wire
 		(pts
+			(xy 119.38 30.48) (xy 123.19 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f19ac79-2e0e-4718-a4dc-c867a5eafeaf")
+	)
+	(wire
+		(pts
 			(xy 182.88 337.82) (xy 148.59 337.82)
 		)
 		(stroke
@@ -6931,6 +6935,16 @@
 			(type default)
 		)
 		(uuid "7df8af6c-f42a-4c73-9517-33fde00e54e1")
+	)
+	(wire
+		(pts
+			(xy 119.38 22.86) (xy 123.19 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7fb86abc-a17c-442b-bfed-7e42918803f4")
 	)
 	(wire
 		(pts
@@ -8041,6 +8055,16 @@
 			(type default)
 		)
 		(uuid "df028119-bef4-4a8e-84d3-feaf00a8e123")
+	)
+	(wire
+		(pts
+			(xy 119.38 25.4) (xy 123.19 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dfd29adb-422e-4669-98a3-3dba9fc64a6e")
 	)
 	(wire
 		(pts
@@ -10170,7 +10194,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "009742ff-932f-4d03-8e8d-1329a5a3fd1a")
-		(property "Reference" "#PWR0113"
+		(property "Reference" "#PWR0167"
 			(at 95.25 114.3 0)
 			(effects
 				(font
@@ -10219,9 +10243,13 @@
 			(uuid "22579668-be0a-4ab7-b05b-4b7a25b6a01c")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0113")
+					(reference "#PWR0167")
 					(unit 1)
 				)
 			)
@@ -10243,7 +10271,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "011b1638-0ccf-4ff2-ad06-86821915f27a")
-		(property "Reference" "#PWR099"
+		(property "Reference" "#PWR0147"
 			(at 95.25 71.12 0)
 			(effects
 				(font
@@ -10292,9 +10320,13 @@
 			(uuid "ea586741-48bb-4fbc-8191-55a22ff36b91")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR099")
+					(reference "#PWR0147")
 					(unit 1)
 				)
 			)
@@ -10316,7 +10348,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "020fabee-95a9-4714-a310-005c6fb3f7ef")
-		(property "Reference" "#PWR0132"
+		(property "Reference" "#PWR0213"
 			(at 95.25 210.82 0)
 			(effects
 				(font
@@ -10365,9 +10397,13 @@
 			(uuid "3f33830e-0fb2-4fde-8bc5-58f68421b503")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0132")
+					(reference "#PWR0213")
 					(unit 1)
 				)
 			)
@@ -10389,7 +10425,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "03ce5c37-abdc-476b-88c0-fd841de84cd5")
-		(property "Reference" "#PWR0133"
+		(property "Reference" "#PWR0215"
 			(at 95.25 215.9 0)
 			(effects
 				(font
@@ -10438,9 +10474,13 @@
 			(uuid "3f393b60-4f37-47b8-a4d8-bf9d19078d03")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0133")
+					(reference "#PWR0215")
 					(unit 1)
 				)
 			)
@@ -10462,7 +10502,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0449e890-1795-4290-9527-1b45586cf86d")
-		(property "Reference" "#PWR0130"
+		(property "Reference" "#PWR0219"
 			(at 95.25 200.66 0)
 			(effects
 				(font
@@ -10511,9 +10551,13 @@
 			(uuid "7311cfe9-d892-40fa-b6f6-b731a5badfd0")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0130")
+					(reference "#PWR0219")
 					(unit 1)
 				)
 			)
@@ -10535,7 +10579,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "047faa9c-d458-4767-a807-190a4081463e")
-		(property "Reference" "#PWR0107"
+		(property "Reference" "#PWR0171"
 			(at 95.25 91.44 0)
 			(effects
 				(font
@@ -10584,9 +10628,13 @@
 			(uuid "edbeb272-7314-43e0-a0b8-59a321579970")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0107")
+					(reference "#PWR0171")
 					(unit 1)
 				)
 			)
@@ -10609,7 +10657,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0636cded-f7fb-4517-9485-cf1f9748209a")
-		(property "Reference" "#PWR0191"
+		(property "Reference" "#PWR0158"
 			(at 176.53 99.06 0)
 			(effects
 				(font
@@ -10658,9 +10706,13 @@
 			(uuid "69a42283-fed0-4986-b283-11e764ba6122")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0191")
+					(reference "#PWR0158")
 					(unit 1)
 				)
 			)
@@ -10682,7 +10734,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "06bf03a5-2dcd-43c0-b7a4-69c0b72a9248")
-		(property "Reference" "#PWR0120"
+		(property "Reference" "#PWR0203"
 			(at 95.25 149.86 0)
 			(effects
 				(font
@@ -10731,9 +10783,13 @@
 			(uuid "2362ef0d-c3cf-4ea4-b9c8-c8a079e1c0f9")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0120")
+					(reference "#PWR0203")
 					(unit 1)
 				)
 			)
@@ -10755,7 +10811,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "09283df7-6a46-4e18-aec9-6392b7397df2")
-		(property "Reference" "#PWR0127"
+		(property "Reference" "#PWR0202"
 			(at 95.25 185.42 0)
 			(effects
 				(font
@@ -10804,9 +10860,13 @@
 			(uuid "35652795-fcb2-41e5-9701-8c889458575c")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0127")
+					(reference "#PWR0202")
 					(unit 1)
 				)
 			)
@@ -10828,7 +10888,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0a1e56ff-1266-4cda-a61b-b73831e39ed7")
-		(property "Reference" "#PWR0155"
+		(property "Reference" "#PWR0109"
 			(at 95.25 320.04 0)
 			(effects
 				(font
@@ -10877,9 +10937,13 @@
 			(uuid "40615f42-7512-4d3b-b757-91059bdf013c")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0155")
+					(reference "#PWR0109")
 					(unit 1)
 				)
 			)
@@ -10901,7 +10965,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0bc86541-0029-4989-b06f-135a0e6b7b06")
-		(property "Reference" "#PWR0112"
+		(property "Reference" "#PWR0165"
 			(at 95.25 109.22 0)
 			(effects
 				(font
@@ -10950,9 +11014,13 @@
 			(uuid "c75d3367-27b6-49a5-9072-9f0d816cfd14")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0112")
+					(reference "#PWR0165")
 					(unit 1)
 				)
 			)
@@ -10975,7 +11043,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0ea78e77-edb5-455f-a0a4-f59598cfe360")
-		(property "Reference" "#PWR0183"
+		(property "Reference" "#PWR0153"
 			(at 176.53 58.42 0)
 			(effects
 				(font
@@ -11024,9 +11092,13 @@
 			(uuid "96940567-33ed-4e89-8c90-132aafaac867")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0183")
+					(reference "#PWR0153")
 					(unit 1)
 				)
 			)
@@ -11048,7 +11120,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "175b0ff5-86f4-4f96-bb04-77a1b3ee7038")
-		(property "Reference" "#PWR0161"
+		(property "Reference" "#PWR0125"
 			(at 95.25 335.28 0)
 			(effects
 				(font
@@ -11097,9 +11169,13 @@
 			(uuid "c2e124c6-8602-4593-8f32-238ce6f4df26")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0161")
+					(reference "#PWR0125")
 					(unit 1)
 				)
 			)
@@ -11121,7 +11197,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1c81ff73-d43c-4d54-8de5-f0ab90affb9a")
-		(property "Reference" "#PWR0117"
+		(property "Reference" "#PWR0195"
 			(at 95.25 134.62 0)
 			(effects
 				(font
@@ -11170,9 +11246,13 @@
 			(uuid "828c9cd8-d662-49ff-aca0-a30528386c7a")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0117")
+					(reference "#PWR0195")
 					(unit 1)
 				)
 			)
@@ -11194,7 +11274,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1ef9d68c-6aaf-4f32-a7fe-b6db62c87a31")
-		(property "Reference" "#PWR0141"
+		(property "Reference" "#PWR0221"
 			(at 95.25 256.54 0)
 			(effects
 				(font
@@ -11243,9 +11323,13 @@
 			(uuid "4d507ec2-089a-44fc-8dac-d0f458b786b3")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0141")
+					(reference "#PWR0221")
 					(unit 1)
 				)
 			)
@@ -11267,7 +11351,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "204ec5ef-ae60-4358-b4c4-8c17c477da11")
-		(property "Reference" "#PWR0128"
+		(property "Reference" "#PWR0212"
 			(at 95.25 190.5 0)
 			(effects
 				(font
@@ -11316,9 +11400,13 @@
 			(uuid "9cd291de-09e5-440a-b453-758c907640cc")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0128")
+					(reference "#PWR0212")
 					(unit 1)
 				)
 			)
@@ -11340,7 +11428,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "22a132f9-6711-4c89-b95a-fedbf33add0f")
-		(property "Reference" "#PWR0147"
+		(property "Reference" "#PWR0113"
 			(at 95.25 287.02 0)
 			(effects
 				(font
@@ -11389,9 +11477,13 @@
 			(uuid "71a1fffc-b52f-4bb9-89ba-29e046eaef88")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0147")
+					(reference "#PWR0113")
 					(unit 1)
 				)
 			)
@@ -11413,7 +11505,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "24317530-0099-45cc-b6c5-e14e0b137ade")
-		(property "Reference" "#PWR0165"
+		(property "Reference" "#PWR0121"
 			(at 95.25 345.44 0)
 			(effects
 				(font
@@ -11462,9 +11554,13 @@
 			(uuid "b90dd5b6-8ae3-41ab-962b-311a9e18db14")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0165")
+					(reference "#PWR0121")
 					(unit 1)
 				)
 			)
@@ -11486,7 +11582,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "24c9251d-a853-43d5-ac95-7e77269542e1")
-		(property "Reference" "#PWR0164"
+		(property "Reference" "#PWR0122"
 			(at 95.25 342.9 0)
 			(effects
 				(font
@@ -11535,9 +11631,13 @@
 			(uuid "fa6d928d-44c0-475b-9e1e-3401c00dc8b4")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0164")
+					(reference "#PWR0122")
 					(unit 1)
 				)
 			)
@@ -11559,7 +11659,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "27866925-f720-4c33-8af6-a1261daedaaa")
-		(property "Reference" "#FLG02"
+		(property "Reference" "#FLG0101"
 			(at 86.995 30.48 0)
 			(effects
 				(font
@@ -11608,9 +11708,13 @@
 			(uuid "3f7410bb-75ba-4136-ad80-3ed402231d7b")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#FLG?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#FLG02")
+					(reference "#FLG0101")
 					(unit 1)
 				)
 			)
@@ -11626,7 +11730,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2beecd0d-d3d3-45a2-b807-355139a164c1")
-		(property "Reference" "#PWR0110"
+		(property "Reference" "#PWR0166"
 			(at 95.25 99.06 0)
 			(effects
 				(font
@@ -11675,9 +11779,13 @@
 			(uuid "5466f1ec-1538-488b-8f84-0cd81aa5ad83")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0110")
+					(reference "#PWR0166")
 					(unit 1)
 				)
 			)
@@ -11700,7 +11808,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2dc7c3b7-b46b-4c49-9d9a-02caca378d24")
-		(property "Reference" "#PWR0180"
+		(property "Reference" "#PWR0177"
 			(at 176.53 43.18 0)
 			(effects
 				(font
@@ -11749,9 +11857,13 @@
 			(uuid "e4d60fa6-9062-458e-a04d-cb16768a8e49")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0180")
+					(reference "#PWR0177")
 					(unit 1)
 				)
 			)
@@ -11773,7 +11885,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "32b5f703-e1a3-4ccb-9c23-68aa65701a78")
-		(property "Reference" "#PWR0111"
+		(property "Reference" "#PWR0168"
 			(at 95.25 104.14 0)
 			(effects
 				(font
@@ -11822,9 +11934,13 @@
 			(uuid "71f16993-2cd7-46f5-acc9-eec16721bd6a")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0111")
+					(reference "#PWR0168")
 					(unit 1)
 				)
 			)
@@ -11847,7 +11963,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "333febe0-4d6e-4780-b134-f3f518b1ea8e")
-		(property "Reference" "#PWR0182"
+		(property "Reference" "#PWR0151"
 			(at 176.53 53.34 0)
 			(effects
 				(font
@@ -11896,9 +12012,13 @@
 			(uuid "31071597-99a5-494d-843b-8f959d7f6069")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0182")
+					(reference "#PWR0151")
 					(unit 1)
 				)
 			)
@@ -11920,7 +12040,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "38013a4a-2e2d-4199-9266-f50bd2cdc602")
-		(property "Reference" "#PWR0163"
+		(property "Reference" "#PWR0124"
 			(at 95.25 340.36 0)
 			(effects
 				(font
@@ -11969,9 +12089,13 @@
 			(uuid "4d54f14c-0a20-4267-a624-2c0aab85cb2e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0163")
+					(reference "#PWR0124")
 					(unit 1)
 				)
 			)
@@ -11994,7 +12118,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3aadd3a3-04c8-4b0e-aef3-595ba75454b1")
-		(property "Reference" "#PWR0190"
+		(property "Reference" "#PWR0162"
 			(at 176.53 93.98 0)
 			(effects
 				(font
@@ -12043,9 +12167,13 @@
 			(uuid "633dcc99-1c96-4373-93db-6530438bd2bc")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0190")
+					(reference "#PWR0162")
 					(unit 1)
 				)
 			)
@@ -12068,7 +12196,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3d6fd44e-f759-469e-9b57-7cf216024d47")
-		(property "Reference" "#PWR0202"
+		(property "Reference" "#PWR0193"
 			(at 176.53 154.94 0)
 			(effects
 				(font
@@ -12117,9 +12245,13 @@
 			(uuid "d96eba21-cdcc-4520-a468-6aabb1555fbf")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0202")
+					(reference "#PWR0193")
 					(unit 1)
 				)
 			)
@@ -12142,7 +12274,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3e4c1209-6535-4646-a41d-f86f0e7bb7d7")
-		(property "Reference" "#PWR0192"
+		(property "Reference" "#PWR0159"
 			(at 176.53 104.14 0)
 			(effects
 				(font
@@ -12191,9 +12323,13 @@
 			(uuid "37045255-7c7a-4d23-8349-f498eadd174e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0192")
+					(reference "#PWR0159")
 					(unit 1)
 				)
 			)
@@ -12215,7 +12351,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "43575c72-b6c7-4e41-a8c0-ff91232052ef")
-		(property "Reference" "#PWR0140"
+		(property "Reference" "#PWR0222"
 			(at 95.25 251.46 0)
 			(effects
 				(font
@@ -12264,9 +12400,13 @@
 			(uuid "257ae18f-e98c-4d4f-a651-2f8a4b736afb")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0140")
+					(reference "#PWR0222")
 					(unit 1)
 				)
 			)
@@ -12288,7 +12428,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "458865a4-1619-4f1b-9e8b-b1ad57b25ccf")
-		(property "Reference" "#PWR0125"
+		(property "Reference" "#PWR0206"
 			(at 95.25 175.26 0)
 			(effects
 				(font
@@ -12337,9 +12477,13 @@
 			(uuid "52b174af-4bbd-46d0-b263-f288b1f90d25")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0125")
+					(reference "#PWR0206")
 					(unit 1)
 				)
 			)
@@ -12361,7 +12505,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "477005db-f00e-4ac6-b7e3-6be110c8893e")
-		(property "Reference" "#PWR0115"
+		(property "Reference" "#PWR0196"
 			(at 95.25 124.46 0)
 			(effects
 				(font
@@ -12410,9 +12554,13 @@
 			(uuid "ee57fb2d-8041-4c8d-9ffd-a809241e5efd")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0115")
+					(reference "#PWR0196")
 					(unit 1)
 				)
 			)
@@ -12434,7 +12582,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "48160816-509a-4311-9af4-f96aa9d71a89")
-		(property "Reference" "#PWR0169"
+		(property "Reference" "#PWR0105"
 			(at 95.25 355.6 0)
 			(effects
 				(font
@@ -12483,15 +12631,90 @@
 			(uuid "ebc922fa-578d-4ccf-b18f-5e87e50f8723")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0169")
+					(reference "#PWR0105")
 					(unit 1)
 				)
 			)
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97"
 					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 119.38 22.86 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4c350e07-d398-4b56-a46f-daa7076ee2bb")
+		(property "Reference" "#PWR0182"
+			(at 113.03 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 115.57 22.8599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 119.38 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b75789dd-83a4-4cba-be7c-81f89cd7b4fa")
+		)
+		(instances
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR01")
+					(unit 1)
+				)
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
+					(reference "#PWR0182")
 					(unit 1)
 				)
 			)
@@ -12508,7 +12731,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4d390969-968f-44e8-ab43-b26ace2150a2")
-		(property "Reference" "#PWR0199"
+		(property "Reference" "#PWR0194"
 			(at 176.53 139.7 0)
 			(effects
 				(font
@@ -12557,9 +12780,13 @@
 			(uuid "b9b002c7-5534-40ab-b835-fa45115537d2")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0199")
+					(reference "#PWR0194")
 					(unit 1)
 				)
 			)
@@ -12582,7 +12809,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "504a303e-2a80-4134-993f-4a5de5843c9c")
-		(property "Reference" "#PWR0203"
+		(property "Reference" "#PWR0186"
 			(at 176.53 160.02 0)
 			(effects
 				(font
@@ -12631,9 +12858,13 @@
 			(uuid "769d50a3-4777-430a-849f-5afbdde8fcee")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0203")
+					(reference "#PWR0186")
 					(unit 1)
 				)
 			)
@@ -12655,7 +12886,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "51bf2c8e-8e38-47a8-a019-c3964677e70c")
-		(property "Reference" "#PWR0150"
+		(property "Reference" "#PWR0111"
 			(at 95.25 302.26 0)
 			(effects
 				(font
@@ -12704,9 +12935,13 @@
 			(uuid "d2affad0-f26a-412e-8098-be81eea80f2c")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0150")
+					(reference "#PWR0111")
 					(unit 1)
 				)
 			)
@@ -12728,7 +12963,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "52e99ea7-1b47-4f5b-aefb-e3a012622090")
-		(property "Reference" "#PWR093"
+		(property "Reference" "#PWR0142"
 			(at 95.25 55.88 0)
 			(effects
 				(font
@@ -12777,9 +13012,13 @@
 			(uuid "c0dfaa88-ed5e-4e62-b6ee-89ca28e402b2")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR093")
+					(reference "#PWR0142")
 					(unit 1)
 				)
 			)
@@ -12801,7 +13040,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "52f1cb12-e15a-4339-a012-8a0eb873e707")
-		(property "Reference" "#PWR091"
+		(property "Reference" "#PWR0146"
 			(at 95.25 48.26 0)
 			(effects
 				(font
@@ -12850,9 +13089,13 @@
 			(uuid "790f84c8-191d-4fe4-a5ef-0631362a8fa7")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR091")
+					(reference "#PWR0146")
 					(unit 1)
 				)
 			)
@@ -12874,7 +13117,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5484179c-f83b-467f-ba89-5a81630d5687")
-		(property "Reference" "#PWR0166"
+		(property "Reference" "#PWR0123"
 			(at 95.25 347.98 0)
 			(effects
 				(font
@@ -12923,9 +13166,13 @@
 			(uuid "de9845ab-980a-4f5b-b253-0ccd261ced08")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0166")
+					(reference "#PWR0123")
 					(unit 1)
 				)
 			)
@@ -12947,7 +13194,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5556a28d-4030-4c41-8009-4a74650c92d9")
-		(property "Reference" "#PWR0105"
+		(property "Reference" "#PWR0172"
 			(at 95.25 86.36 0)
 			(effects
 				(font
@@ -12996,9 +13243,13 @@
 			(uuid "bf20b430-c969-498e-9f1f-ab79b82dfb78")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0105")
+					(reference "#PWR0172")
 					(unit 1)
 				)
 			)
@@ -13020,7 +13271,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "560b32e0-c6ee-42ce-bd27-a3f90fe051d4")
-		(property "Reference" "#PWR0143"
+		(property "Reference" "#PWR0226"
 			(at 95.25 266.7 0)
 			(effects
 				(font
@@ -13069,9 +13320,13 @@
 			(uuid "5ec4c17f-f47e-4886-a6d4-098895672c92")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0143")
+					(reference "#PWR0226")
 					(unit 1)
 				)
 			)
@@ -13093,7 +13348,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5b2171e2-0923-4b7b-a66c-74d43a2cda26")
-		(property "Reference" "#PWR0136"
+		(property "Reference" "#PWR0210"
 			(at 95.25 231.14 0)
 			(effects
 				(font
@@ -13142,9 +13397,13 @@
 			(uuid "d9a62586-3a5d-4b96-9e57-872e2aa46b8c")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0136")
+					(reference "#PWR0210")
 					(unit 1)
 				)
 			)
@@ -13167,7 +13426,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5e2ccd38-13f7-4ed6-9ae8-c400f955305d")
-		(property "Reference" "#PWR0200"
+		(property "Reference" "#PWR0190"
 			(at 176.53 144.78 0)
 			(effects
 				(font
@@ -13216,9 +13475,13 @@
 			(uuid "c352efb1-8c25-420c-80fe-a21c90b4bdb5")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0200")
+					(reference "#PWR0190")
 					(unit 1)
 				)
 			)
@@ -13241,7 +13504,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "634e8063-9eec-47d7-b5fe-afa0cc432421")
-		(property "Reference" "#PWR0195"
+		(property "Reference" "#PWR0183"
 			(at 176.53 119.38 0)
 			(effects
 				(font
@@ -13290,9 +13553,13 @@
 			(uuid "1a665098-8d2c-4b0d-8287-0162c0f950c6")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0195")
+					(reference "#PWR0183")
 					(unit 1)
 				)
 			)
@@ -13315,7 +13582,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "659818a9-7ce8-4c09-ae76-24c6121b0e20")
-		(property "Reference" "#PWR0196"
+		(property "Reference" "#PWR0185"
 			(at 176.53 124.46 0)
 			(effects
 				(font
@@ -13364,9 +13631,13 @@
 			(uuid "c549d263-261f-45b4-9c74-520d0d687778")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0196")
+					(reference "#PWR0185")
 					(unit 1)
 				)
 			)
@@ -13389,7 +13660,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "67ef8827-f0cb-4a31-baf9-fceb5d0b8e1f")
-		(property "Reference" "#PWR0188"
+		(property "Reference" "#PWR0161"
 			(at 176.53 83.82 0)
 			(effects
 				(font
@@ -13438,9 +13709,13 @@
 			(uuid "f14b9e9a-1cd8-483d-9cd3-920821dd227f")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0188")
+					(reference "#PWR0161")
 					(unit 1)
 				)
 			)
@@ -13463,7 +13738,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6af2793b-3549-4773-951b-4f2376af086d")
-		(property "Reference" "#PWR0184"
+		(property "Reference" "#PWR0154"
 			(at 176.53 63.5 0)
 			(effects
 				(font
@@ -13512,9 +13787,13 @@
 			(uuid "668c6470-b129-43ef-8125-aeee1d17eaeb")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0184")
+					(reference "#PWR0154")
 					(unit 1)
 				)
 			)
@@ -13536,7 +13815,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6c135e3e-8096-4989-8e3c-5c6b04121d11")
-		(property "Reference" "#PWR088"
+		(property "Reference" "#PWR0134"
 			(at 105.41 40.64 0)
 			(effects
 				(font
@@ -13585,15 +13864,90 @@
 			(uuid "7783136a-ae64-4903-a51b-1e0ee66a61e5")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR088")
+					(reference "#PWR0134")
 					(unit 1)
 				)
 			)
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97"
 					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 119.38 30.48 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6ddca8c5-e439-484e-9dfb-507f5b2ddb1c")
+		(property "Reference" "#PWR0135"
+			(at 113.03 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 115.57 30.4799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 119.38 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5d791d07-5b65-457d-9cbb-73f1b5822d8b")
+		)
+		(instances
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR0191")
+					(unit 1)
+				)
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
+					(reference "#PWR0135")
 					(unit 1)
 				)
 			)
@@ -13609,7 +13963,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6e4a1786-59bb-4ec2-a1fb-ffeb85bd06f4")
-		(property "Reference" "#PWR092"
+		(property "Reference" "#PWR0145"
 			(at 95.25 50.8 0)
 			(effects
 				(font
@@ -13658,9 +14012,13 @@
 			(uuid "4b7f283b-4cad-4c6f-bb86-31ce725dea81")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR092")
+					(reference "#PWR0145")
 					(unit 1)
 				)
 			)
@@ -13682,7 +14040,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "73e6e560-3770-4bca-8048-700d39519a09")
-		(property "Reference" "#PWR096"
+		(property "Reference" "#PWR0140"
 			(at 95.25 63.5 0)
 			(effects
 				(font
@@ -13731,9 +14089,13 @@
 			(uuid "2926dfed-e562-4f27-abbf-4e557ee92b6d")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR096")
+					(reference "#PWR0140")
 					(unit 1)
 				)
 			)
@@ -13756,7 +14118,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "75723801-b957-471d-86d4-16aced4232d7")
-		(property "Reference" "#PWR0185"
+		(property "Reference" "#PWR0155"
 			(at 176.53 68.58 0)
 			(effects
 				(font
@@ -13805,9 +14167,13 @@
 			(uuid "029c1c50-53cc-4fe2-8cfe-576be900711a")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0185")
+					(reference "#PWR0155")
 					(unit 1)
 				)
 			)
@@ -13829,7 +14195,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "75d9c795-f1c6-4ffe-ad28-b902987f73e1")
-		(property "Reference" "#PWR0137"
+		(property "Reference" "#PWR0211"
 			(at 95.25 236.22 0)
 			(effects
 				(font
@@ -13878,9 +14244,13 @@
 			(uuid "05ef6134-37d8-48c6-b0ae-1d636e920d7b")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0137")
+					(reference "#PWR0211")
 					(unit 1)
 				)
 			)
@@ -13902,7 +14272,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7cdcf9ec-0dec-4334-9ef0-47a3caea2a6b")
-		(property "Reference" "#PWR087"
+		(property "Reference" "#PWR0133"
 			(at 105.41 38.1 0)
 			(effects
 				(font
@@ -13951,9 +14321,13 @@
 			(uuid "a372bd0e-4e5d-40a8-8505-9f83dfca4765")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR087")
+					(reference "#PWR0133")
 					(unit 1)
 				)
 			)
@@ -13975,7 +14349,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7e2bdd2f-0997-4f5c-919f-21fa438da51f")
-		(property "Reference" "#PWR0168"
+		(property "Reference" "#PWR0119"
 			(at 95.25 353.06 0)
 			(effects
 				(font
@@ -14024,9 +14398,13 @@
 			(uuid "814c73b2-337a-4d5b-8bbb-dcfa39c19182")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0168")
+					(reference "#PWR0119")
 					(unit 1)
 				)
 			)
@@ -14048,7 +14426,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "81eca5c4-9458-4782-ac7b-935ad66ff61f")
-		(property "Reference" "#PWR0116"
+		(property "Reference" "#PWR0197"
 			(at 95.25 129.54 0)
 			(effects
 				(font
@@ -14097,9 +14475,13 @@
 			(uuid "62952c10-55f2-45cc-9690-87a4685b2c04")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0116")
+					(reference "#PWR0197")
 					(unit 1)
 				)
 			)
@@ -14121,7 +14503,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "820c93b9-511d-465f-8cfa-5e86b9881ecf")
-		(property "Reference" "#PWR0101"
+		(property "Reference" "#PWR0150"
 			(at 95.25 76.2 0)
 			(effects
 				(font
@@ -14170,9 +14552,13 @@
 			(uuid "db96115d-e554-401b-8ee8-9c07f78376f1")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0101")
+					(reference "#PWR0150")
 					(unit 1)
 				)
 			)
@@ -14194,7 +14580,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "84ae041e-d426-4da7-9ad5-54adc0e45305")
-		(property "Reference" "#PWR0109"
+		(property "Reference" "#PWR0175"
 			(at 95.25 96.52 0)
 			(effects
 				(font
@@ -14243,9 +14629,13 @@
 			(uuid "538033d2-0ce9-48ab-869d-03059188cb81")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0109")
+					(reference "#PWR0175")
 					(unit 1)
 				)
 			)
@@ -14267,7 +14657,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "85108fd5-0ec9-4991-8c98-828e7c9a2bc5")
-		(property "Reference" "#PWR097"
+		(property "Reference" "#PWR0141"
 			(at 95.25 66.04 0)
 			(effects
 				(font
@@ -14316,15 +14706,90 @@
 			(uuid "b5afb025-84b0-4a2d-b9b1-10a212c88389")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR097")
+					(reference "#PWR0141")
 					(unit 1)
 				)
 			)
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97"
 					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 119.38 25.4 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "86d510d1-9438-4243-b56f-218579358dc0")
+		(property "Reference" "#PWR0137"
+			(at 113.03 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 115.57 25.3999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 119.38 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ce74510b-82cf-402c-a10e-d5c98106f733")
+		)
+		(instances
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR0190")
+					(unit 1)
+				)
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
+					(reference "#PWR0137")
 					(unit 1)
 				)
 			)
@@ -14340,7 +14805,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8841b6b6-93df-4403-9749-88a4a5269c85")
-		(property "Reference" "#PWR0135"
+		(property "Reference" "#PWR0214"
 			(at 95.25 226.06 0)
 			(effects
 				(font
@@ -14389,9 +14854,13 @@
 			(uuid "d31dc145-c8cf-4b80-8d60-ff55a1cc4e51")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0135")
+					(reference "#PWR0214")
 					(unit 1)
 				)
 			)
@@ -14413,7 +14882,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "922c0386-8d73-4de8-bd69-934294776918")
-		(property "Reference" "#PWR0126"
+		(property "Reference" "#PWR0201"
 			(at 95.25 180.34 0)
 			(effects
 				(font
@@ -14462,9 +14931,13 @@
 			(uuid "52f80020-0b68-4623-8233-4ec8df0e90ff")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0126")
+					(reference "#PWR0201")
 					(unit 1)
 				)
 			)
@@ -14487,7 +14960,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "93126fc8-2723-49f8-8017-84309a6cb788")
-		(property "Reference" "#PWR0176"
+		(property "Reference" "#PWR0180"
 			(at 176.53 22.86 0)
 			(effects
 				(font
@@ -14536,9 +15009,13 @@
 			(uuid "098001c1-cd1b-447f-88b5-483152723b48")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0176")
+					(reference "#PWR0180")
 					(unit 1)
 				)
 			)
@@ -14560,7 +15037,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "938d2b84-b2a2-406c-8318-2c7dd69de61c")
-		(property "Reference" "#PWR0104"
+		(property "Reference" "#PWR0173"
 			(at 95.25 83.82 0)
 			(effects
 				(font
@@ -14609,9 +15086,13 @@
 			(uuid "cca8404e-d515-47ec-aaf4-febe426d86c7")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0104")
+					(reference "#PWR0173")
 					(unit 1)
 				)
 			)
@@ -14633,7 +15114,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "945b872a-21bb-4f9b-b0d6-03fbcaeaa735")
-		(property "Reference" "#PWR0148"
+		(property "Reference" "#PWR0112"
 			(at 95.25 292.1 0)
 			(effects
 				(font
@@ -14682,9 +15163,13 @@
 			(uuid "e3781319-4591-44af-ba23-b78fe0f0a1be")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0148")
+					(reference "#PWR0112")
 					(unit 1)
 				)
 			)
@@ -14706,7 +15191,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "96f0b02f-e08b-4792-b107-d9a4ccd4ffae")
-		(property "Reference" "#PWR0108"
+		(property "Reference" "#PWR0174"
 			(at 95.25 93.98 0)
 			(effects
 				(font
@@ -14755,9 +15240,13 @@
 			(uuid "55c0a666-1c9e-4f3f-87f9-81c8283ca3b1")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0108")
+					(reference "#PWR0174")
 					(unit 1)
 				)
 			)
@@ -14779,7 +15268,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "97765728-8eb4-4317-8d28-aaa9e3cd512d")
-		(property "Reference" "#PWR0131"
+		(property "Reference" "#PWR0218"
 			(at 95.25 205.74 0)
 			(effects
 				(font
@@ -14828,9 +15317,13 @@
 			(uuid "60b81501-4b80-495a-860e-d107a45202b4")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0131")
+					(reference "#PWR0218")
 					(unit 1)
 				)
 			)
@@ -14852,7 +15345,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "97bee866-9792-4018-8aaa-d0d562fe8fec")
-		(property "Reference" "#PWR0162"
+		(property "Reference" "#PWR0126"
 			(at 95.25 337.82 0)
 			(effects
 				(font
@@ -14901,9 +15394,13 @@
 			(uuid "13476988-b0e8-417a-8f36-8c6edc83f53a")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0162")
+					(reference "#PWR0126")
 					(unit 1)
 				)
 			)
@@ -14925,7 +15422,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "97ce10a3-5249-4bac-8631-b17d6de72e24")
-		(property "Reference" "#PWR0154"
+		(property "Reference" "#PWR0115"
 			(at 95.25 317.5 0)
 			(effects
 				(font
@@ -14974,9 +15471,13 @@
 			(uuid "faf5b9c8-0d05-41b0-b086-331622167d33")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0154")
+					(reference "#PWR0115")
 					(unit 1)
 				)
 			)
@@ -14998,7 +15499,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a062daed-3c77-447b-9af5-4ec8e983aa6e")
-		(property "Reference" "#PWR0149"
+		(property "Reference" "#PWR0114"
 			(at 95.25 297.18 0)
 			(effects
 				(font
@@ -15047,9 +15548,13 @@
 			(uuid "1c1c49bf-a658-4b4d-a891-038a80a53fb1")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0149")
+					(reference "#PWR0114")
 					(unit 1)
 				)
 			)
@@ -15071,7 +15576,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a1b7c1b4-d59b-4c29-946d-a18af14fd740")
-		(property "Reference" "#PWR0124"
+		(property "Reference" "#PWR0205"
 			(at 95.25 170.18 0)
 			(effects
 				(font
@@ -15120,9 +15625,13 @@
 			(uuid "028d5ed8-0ad2-4212-ad10-162ad351143e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0124")
+					(reference "#PWR0205")
 					(unit 1)
 				)
 			)
@@ -15144,7 +15653,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a3002424-cab5-44bb-b00e-bc3bb831530c")
-		(property "Reference" "#PWR0142"
+		(property "Reference" "#PWR0227"
 			(at 95.25 261.62 0)
 			(effects
 				(font
@@ -15193,9 +15702,13 @@
 			(uuid "1e1290e5-02d4-496e-86f5-cbc9bfb49145")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0142")
+					(reference "#PWR0227")
 					(unit 1)
 				)
 			)
@@ -15218,7 +15731,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a3388c79-048a-47d5-8bc0-94b07d27191f")
-		(property "Reference" "#PWR0206"
+		(property "Reference" "#PWR0191"
 			(at 176.53 175.26 0)
 			(effects
 				(font
@@ -15267,9 +15780,13 @@
 			(uuid "039c916a-0e82-467b-8989-231733557f59")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0206")
+					(reference "#PWR0191")
 					(unit 1)
 				)
 			)
@@ -15292,7 +15809,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a5545ffa-502c-472d-b80d-e10e65a3d892")
-		(property "Reference" "#PWR0197"
+		(property "Reference" "#PWR0184"
 			(at 176.53 129.54 0)
 			(effects
 				(font
@@ -15341,9 +15858,13 @@
 			(uuid "8431dff5-711d-43b6-a883-4eb8a1997a9b")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0197")
+					(reference "#PWR0184")
 					(unit 1)
 				)
 			)
@@ -15366,7 +15887,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a62c5a3e-e106-4111-92f1-90cd8a00c2bc")
-		(property "Reference" "#PWR0186"
+		(property "Reference" "#PWR0156"
 			(at 176.53 73.66 0)
 			(effects
 				(font
@@ -15415,9 +15936,13 @@
 			(uuid "95306586-3d60-46c9-8fce-8ebabec33054")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0186")
+					(reference "#PWR0156")
 					(unit 1)
 				)
 			)
@@ -15439,7 +15964,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a653b08c-0579-4e31-bb74-9fbe325b287a")
-		(property "Reference" "#PWR094"
+		(property "Reference" "#PWR0138"
 			(at 95.25 58.42 0)
 			(effects
 				(font
@@ -15488,9 +16013,13 @@
 			(uuid "333a3515-8d08-4108-9f27-c5c12793753a")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR094")
+					(reference "#PWR0138")
 					(unit 1)
 				)
 			)
@@ -15512,7 +16041,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a90347f8-914b-428c-bac2-a0625b1588b6")
-		(property "Reference" "#PWR0171"
+		(property "Reference" "#PWR0106"
 			(at 95.25 360.68 0)
 			(effects
 				(font
@@ -15561,9 +16090,13 @@
 			(uuid "575f57fc-127d-4364-a792-c74e13204915")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0171")
+					(reference "#PWR0106")
 					(unit 1)
 				)
 			)
@@ -15585,7 +16118,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ac4316c4-c977-4c25-abe9-ef1c79f95254")
-		(property "Reference" "#PWR098"
+		(property "Reference" "#PWR0148"
 			(at 95.25 68.58 0)
 			(effects
 				(font
@@ -15634,9 +16167,13 @@
 			(uuid "8a35cd6b-c5d3-4851-a972-47014ea3a735")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR098")
+					(reference "#PWR0148")
 					(unit 1)
 				)
 			)
@@ -15658,7 +16195,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ad08a062-09a2-4d82-9cc7-267641af475e")
-		(property "Reference" "#PWR0114"
+		(property "Reference" "#PWR0198"
 			(at 95.25 119.38 0)
 			(effects
 				(font
@@ -15707,15 +16244,90 @@
 			(uuid "dfdca069-57ed-46eb-bdef-985545e9005e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0114")
+					(reference "#PWR0198")
 					(unit 1)
 				)
 			)
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/278b84b0-d28f-4248-8f63-f89f14b1dc97"
 					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 119.38 27.94 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ad6e3932-8b82-431b-ae3a-ee9c5edf34cc")
+		(property "Reference" "#PWR0136"
+			(at 123.19 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 115.57 27.9399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 119.38 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7e3c33b4-5420-4f07-962a-3a690f79aed3")
+		)
+		(instances
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR0193")
+					(unit 1)
+				)
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
+					(reference "#PWR0136")
 					(unit 1)
 				)
 			)
@@ -15732,7 +16344,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ae4d1064-685d-41fb-96b1-73d7d43386c2")
-		(property "Reference" "#PWR0181"
+		(property "Reference" "#PWR0152"
 			(at 176.53 48.26 0)
 			(effects
 				(font
@@ -15781,9 +16393,13 @@
 			(uuid "4a42c98c-6577-4626-8195-84a869852b45")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0181")
+					(reference "#PWR0152")
 					(unit 1)
 				)
 			)
@@ -15805,7 +16421,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "af5453a0-fb6d-4f9f-b15e-3c4501346046")
-		(property "Reference" "#PWR0123"
+		(property "Reference" "#PWR0207"
 			(at 95.25 165.1 0)
 			(effects
 				(font
@@ -15854,9 +16470,13 @@
 			(uuid "ba210677-900b-4060-a3fc-b9c439497e9e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0123")
+					(reference "#PWR0207")
 					(unit 1)
 				)
 			)
@@ -15878,7 +16498,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "afd12441-6835-40cc-a658-51f9ca1bedbb")
-		(property "Reference" "#PWR095"
+		(property "Reference" "#PWR0139"
 			(at 95.25 60.96 0)
 			(effects
 				(font
@@ -15927,9 +16547,13 @@
 			(uuid "f1a3f8f7-b92f-4822-a064-97afb08d763b")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR095")
+					(reference "#PWR0139")
 					(unit 1)
 				)
 			)
@@ -15951,7 +16575,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b46f205c-5ff6-4d6c-b17b-25d8868d3da6")
-		(property "Reference" "#PWR0146"
+		(property "Reference" "#PWR0107"
 			(at 95.25 281.94 0)
 			(effects
 				(font
@@ -16000,9 +16624,13 @@
 			(uuid "7b1935c4-06ef-4384-99bf-ea07ba64b9df")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0146")
+					(reference "#PWR0107")
 					(unit 1)
 				)
 			)
@@ -16024,7 +16652,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b675615b-4a54-4d59-9fec-c7770db7841d")
-		(property "Reference" "#PWR086"
+		(property "Reference" "#PWR0132"
 			(at 105.41 35.56 0)
 			(effects
 				(font
@@ -16073,9 +16701,13 @@
 			(uuid "0dbb2ac1-5b62-449b-b3b9-08fe4ec59547")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR086")
+					(reference "#PWR0132")
 					(unit 1)
 				)
 			)
@@ -16097,7 +16729,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b7e77fca-2dc2-4387-b9a7-0fa67323b978")
-		(property "Reference" "#PWR089"
+		(property "Reference" "#PWR0144"
 			(at 95.25 43.18 0)
 			(effects
 				(font
@@ -16146,9 +16778,13 @@
 			(uuid "9692d2ba-5868-45c1-92d7-f19a7abdb662")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR089")
+					(reference "#PWR0144")
 					(unit 1)
 				)
 			)
@@ -16170,7 +16806,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b8f40670-c10c-48dd-b9fd-1cc733329e11")
-		(property "Reference" "#PWR0158"
+		(property "Reference" "#PWR0130"
 			(at 95.25 327.66 0)
 			(effects
 				(font
@@ -16219,9 +16855,13 @@
 			(uuid "ca519325-c598-4aa7-8b7a-0b5a9397f631")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0158")
+					(reference "#PWR0130")
 					(unit 1)
 				)
 			)
@@ -16243,7 +16883,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bb0492a0-8538-4245-9573-eae5cd6d6d70")
-		(property "Reference" "#PWR0170"
+		(property "Reference" "#PWR0104"
 			(at 95.25 358.14 0)
 			(effects
 				(font
@@ -16292,9 +16932,13 @@
 			(uuid "719f123f-4a4b-435c-8b1d-e81b39069d53")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0170")
+					(reference "#PWR0104")
 					(unit 1)
 				)
 			)
@@ -16317,7 +16961,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c142154e-3b5e-45ed-97ff-5d1523bbe2d5")
-		(property "Reference" "#PWR0179"
+		(property "Reference" "#PWR0181"
 			(at 176.53 38.1 0)
 			(effects
 				(font
@@ -16366,9 +17010,13 @@
 			(uuid "155cde68-63cc-481d-94ee-0766b77202d3")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0179")
+					(reference "#PWR0181")
 					(unit 1)
 				)
 			)
@@ -16391,7 +17039,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c1f61e07-b526-43ea-b6ae-e35b76197f3e")
-		(property "Reference" "#PWR0193"
+		(property "Reference" "#PWR0157"
 			(at 176.53 109.22 0)
 			(effects
 				(font
@@ -16440,9 +17088,13 @@
 			(uuid "e7ccd1b4-3b72-46d4-b012-c14cba69b51e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0193")
+					(reference "#PWR0157")
 					(unit 1)
 				)
 			)
@@ -16465,7 +17117,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c38574d8-37e7-4d72-bf8f-f2ff631ed8c2")
-		(property "Reference" "#PWR0204"
+		(property "Reference" "#PWR0187"
 			(at 176.53 165.1 0)
 			(effects
 				(font
@@ -16514,9 +17166,13 @@
 			(uuid "4b27f4a3-2413-4ab1-84d7-4656deb3d38b")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0204")
+					(reference "#PWR0187")
 					(unit 1)
 				)
 			)
@@ -16538,7 +17194,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c5656f0c-1864-4443-87a6-8fc460e00c6b")
-		(property "Reference" "#PWR0160"
+		(property "Reference" "#PWR0127"
 			(at 95.25 332.74 0)
 			(effects
 				(font
@@ -16587,9 +17243,13 @@
 			(uuid "f909d2e7-a675-4c95-9e96-9a0bcd48ed9c")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0160")
+					(reference "#PWR0127")
 					(unit 1)
 				)
 			)
@@ -16612,7 +17272,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c5a1ece2-4d5d-40a6-b911-43c202f5881a")
-		(property "Reference" "#PWR0177"
+		(property "Reference" "#PWR0179"
 			(at 176.53 27.94 0)
 			(effects
 				(font
@@ -16661,9 +17321,13 @@
 			(uuid "0a095c61-af93-491a-9c3f-5d5a615dfbc2")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0177")
+					(reference "#PWR0179")
 					(unit 1)
 				)
 			)
@@ -16685,7 +17349,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c7aeb362-c144-4c40-8b58-129a48b8fc21")
-		(property "Reference" "#PWR0138"
+		(property "Reference" "#PWR0224"
 			(at 95.25 241.3 0)
 			(effects
 				(font
@@ -16734,9 +17398,13 @@
 			(uuid "731e71d8-6769-465a-adc7-c175ab7dc7cc")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0138")
+					(reference "#PWR0224")
 					(unit 1)
 				)
 			)
@@ -17694,7 +18362,11 @@
 			(uuid "b4c2cb76-0b19-4bc7-b81d-663c43881a25")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "J?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
 					(reference "J3")
 					(unit 1)
@@ -17719,7 +18391,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ccf05834-90fe-43c0-89e0-2fa9bd5a28d2")
-		(property "Reference" "#PWR0198"
+		(property "Reference" "#PWR0192"
 			(at 176.53 134.62 0)
 			(effects
 				(font
@@ -17768,9 +18440,13 @@
 			(uuid "65589b47-0af3-4ff0-a132-8e20f2818ef9")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0198")
+					(reference "#PWR0192")
 					(unit 1)
 				)
 			)
@@ -17792,7 +18468,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cd77a7b8-f6f5-4138-8802-db3128af9c1e")
-		(property "Reference" "#PWR0152"
+		(property "Reference" "#PWR0117"
 			(at 95.25 312.42 0)
 			(effects
 				(font
@@ -17841,9 +18517,13 @@
 			(uuid "428c0d40-89d2-451f-8612-39c63b668240")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0152")
+					(reference "#PWR0117")
 					(unit 1)
 				)
 			)
@@ -17865,7 +18545,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ce1f7b35-2a8c-407b-a712-e0f185d18d93")
-		(property "Reference" "#PWR0173"
+		(property "Reference" "#PWR0102"
 			(at 95.25 368.3 0)
 			(effects
 				(font
@@ -17914,9 +18594,13 @@
 			(uuid "75aea915-c14e-4ca1-b9c6-0ea24ebb732e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0173")
+					(reference "#PWR0102")
 					(unit 1)
 				)
 			)
@@ -17939,7 +18623,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cef02709-7601-4cf2-b3ec-14ff6a9b4018")
-		(property "Reference" "#PWR0207"
+		(property "Reference" "#PWR0220"
 			(at 176.53 203.2 0)
 			(effects
 				(font
@@ -17988,9 +18672,13 @@
 			(uuid "ab504fd8-bc93-4ccd-92eb-47b8c6206583")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0207")
+					(reference "#PWR0220")
 					(unit 1)
 				)
 			)
@@ -18012,7 +18700,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cfb02cf5-19f1-49b3-9410-516827d1f3aa")
-		(property "Reference" "#PWR0106"
+		(property "Reference" "#PWR0169"
 			(at 95.25 88.9 0)
 			(effects
 				(font
@@ -18061,9 +18749,13 @@
 			(uuid "a5e1faea-0337-45d7-828b-d3857be683e1")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0106")
+					(reference "#PWR0169")
 					(unit 1)
 				)
 			)
@@ -18086,7 +18778,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d3bbc028-c5a1-4dfa-a3b0-540adc767d6d")
-		(property "Reference" "#PWR0194"
+		(property "Reference" "#PWR0160"
 			(at 176.53 114.3 0)
 			(effects
 				(font
@@ -18135,9 +18827,13 @@
 			(uuid "c9cceab9-25d4-4d93-8b56-c4d6bf3adccf")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0194")
+					(reference "#PWR0160")
 					(unit 1)
 				)
 			)
@@ -18159,7 +18855,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d58f2b62-6df3-4651-a44b-ddbfc3bc61ac")
-		(property "Reference" "#PWR0167"
+		(property "Reference" "#PWR0120"
 			(at 95.25 350.52 0)
 			(effects
 				(font
@@ -18208,9 +18904,13 @@
 			(uuid "fdf5a14d-5b97-45bf-80e5-e4cd144b501a")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0167")
+					(reference "#PWR0120")
 					(unit 1)
 				)
 			)
@@ -18232,7 +18932,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d91eda05-58e0-4749-8e1c-95b131699461")
-		(property "Reference" "#PWR0121"
+		(property "Reference" "#PWR0209"
 			(at 95.25 154.94 0)
 			(effects
 				(font
@@ -18281,9 +18981,13 @@
 			(uuid "58ef63e4-5cbc-4780-b162-7cef1faeb0d0")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0121")
+					(reference "#PWR0209")
 					(unit 1)
 				)
 			)
@@ -18305,7 +19009,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d982643d-bee3-4039-95d1-7dd4ff394598")
-		(property "Reference" "#PWR090"
+		(property "Reference" "#PWR0143"
 			(at 95.25 45.72 0)
 			(effects
 				(font
@@ -18354,9 +19058,13 @@
 			(uuid "5b5232b8-c088-4e94-ae0b-c0b449853e7f")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR090")
+					(reference "#PWR0143")
 					(unit 1)
 				)
 			)
@@ -18378,7 +19086,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "dc45d21d-33e0-444d-a267-601ba4059fa7")
-		(property "Reference" "#PWR0174"
+		(property "Reference" "#PWR0101"
 			(at 95.25 373.38 0)
 			(effects
 				(font
@@ -18427,9 +19135,13 @@
 			(uuid "95092ad0-3023-4dcc-b91e-7ea023d41477")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0174")
+					(reference "#PWR0101")
 					(unit 1)
 				)
 			)
@@ -18451,7 +19163,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "dc98f279-096c-4099-a8e7-91c6eb4b4d3b")
-		(property "Reference" "#PWR0144"
+		(property "Reference" "#PWR0223"
 			(at 95.25 271.78 0)
 			(effects
 				(font
@@ -18500,9 +19212,13 @@
 			(uuid "6ec7a4f3-e47e-45e8-8d0c-4694865a3977")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0144")
+					(reference "#PWR0223")
 					(unit 1)
 				)
 			)
@@ -18524,7 +19240,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "dcd65581-e623-4a16-9586-016e427ca84b")
-		(property "Reference" "#PWR085"
+		(property "Reference" "#PWR0131"
 			(at 105.41 33.02 0)
 			(effects
 				(font
@@ -18573,9 +19289,13 @@
 			(uuid "d2e6293b-88a9-4431-bb03-8d7a19cee74b")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR085")
+					(reference "#PWR0131")
 					(unit 1)
 				)
 			)
@@ -18597,7 +19317,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "de201668-1c8a-40f6-b4a8-b8c1b2520eaf")
-		(property "Reference" "#PWR0100"
+		(property "Reference" "#PWR0149"
 			(at 95.25 73.66 0)
 			(effects
 				(font
@@ -18646,9 +19366,13 @@
 			(uuid "67779464-ecb4-437b-a648-3cc1ad216f26")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0100")
+					(reference "#PWR0149")
 					(unit 1)
 				)
 			)
@@ -18670,7 +19394,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e29c7f9a-ad30-43bf-86e4-8e0a0da7ea02")
-		(property "Reference" "#PWR0157"
+		(property "Reference" "#PWR0128"
 			(at 95.25 325.12 0)
 			(effects
 				(font
@@ -18719,9 +19443,13 @@
 			(uuid "76bac524-8a9d-494e-b088-6821255fa1c6")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0157")
+					(reference "#PWR0128")
 					(unit 1)
 				)
 			)
@@ -18743,7 +19471,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e31f1ddb-7532-4421-8592-7f2aa4de67b6")
-		(property "Reference" "#PWR0145"
+		(property "Reference" "#PWR0108"
 			(at 95.25 276.86 0)
 			(effects
 				(font
@@ -18792,9 +19520,13 @@
 			(uuid "4b1d1aec-556b-4c62-b239-505bded3f519")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0145")
+					(reference "#PWR0108")
 					(unit 1)
 				)
 			)
@@ -18817,7 +19549,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e73bbad0-0486-4063-977c-267155445913")
-		(property "Reference" "#PWR0187"
+		(property "Reference" "#PWR0163"
 			(at 176.53 78.74 0)
 			(effects
 				(font
@@ -18866,9 +19598,13 @@
 			(uuid "c9ff7bc4-5d1c-481a-9d24-25dd1320680d")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0187")
+					(reference "#PWR0163")
 					(unit 1)
 				)
 			)
@@ -18890,7 +19626,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e9c03647-21c4-4197-9e20-0be024ff1b06")
-		(property "Reference" "#PWR0139"
+		(property "Reference" "#PWR0225"
 			(at 95.25 246.38 0)
 			(effects
 				(font
@@ -18939,9 +19675,13 @@
 			(uuid "df69c9a5-8979-4a96-88c6-a2684d2555ee")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0139")
+					(reference "#PWR0225")
 					(unit 1)
 				)
 			)
@@ -18963,7 +19703,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ead4e66a-412c-4838-9596-92adec60038e")
-		(property "Reference" "#PWR0129"
+		(property "Reference" "#PWR0217"
 			(at 95.25 195.58 0)
 			(effects
 				(font
@@ -19012,9 +19752,13 @@
 			(uuid "3fd835c3-f3ec-4ea7-bba8-73182f8fe46d")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0129")
+					(reference "#PWR0217")
 					(unit 1)
 				)
 			)
@@ -19036,7 +19780,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "eb012a6d-84db-436a-98d2-86ad520acd5f")
-		(property "Reference" "#PWR0119"
+		(property "Reference" "#PWR0200"
 			(at 95.25 144.78 0)
 			(effects
 				(font
@@ -19085,9 +19829,13 @@
 			(uuid "07ab671b-c321-4f4b-8395-adbe3db74c2a")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0119")
+					(reference "#PWR0200")
 					(unit 1)
 				)
 			)
@@ -19110,7 +19858,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ed0eb453-c6e5-414e-a691-36836d42f583")
-		(property "Reference" "#PWR0189"
+		(property "Reference" "#PWR0164"
 			(at 176.53 88.9 0)
 			(effects
 				(font
@@ -19159,9 +19907,13 @@
 			(uuid "18045217-d6d1-4b6b-bf2c-97535c1d3b91")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0189")
+					(reference "#PWR0164")
 					(unit 1)
 				)
 			)
@@ -19184,7 +19936,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "efa0b249-3665-4a3a-91b0-7069739149a0")
-		(property "Reference" "#PWR0201"
+		(property "Reference" "#PWR0189"
 			(at 176.53 149.86 0)
 			(effects
 				(font
@@ -19233,9 +19985,13 @@
 			(uuid "57b5bb07-5219-44f3-9a0d-74a36bf1f2fd")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0201")
+					(reference "#PWR0189")
 					(unit 1)
 				)
 			)
@@ -19257,7 +20013,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "efd2f642-e3b8-45fc-92d4-96044d936979")
-		(property "Reference" "#PWR0134"
+		(property "Reference" "#PWR0216"
 			(at 95.25 220.98 0)
 			(effects
 				(font
@@ -19306,9 +20062,13 @@
 			(uuid "bc5706cb-99e0-4e83-8715-fe2e42f3af19")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0134")
+					(reference "#PWR0216")
 					(unit 1)
 				)
 			)
@@ -19330,7 +20090,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "efdb5dd7-4741-4933-8085-1b57e91eb180")
-		(property "Reference" "#PWR0153"
+		(property "Reference" "#PWR0116"
 			(at 95.25 314.96 0)
 			(effects
 				(font
@@ -19379,9 +20139,13 @@
 			(uuid "6be06e9b-3149-45b3-9a8a-6cdd4aa432c4")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0153")
+					(reference "#PWR0116")
 					(unit 1)
 				)
 			)
@@ -19404,7 +20168,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f1ba99dc-ec58-4918-b741-7e793ce8e9d5")
-		(property "Reference" "#PWR0205"
+		(property "Reference" "#PWR0188"
 			(at 176.53 170.18 0)
 			(effects
 				(font
@@ -19453,9 +20217,13 @@
 			(uuid "ea475007-f9a8-4664-aca7-950c2c847ab9")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0205")
+					(reference "#PWR0188")
 					(unit 1)
 				)
 			)
@@ -19477,7 +20245,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f29ef239-b540-4dfa-acf5-d55fff3a2540")
-		(property "Reference" "#PWR0151"
+		(property "Reference" "#PWR0118"
 			(at 95.25 307.34 0)
 			(effects
 				(font
@@ -19526,9 +20294,13 @@
 			(uuid "a5ef0f5b-69d5-49c9-ab2e-1e860985d90b")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0151")
+					(reference "#PWR0118")
 					(unit 1)
 				)
 			)
@@ -19550,7 +20322,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f50c8b70-93a1-46bc-af26-f3d167686e7b")
-		(property "Reference" "#FLG01"
+		(property "Reference" "#FLG0102"
 			(at 86.995 27.94 0)
 			(effects
 				(font
@@ -19599,9 +20371,13 @@
 			(uuid "e528641c-771c-443e-be66-61bed634e392")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#FLG?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#FLG01")
+					(reference "#FLG0102")
 					(unit 1)
 				)
 			)
@@ -19617,7 +20393,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f60a8e4c-6e7f-404f-9e8b-cfb1063a21fd")
-		(property "Reference" "#PWR0172"
+		(property "Reference" "#PWR0103"
 			(at 95.25 363.22 0)
 			(effects
 				(font
@@ -19666,9 +20442,13 @@
 			(uuid "c09da0c3-7ab0-4e74-a481-407ba3b530b4")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0172")
+					(reference "#PWR0103")
 					(unit 1)
 				)
 			)
@@ -19690,7 +20470,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f70dc915-72bf-49d2-85c4-517b50b7e6ea")
-		(property "Reference" "#PWR0175"
+		(property "Reference" "#PWR0204"
 			(at 95.25 378.46 0)
 			(effects
 				(font
@@ -19739,9 +20519,13 @@
 			(uuid "d51effa1-4c9f-4c49-abda-b66d4ec1e927")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0175")
+					(reference "#PWR0204")
 					(unit 1)
 				)
 			)
@@ -19763,7 +20547,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f7a51442-1ea3-4ecf-8627-0e986934e315")
-		(property "Reference" "#PWR0118"
+		(property "Reference" "#PWR0199"
 			(at 95.25 139.7 0)
 			(effects
 				(font
@@ -19812,9 +20596,13 @@
 			(uuid "bddebb72-e7a6-445f-b3d4-dd999601276d")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0118")
+					(reference "#PWR0199")
 					(unit 1)
 				)
 			)
@@ -19836,7 +20624,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f7eb64c6-878a-4961-a7c6-9215532681a0")
-		(property "Reference" "#PWR0122"
+		(property "Reference" "#PWR0208"
 			(at 95.25 160.02 0)
 			(effects
 				(font
@@ -19885,9 +20673,13 @@
 			(uuid "9aa887cc-28ae-4f3d-9371-725497b74254")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0122")
+					(reference "#PWR0208")
 					(unit 1)
 				)
 			)
@@ -19909,7 +20701,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f992fc01-c124-476d-813e-503791b1e28c")
-		(property "Reference" "#PWR0159"
+		(property "Reference" "#PWR0129"
 			(at 95.25 330.2 0)
 			(effects
 				(font
@@ -19958,9 +20750,13 @@
 			(uuid "a907e534-2b98-4426-9b88-8ed8e6a5c4b2")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0159")
+					(reference "#PWR0129")
 					(unit 1)
 				)
 			)
@@ -19982,7 +20778,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fdd1a0cc-d028-486f-bd33-be013fa39e91")
-		(property "Reference" "#PWR0156"
+		(property "Reference" "#PWR0110"
 			(at 95.25 322.58 0)
 			(effects
 				(font
@@ -20031,9 +20827,13 @@
 			(uuid "559f6759-33fb-40cb-9a97-6b0553771327")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0156")
+					(reference "#PWR0110")
 					(unit 1)
 				)
 			)
@@ -20055,7 +20855,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fddacebc-384a-44c1-b9c3-452c301fcf0c")
-		(property "Reference" "#PWR0103"
+		(property "Reference" "#PWR0176"
 			(at 95.25 81.28 0)
 			(effects
 				(font
@@ -20104,9 +20904,13 @@
 			(uuid "9701ef44-5a65-4447-982d-a39169e31c1e")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0103")
+					(reference "#PWR0176")
 					(unit 1)
 				)
 			)
@@ -20178,7 +20982,11 @@
 			(uuid "daaba1f0-9206-416b-8564-b8fbd97f7513")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
 					(reference "#PWR0178")
 					(unit 1)
@@ -20202,7 +21010,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ff97bfaa-973a-4229-aa00-c7164c51a19a")
-		(property "Reference" "#PWR0102"
+		(property "Reference" "#PWR0170"
 			(at 95.25 78.74 0)
 			(effects
 				(font
@@ -20251,9 +21059,13 @@
 			(uuid "66912713-f945-42e7-a35d-f6c75a1dc45d")
 		)
 		(instances
-			(project ""
+			(project "CardEdgeMEM"
+				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96"
+					(reference "#PWR?")
+					(unit 1)
+				)
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/06b5b35b-2268-417a-b89f-d8ca03f45691"
-					(reference "#PWR0102")
+					(reference "#PWR0170")
 					(unit 1)
 				)
 			)
@@ -20265,4 +21077,10 @@
 			)
 		)
 	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
 )

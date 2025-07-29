@@ -5433,7 +5433,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "#")
 				)
@@ -5585,7 +5585,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "40")
 				)
@@ -5807,7 +5807,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "38")
 				)
@@ -5939,7 +5939,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "11")
 				)
@@ -6161,7 +6161,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "41")
 				)
@@ -6313,7 +6313,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "39")
 				)
@@ -6435,7 +6435,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "#")
 				)
@@ -6547,7 +6547,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "44")
 				)
@@ -6719,7 +6719,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "43")
 				)
@@ -6911,7 +6911,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "42")
 				)
@@ -7043,7 +7043,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MainBoard"
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
 					(page "12")
 				)

@@ -899,7 +899,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "ControlCard"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "4")
 				)
@@ -1011,7 +1011,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "ControlCard"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "3")
 				)
@@ -1093,7 +1093,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "ControlCard"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "8")
 				)
@@ -1175,7 +1175,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "ControlCard"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "7")
 				)
@@ -1267,7 +1267,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "ControlCard"
 				(path "/8440aa1c-35a0-4293-b61e-2585007d6959/101aadd6-c8f8-4873-8d28-86528ab686cf"
 					(page "6")
 				)

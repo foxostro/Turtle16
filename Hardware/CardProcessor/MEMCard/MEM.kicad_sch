@@ -2723,7 +2723,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153b1")
-		(property "Reference" "U29"
+		(property "Reference" "U2"
 			(at -21.59 165.1 0)
 			(effects
 				(font
@@ -2867,7 +2867,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153b8")
-		(property "Reference" "U29"
+		(property "Reference" "U2"
 			(at -13.97 137.9982 0)
 			(effects
 				(font
@@ -3011,7 +3011,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153d5")
-		(property "Reference" "#PWR0630"
+		(property "Reference" "#PWR03"
 			(at -21.59 101.6 0)
 			(effects
 				(font
@@ -3083,7 +3083,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153e1")
-		(property "Reference" "#PWR0633"
+		(property "Reference" "#PWR04"
 			(at -21.59 186.69 0)
 			(effects
 				(font
@@ -3154,7 +3154,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153ee")
-		(property "Reference" "U29"
+		(property "Reference" "U2"
 			(at 63.5 24.9682 0)
 			(effects
 				(font
@@ -3298,7 +3298,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153f5")
-		(property "Reference" "#PWR0636"
+		(property "Reference" "#PWR06"
 			(at 22.86 196.85 0)
 			(effects
 				(font
@@ -3369,7 +3369,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-0000605153fb")
-		(property "Reference" "#PWR0634"
+		(property "Reference" "#PWR05"
 			(at 22.86 186.69 0)
 			(effects
 				(font
@@ -3440,7 +3440,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060515402")
-		(property "Reference" "C35"
+		(property "Reference" "C1"
 			(at 25.781 185.5216 0)
 			(effects
 				(font
@@ -3550,7 +3550,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca967d")
-		(property "Reference" "#PWR0631"
+		(property "Reference" "#PWR01"
 			(at -44.45 102.87 0)
 			(effects
 				(font
@@ -3621,7 +3621,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca9695")
-		(property "Reference" "#PWR0632"
+		(property "Reference" "#PWR02"
 			(at -44.45 185.42 0)
 			(effects
 				(font
@@ -3692,7 +3692,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca969f")
-		(property "Reference" "U31"
+		(property "Reference" "U1"
 			(at -34.29 105.41 0)
 			(effects
 				(font
@@ -3836,7 +3836,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca96a6")
-		(property "Reference" "U31"
+		(property "Reference" "U1"
 			(at -34.29 120.015 0)
 			(effects
 				(font
@@ -3980,7 +3980,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca96ad")
-		(property "Reference" "U31"
+		(property "Reference" "U1"
 			(at -34.29 135.255 0)
 			(effects
 				(font
@@ -4124,7 +4124,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060ca96b4")
-		(property "Reference" "U31"
+		(property "Reference" "U1"
 			(at -45.974 163.83 0)
 			(effects
 				(font
@@ -4271,7 +4271,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060caa449")
-		(property "Reference" "U31"
+		(property "Reference" "U1"
 			(at 78.74 85.725 0)
 			(effects
 				(font
@@ -4415,7 +4415,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "00000000-0000-0000-0000-000060cb6995")
-		(property "Reference" "C36"
+		(property "Reference" "C2"
 			(at 38.481 185.5216 0)
 			(effects
 				(font
@@ -4525,7 +4525,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "06471ed7-de6b-4f51-8698-817c7c60b598")
-		(property "Reference" "#PWR0637"
+		(property "Reference" "#PWR08"
 			(at 35.56 196.85 0)
 			(effects
 				(font
@@ -4596,7 +4596,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a7a0acb3-6354-4466-8d6b-c72373718f1d")
-		(property "Reference" "#PWR0635"
+		(property "Reference" "#PWR07"
 			(at 35.56 186.69 0)
 			(effects
 				(font
@@ -4667,7 +4667,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d07b148a-6f07-48f4-90b2-2b855e982459")
-		(property "Reference" "U29"
+		(property "Reference" "U2"
 			(at -13.97 125.9332 0)
 			(effects
 				(font
@@ -4887,7 +4887,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce"
 					(page "8")
 				)
@@ -4959,7 +4959,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce"
 					(page "4")
 				)
@@ -5041,7 +5041,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce"
 					(page "6")
 				)
@@ -5143,7 +5143,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce"
 					(page "3")
 				)
@@ -5225,7 +5225,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce"
 					(page "7")
 				)
@@ -5307,7 +5307,7 @@
 			)
 		)
 		(instances
-			(project ""
+			(project "MEMCard"
 				(path "/0734fc7f-a6cc-4e6e-9f39-47607536bc96/15226c01-8e12-4b81-9562-5f5a5e30fa57/689a64e6-039c-45af-97e3-58741a934fce"
 					(page "5")
 				)

@@ -5493,9 +5493,9 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "4-bit card identification code"
+	(text "4-bit card identification code: 0b0001"
 		(exclude_from_sim no)
-		(at 127.762 29.21 0)
+		(at 127 21.844 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5515,22 +5515,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bf21646d-c3af-4db8-963d-cfc0f0dbc552")
-	)
-	(no_connect
-		(at 129.54 30.48)
-		(uuid "033de539-e7de-4fbb-9a06-f174972e4bce")
-	)
-	(no_connect
-		(at 129.54 25.4)
-		(uuid "3bb94b57-6204-4423-9902-cb183f3fb41b")
-	)
-	(no_connect
-		(at 129.54 27.94)
-		(uuid "75c0a90c-4223-4921-86c0-412e44a852ab")
-	)
-	(no_connect
-		(at 129.54 33.02)
-		(uuid "bdfb32b9-1ff3-4ec0-af1b-b35af5a82fac")
 	)
 	(wire
 		(pts
@@ -5801,6 +5785,16 @@
 			(type default)
 		)
 		(uuid "1472bc07-6dd8-48d1-b766-252fca315d33")
+	)
+	(wire
+		(pts
+			(xy 128.27 27.94) (xy 132.08 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1480ec5b-3dcf-427a-890c-c27d874944e6")
 	)
 	(wire
 		(pts
@@ -6104,16 +6098,6 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 33.02) (xy 132.08 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "32f1027a-b88e-42f1-8376-e656513b6ccc")
-	)
-	(wire
-		(pts
 			(xy 191.77 236.22) (xy 157.48 236.22)
 		)
 		(stroke
@@ -6391,16 +6375,6 @@
 			(type default)
 		)
 		(uuid "4a2ffa39-fbf2-4ee1-9fd6-f990340887b4")
-	)
-	(wire
-		(pts
-			(xy 129.54 25.4) (xy 132.08 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4a7ce925-2ede-452b-afb0-0a26c7354e49")
 	)
 	(wire
 		(pts
@@ -6731,6 +6705,16 @@
 			(type default)
 		)
 		(uuid "6835fac5-2aa3-4c29-abfb-c965ef486373")
+	)
+	(wire
+		(pts
+			(xy 128.27 33.02) (xy 132.08 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68d71d62-7f16-4f2d-88e8-bc28c0d3a009")
 	)
 	(wire
 		(pts
@@ -7234,16 +7218,6 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 30.48) (xy 132.08 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "94033125-a77a-4724-a2cd-d0ec7a08ccac")
-	)
-	(wire
-		(pts
 			(xy 157.48 259.08) (xy 191.77 259.08)
 		)
 		(stroke
@@ -7444,6 +7418,16 @@
 	)
 	(wire
 		(pts
+			(xy 128.27 30.48) (xy 132.08 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a40cb982-f728-4b09-9b48-d016616345a1")
+	)
+	(wire
+		(pts
 			(xy 110.49 337.82) (xy 132.08 337.82)
 		)
 		(stroke
@@ -7561,6 +7545,16 @@
 			(type default)
 		)
 		(uuid "af0b341a-cd0c-4411-9431-98497a7438bb")
+	)
+	(wire
+		(pts
+			(xy 128.27 25.4) (xy 132.08 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "afa101cd-ecef-4a95-b5f6-a96ab08ff92e")
 	)
 	(wire
 		(pts
@@ -8331,16 +8325,6 @@
 			(type default)
 		)
 		(uuid "ec275b26-3610-4893-9773-fd73cb333b8b")
-	)
-	(wire
-		(pts
-			(xy 129.54 27.94) (xy 132.08 27.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ec690e64-3f77-4097-95ab-3e6272bca24b")
 	)
 	(wire
 		(pts
@@ -11537,6 +11521,73 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 128.27 27.94 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "17755165-e86b-4c83-8c41-e567923c0643")
+		(property "Reference" "#PWR0192"
+			(at 121.92 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 124.46 27.9399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 128.27 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6e2b5007-7b9f-4ea7-be9e-fc33a8c6b0ec")
+		)
+		(instances
+			(project "BypassCard"
+				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/5dc9cdce-9148-44e5-a58b-96f12f5bac12"
+					(reference "#PWR0192")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 110.49 96.52 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -14396,6 +14447,73 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 128.27 33.02 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6ddca8c5-e439-484e-9dfb-507f5b2ddb1c")
+		(property "Reference" "#PWR0191"
+			(at 121.92 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 124.46 33.0199 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 128.27 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5d791d07-5b65-457d-9cbb-73f1b5822d8b")
+		)
+		(instances
+			(project "BypassCard"
+				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/5dc9cdce-9148-44e5-a58b-96f12f5bac12"
+					(reference "#PWR0191")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 110.49 281.94 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15632,6 +15750,73 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9"
 					(reference "#PWR01258")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 128.27 30.48 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "86d510d1-9438-4243-b56f-218579358dc0")
+		(property "Reference" "#PWR0190"
+			(at 121.92 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 124.46 30.4799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 128.27 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ce74510b-82cf-402c-a10e-d5c98106f733")
+		)
+		(instances
+			(project "BypassCard"
+				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/5dc9cdce-9148-44e5-a58b-96f12f5bac12"
+					(reference "#PWR0190")
 					(unit 1)
 				)
 			)
@@ -17317,6 +17502,73 @@
 			(project ""
 				(path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/5f0c81ab-e061-46b3-941f-11c63bee39e9"
 					(reference "#PWR01205")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 128.27 25.4 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ad6e3932-8b82-431b-ae3a-ee9c5edf34cc")
+		(property "Reference" "#PWR0193"
+			(at 132.08 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "VCC"
+			(at 124.46 25.3999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"VCC\""
+			(at 128.27 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7e3c33b4-5420-4f07-962a-3a690f79aed3")
+		)
+		(instances
+			(project "BypassCard"
+				(path "/0b9dd887-f147-44a4-bd5d-7a0d980e90d1/5dc9cdce-9148-44e5-a58b-96f12f5bac12"
+					(reference "#PWR0193")
 					(unit 1)
 				)
 			)

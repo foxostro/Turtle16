@@ -122,7 +122,6 @@
 	(net 0 "")
 	(net 1 "GND")
 	(footprint "MountingHole:MountingHole_3.2mm_M3_Pad"
-		(locked yes)
 		(layer "F.Cu")
 		(uuid "02c35914-2d55-4f82-b0dd-e3b6958a2303")
 		(at 141.4645 25.4)
@@ -227,7 +226,6 @@
 		(embedded_fonts no)
 	)
 	(footprint "MountingHole:MountingHole_3.2mm_M3_Pad"
-		(locked yes)
 		(layer "F.Cu")
 		(uuid "06fb3b1a-cee8-4144-ae6c-3baf06a88799")
 		(at 26 25.4)
@@ -532,7 +530,6 @@
 		(embedded_fonts no)
 	)
 	(footprint "MountingHole:MountingHole_3.2mm_M3_Pad"
-		(locked yes)
 		(layer "F.Cu")
 		(uuid "50aa3059-3558-4170-b4b5-337a03e02696")
 		(at 141.4645 159.4)
@@ -637,7 +634,6 @@
 		(embedded_fonts no)
 	)
 	(footprint "MountingHole:MountingHole_3.2mm_M3_Pad"
-		(locked yes)
 		(layer "F.Cu")
 		(uuid "9022ff5f-f896-4491-8bb5-130f3282299c")
 		(at 26 159.4)
@@ -838,7 +834,6 @@
 		(embedded_fonts no)
 	)
 	(footprint "MountingHole:MountingHole_3.2mm_M3_Pad"
-		(locked yes)
 		(layer "F.Cu")
 		(uuid "e66cd51a-e172-43a3-997c-2562eea0fd9b")
 		(at 251 159.4)
@@ -950,7 +945,6 @@
 			(width 0.1)
 			(type default)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "7854d7a6-d496-4430-8bbd-85ef06b1ac3d")
 	)
@@ -961,7 +955,6 @@
 			(width 0.1)
 			(type solid)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "90e44778-8980-48d9-9125-9a04f8acfa37")
 	)
@@ -972,7 +965,6 @@
 			(width 0.1)
 			(type solid)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "a41891fb-b44b-4044-ad78-9ecd7aa1abfd")
 	)
@@ -984,7 +976,6 @@
 			(width 0.1)
 			(type default)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "a4561473-998f-4f08-a18b-2c84f36d5eea")
 	)
@@ -995,7 +986,6 @@
 			(width 0.1)
 			(type solid)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "ae0c1c5a-4bae-4cd8-b254-4fdc5b8806ba")
 	)
@@ -1007,7 +997,6 @@
 			(width 0.1)
 			(type default)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "c8c63a88-9bf5-45b1-b17e-a6b359e1d5b0")
 	)
@@ -1019,7 +1008,6 @@
 			(width 0.1)
 			(type default)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "e73702a8-24e2-4e10-ab22-325c6f00aba0")
 	)
@@ -1030,13 +1018,11 @@
 			(width 0.1)
 			(type solid)
 		)
-		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "e94f3c1e-7af1-46d8-84ed-3493760a7e8d")
 	)
 	(dimension
 		(type aligned)
-		(locked yes)
 		(layer "Dwgs.User")
 		(uuid "47bb8f32-4d5a-4504-bba8-a7e3794a3772")
 		(pts
@@ -1060,7 +1046,6 @@
 			(keep_text_aligned yes)
 		)
 		(gr_text "235.0000 mm"
-			(locked yes)
 			(at 138.5 17.86 0)
 			(layer "Dwgs.User")
 			(uuid "47bb8f32-4d5a-4504-bba8-a7e3794a3772")
@@ -1074,11 +1059,10 @@
 	)
 	(dimension
 		(type aligned)
-		(locked yes)
 		(layer "Dwgs.User")
 		(uuid "57241d32-b0c4-4295-b381-8a1f56d6fc87")
 		(pts
-			(xy 255.707158 20.4) (xy 255.707158 164.4)
+			(xy 256 20.4) (xy 256 164.4)
 		)
 		(height -7.62)
 		(format
@@ -1097,8 +1081,7 @@
 			(extension_offset 0.5)
 		)
 		(gr_text "144.0000 mm"
-			(locked yes)
-			(at 263.327158 92.4 270)
+			(at 263.62 92.4 270)
 			(layer "Dwgs.User")
 			(uuid "57241d32-b0c4-4295-b381-8a1f56d6fc87")
 			(effects

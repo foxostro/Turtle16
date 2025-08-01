@@ -653,7 +653,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "2bd58ea1-b30c-4a37-8458-e017e0454dec")
@@ -2366,7 +2366,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "25b35c57-98bc-4f71-8c2b-792afde6d885")
@@ -2579,7 +2579,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "78cf8e8b-d48e-464b-9ade-c08da542e074")
@@ -2590,7 +2590,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -2614,7 +2614,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -3079,7 +3079,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "927bd2ea-4561-4174-bf5c-81a01bd47a89")
@@ -3292,7 +3292,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "188d76b9-f973-4f2a-8f6b-0a648bbba9b7")
@@ -4009,7 +4009,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "a96703dc-ce4f-4768-a559-1db226742daf")
@@ -4020,7 +4020,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -4044,7 +4044,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -4257,7 +4257,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "d4308142-2fd5-459c-8fe8-6fc8c22d031a")
@@ -5094,7 +5094,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "8b5b662e-1ee2-4fc5-9d32-2f4f0cd64c8f")
@@ -5989,7 +5989,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "1ae23626-e09d-4df7-8675-e46aff3ade9a")
@@ -6202,7 +6202,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "b9c2c088-bca6-4013-bcac-a69ddcf0d8a4")
@@ -6213,7 +6213,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -6237,7 +6237,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6450,7 +6450,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "94dbb1b5-1852-4bd7-a824-00ec4491a176")
@@ -6461,7 +6461,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -6485,7 +6485,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6698,7 +6698,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "43f84758-530b-413e-b144-a2b66ed91227")
@@ -6709,7 +6709,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -6733,7 +6733,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -7570,7 +7570,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "4f88b699-bb13-4167-9716-fc6b1e41f343")
@@ -7581,7 +7581,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -7605,7 +7605,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -9066,7 +9066,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "db4154ad-28d3-457d-9aca-5094eab665af")
@@ -9709,7 +9709,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "59dc6acf-3a86-4500-bcc1-df2e7680a544")
@@ -9720,7 +9720,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -9744,7 +9744,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -9957,7 +9957,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "f921f87f-26ba-4506-b41b-ba8333e3a3e3")
@@ -16192,7 +16192,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "2100817c-b692-461e-9eec-87367cb0ab12")
@@ -16203,7 +16203,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -16227,7 +16227,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -16692,7 +16692,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "74917cc5-0dd2-490c-9672-c9d6890d2208")
@@ -18033,7 +18033,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "35d29bbf-8d11-4c0e-8b69-d64ef1cc7fab")
@@ -18870,7 +18870,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "eb06477c-aaa5-4940-bcd3-8b9031068ea5")
@@ -20835,7 +20835,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "9534d29e-7211-4b5c-b271-e90250a2f74f")
@@ -24799,7 +24799,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "9b70eaf6-8a09-4c90-af14-fa0bacb45cc4")
@@ -24810,7 +24810,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -24834,7 +24834,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -25047,7 +25047,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "2a5f8407-cdd2-4f60-b1a5-5c40434c877e")
@@ -25058,7 +25058,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -25082,7 +25082,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -25295,7 +25295,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "a45caa29-9af7-42e1-a8b5-e4e75884f25d")
@@ -25306,7 +25306,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -25330,7 +25330,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -26419,7 +26419,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "5d018940-3782-4b98-8c8f-bb79c5744124")
@@ -26430,7 +26430,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -26454,7 +26454,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -29403,7 +29403,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "7315a76b-ee35-40b2-8bdf-c24ba3a7402b")
@@ -31090,7 +31090,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "38553c96-300d-4455-b422-d97f2766dd88")
@@ -31101,7 +31101,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -31125,7 +31125,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -31338,7 +31338,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "b697e59b-9d50-4af2-bb5d-fcbda830f106")
@@ -31349,7 +31349,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -31373,7 +31373,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -32462,7 +32462,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "8ef80cc3-22d5-4103-83f3-77b609ccf3d8")
@@ -32675,7 +32675,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "4146b451-708e-4431-9f6b-0518c2086494")
@@ -32686,7 +32686,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -32710,7 +32710,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -34303,7 +34303,7 @@
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "28baf4a4-4500-45a8-b729-7dafbf462cd8")
@@ -34314,7 +34314,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -34338,7 +34338,7 @@
 				)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -34551,7 +34551,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "16b8253e-d0a4-470e-a8d9-66d84983116a")

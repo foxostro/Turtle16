@@ -467,6 +467,17 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "A single MCP23S17 can provide a total of 125mA to all\nsixteen ports combined. The LEDs and resistors chosen\nhere must not draw more than 125mA total, when all\nsixteen are ON.\n\nV_{f} = 2.75V\nR = 470R\nI_{f} = 5mA\n\n16*5mA = 80mA, which is comfortably under 125mA"
+		(exclude_from_sim no)
+		(at 151.13 54.864 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c106efec-b5d0-4dfe-bc58-ea36c6e0d4f7")
+	)
 	(bus_entry
 		(at 86.36 161.29)
 		(size 2.54 2.54)
@@ -1497,22 +1508,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "08ecc7a7-5631-419c-9548-30302955dfa0")
 		(property "Reference" "D1"
-			(at 119.6975 25.4 0)
+			(at 118.11 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -1524,7 +1535,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 31.75 0)
 			(effects
 				(font
@@ -1542,7 +1553,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 31.75 0)
 			(effects
 				(font
@@ -1650,22 +1661,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "0db6bb06-d6bc-4074-a5af-5b5c0a28cf0f")
 		(property "Reference" "D12"
-			(at 119.6975 137.16 0)
+			(at 118.11 140.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 139.7 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -1677,7 +1688,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 143.51 0)
 			(effects
 				(font
@@ -1695,7 +1706,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 143.51 0)
 			(effects
 				(font
@@ -1746,7 +1757,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 171.45 90)
 			(effects
 				(font
@@ -1812,18 +1823,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "16f91f24-35ef-4d5f-a5b1-12659a5a0f19")
 		(property "Reference" "R11"
-			(at 127 128.27 90)
+			(at 127 129.032 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 130.81 90)
+		(property "Value" "470R"
+			(at 127 131.064 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1955,17 +1965,16 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "19ba5421-f8e7-4847-99d0-31224b862d11")
 		(property "Reference" "R12"
-			(at 127 138.43 90)
+			(at 127 138.684 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 140.97 90)
 			(effects
 				(font
@@ -2041,7 +2050,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 181.61 90)
 			(effects
 				(font
@@ -2107,22 +2116,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "21e0ec18-ea49-4527-b4f6-18bbe343519a")
 		(property "Reference" "D16"
-			(at 119.6975 177.8 0)
+			(at 118.11 181.864 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 180.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -2134,7 +2143,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 184.15 0)
 			(effects
 				(font
@@ -2152,7 +2161,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 184.15 0)
 			(effects
 				(font
@@ -2260,22 +2269,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "384b153c-638a-4884-a8c8-218317c4a9fa")
 		(property "Reference" "D13"
-			(at 119.6975 147.32 0)
+			(at 118.11 151.384 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -2287,7 +2296,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 153.67 0)
 			(effects
 				(font
@@ -2305,7 +2314,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 153.67 0)
 			(effects
 				(font
@@ -2480,17 +2489,16 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "4a194dca-e98b-4471-903f-71db82dfc84c")
 		(property "Reference" "R8"
-			(at 127 97.79 90)
+			(at 127 98.298 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 100.33 90)
 			(effects
 				(font
@@ -2623,22 +2631,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "54701376-3540-4f10-b2e9-648619c00b09")
 		(property "Reference" "D3"
-			(at 119.6975 45.72 0)
+			(at 118.11 49.784 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -2650,7 +2658,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 52.07 0)
 			(effects
 				(font
@@ -2668,7 +2676,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 52.07 0)
 			(effects
 				(font
@@ -2709,18 +2717,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "775cac9d-8de2-4c61-bd71-0e9fd24d5c53")
 		(property "Reference" "R3"
-			(at 127 46.99 90)
+			(at 127 47.498 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 49.53 90)
+		(property "Value" "470R"
+			(at 127 49.784 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2785,18 +2792,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "7a52b6cf-4475-4e8d-8773-818dca610db5")
 		(property "Reference" "R13"
-			(at 127 148.59 90)
+			(at 127 149.098 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 151.13 90)
+		(property "Value" "470R"
+			(at 127 151.384 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2861,18 +2867,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "7d18459b-03dd-4c50-9681-b7e1819eb7a3")
 		(property "Reference" "R6"
-			(at 127 77.47 90)
+			(at 127 78.232 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 80.01 90)
+		(property "Value" "470R"
+			(at 127 80.264 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2937,22 +2942,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "7ed66faa-d802-441d-b433-d9084386906c")
 		(property "Reference" "D8"
-			(at 119.6975 96.52 0)
+			(at 118.11 100.584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -2964,7 +2969,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 102.87 0)
 			(effects
 				(font
@@ -2982,7 +2987,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 102.87 0)
 			(effects
 				(font
@@ -3023,22 +3028,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "8387d72b-08b0-46cc-bee1-ba46c3897e19")
 		(property "Reference" "D15"
-			(at 119.6975 167.64 0)
+			(at 118.11 171.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 170.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -3050,7 +3055,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 173.99 0)
 			(effects
 				(font
@@ -3068,7 +3073,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 173.99 0)
 			(effects
 				(font
@@ -3109,22 +3114,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "8a03e3a1-e567-4379-9e33-4ae469bb9c88")
 		(property "Reference" "D5"
-			(at 119.6975 66.04 0)
+			(at 118.11 70.104 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -3136,7 +3141,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 72.39 0)
 			(effects
 				(font
@@ -3154,7 +3159,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 72.39 0)
 			(effects
 				(font
@@ -3195,19 +3200,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "8cf98568-eb97-4228-bd4e-cf33b6c20e4d")
 		(property "Reference" "R9"
-			(at 127 107.95 90)
+			(at 127 108.712 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 110.49 90)
+		(property "Value" "470R"
+			(at 127 110.744 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3272,22 +3275,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "91c7899c-eb61-4088-8709-f2037c9c9949")
 		(property "Reference" "D7"
-			(at 119.6975 86.36 0)
+			(at 118.11 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -3299,7 +3302,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 92.71 0)
 			(effects
 				(font
@@ -3317,7 +3320,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 92.71 0)
 			(effects
 				(font
@@ -3425,19 +3428,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "982aa364-6e8d-46c2-b8a2-ef2e40403a16")
 		(property "Reference" "R10"
-			(at 127 118.11 90)
+			(at 127 118.872 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 120.65 90)
+		(property "Value" "470R"
+			(at 127 120.904 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3569,22 +3570,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "9872d3e4-2d75-45f1-ad7b-f43132cddf2c")
 		(property "Reference" "D14"
-			(at 119.6975 157.48 0)
+			(at 118.11 161.544 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -3596,7 +3597,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 163.83 0)
 			(effects
 				(font
@@ -3614,7 +3615,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 163.83 0)
 			(effects
 				(font
@@ -3663,10 +3664,9 @@
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 39.37 90)
 			(effects
 				(font
@@ -3799,18 +3799,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a6c7b0d3-bc03-4c93-9144-18eae3f582d4")
 		(property "Reference" "R5"
-			(at 127 67.31 90)
+			(at 127 68.072 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 69.85 90)
+		(property "Value" "470R"
+			(at 127 70.104 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3875,18 +3874,17 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a73e4c13-a3b3-4c55-8106-75820c15d219")
 		(property "Reference" "R4"
-			(at 127 57.15 90)
+			(at 127 57.912 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
-			(at 127 59.69 90)
+		(property "Value" "470R"
+			(at 127 59.944 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4152,22 +4150,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "b0fccd9d-36dc-4062-bc9d-62cc7e192912")
 		(property "Reference" "D4"
-			(at 119.6975 55.88 0)
+			(at 118.11 59.944 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -4179,7 +4177,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 62.23 0)
 			(effects
 				(font
@@ -4197,7 +4195,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 62.23 0)
 			(effects
 				(font
@@ -4238,22 +4236,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "bc915b21-8877-416f-9f1c-60e9fb437558")
 		(property "Reference" "D6"
-			(at 119.6975 76.2 0)
+			(at 118.11 80.264 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -4265,7 +4263,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 82.55 0)
 			(effects
 				(font
@@ -4283,7 +4281,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 82.55 0)
 			(effects
 				(font
@@ -4324,22 +4322,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "c1c28191-9481-4cf0-b73f-d4d2cd41198d")
 		(property "Reference" "D11"
-			(at 119.6975 127 0)
+			(at 118.11 131.064 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -4351,7 +4349,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 133.35 0)
 			(effects
 				(font
@@ -4369,7 +4367,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 133.35 0)
 			(effects
 				(font
@@ -4410,22 +4408,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "ca1fc82c-cc0e-42eb-81df-a6359c624c47")
 		(property "Reference" "D9"
-			(at 119.6975 106.68 0)
+			(at 118.11 110.744 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -4437,7 +4435,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 113.03 0)
 			(effects
 				(font
@@ -4455,7 +4453,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 113.03 0)
 			(effects
 				(font
@@ -4496,18 +4494,16 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "d0770e34-10d7-4039-a771-660672180db8")
 		(property "Reference" "R1"
-			(at 127 26.67 90)
+			(at 127 27.178 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 29.21 90)
 			(effects
 				(font
@@ -4573,22 +4569,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "d30fc37c-e8fc-4676-ac1c-988f33c026d3")
 		(property "Reference" "D10"
-			(at 119.6975 116.84 0)
+			(at 118.11 120.904 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -4600,7 +4596,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 123.19 0)
 			(effects
 				(font
@@ -4618,7 +4614,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 123.19 0)
 			(effects
 				(font
@@ -4659,22 +4655,22 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "d6fcf879-8cf2-4403-bc66-3491a10d6855")
 		(property "Reference" "D2"
-			(at 119.6975 35.56 0)
+			(at 118.11 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "Red"
+		(property "Value" "~"
 			(at 119.6975 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0603_1608Metric"
@@ -4686,7 +4682,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://look.ams-osram.com/m/39e6c0644809f9ef/original/KB-EELP41-12.pdf"
 			(at 118.11 41.91 0)
 			(effects
 				(font
@@ -4704,7 +4700,7 @@
 				(hide yes)
 			)
 		)
-		(property "Mouser" "https://www.mouser.com/ProductDetail/604-AP2012ID"
+		(property "Mouser" "https://www.mouser.com/ProductDetail/720-P4112P1R2363X4X5"
 			(at 118.11 41.91 0)
 			(effects
 				(font
@@ -4822,7 +4818,7 @@
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 161.29 90)
 			(effects
 				(font
@@ -5022,17 +5018,16 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "f6874759-3f42-42f1-89f3-b18fdd1480cf")
 		(property "Reference" "R7"
-			(at 127 87.63 90)
+			(at 127 88.138 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "270R"
+		(property "Value" "470R"
 			(at 127 90.17 90)
 			(effects
 				(font

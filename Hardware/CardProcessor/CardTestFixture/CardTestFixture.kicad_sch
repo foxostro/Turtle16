@@ -665,10 +665,6 @@
 		(color 0 0 0 0)
 		(uuid "fa0826c0-9ad5-4bb1-9a99-3d562e19c80a")
 	)
-	(no_connect
-		(at 189.23 152.4)
-		(uuid "8204b554-0ef6-401f-bf17-91e69d8bbc74")
-	)
 	(bus
 		(pts
 			(xy 120.65 119.38) (xy 135.89 119.38)
@@ -898,16 +894,6 @@
 			(type default)
 		)
 		(uuid "88af5fd2-631a-44d0-9cf7-1e48edc85152")
-	)
-	(bus
-		(pts
-			(xy 189.23 152.4) (xy 163.83 152.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8ca22bfa-fdee-4fae-a60f-6fd9fbcc3020")
 	)
 	(wire
 		(pts
@@ -1309,17 +1295,7 @@
 		)
 		(uuid "8d238efc-0311-4e1a-98ee-6882a6783f28")
 	)
-	(label "GPIO[330..383]"
-		(at 163.83 152.4 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "96380e02-6671-460e-aaac-3e5700469520")
-	)
-	(label "GPIO[256..383]"
+	(label "GPIO[256..329]"
 		(at 135.89 119.38 180)
 		(effects
 			(font

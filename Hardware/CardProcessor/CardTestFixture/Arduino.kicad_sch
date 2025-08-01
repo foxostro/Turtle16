@@ -1826,7 +1826,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Module:Arduino_Nano"
+		(property "Footprint" "Turtle16:Arduino_Nano_Every_Castellated_Host"
 			(at 147.32 102.87 0)
 			(effects
 				(font

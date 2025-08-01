@@ -1,4 +1,4 @@
-25990041462372075
+25991795549867964
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -102927,6 +102927,13 @@ Connector
 0
 2
 2
+Turtle16
+Arduino_Nano_Every_Castellated_Host
+Footprint for Arduino Nano Every with castellated pads
+Arduino Nano Every Castellated
+0
+30
+30
 Turtle16
 C_0603_1608Metric_Pad1.08x0.95mm_HandSolder
 Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator

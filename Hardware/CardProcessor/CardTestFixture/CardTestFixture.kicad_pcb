@@ -18,7 +18,9 @@
 		(4 "In1.Cu" power)
 		(6 "In2.Cu" signal)
 		(8 "In3.Cu" power)
-		(10 "In4.Cu" power)
+		(10 "In4.Cu" signal)
+		(12 "In5.Cu" signal)
+		(14 "In6.Cu" power)
 		(2 "B.Cu" signal)
 		(9 "F.Adhes" user "F.Adhesive")
 		(11 "B.Adhes" user "B.Adhesive")
@@ -68,7 +70,7 @@
 			)
 			(layer "dielectric 2"
 				(type "core")
-				(thickness 0.508)
+				(thickness 0.282)
 				(material "FR4")
 				(epsilon_r 4.5)
 				(loss_tangent 0.02)
@@ -94,7 +96,7 @@
 			)
 			(layer "dielectric 4"
 				(type "core")
-				(thickness 0.508)
+				(thickness 0.282)
 				(material "FR4")
 				(epsilon_r 4.5)
 				(loss_tangent 0.02)
@@ -110,6 +112,28 @@
 				(epsilon_r 4.5)
 				(loss_tangent 0.02) addsublayer
 				(thickness 0.0764)
+				(material "FR4")
+				(epsilon_r 4.5)
+				(loss_tangent 0.02)
+			)
+			(layer "In5.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 6"
+				(type "core")
+				(thickness 0.282)
+				(material "FR4")
+				(epsilon_r 4.5)
+				(loss_tangent 0.02)
+			)
+			(layer "In6.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 7"
+				(type "prepreg")
+				(thickness 0.1)
 				(material "FR4")
 				(epsilon_r 4.5)
 				(loss_tangent 0.02)
@@ -37818,7 +37842,7 @@
 		(net 1)
 		(net_name "GND")
 		(locked yes)
-		(layers "In1.Cu" "In4.Cu")
+		(layers "In1.Cu" "In6.Cu")
 		(uuid "9c5eb8ba-0370-4530-b0dd-d326ff9cd796")
 		(hatch edge 0.508)
 		(connect_pads
@@ -40218,7 +40242,7 @@
 			)
 		)
 		(filled_polygon
-			(layer "In4.Cu")
+			(layer "In6.Cu")
 			(pts
 				(xy 229.003269 29.450786) (xy 229.158327 29.464351) (xy 229.171228 29.466626) (xy 229.318402 29.506061)
 				(xy 229.330707 29.510541) (xy 229.385721 29.536194) (xy 229.468786 29.574928) (xy 229.480138 29.581482)

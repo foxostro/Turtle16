@@ -5,7 +5,7 @@
 	(uuid "bc69955e-c545-4a56-8997-e77da8138c5a")
 	(paper "USLedger")
 	(title_block
-		(date "2023-04-07")
+		(date "2025-08-01")
 	)
 	(lib_symbols
 		(symbol "Device:C"

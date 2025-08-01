@@ -547,7 +547,7 @@
       "netlist": "",
       "plot": "",
       "pos_files": "",
-      "specctra_dsn": "../../../../../Desktop/CardTestFixture.dsn",
+      "specctra_dsn": "../../../../../../../Volumes/andrewfox/Desktop/CardTestFixture.dsn",
       "step": "",
       "svg": "",
       "vrml": ""
@@ -709,6 +709,10 @@
     [
       "3973fa49-82a7-4fb0-bb32-7a7b24169e7d",
       "IOBankC"
+    ],
+    [
+      "fe316e12-06ee-420d-b269-3b7ea9d21848",
+      "System Bus Connector"
     ]
   ],
   "text_variables": {}

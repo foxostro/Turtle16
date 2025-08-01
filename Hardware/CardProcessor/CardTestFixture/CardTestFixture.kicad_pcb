@@ -661,6 +661,7 @@
 	(net 483 "/GPIO374")
 	(net 484 "Net-(A1-+5V)")
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "0381ccd1-b8f1-4efe-8790-6d7a13cc0ea0")
 		(at 76.08 146.1675 90)
@@ -927,8 +928,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/5f17799d-024f-403e-a703-783af7f10f19")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -1604,7 +1605,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/a1c1cf7a-da3f-4bf3-8ce2-15697cf4492a")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -1855,8 +1856,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/be241991-ffaa-4d81-8d3d-4a8e44e1eb94")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -2001,6 +2002,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "0ab843fc-2abb-4abe-b858-639dcbb204e1")
 		(at 91.32 146.1675 90)
@@ -2213,6 +2215,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "0bfb735f-874e-4d7b-95aa-6e13f3bdcdde")
 		(at 91.32 150.6125 90)
@@ -2567,7 +2570,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/be241991-ffaa-4d81-8d3d-4a8e44e1eb94")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -2712,6 +2715,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "110638b2-7452-4257-88ff-bfbfd0078986")
 		(at 116.72 146.1675 90)
@@ -2924,6 +2928,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "11d3458e-496f-4e2d-97cb-2cdcab7778bb")
 		(at 147.2 146.1675 90)
@@ -3242,8 +3247,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/eb821904-803d-4bb0-a8c4-b9d7a9dbd9f3")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -3494,8 +3499,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/076d879c-878c-4c38-8249-40f82b7e5e23")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -3640,6 +3645,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "22024cf0-3b70-49ef-854c-7a86bdf1692a")
 		(at 101.48 150.6125 90)
@@ -3887,6 +3893,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "232ba923-ad4c-444a-96ad-a3a838e62d96")
 		(at 106.56 146.1675 90)
@@ -4154,7 +4161,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/10174918-8095-4390-9b94-7410315c0e04")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -4723,6 +4730,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "274e60e9-76df-4e3b-a41f-bcae849efbe8")
 		(at 81.16 146.1675 90)
@@ -5042,7 +5050,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/076d879c-878c-4c38-8249-40f82b7e5e23")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -5187,6 +5195,7 @@
 		)
 	)
 	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x18_P2.54mm_Vertical"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "2926ec92-aa46-4f47-92ad-82a58944991e")
 		(at 213 145.8 -90)
@@ -5616,6 +5625,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "2a7b48a4-01ba-4a5e-8c20-2a3b2392bfb5")
 		(at 126.88 146.1675 90)
@@ -5828,6 +5838,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "2b8d5057-63be-4073-9070-faedd5b99d58")
 		(at 131.955 150.6125 90)
@@ -6075,6 +6086,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "2c27f9bd-3f2d-418c-90a9-a10925841684")
 		(at 71 150.6125 90)
@@ -6322,6 +6334,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "2d916bfa-7f29-4f04-b131-1643283b1d04")
 		(at 76.08 150.6125 90)
@@ -6624,7 +6637,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/f91c25bb-607e-4378-8ed2-d9e645d42cc7")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -7193,6 +7206,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "374a73de-381b-48d8-b2ab-d7e25d18360f")
 		(at 81.16 150.6125 90)
@@ -7495,7 +7509,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/c95b12b4-b7a1-41f0-ab38-4a33946c8410")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -8119,7 +8133,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/20c26ab8-7393-4c64-98cc-1c8844beb9f4")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -8688,6 +8702,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "4427fa76-8f4a-4ff8-8c57-f1d1dff58ad8")
 		(at 121.8 146.1675 90)
@@ -8954,8 +8969,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/10174918-8095-4390-9b94-7410315c0e04")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -9524,6 +9539,7 @@
 		)
 	)
 	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x18_P2.54mm_Vertical"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "4ef30d28-21b7-40d5-9d7b-895cf80ddaae")
 		(at 213 149.4 -90)
@@ -9953,6 +9969,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "52c2d07b-6c2e-4a32-a6c2-9e7e3787fb36")
 		(at 96.4 150.6125 90)
@@ -10200,6 +10217,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "536a9127-9ea7-4bd0-b6b1-c6bfa7749583")
 		(at 101.48 146.1675 90)
@@ -10467,7 +10485,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/5f17799d-024f-403e-a703-783af7f10f19")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -11607,7 +11625,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/545d08eb-eae8-4deb-9aea-c45655ab79e9")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -14829,7 +14847,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/106731a9-5769-40a9-853a-2773f0171547")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -15452,8 +15470,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/20c26ab8-7393-4c64-98cc-1c8844beb9f4")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -16077,7 +16095,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/10174918-8095-4390-9b94-7410315c0e04")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -16753,7 +16771,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/72b48b7c-c4c2-4876-81bf-54a8d10b4fda")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -16898,6 +16916,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "72b9496b-b669-4128-a002-93f971938dad")
 		(at 116.72 150.6125 90)
@@ -17145,6 +17164,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "77860eac-ec3a-4b1a-a9f5-dc392697e3fc")
 		(at 111.64 146.1675 90)
@@ -17412,7 +17432,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/5f17799d-024f-403e-a703-783af7f10f19")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -18088,7 +18108,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/a1c1cf7a-da3f-4bf3-8ce2-15697cf4492a")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -18339,8 +18359,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/d1a7cf27-9107-4d1a-a063-493aa9ca832b")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -18592,7 +18612,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/eb821904-803d-4bb0-a8c4-b9d7a9dbd9f3")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -18737,6 +18757,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "86a630ad-1da4-4e80-bd0c-4cb0596322d1")
 		(at 96.4 146.1675 90)
@@ -19004,7 +19025,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/d020d6ab-7a20-4ea5-95dc-744844024233")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -19627,8 +19648,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/d020d6ab-7a20-4ea5-95dc-744844024233")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -20197,6 +20218,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "88cbde11-a414-401c-bb5a-eadc45952110")
 		(at 131.955 146.1675 90)
@@ -20463,8 +20485,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/0e5b90b6-9085-49e6-a6cd-6624e6079fe1")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -21088,7 +21110,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/20c26ab8-7393-4c64-98cc-1c8844beb9f4")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -21764,7 +21786,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/be241991-ffaa-4d81-8d3d-4a8e44e1eb94")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -22267,8 +22289,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/a1c1cf7a-da3f-4bf3-8ce2-15697cf4492a")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -22468,7 +22490,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/d020d6ab-7a20-4ea5-95dc-744844024233")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -23144,7 +23166,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/545d08eb-eae8-4deb-9aea-c45655ab79e9")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -23289,6 +23311,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "98777dd2-c6f9-48af-bc8e-42a82d18593f")
 		(at 71 146.1675 90)
@@ -23608,7 +23631,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/d1a7cf27-9107-4d1a-a063-493aa9ca832b")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -23808,7 +23831,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/f91c25bb-607e-4378-8ed2-d9e645d42cc7")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -24483,8 +24506,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/545d08eb-eae8-4deb-9aea-c45655ab79e9")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -24683,8 +24706,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/c95b12b4-b7a1-41f0-ab38-4a33946c8410")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -25253,6 +25276,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "a8113923-2354-46d5-9bf9-ecb8cd9fb0e4")
 		(at 142.12 150.6125 90)
@@ -25500,6 +25524,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "b17e4099-4a20-450d-aaa4-b45083698c0a")
 		(at 121.8 150.6125 90)
@@ -25747,6 +25772,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "b285618a-7c84-4212-aa71-09d8ac32f807")
 		(at 106.56 150.6125 90)
@@ -26101,7 +26127,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/286f76c4-695a-4265-a57b-12b20d0b5b5a")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -26301,7 +26327,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/c95b12b4-b7a1-41f0-ab38-4a33946c8410")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -26870,6 +26896,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "b829d8c0-a36f-419e-afeb-cf7be1da784d")
 		(at 147.2 150.6125 90)
@@ -27171,8 +27198,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/f91c25bb-607e-4378-8ed2-d9e645d42cc7")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -27796,7 +27823,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/0e5b90b6-9085-49e6-a6cd-6624e6079fe1")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -28720,7 +28747,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/286f76c4-695a-4265-a57b-12b20d0b5b5a")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -28972,7 +28999,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/076d879c-878c-4c38-8249-40f82b7e5e23")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -29853,6 +29880,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "c98d5c5c-52f0-491e-9243-0d4c934afe5e")
 		(at 142.12 146.1675 90)
@@ -30120,7 +30148,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/0e5b90b6-9085-49e6-a6cd-6624e6079fe1")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -31142,7 +31170,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/eb821904-803d-4bb0-a8c4-b9d7a9dbd9f3")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -31287,6 +31315,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "e250fe84-b0e9-481b-80ed-d7af483d6215")
 		(at 111.64 150.6125 90)
@@ -31534,6 +31563,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "e26c8851-f9f8-4aa8-a623-21e6fbb733cf")
 		(at 137.04 150.6125 90)
@@ -31835,8 +31865,8 @@
 		)
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/106731a9-5769-40a9-853a-2773f0171547")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)
@@ -32511,8 +32541,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/72b48b7c-c4c2-4876-81bf-54a8d10b4fda")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -32657,6 +32687,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "ed1b0c33-fc9c-4b6b-8526-769af331e4a5")
 		(at 86.24 146.1675 90)
@@ -32869,6 +32900,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "ed3a6846-506a-4933-ae6f-9de5b55dc178")
 		(at 126.88 150.6125 90)
@@ -33223,7 +33255,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/d1a7cf27-9107-4d1a-a063-493aa9ca832b")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -33475,7 +33507,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/d26acff7-2679-438c-b113-3e0d492a7eff/72b48b7c-c4c2-4876-81bf-54a8d10b4fda")
 		(sheetname "/IOBankA/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankA.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -33726,8 +33758,8 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3973fa49-82a7-4fb0-bb32-7a7b24169e7d/286f76c4-695a-4265-a57b-12b20d0b5b5a")
-		(sheetname "/IOBankB1/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetname "/IOBankC/")
+		(sheetfile "IOBankC.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 0.51)
@@ -33872,6 +33904,7 @@
 		)
 	)
 	(footprint "LED_SMD:LED_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "f7d43df8-31a9-4bb6-a59d-865ae7d48c2e")
 		(at 86.24 150.6125 90)
@@ -34119,6 +34152,7 @@
 		)
 	)
 	(footprint "Capacitor_SMD:C_0603_1608Metric"
+		(locked yes)
 		(layer "F.Cu")
 		(uuid "fa5430a0-9e98-4a44-9d23-b5e682f18981")
 		(at 137.04 146.1675 90)
@@ -34386,7 +34420,7 @@
 		(property ki_fp_filters "SOIC*7.5x17.9mm*P1.27mm*")
 		(path "/6048ef9f-fcd0-45e0-ac1f-41e492f30d9b/106731a9-5769-40a9-853a-2773f0171547")
 		(sheetname "/IOBankB/")
-		(sheetfile "IOBank.kicad_sch")
+		(sheetfile "IOBankB.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.86 -9.06)

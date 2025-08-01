@@ -2553,7 +2553,7 @@
 			(color 0 0 0 0.0000)
 		)
 		(uuid "3973fa49-82a7-4fb0-bb32-7a7b24169e7d")
-		(property "Sheetname" "IOBankB1"
+		(property "Sheetname" "IOBankC"
 			(at 95.25 116.1284 0)
 			(effects
 				(font
@@ -2562,7 +2562,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "IOBank.kicad_sch"
+		(property "Sheetfile" "IOBankC.kicad_sch"
 			(at 95.25 142.8246 0)
 			(effects
 				(font
@@ -2651,7 +2651,7 @@
 				(justify left)
 			)
 		)
-		(pin "GPIO[0..127]" passive
+		(pin "GPIO[256..383]" passive
 			(at 120.65 119.38 0)
 			(uuid "6321794f-d482-4960-986b-c1cdd76a80f8")
 			(effects
@@ -2703,9 +2703,9 @@
 				(justify left top)
 			)
 		)
-		(pin "CardSlot[1..280]" passive
+		(pin "GPIO[0..279]" passive
 			(at 179.07 58.42 180)
-			(uuid "801660d6-de38-4dc7-8fe5-d5b352716351")
+			(uuid "7c17dc5a-da78-4ae9-a5d3-7307fa216107")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2746,7 +2746,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "IOBank.kicad_sch"
+		(property "Sheetfile" "IOBankB.kicad_sch"
 			(at 95.25 112.3446 0)
 			(effects
 				(font
@@ -2835,7 +2835,7 @@
 				(justify left)
 			)
 		)
-		(pin "GPIO[0..127]" passive
+		(pin "GPIO[128..255]" passive
 			(at 120.65 88.9 0)
 			(uuid "0be5e40e-3a03-4a25-bbc0-a8340e6e0165")
 			(effects
@@ -2930,7 +2930,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "IOBank.kicad_sch"
+		(property "Sheetfile" "IOBankA.kicad_sch"
 			(at 95.25 81.8646 0)
 			(effects
 				(font

@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-open class CompilerError: Error {
+open class CompilerError: Error, CustomStringConvertible, CustomDebugStringConvertible {
     public let sourceAnchor: SourceAnchor?
     public let message: String
 

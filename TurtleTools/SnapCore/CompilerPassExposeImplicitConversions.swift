@@ -142,6 +142,19 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         )
         return node1
     }
+    
+    public override func visit(get node0: Get) throws -> Get {
+        let objectType = try rvalueContext.check(expression: node0.expr)
+        guard !objectType.isPointerType else { return node0 }
+        let node1 = node0.withExpr(
+            try conversion(
+                expr: node0.expr,
+                from: objectType,
+                to: .pointer(objectType)
+            )
+        )
+        return node1
+    }
 }
 
 extension AbstractSyntaxTreeNode {

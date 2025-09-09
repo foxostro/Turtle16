@@ -396,4 +396,100 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
+    
+    // Rewrite Get expressions so the object is always a pointer
+    // Note that a Get expression applied to an object is the same as the Get
+    // expression applied to a pointer to that object.
+    func testObjectOfAGetExpressionIsConvertedToAPointer() throws {
+        let shared = [
+            StructDeclaration(
+                identifier: Identifier("Box"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "value",
+                        type: PrimitiveType(.u16)
+                    )
+                ]
+            ),
+            VarDeclaration(
+                identifier: Identifier("object"),
+                explicitType: Identifier("Box"),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Get(expr: Identifier("object"), member: Identifier("value"))
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Get(
+                    expr: Unary(
+                        op: .ampersand,
+                        expression: Identifier("object")
+                    ),
+                    member: Identifier("value")
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
+    
+    // ...unless the object is already a pointer, in which case do not convert
+    func testObjectOfAGetExpressionIsConvertedToAPointer_UnlessItAlreadyIsOne() throws {
+        let shared = [
+            StructDeclaration(
+                identifier: Identifier("Box"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "value",
+                        type: PrimitiveType(.u16)
+                    )
+                ]
+            ),
+            VarDeclaration(
+                identifier: Identifier("object"),
+                explicitType: Identifier("Box"),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Get(
+                    expr: Unary(
+                        op: .ampersand,
+                        expression: Identifier("object")
+                    ),
+                    member: Identifier("value")
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Get(
+                    expr: Unary(
+                        op: .ampersand,
+                        expression: Identifier("object")
+                    ),
+                    member: Identifier("value")
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
 }

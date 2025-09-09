@@ -89,7 +89,7 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         _ = try rvalueContext.check(structInitializer: node0)
         
         // Insert an `As` expression if the struct field has a union type and
-        // the corresponding arguent of the struct initializer expression is not
+        // the corresponding argument of the struct initializer expression isn't
         // exactly the same type. This ensures the compiler inserts the correct
         // conversion to the union value needed to initialize the struct field.
         let structTypeInfo = try rvalueContext.check(expression: node0.expr).unwrapStructType()
@@ -98,24 +98,49 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
                 let rtype = try rvalueContext.check(expression: arg0.expr)
                 let member = try structTypeInfo.symbols.resolve(identifier: arg0.name)
                 let ltype = member.type
-                let arg1: StructInitializer.Argument =
-                    if rtype == ltype {
-                        arg0
-                    }
-                    else {
-                        arg0.withExpr(
-                            As(
-                                sourceAnchor: arg0.expr.sourceAnchor,
-                                expr: arg0.expr,
-                                targetType: ltype.lift
-                            )
-                        )
-                    }
+                let arg1 = arg0.withExpr(
+                    try conversion(expr: arg0.expr, from: rtype, to: ltype)
+                )
                 return arg1
             }
         )
         let node2 = try super.visit(structInitializer: node1)
         return node2
+    }
+    
+    private func conversion(
+        expr: Expression,
+        from rtype: SymbolType,
+        to ltype: SymbolType
+    ) throws -> Expression {
+        guard rtype != ltype else { return expr }
+        
+        // In places where we perform an implicit conversion from an object to a
+        // pointer to that object, we insert an AddressOf operator instead of an
+        // As conversion operator.
+        if let pointeeType = ltype.maybeUnwrapPointerType(), pointeeType == rtype {
+            return Unary(
+                sourceAnchor: expr.sourceAnchor,
+                op: .ampersand,
+                expression: expr
+            )
+        }
+        
+        return As(
+            sourceAnchor: expr.sourceAnchor,
+            expr: expr,
+            targetType: ltype.lift
+        )
+    }
+    
+    public override func visit(assignment node0: Assignment) throws -> Expression? {
+        let rvalueType = try rvalueContext.check(expression: node0.rexpr)
+        let lvalueType = try lvalueContext.check(expression: node0.lexpr)
+        guard lvalueType != rvalueType else { return node0 }
+        let node1 = node0.withRexpr(
+            try conversion(expr: node0.rexpr, from: rvalueType, to: lvalueType!)
+        )
+        return node1
     }
 }
 

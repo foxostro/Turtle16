@@ -298,4 +298,102 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
+    
+    // A function value may be implicitly converted to a pointer in assignment.
+    func testImplicitConversionOfFunctionToFunctionPointer() throws {
+        let fooTyp = FunctionType(
+            name: "foo",
+            returnType: PrimitiveType(.void),
+            arguments: []
+        )
+        let shared = [
+            FunctionDeclaration(
+                identifier: Identifier("foo"),
+                functionType: fooTyp,
+                argumentNames: [],
+                body: Block()
+            ),
+            VarDeclaration(
+                identifier: Identifier("bar"),
+                explicitType: PointerType(fooTyp),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("bar"),
+                    rexpr: Identifier("foo")
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("bar"),
+                    rexpr: Unary(
+                        op: .ampersand,
+                        expression: Identifier("foo")
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
+    
+    // A struct value may be implicitly converted to a pointer in assignment.
+    func testImplicitConversionOfStructValueToPointerInAssignment() throws {
+        let shared = [
+            StructDeclaration(
+                identifier: Identifier("Foo"),
+                members: []
+            ),
+            VarDeclaration(
+                identifier: Identifier("bar"),
+                explicitType: Identifier("Foo"),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            ),
+            VarDeclaration(
+                identifier: Identifier("baz"),
+                explicitType: PointerType(Identifier("Foo")),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("baz"),
+                    rexpr: Identifier("bar")
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("baz"),
+                    rexpr: Unary(
+                        op: .ampersand,
+                        expression: Identifier("bar")
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
 }

@@ -7465,4 +7465,27 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
     }
+    
+    func testImplicitConversionFromStructValueToStructPointer() throws {
+        let Foo: SymbolType = .structType(
+            StructTypeInfo(name: "Foo", fields: Env())
+        )
+        let symbols = Env(
+            tuples: [
+                ("foo", Symbol(type: .pointer(Foo))),
+                ("bar", Symbol(type: Foo))
+            ],
+            typeDict: [
+                "Foo": Foo
+            ]
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        
+        let expr = Assignment(
+            lexpr: Identifier("foo"),
+            rexpr: Identifier("bar")
+        )
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, .pointer(Foo))
+    }
 }

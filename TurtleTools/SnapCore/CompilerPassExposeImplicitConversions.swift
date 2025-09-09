@@ -143,9 +143,30 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         return node1
     }
     
-    public override func visit(get node0: Get) throws -> Get {
+    public override func visit(get node0: Get) throws -> Expression {
         let objectType = try rvalueContext.check(expression: node0.expr)
-        guard !objectType.isPointerType else { return node0 }
+        guard let typ = objectType.maybeUnwrapStructType() else { return node0 }
+        
+        // TODO: The compiler has special handling of Range.count but maybe it shouldn't
+        if let member = node0.member as? Identifier,
+           typ.name == "Range", member.identifier == "count" {
+            
+            return Binary(
+                sourceAnchor: node0.sourceAnchor,
+                op: .minus,
+                left: Get(
+                    sourceAnchor: node0.sourceAnchor,
+                    expr: node0.expr,
+                    member: Identifier("limit")
+                ),
+                right: Get(
+                    sourceAnchor: node0.sourceAnchor,
+                    expr: node0.expr,
+                    member: Identifier("begin")
+                )
+            )
+        }
+        
         let node1 = node0.withExpr(
             try conversion(
                 expr: node0.expr,

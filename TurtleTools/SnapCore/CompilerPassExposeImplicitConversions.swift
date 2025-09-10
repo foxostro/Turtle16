@@ -95,11 +95,10 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         let structTypeInfo = try rvalueContext.check(expression: node0.expr).unwrapStructType()
         let node1 = node0.withArguments(
             try node0.arguments.map { arg0 in
-                let rtype = try rvalueContext.check(expression: arg0.expr)
                 let member = try structTypeInfo.symbols.resolve(identifier: arg0.name)
                 let ltype = member.type
                 let arg1 = arg0.withExpr(
-                    try conversion(expr: arg0.expr, from: rtype, to: ltype)
+                    try conversion(expr: arg0.expr, to: ltype)
                 )
                 return arg1
             }
@@ -110,9 +109,10 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     
     private func conversion(
         expr: Expression,
-        from rtype: SymbolType,
         to ltype: SymbolType
     ) throws -> Expression {
+        let rtype = try rvalueContext.check(expression: expr)
+        
         guard rtype != ltype else { return expr }
         
         // In places where we perform an implicit conversion from an object to a
@@ -134,11 +134,9 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     }
     
     public override func visit(assignment node0: Assignment) throws -> Expression? {
-        let rvalueType = try rvalueContext.check(expression: node0.rexpr)
         let lvalueType = try lvalueContext.check(expression: node0.lexpr)
-        guard lvalueType != rvalueType else { return node0 }
         let node1 = node0.withRexpr(
-            try conversion(expr: node0.rexpr, from: rvalueType, to: lvalueType!)
+            try conversion(expr: node0.rexpr, to: lvalueType!)
         )
         return node1
     }
@@ -168,13 +166,58 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         }
         
         let node1 = node0.withExpr(
-            try conversion(
-                expr: node0.expr,
-                from: objectType,
-                to: .pointer(objectType)
-            )
+            try conversion(expr: node0.expr, to: .pointer(objectType))
         )
         return node1
+    }
+    
+    public override func visit(binary node: Binary) throws -> Expression? {
+        let rightType = try rvalueContext.check(expression: node.right)
+        let leftType = try rvalueContext.check(expression: node.left)
+
+        if leftType.isArithmeticType && rightType.isArithmeticType {
+            return try visitBinaryArithmeticExpression(node)
+        }
+        else if leftType.isBooleanType && rightType.isBooleanType {
+            return node
+        }
+        else {
+            throw CompilerError(
+                sourceAnchor: node.sourceAnchor,
+                message: "internal compiler error: invalid binary expression should have been rejected before this point: \(node)"
+            )
+        }
+    }
+    
+    private func visitBinaryArithmeticExpression(_ node: Binary) throws -> Binary {
+        let rightType = try rvalueContext.check(expression: node.right)
+        let leftType = try rvalueContext.check(expression: node.left)
+        
+        guard leftType != rightType else { return node }
+        
+        let leftTypeInfo = leftType.unwrapArithmeticType()
+        let rightTypeInfo = rightType.unwrapArithmeticType()
+        
+        let targetType: SymbolType = .arithmeticType(
+            ArithmeticTypeInfo.binaryResultType(
+                left: leftTypeInfo,
+                right: rightTypeInfo
+            )!
+        )
+        
+        return node
+            .withLeft(
+                try conversion(
+                    expr: try visit(expr: node.left)!,
+                    to: targetType
+                )
+            )
+            .withRight(
+                try conversion(
+                    expr: try visit(expr: node.right)!,
+                    to: targetType
+                )
+            )
     }
 }
 

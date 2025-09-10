@@ -492,4 +492,44 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
+    
+    // Expose implicit conversions of the operands of a binary operator
+    func testExposeImplicitConversionsInBinaryOperatorExpression() throws {
+        let shared = [
+            VarDeclaration(
+                identifier: Identifier("a"),
+                explicitType: PrimitiveType(.u16),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Binary(
+                    op: .minus,
+                    left: Identifier("a"),
+                    right: LiteralInt(1)
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Binary(
+                    op: .minus,
+                    left: Identifier("a"),
+                    right: As(
+                        expr: LiteralInt(1),
+                        targetType: PrimitiveType(.u16)
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
 }

@@ -81,7 +81,7 @@ public struct SnapSubcompilerVarDeclaration {
             ):
                 symbolType = .array(count: count, elementType: elementType)
             default:
-                if let explicitType = explicitType {
+                if let explicitType {
                     symbolType = explicitType
                 }
                 else {
@@ -118,7 +118,7 @@ public struct SnapSubcompilerVarDeclaration {
                 rexpr: varDeclExpr
             )
         }
-        else if let explicitType = explicitType {
+        else if let explicitType {
             let symbolType = node.isMutable ? explicitType : explicitType.correspondingConstType
             let symbol = try makeSymbolWithExplicitType(
                 sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,

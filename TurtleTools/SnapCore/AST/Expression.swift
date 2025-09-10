@@ -512,6 +512,7 @@ public class Assignment: Expression {
     }
 }
 
+// TODO: Remove InitialAssignment. I believe that with some extra bookkeeping in the symbol table, the compiler doesn't need InitialAssignment to determine whether an assignment is the first assignment to the symbol.
 public final class InitialAssignment: Assignment {
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InitialAssignment {
         InitialAssignment(

@@ -173,29 +173,12 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         return node1
     }
     
-    public override func visit(binary node: Binary) throws -> Expression? {
-        let rightType = try rvalueContext.check(expression: node.right)
-        let leftType = try rvalueContext.check(expression: node.left)
+    public override func visit(binary node0: Binary) throws -> Expression? {
+        let rightType = try rvalueContext.check(expression: node0.right)
+        let leftType = try rvalueContext.check(expression: node0.left)
 
-        if leftType.isArithmeticType && rightType.isArithmeticType {
-            return try visitBinaryArithmeticExpression(node)
-        }
-        else if leftType.isBooleanType && rightType.isBooleanType {
-            return node
-        }
-        else {
-            throw CompilerError(
-                sourceAnchor: node.sourceAnchor,
-                message: "internal compiler error: invalid binary expression should have been rejected before this point: \(node)"
-            )
-        }
-    }
-    
-    private func visitBinaryArithmeticExpression(_ node: Binary) throws -> Binary {
-        let rightType = try rvalueContext.check(expression: node.right)
-        let leftType = try rvalueContext.check(expression: node.left)
-        
-        guard leftType != rightType else { return node }
+        guard leftType != rightType else { return node0 }
+        guard leftType.isArithmeticType && rightType.isArithmeticType else { return node0 }
         
         let leftTypeInfo = leftType.unwrapArithmeticType()
         let rightTypeInfo = rightType.unwrapArithmeticType()
@@ -207,19 +190,21 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
             )!
         )
         
-        return node
+        let node1 = node0
             .withLeft(
                 try conversion(
-                    expr: try visit(expr: node.left)!,
+                    expr: try visit(expr: node0.left)!,
                     to: targetType
                 )
             )
             .withRight(
                 try conversion(
-                    expr: try visit(expr: node.right)!,
+                    expr: try visit(expr: node0.right)!,
                     to: targetType
                 )
             )
+        
+        return node1
     }
 }
 

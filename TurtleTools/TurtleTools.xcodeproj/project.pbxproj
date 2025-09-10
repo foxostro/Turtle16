@@ -281,7 +281,6 @@
 		6FC4E6ED28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */; };
 		6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */; };
 		6FC87B682D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC87B672D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift */; };
-		6FC87B6A2D25DF0F006D6CD8 /* CompilerPassLowerVarDecl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC87B692D25DF0F006D6CD8 /* CompilerPassLowerVarDecl.swift */; };
 		6FCA0B842B229E41000BB22C /* DebugConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA0B822B229E37000BB22C /* DebugConsoleView.swift */; };
 		6FCA0B872B22A49C000BB22C /* DebugConsoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */; };
 		6FCA0B882B22A49C000BB22C /* DebugConsoleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FCA0B862B22A49C000BB22C /* DebugConsoleViewController.xib */; };
@@ -842,7 +841,6 @@
 		6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolver.swift; sourceTree = "<group>"; };
 		6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolverTests.swift; sourceTree = "<group>"; };
 		6FC87B672D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitObjectDeclarationsBuilder.swift; sourceTree = "<group>"; };
-		6FC87B692D25DF0F006D6CD8 /* CompilerPassLowerVarDecl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassLowerVarDecl.swift; sourceTree = "<group>"; };
 		6FC9262025045F5E006FAE8C /* AudioRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRenderer.swift; sourceTree = "<group>"; };
 		6FCA0B822B229E37000BB22C /* DebugConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleView.swift; sourceTree = "<group>"; };
 		6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsoleViewController.swift; sourceTree = "<group>"; };
@@ -1241,7 +1239,6 @@
 				6F8508E02D0FA5F600B57518 /* CompilerPassImplFor.swift */,
 				6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */,
 				6F0EA1B62D33709700894EDC /* CompilerPassLinearizeLabels.swift */,
-				6FC87B692D25DF0F006D6CD8 /* CompilerPassLowerVarDecl.swift */,
 				6FBC1F132C72BFDA00CAC35E /* CompilerPassMatch.swift */,
 				6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */,
 				6F8508E42D10A09B00B57518 /* CompilerPassSynthesizeTerminalReturnStatements.swift */,
@@ -2140,7 +2137,6 @@
 				6F40731726B281B7007D8382 /* SnapToCoreCompiler.swift in Sources */,
 				6FCB81662DF7DFA6004149AC /* CompilerPassExposeImplicitConversions.swift in Sources */,
 				6F4E50752DC953CF00F9F868 /* CompilerPassEraseEseq.swift in Sources */,
-				6FC87B6A2D25DF0F006D6CD8 /* CompilerPassLowerVarDecl.swift in Sources */,
 				6F238AD9248C6A560040250D /* Block.swift in Sources */,
 				6F8405102918050400C9B957 /* TackVirtualMachine.swift in Sources */,
 				6F3F00F4274F651C00875339 /* Subroutine.swift in Sources */,

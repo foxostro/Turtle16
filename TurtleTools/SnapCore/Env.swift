@@ -382,7 +382,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             DynamicArrayType(elementType.lift)
 
         case .constPointer(let typ):
-            ConstType(PointerType(typ.correspondingMutableType.lift))
+            ConstType(PointerType(typ.lift))
 
         case .pointer(let typ):
             PointerType(typ.lift)

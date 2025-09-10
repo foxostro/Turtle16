@@ -97,14 +97,12 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
             try node0.arguments.map { arg0 in
                 let member = try structTypeInfo.symbols.resolve(identifier: arg0.name)
                 let ltype = member.type
-                let arg1 = arg0.withExpr(
-                    try conversion(expr: arg0.expr, to: ltype)
-                )
-                return arg1
+                let arg1 = try visit(expr: arg0.expr)!
+                let arg2 = arg0.withExpr(try conversion(expr: arg1, to: ltype))
+                return arg2
             }
         )
-        let node2 = try super.visit(structInitializer: node1)
-        return node2
+        return node1
     }
     
     private func conversion(
@@ -113,7 +111,9 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     ) throws -> Expression {
         let rtype = try rvalueContext.check(expression: expr)
         
-        guard rtype != ltype else { return expr }
+        guard rtype != ltype, rtype.correspondingConstType != ltype else {
+            return expr
+        }
         
         // In places where we perform an implicit conversion from an object to a
         // pointer to that object, we insert an AddressOf operator instead of an
@@ -136,6 +136,7 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         let lexpr = try visit(expr: node0.lexpr)!
         let lvalueType = try lvalueContext.check(expression: lexpr)!
+        guard !lvalueType.isUnionType else { return node0 }
         let rexpr = try visit(expr: node0.rexpr)!
         let node1 = node0.withRexpr(
             try conversion(expr: rexpr, to: lvalueType)
@@ -206,11 +207,127 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         
         return node1
     }
+    
+    /// Replace each VarDeclaration with 1) a VarDeclaration that has no
+    /// expression and simply updates the symbol table, and 2) an assignment if
+    /// there was an expression.
+    public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+        let node1 = VarDeclaration(
+            sourceAnchor: node0.sourceAnchor,
+            identifier: try visit(identifier: node0.identifier) as! Identifier,
+            explicitType: try with(context: .type) {
+                try node0.explicitType.flatMap {
+                    try visit(expr: $0)
+                }
+            },
+            expression: try node0.expression.flatMap {
+                try visit(expr: $0)
+            },
+            storage: node0.storage,
+            isMutable: node0.isMutable,
+            visibility: node0.visibility
+        )
+
+        let assignmentExpr0 = try SnapSubcompilerVarDeclaration(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
+        .compile(node1)
+
+        if let assignmentExpr0 {
+            _ = try rvalueContext.check(assignment: assignmentExpr0)
+        }
+
+        guard let explicitType = try explicitTypeExpression(varDecl: node1) else {
+            throw unableToDeduceType(varDecl: node1)
+        }
+
+        let node2 = node1
+            .withExpression(nil)
+            .withExplicitType(explicitType)
+
+        if let assignmentExpr0 {
+            let assignmentExpr1 = try visit(assignment: assignmentExpr0)!
+            return Seq(
+                sourceAnchor: node2.sourceAnchor,
+                children: [
+                    node2,
+                    assignmentExpr1
+                ]
+            )
+        }
+        else {
+            return node2
+        }
+    }
+
+    private func unableToDeduceType(varDecl node: VarDeclaration) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.identifier.sourceAnchor,
+            format: "unable to deduce type of %@ `%@'",
+            node.isMutable ? "variable" : "constant",
+            node.identifier.identifier
+        )
+    }
+
+    private func explicitTypeExpression(varDecl node: VarDeclaration) throws -> Expression? {
+        let rtypeExpr = rtypeExpr(varDecl: node)
+
+        guard let ltypeExpr0 = node.explicitType else {
+            return rtypeExpr
+        }
+
+        let ltype0 = try typeContext.check(expression: ltypeExpr0)
+        let ltypeExpr1 =
+            if ltype0.isArrayType && ltype0.arrayCount == nil {
+                rtypeExpr
+            }
+            else {
+                ltypeExpr0
+            }
+
+        return ltypeExpr1
+    }
+
+    private func rtypeExpr(varDecl node: VarDeclaration) -> Expression? {
+        guard let expr = node.expression else { return nil }
+        
+        // Simplify the type expression where we can obviously avoid a TypeOf
+        // expression. This avoids issues where the argument to TypeOf no longer
+        // type checks after various lowering steps have been applied. We do not
+        // necessarily want to lower the argument to TypeOf itself, though, as
+        // this may introduce temporary variables in a context which is only
+        // evaluated at compile-time.
+        let type0: Expression =
+            switch expr {
+            case let expr as StructInitializer:
+                expr.expr
+            case let expr as As where !(expr.targetType is ArrayType):
+                expr.targetType
+            default:
+                TypeOf(sourceAnchor: expr.sourceAnchor, expr: expr)
+            }
+        
+        // The explicit type must account for immutability of the variable too.
+        let type1 =
+            if node.isMutable {
+                type0
+            }
+            else {
+                ConstType(
+                    sourceAnchor: type0.sourceAnchor,
+                    typ: type0
+                )
+            }
+        return type1
+    }
 }
 
 extension AbstractSyntaxTreeNode {
     /// Insert explicit `As` expressions in places where implicit conversions occur.
     public func exposeImplicitConversions() throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassExposeImplicitConversions().run(self)
+        let result = try CompilerPassExposeImplicitConversions().run(self)
+        return result
     }
 }

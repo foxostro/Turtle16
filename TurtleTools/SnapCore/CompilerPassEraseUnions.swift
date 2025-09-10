@@ -452,7 +452,6 @@ extension AbstractSyntaxTreeNode {
     public func eraseUnions(
         _ m: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
-        let r = try CompilerPassEraseUnions(memoryLayoutStrategy: m).run(self)
-        return r
+        try CompilerPassEraseUnions(memoryLayoutStrategy: m).run(self)
     }
 }

@@ -532,4 +532,42 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
+    
+    // Expose implicit conversions during an assignment
+    func testExposeImplicitConversionsInAssignment() throws {
+        let shared = [
+            VarDeclaration(
+                identifier: Identifier("a"),
+                explicitType: PrimitiveType(.i8),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("a"),
+                    rexpr: LiteralInt(1)
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("a"),
+                    rexpr: As(
+                        expr: LiteralInt(1),
+                        targetType: PrimitiveType(.i8)
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
 }

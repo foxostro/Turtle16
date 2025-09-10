@@ -134,9 +134,11 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     }
     
     public override func visit(assignment node0: Assignment) throws -> Expression? {
-        let lvalueType = try lvalueContext.check(expression: node0.lexpr)
+        let lexpr = try visit(expr: node0.lexpr)!
+        let lvalueType = try lvalueContext.check(expression: lexpr)!
+        let rexpr = try visit(expr: node0.rexpr)!
         let node1 = node0.withRexpr(
-            try conversion(expr: node0.rexpr, to: lvalueType!)
+            try conversion(expr: rexpr, to: lvalueType)
         )
         return node1
     }

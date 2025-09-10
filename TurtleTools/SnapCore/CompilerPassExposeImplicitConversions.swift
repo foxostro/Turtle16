@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Insert explicit `As` expressions in places where implicit conversions occur.
-/// TODO: exposeImplicitConversions() should insert `As` nodes in places where an implicit conversion occurs. It's most important to focus first on implicit conversions involving union types because this will unblock the eraseUnions() compiler pass. After that, insert explicit conversions for assignment expressions. After that, insert explicit conversions for the various implicit conversions which can occur in other expressions; there are many, and they're not clearly documents anywhere but in the code of the type checker class itself.
+/// TODO: exposeImplicitConversions() should insert `As` nodes in places for the various implicit conversions which can occur expressions; there are many, and they're not clearly documented anywhere but in the code of the type checker class itself.
 public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclScan {
     public override func visit(return node0: Return) throws -> AbstractSyntaxTreeNode? {
         guard let symbols else {
@@ -239,9 +239,7 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
             _ = try rvalueContext.check(assignment: assignmentExpr0)
         }
 
-        guard let explicitType = try explicitTypeExpression(varDecl: node1) else {
-            throw unableToDeduceType(varDecl: node1)
-        }
+        let explicitType = try explicitTypeExpression(varDecl: node1)
 
         let node2 = node1
             .withExpression(nil)
@@ -262,65 +260,11 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         }
     }
 
-    private func unableToDeduceType(varDecl node: VarDeclaration) -> CompilerError {
-        CompilerError(
-            sourceAnchor: node.identifier.sourceAnchor,
-            format: "unable to deduce type of %@ `%@'",
-            node.isMutable ? "variable" : "constant",
-            node.identifier.identifier
+    private func explicitTypeExpression(varDecl node: VarDeclaration) throws -> Expression {
+        try AssignmentTypeDeducer().explicitTypeExpression(
+            typeContext: typeContext,
+            varDecl: node
         )
-    }
-
-    private func explicitTypeExpression(varDecl node: VarDeclaration) throws -> Expression? {
-        let rtypeExpr = rtypeExpr(varDecl: node)
-
-        guard let ltypeExpr0 = node.explicitType else {
-            return rtypeExpr
-        }
-
-        let ltype0 = try typeContext.check(expression: ltypeExpr0)
-        let ltypeExpr1 =
-            if ltype0.isArrayType && ltype0.arrayCount == nil {
-                rtypeExpr
-            }
-            else {
-                ltypeExpr0
-            }
-
-        return ltypeExpr1
-    }
-
-    private func rtypeExpr(varDecl node: VarDeclaration) -> Expression? {
-        guard let expr = node.expression else { return nil }
-        
-        // Simplify the type expression where we can obviously avoid a TypeOf
-        // expression. This avoids issues where the argument to TypeOf no longer
-        // type checks after various lowering steps have been applied. We do not
-        // necessarily want to lower the argument to TypeOf itself, though, as
-        // this may introduce temporary variables in a context which is only
-        // evaluated at compile-time.
-        let type0: Expression =
-            switch expr {
-            case let expr as StructInitializer:
-                expr.expr
-            case let expr as As where !(expr.targetType is ArrayType):
-                expr.targetType
-            default:
-                TypeOf(sourceAnchor: expr.sourceAnchor, expr: expr)
-            }
-        
-        // The explicit type must account for immutability of the variable too.
-        let type1 =
-            if node.isMutable {
-                type0
-            }
-            else {
-                ConstType(
-                    sourceAnchor: type0.sourceAnchor,
-                    typ: type0
-                )
-            }
-        return type1
     }
 }
 

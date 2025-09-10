@@ -1,0 +1,129 @@
+//
+//  AssignmentTypeDeducer.swift
+//  SnapCore
+//
+//  Created by Andrew Fox on 9/10/25.
+//  Copyright © 2025 Andrew Fox. All rights reserved.
+//
+
+import TurtleCore
+
+/// Determine the explicitType of the expression inferred for a var decl
+/// If this expression were to be attached to a VarDeclaration then this would
+/// be the appropriate explicitType inferred for the variable.
+final class AssignmentTypeDeducer {
+    func explicitTypeExpression(
+        typeContext: TypeContextTypeChecker,
+        varDecl node: VarDeclaration
+    ) throws -> Expression {
+        let maybeExplicitType = try maybeExplicitTypeExpression(
+            typeContext: typeContext,
+            varDecl: node
+        )
+        guard let explicitType = maybeExplicitType else {
+            throw unableToDeduceType(varDecl: node)
+        }
+        return explicitType
+    }
+    
+    private func unableToDeduceType(varDecl node: VarDeclaration) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.identifier.sourceAnchor,
+            format: "unable to deduce type of %@ `%@'",
+            node.isMutable ? "variable" : "constant",
+            node.identifier.identifier
+        )
+    }
+    
+    private func maybeExplicitTypeExpression(
+        typeContext: TypeContextTypeChecker,
+        varDecl node: VarDeclaration
+    ) throws -> Expression? {
+        let rtypeExpr = rtypeExpr(varDecl: node)
+
+        guard let ltypeExpr0 = node.explicitType else {
+            return rtypeExpr
+        }
+
+        let ltype0 = try typeContext.check(expression: ltypeExpr0)
+        let ltypeExpr1 =
+            if ltype0.isArrayType && ltype0.arrayCount == nil {
+                rtypeExpr
+            }
+            else {
+                ltypeExpr0
+            }
+
+        return ltypeExpr1
+    }
+    
+    private func rtypeExpr(varDecl node: VarDeclaration) -> Expression? {
+        guard let expr = node.expression else { return nil }
+        
+        // Simplify the type expression where we can obviously avoid a TypeOf
+        // expression. This avoids issues where the argument to TypeOf no longer
+        // type checks after various lowering steps have been applied. We do not
+        // necessarily want to lower the argument to TypeOf itself, though, as
+        // this may introduce temporary variables in a context which is only
+        // evaluated at compile-time.
+        let type0: Expression =
+            switch expr {
+            case let expr as StructInitializer:
+                expr.expr
+            case let expr as As where !(expr.targetType is ArrayType):
+                expr.targetType
+            default:
+                TypeOf(sourceAnchor: expr.sourceAnchor, expr: expr)
+            }
+        
+        // The explicit type must account for immutability of the variable too.
+        let type1 =
+            if node.isMutable {
+                type0
+            }
+            else {
+                ConstType(
+                    sourceAnchor: type0.sourceAnchor,
+                    typ: type0
+                )
+            }
+        return type1
+    }
+}
+
+extension VarDeclaration {
+    public func inferExplicitType(
+        _ typeContext: TypeContextTypeChecker
+    ) throws -> VarDeclaration {
+        if explicitType == nil {
+            withExplicitType(
+                try AssignmentTypeDeducer().explicitTypeExpression(
+                    typeContext: typeContext,
+                    varDecl: self
+                )
+            )
+        }
+        else {
+            self
+        }
+    }
+    
+    public func breakOutInitialAssignment() -> Seq {
+        if let expression {
+            Seq(
+                sourceAnchor: sourceAnchor,
+                children: [
+                    withExpression(nil),
+                    InitialAssignment(
+                        sourceAnchor: sourceAnchor,
+                        lexpr: identifier,
+                        rexpr: expression
+                    )
+                ]
+            )
+        }
+        else {
+            Seq(sourceAnchor: sourceAnchor, children: [self])
+        }
+    }
+}

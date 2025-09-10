@@ -229,6 +229,19 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             false
         }
     }
+    
+    public func unwrapArithmeticType() -> ArithmeticTypeInfo {
+        maybeUnwrapArithmeticType()!
+    }
+
+    public func maybeUnwrapArithmeticType() -> ArithmeticTypeInfo? {
+        switch self {
+        case .arithmeticType(let typ):
+            typ
+        default:
+            nil
+        }
+    }
 
     public var isPointerType: Bool {
         switch self {

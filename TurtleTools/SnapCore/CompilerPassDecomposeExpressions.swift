@@ -16,14 +16,6 @@ import TurtleCore
 public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     let tempPrefix = "__temp"
     let pointee = "pointee"
-
-    #if false
-        public override func postProcess(
-            _ node: AbstractSyntaxTreeNode?
-        ) throws -> AbstractSyntaxTreeNode? {
-            try node?.eraseEseq()?.flatten()
-        }
-    #endif
     
     public override func visit(
         return node: Return
@@ -173,7 +165,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             sourceAnchor: lexpr.sourceAnchor,
             identifier: nextTempName()
         )
-        let dstPtrDecl = VarDeclaration(
+        let dstPtrDecl = try VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: dstPtr,
             explicitType: nil,
@@ -186,33 +178,43 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             isMutable: false,
             visibility: .privateVisibility
         )
+            .inferExplicitType(typeContext)
+        
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
         )
-        .compile(dstPtrDecl)
+            .compile(dstPtrDecl)
         
         let elements = try arr.elements.enumerated().map { (i, el) in
-            Assignment(
-                sourceAnchor: node0.sourceAnchor,
-                lexpr: try extractByPointer(
-                    expr: Subscript(
-                        sourceAnchor: node0.sourceAnchor,
-                        subscriptable: dstPtr,
-                        argument: try extract(expr: LiteralInt(i))!
-                    )
-                ),
-                rexpr: try extract(expr: el)!
+            let arg = try extract(
+                expr: LiteralInt(
+                    sourceAnchor: el.sourceAnchor,
+                    value: i
+                )
+            )!
+            let lexpr = try extractByPointer(
+                expr: Subscript(
+                    sourceAnchor: el.sourceAnchor,
+                    subscriptable: dstPtr,
+                    argument: arg
+                )
             )
+            let rexpr = try extract(expr: el)!
+            let a = Assignment(
+                sourceAnchor: el.sourceAnchor,
+                lexpr: lexpr,
+                rexpr: rexpr
+            )
+            return a
         }
         
         let eseq = Eseq(
             sourceAnchor: node0.sourceAnchor,
-            seq: Seq(
-                sourceAnchor: node0.sourceAnchor,
-                children: [dstPtrDecl] + elements
-            ),
+            seq: dstPtrDecl
+                .breakOutInitialAssignment()
+                .appending(children: elements),
             expr: Get(
                 sourceAnchor: node0.sourceAnchor,
                 expr: dstPtr,
@@ -278,17 +280,21 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             identifier: nextTempName()
         )
 
-        let backingStorageDecl: AbstractSyntaxTreeNode! = try visit(
-            VarDeclaration(
-                sourceAnchor: node0.sourceAnchor,
-                identifier: backingStorage,
-                explicitType: node0.expr,
-                expression: nil,
-                storage: .automaticStorage(offset: nil),
-                isMutable: false,
-                visibility: .privateVisibility
-            )
+        let backingStorageDecl = VarDeclaration(
+            sourceAnchor: node0.sourceAnchor,
+            identifier: backingStorage,
+            explicitType: node0.expr,
+            expression: nil,
+            storage: .automaticStorage(offset: nil),
+            isMutable: false,
+            visibility: .privateVisibility
         )
+        _ = try SnapSubcompilerVarDeclaration(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
+            .compile(backingStorageDecl)
         
         var children: [AbstractSyntaxTreeNode] = [
             backingStorageDecl
@@ -300,25 +306,30 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 identifier: nextTempName()
             )
             
-            let dstDecl: AbstractSyntaxTreeNode! = try visit(
-                VarDeclaration(
-                    sourceAnchor: node0.sourceAnchor,
-                    identifier: dst,
-                    explicitType: nil,
-                    expression: Unary(
-                        sourceAnchor: node0.sourceAnchor,
-                        op: .ampersand,
-                        expression: backingStorage
-                    ),
-                    storage: .automaticStorage(offset: nil),
-                    isMutable: false,
-                    visibility: .privateVisibility
-                )
+            let backingStoragePointerExpr = Unary(
+                sourceAnchor: node0.sourceAnchor,
+                op: .ampersand,
+                expression: backingStorage
             )
+            let dstDecl = VarDeclaration(
+                sourceAnchor: node0.sourceAnchor,
+                identifier: dst,
+                explicitType: ConstType(TypeOf(backingStoragePointerExpr)),
+                expression: backingStoragePointerExpr,
+                storage: .automaticStorage(offset: nil),
+                isMutable: false,
+                visibility: .privateVisibility
+            )
+            _ = try SnapSubcompilerVarDeclaration(
+                symbols: symbols!,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy
+            )
+                .compile(dstDecl)
             
-            children.append(dstDecl)
+            children += dstDecl.breakOutInitialAssignment().children
             
-            if let firstArg = node0.arguments.first {
+            children += try node0.arguments.map { arg in
                 let child: Expression! = try visit(
                     initialAssignment: InitialAssignment(
                         sourceAnchor: node0.sourceAnchor,
@@ -327,33 +338,13 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                             expr: dst,
                             member: Identifier(
                                 sourceAnchor: node0.sourceAnchor,
-                                identifier: firstArg.name
+                                identifier: arg.name
                             )
                         ),
-                        rexpr: firstArg.expr
+                        rexpr: arg.expr
                     )
                 )
-                children.append(child)
-            }
-            
-            if node0.arguments.count > 1 {
-                children += try node0.arguments[1...].map { arg in
-                    let child: Expression! = try visit(
-                        initialAssignment: InitialAssignment(
-                            sourceAnchor: node0.sourceAnchor,
-                            lexpr: Get(
-                                sourceAnchor: node0.sourceAnchor,
-                                expr: dst,
-                                member: Identifier(
-                                    sourceAnchor: node0.sourceAnchor,
-                                    identifier: arg.name
-                                )
-                            ),
-                            rexpr: arg.expr
-                        )
-                    )
-                    return child
-                }
+                return child
             }
         }
 
@@ -416,7 +407,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             sourceAnchor: expr.sourceAnchor,
             identifier: nextTempName()
         )
-        let tempDecl = VarDeclaration(
+        let tempDecl = try VarDeclaration(
             sourceAnchor: expr.sourceAnchor,
             identifier: temp,
             explicitType: nil,
@@ -429,18 +420,17 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             isMutable: false,
             visibility: .privateVisibility
         )
+            .inferExplicitType(typeContext)
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         .compile(tempDecl)
+        
         let eseq = Eseq(
             sourceAnchor: expr.sourceAnchor,
-            seq: Seq(
-                sourceAnchor: expr.sourceAnchor,
-                children: [tempDecl]
-            ),
+            seq: tempDecl.breakOutInitialAssignment(),
             expr: temp
         )
         let get = Get(
@@ -487,7 +477,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             sourceAnchor: expr.sourceAnchor,
             identifier: nextTempName()
         )
-        let tempDecl = VarDeclaration(
+        let tempDecl = try VarDeclaration(
             sourceAnchor: expr.sourceAnchor,
             identifier: temp,
             explicitType: nil,
@@ -496,6 +486,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             isMutable: false,
             visibility: .privateVisibility
         )
+            .inferExplicitType(typeContext)
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
@@ -504,10 +495,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
         .compile(tempDecl)
         let eseq = Eseq(
             sourceAnchor: expr.sourceAnchor,
-            seq: Seq(
-                sourceAnchor: expr.sourceAnchor,
-                children: [tempDecl]
-            ),
+            seq: tempDecl.breakOutInitialAssignment(),
             expr: temp
         )
         return eseq
@@ -546,6 +534,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     /// Decompose expressions into simpler ones connected by temporary values
     public func decomposeExpressions() throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassDecomposeExpressions().run(self)
+        let result = try CompilerPassDecomposeExpressions().run(self)
+        return result
     }
 }

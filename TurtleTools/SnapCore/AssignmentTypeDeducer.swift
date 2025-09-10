@@ -11,15 +11,17 @@ import TurtleCore
 /// Determine the explicitType of the expression inferred for a var decl
 /// If this expression were to be attached to a VarDeclaration then this would
 /// be the appropriate explicitType inferred for the variable.
-final class AssignmentTypeDeducer {
+struct AssignmentTypeDeducer {
+    let typeContext: TypeContextTypeChecker
+    
+    init(_ typeContext: TypeContextTypeChecker) {
+        self.typeContext = typeContext
+    }
+    
     func explicitTypeExpression(
-        typeContext: TypeContextTypeChecker,
         varDecl node: VarDeclaration
     ) throws -> Expression {
-        let maybeExplicitType = try maybeExplicitTypeExpression(
-            typeContext: typeContext,
-            varDecl: node
-        )
+        let maybeExplicitType = try maybeExplicitTypeExpression(varDecl: node)
         guard let explicitType = maybeExplicitType else {
             throw unableToDeduceType(varDecl: node)
         }
@@ -36,10 +38,9 @@ final class AssignmentTypeDeducer {
     }
     
     private func maybeExplicitTypeExpression(
-        typeContext: TypeContextTypeChecker,
         varDecl node: VarDeclaration
     ) throws -> Expression? {
-        let rtypeExpr = rtypeExpr(varDecl: node)
+        let rtypeExpr = try rtypeExpr(varDecl: node)
 
         guard let ltypeExpr0 = node.explicitType else {
             return rtypeExpr
@@ -57,7 +58,7 @@ final class AssignmentTypeDeducer {
         return ltypeExpr1
     }
     
-    private func rtypeExpr(varDecl node: VarDeclaration) -> Expression? {
+    private func rtypeExpr(varDecl node: VarDeclaration) throws -> Expression? {
         guard let expr = node.expression else { return nil }
         
         // Simplify the type expression where we can obviously avoid a TypeOf
@@ -73,7 +74,13 @@ final class AssignmentTypeDeducer {
             case let expr as As where !(expr.targetType is ArrayType):
                 expr.targetType
             default:
-                TypeOf(sourceAnchor: expr.sourceAnchor, expr: expr)
+                try typeContext.check(
+                    expression: TypeOf(
+                        sourceAnchor: expr.sourceAnchor,
+                        expr: expr
+                    )
+                )
+                .lift
             }
         
         // The explicit type must account for immutability of the variable too.
@@ -82,12 +89,23 @@ final class AssignmentTypeDeducer {
                 type0
             }
             else {
-                ConstType(
-                    sourceAnchor: type0.sourceAnchor,
-                    typ: type0
-                )
+                type0.withConstType()
             }
         return type1
+    }
+}
+
+extension Expression {
+    fileprivate func withConstType() -> ConstType {
+        if let self = self as? ConstType {
+            self
+        }
+        else {
+            ConstType(
+                sourceAnchor: sourceAnchor,
+                typ: self
+            )
+        }
     }
 }
 
@@ -97,8 +115,7 @@ extension VarDeclaration {
     ) throws -> VarDeclaration {
         if explicitType == nil {
             withExplicitType(
-                try AssignmentTypeDeducer().explicitTypeExpression(
-                    typeContext: typeContext,
+                try AssignmentTypeDeducer(typeContext).explicitTypeExpression(
                     varDecl: self
                 )
             )

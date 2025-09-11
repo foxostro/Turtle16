@@ -10,9 +10,9 @@ import TurtleCore
 
 public class CompilerPass {
     public enum ExpressionEvaluationContext: Equatable {
-        case concrete, temporary, type, none
+        case value, type, none
     }
-    var context: ExpressionEvaluationContext = .concrete
+    var context: ExpressionEvaluationContext = .value
 
     public func with<T>(
         context newContext: ExpressionEvaluationContext,
@@ -628,7 +628,7 @@ public class CompilerPass {
     }
 
     public func visit(subscript node: Subscript) throws -> Expression? {
-        let argument = try with(context: .concrete) {
+        let argument = try with(context: .value) {
             try visit(expr: node.argument)
         }
         let subscriptable = try visit(expr: node.subscriptable)

@@ -273,7 +273,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
 
     public override func visit(structInitializer node0: StructInitializer) throws -> Expression? {
-        guard [.concrete, .temporary].contains(context) else { return node0 }
+        guard context == .value else { return node0 }
 
         let backingStorage = Identifier(
             sourceAnchor: node0.sourceAnchor,
@@ -390,7 +390,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
     
     func extract(expr: Expression?) throws -> Expression? {
-        guard [.concrete, .temporary].contains(context) else { return expr }
+        guard context == .value else { return expr }
         guard let expr else { return nil }
         guard !isCompilerTemporary(expr) else { return expr }
             
@@ -445,7 +445,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
     
     private func lextract(expr: Expression?) throws -> Expression? {
-        guard [.concrete, .temporary].contains(context) else { return expr }
+        guard context == .value else { return expr }
         guard let expr else { return nil }
         let exprType = try lvalueContext.check(expression: expr)!
         

@@ -295,7 +295,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
         let calleeType = try rvalueContext.check(expression: node.callee)
         let calleeContext: ExpressionEvaluationContext =
             if calleeType.isPointerType {
-                .concrete
+                .value
             }
             else {
                 .none

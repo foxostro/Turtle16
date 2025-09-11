@@ -31,7 +31,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -56,7 +57,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .automaticStorage(offset: 1),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -153,7 +155,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -182,7 +185,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .u8,
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -211,7 +215,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -240,7 +245,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u16)),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -269,7 +275,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .constBool,
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -300,7 +307,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .constStructType(typ),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -325,7 +333,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -350,7 +359,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .u8,
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -419,7 +429,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .array(count: 1, elementType: .arithmeticType(.immutableInt(.u8))),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -444,7 +455,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .array(count: 1, elementType: .u8),
             storage: .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -469,7 +481,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .staticStorage(offset: 42),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -494,7 +507,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .automaticStorage(offset: 42),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
@@ -519,7 +533,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let expectedSymbol = Symbol(
             type: .arithmeticType(.immutableInt(.u8)),
             storage: .registerStorage(nil),
-            visibility: .privateVisibility
+            visibility: .privateVisibility,
+            decl: input.id
         )
         XCTAssertEqual(foo, expectedSymbol)
     }

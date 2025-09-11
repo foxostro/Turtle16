@@ -1126,6 +1126,7 @@ public struct Symbol: Hashable {
     public let type: SymbolType
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
+    public let decl: AbstractSyntaxTreeNode.ID?
 
     public init(
         type: SymbolType,
@@ -1142,18 +1143,21 @@ public struct Symbol: Hashable {
     public init(
         type: SymbolType,
         storage: SymbolStorage = .staticStorage(offset: nil),
-        visibility: SymbolVisibility = .privateVisibility
+        visibility: SymbolVisibility = .privateVisibility,
+        decl: AbstractSyntaxTreeNode.ID? = nil
     ) {
         self.type = type
         self.storage = storage
         self.visibility = visibility
+        self.decl = decl
     }
 
     public func withType(_ type: SymbolType) -> Symbol {
         Symbol(
             type: type,
             storage: storage,
-            visibility: visibility
+            visibility: visibility,
+            decl: decl
         )
     }
 
@@ -1161,7 +1165,8 @@ public struct Symbol: Hashable {
         Symbol(
             type: type,
             storage: storage,
-            visibility: visibility
+            visibility: visibility,
+            decl: decl
         )
     }
 
@@ -1169,7 +1174,17 @@ public struct Symbol: Hashable {
         Symbol(
             type: type,
             storage: storage,
-            visibility: visibility
+            visibility: visibility,
+            decl: decl
+        )
+    }
+    
+    public func withDecl(_ decl: AbstractSyntaxTreeNode.ID) -> Symbol {
+        Symbol(
+            type: type,
+            storage: storage,
+            visibility: visibility,
+            decl: decl
         )
     }
 }

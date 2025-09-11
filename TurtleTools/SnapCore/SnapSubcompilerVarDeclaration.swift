@@ -108,7 +108,8 @@ public struct SnapSubcompilerVarDeclaration {
                 sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,
                 explicitType: symbolType,
                 storage: node.storage,
-                visibility: node.visibility
+                visibility: node.visibility,
+                decl: node.id
             )
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
@@ -124,7 +125,8 @@ public struct SnapSubcompilerVarDeclaration {
                 sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,
                 explicitType: symbolType,
                 storage: node.storage,
-                visibility: node.visibility
+                visibility: node.visibility,
+                decl: node.id
             )
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
@@ -146,7 +148,8 @@ public struct SnapSubcompilerVarDeclaration {
         sourceAnchor: SourceAnchor?,
         explicitType: SymbolType,
         storage storage0: SymbolStorage,
-        visibility: SymbolVisibility
+        visibility: SymbolVisibility,
+        decl: AbstractSyntaxTreeNode.ID
     ) throws -> Symbol {
 
         guard try explicitType.hasModule(symbols) == false else {
@@ -159,7 +162,8 @@ public struct SnapSubcompilerVarDeclaration {
         let symbol = Symbol(
             type: explicitType,
             storage: storage2,
-            visibility: visibility
+            visibility: visibility,
+            decl: decl
         )
         return symbol
     }

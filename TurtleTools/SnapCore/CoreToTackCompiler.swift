@@ -23,9 +23,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     private let kHalt = "hlt"
     private let kSyscall = "__syscall"
 
-    private let kUnionPayloadOffset: Int
-    private let kUnionTypeTagOffset: Int
-
     private let kSliceName = "Slice"
     private let kSliceBase = "base"
     private let kSliceBaseAddressOffset: Int
@@ -80,8 +77,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         options: CoreToTackCompiler.Options = Options()
     ) {
         self.options = options
-        kUnionTypeTagOffset = 0
-        kUnionPayloadOffset = memoryLayoutStrategy.sizeof(type: .u16)
         kSliceBaseAddressOffset = 0
         kSliceCountOffset = memoryLayoutStrategy.sizeof(type: .pointer(.void))
         let structSymbols = Env(

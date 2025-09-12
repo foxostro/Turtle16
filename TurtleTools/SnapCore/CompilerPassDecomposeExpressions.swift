@@ -221,10 +221,11 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
     
     private func decomposeAssignmentWithLiteralString(_ node0: Assignment) throws -> Expression? {
-        throw CompilerError(
-            sourceAnchor: node0.sourceAnchor,
-            message: "internal compiler error: unimplemented"
-        )
+        // We must preserve LiteralString until we lower to Tack code in
+        // to take advantage of Tack's specialized string instructions.
+        let lexpr = try lextract(expr: try visit(expr: node0.lexpr))!
+        let node1 = node0.withLexpr(lexpr)
+        return node1
     }
     
     private func decomposeAssignmentWithStructInitializer(_ node0: Assignment) throws -> Expression? {

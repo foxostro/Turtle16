@@ -1550,6 +1550,58 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testAssignmentExpression_RightHandSideIsLiteralString() throws {
+        let str = "Hello, World!"
+        let arrType = ArrayType(
+            count: LiteralInt(str.utf8.count),
+            elementType: PrimitiveType(.u8)
+        )
+        let shared = [
+            StructDeclaration(
+                identifier: Foo,
+                members: [
+                    StructDeclaration.Member(
+                        name: bar.identifier,
+                        type: arrType
+                    )
+                ]
+            ),
+            VarDeclaration(identifier: a, explicitType: Foo, isMutable: true)
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Get(expr: AddressOf(a), member: bar),
+                    rexpr: LiteralString(str)
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let temp0 = Temp(
+            i: 0,
+            expr: AddressOf(a),
+            explicitType: ConstType(PointerType(Foo))
+        )
+        let temp1 = Temp(
+            i: 1,
+            expr: AddressOf(Get(expr: temp0, member: bar)),
+            explicitType: ConstType(PointerType(arrType))
+        )
+        let expected = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Get(expr: temp1, member: pointee),
+                    rexpr: LiteralString(str)
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
 }
 
 extension VarDeclaration {

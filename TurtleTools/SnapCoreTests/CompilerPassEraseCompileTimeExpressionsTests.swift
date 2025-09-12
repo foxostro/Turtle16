@@ -216,4 +216,308 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testBinary_comptime_eq() throws {
+        let input = Block(
+            children: [
+                Binary(op: .eq, left: LiteralInt(1), right: LiteralInt(1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralBool(true)
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_ne() throws {
+        let input = Block(
+            children: [
+                Binary(op: .ne, left: LiteralInt(1), right: LiteralInt(1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralBool(false)
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_lt() throws {
+        let input = Block(
+            children: [
+                Binary(op: .lt, left: LiteralInt(1), right: LiteralInt(2))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralBool(true)
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_gt() throws {
+        let input = Block(
+            children: [
+                Binary(op: .gt, left: LiteralInt(2), right: LiteralInt(1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralBool(true)
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_le() throws {
+        let input = Block(
+            children: [
+                Binary(op: .le, left: LiteralInt(1), right: LiteralInt(1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralBool(true)
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_ge() throws {
+        let input = Block(
+            children: [
+                Binary(op: .ge, left: LiteralInt(1), right: LiteralInt(1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralBool(true)
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_add() throws {
+        let input = Block(
+            children: [
+                Binary(op: .plus, left: LiteralInt(-1000), right: LiteralInt(-1000))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(-2000)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_sub() throws {
+        let input = Block(
+            children: [
+                Binary(op: .minus, left: LiteralInt(1), right: LiteralInt(1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(0)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_mul() throws {
+        let input = Block(
+            children: [
+                Binary(op: .star, left: LiteralInt(1), right: LiteralInt(-1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(-1)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_div() throws {
+        let input = Block(
+            children: [
+                Binary(op: .divide, left: LiteralInt(-1), right: LiteralInt(-1))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(1)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_mod() throws {
+        let input = Block(
+            children: [
+                Binary(op: .modulus, left: LiteralInt(3), right: LiteralInt(2))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(1)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_and() throws {
+        let input = Block(
+            children: [
+                Binary(op: .ampersand, left: LiteralInt(0xab), right: LiteralInt(0x0f))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(0xb)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_or() throws {
+        let input = Block(
+            children: [
+                Binary(op: .pipe, left: LiteralInt(0xab), right: LiteralInt(0x0f))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(0xaf)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_xor() throws {
+        let input = Block(
+            children: [
+                Binary(op: .caret, left: LiteralInt(0xab), right: LiteralInt(0xab))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(0)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_lsl() throws {
+        let input = Block(
+            children: [
+                Binary(op: .leftDoubleAngle, left: LiteralInt(2), right: LiteralInt(2))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(8)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testBinary_comptime_lsr() throws {
+        let input = Block(
+            children: [
+                Binary(op: .rightDoubleAngle, left: LiteralInt(8), right: LiteralInt(2))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: [
+                LiteralInt(2)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
 }

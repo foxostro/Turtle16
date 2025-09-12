@@ -2012,11 +2012,17 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let resultType = try typeCheck(rexpr: binary)
         let rightType = try typeCheck(rexpr: binary.right)
         let leftType = try typeCheck(rexpr: binary.left)
+        
+        guard !(leftType.isCompileTimeArithmeticType &&
+                rightType.isCompileTimeArithmeticType) else {
+            
+            throw CompilerError(
+                sourceAnchor: binary.sourceAnchor,
+                message: "internal compiler error: compile time arithmetic expressions should have been erased in an earlier compiler pass"
+            )
+        }
 
         switch (leftType, rightType) {
-        case (.arithmeticType(.compTimeInt), .arithmeticType(.compTimeInt)):
-            return try compileConstantArithmeticBinaryExpression(binary, leftType, rightType)
-
         case (.arithmeticType(let leftArithmeticType), .arithmeticType(let rightArithmeticType)):
             if let arithmeticTypeForArithmetic = ArithmeticTypeInfo.binaryResultType(
                 left: leftArithmeticType,
@@ -2220,118 +2226,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         }
         return ins
-    }
-
-    func compileConstantArithmeticBinaryExpression(
-        _ binary: Binary,
-        _ leftType: SymbolType,
-        _ rightType: SymbolType
-    ) throws -> AbstractSyntaxTreeNode {
-        guard case .arithmeticType(.compTimeInt(let a)) = leftType,
-            case .arithmeticType(.compTimeInt(let b)) = rightType
-        else {
-            fatalError(
-                "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
-            )
-        }
-
-        let value: Int
-
-        switch binary.op {
-        case .eq:
-            value = (a == b) ? 1 : 0
-
-        case .ne:
-            value = (a != b) ? 1 : 0
-
-        case .lt:
-            value = (a < b) ? 1 : 0
-
-        case .gt:
-            value = (a > b) ? 1 : 0
-
-        case .le:
-            value = (a <= b) ? 1 : 0
-
-        case .ge:
-            value = (a >= b) ? 1 : 0
-
-        case .plus:
-            value = a + b
-
-        case .minus:
-            value = a - b
-
-        case .star:
-            value = a * b
-
-        case .divide:
-            value = a / b
-
-        case .modulus:
-            value = a % b
-
-        case .ampersand:
-            value = a & b
-
-        case .pipe:
-            value = a | b
-
-        case .caret:
-            value = a ^ b
-
-        case .leftDoubleAngle:
-            value = a << b
-
-        case .rightDoubleAngle:
-            value = a >> b
-
-        default:
-            fatalError(
-                "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
-            )
-        }
-
-        let ins: TackInstruction
-        let exprType = try typeCheck(rexpr: binary)
-
-        guard let primitiveType = exprType.primitiveType else {
-            fatalError(
-                "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
-            )
-        }
-        let dst = nextRegister(type: primitiveType)
-        pushRegister(dst)
-
-        switch exprType {
-        case .arithmeticType(let arithmeticType):
-            switch arithmeticType.intClass {
-            case .u8:
-                ins = .liub(dst.unwrap8!, value)
-            case .u16:
-                ins = .liuw(dst.unwrap16!, value)
-            case .i8:
-                ins = .lib(dst.unwrap8!, value)
-            case .i16:
-                ins = .liw(dst.unwrap16!, value)
-            case .none:
-                fatalError(
-                    "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
-                )
-            }
-        case .booleanType:
-            ins = .lio(dst.unwrapBool!, value == 0 ? false : true)
-        default:
-            fatalError(
-                "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
-            )
-        }
-
-        return TackInstructionNode(
-            instruction: ins,
-            sourceAnchor: binary.sourceAnchor,
-            symbols: symbols
-        )
     }
 
     func compileBooleanBinaryExpression(

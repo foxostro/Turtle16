@@ -2009,62 +2009,6 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .o(.o(4)))
     }
 
-    func testRvalue_Binary_comptime_bool_eq() throws {
-        let symbols = Env(tuples: [
-            ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
-        ])
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(
-            expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right"))
-        )
-        let expected = TackInstructionNode(.lio(.o(0), true))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
-    }
-
-    func testRvalue_Binary_comptime_bool_ne() throws {
-        let symbols = Env(tuples: [
-            ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
-        ])
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(
-            expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right"))
-        )
-        let expected = TackInstructionNode(.lio(.o(0), false))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
-    }
-
-    func testRvalue_Binary_comptime_bool_and() throws {
-        let symbols = Env(tuples: [
-            ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
-        ])
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(
-            expr: Binary(op: .doubleAmpersand, left: Identifier("left"), right: Identifier("right"))
-        )
-        let expected = TackInstructionNode(.lio(.o(0), true))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
-    }
-
-    func testRvalue_Binary_comptime_bool_or() throws {
-        let symbols = Env(tuples: [
-            ("left", Symbol(type: .booleanType(.compTimeBool(true)))),
-            ("right", Symbol(type: .booleanType(.compTimeBool(true))))
-        ])
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(
-            expr: Binary(op: .doublePipe, left: Identifier("left"), right: Identifier("right"))
-        )
-        let expected = TackInstructionNode(.lio(.o(0), true))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
-    }
-
     func testRvalue_Assignment_ToPrimitiveScalar() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, storage: .staticStorage(offset: 0x1000)))

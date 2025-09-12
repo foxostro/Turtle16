@@ -2341,9 +2341,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     ) throws -> AbstractSyntaxTreeNode {
         assert(leftType.isBooleanType && rightType.isBooleanType)
 
-        if case .booleanType(.compTimeBool) = leftType, case .booleanType(.compTimeBool) = rightType
-        {
-            return try compileConstantBooleanBinaryExpression(binary, leftType, rightType)
+        guard !(leftType.isCompileTimeBooleanType && rightType.isCompileTimeBooleanType) else {
+            throw CompilerError(
+                sourceAnchor: binary.sourceAnchor,
+                message: "internal compiler error: compile time boolean expressions should have been erased in an earlier compiler pass"
+            )
         }
 
         switch binary.op {
@@ -2418,50 +2420,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
             )
         }
-    }
-
-    func compileConstantBooleanBinaryExpression(
-        _ binary: Binary,
-        _ leftType: SymbolType,
-        _ rightType: SymbolType
-    ) throws -> AbstractSyntaxTreeNode {
-        guard case .booleanType(.compTimeBool(let a)) = leftType,
-            case .booleanType(.compTimeBool(let b)) = rightType
-        else {
-            fatalError(
-                "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
-            )
-        }
-
-        let value: Bool
-
-        switch binary.op {
-        case .eq:
-            value = (a == b)
-
-        case .ne:
-            value = (a != b)
-
-        case .doubleAmpersand:
-            value = (a && b)
-
-        case .doublePipe:
-            value = (a || b)
-
-        default:
-            fatalError(
-                "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)"
-            )
-        }
-
-        let dst = nextRegister(type: .o)
-        pushRegister(dst)
-
-        return TackInstructionNode(
-            instruction: .lio(dst.unwrapBool!, value),
-            sourceAnchor: binary.sourceAnchor,
-            symbols: symbols
-        )
     }
 
     func logicalAnd(_ binary: Binary) throws -> AbstractSyntaxTreeNode {

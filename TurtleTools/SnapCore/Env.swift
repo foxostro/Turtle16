@@ -220,10 +220,28 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             false
         }
     }
+    
+    public var isCompileTimeBooleanType: Bool {
+        switch self {
+        case .booleanType(.compTimeBool(_)):
+            true
+        default:
+            false
+        }
+    }
 
     public var isArithmeticType: Bool {
         switch self {
         case .arithmeticType:
+            true
+        default:
+            false
+        }
+    }
+    
+    public var isCompileTimeArithmeticType: Bool {
+        switch self {
+        case .arithmeticType(.compTimeInt(_)):
             true
         default:
             false

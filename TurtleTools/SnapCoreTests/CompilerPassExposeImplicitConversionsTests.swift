@@ -633,4 +633,51 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testImplicitConversionOfArrayToDynamicArray() throws {
+        let shared = [
+            VarDeclaration(
+                identifier: Identifier("src"),
+                explicitType: ArrayType(
+                    count: LiteralInt(0),
+                    elementType: PrimitiveType(.u8)
+                ),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            ),
+            VarDeclaration(
+                identifier: Identifier("dst"),
+                explicitType: DynamicArrayType(PrimitiveType(.u8)),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("dst"),
+                    rexpr: Identifier("src")
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Identifier("dst"),
+                    rexpr: As(
+                        expr: Identifier("src"),
+                        targetType: DynamicArrayType(PrimitiveType(.u8))
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
 }

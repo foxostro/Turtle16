@@ -117,13 +117,6 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
         }
     }
 
-    public override func visit(is node: Is) throws -> Expression? {
-        let a = try rvalueContext.check(expression: node.expr)
-        let b = try typeContext.check(expression: node.testType)
-        let result = LiteralBool(a == b)
-        return result
-    }
-
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         switch node0.rexpr {
         case is LiteralArray:
@@ -363,10 +356,15 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 op: .ampersand,
                 expression: backingStorage
             )
+            let backingStoragePointerTypeExpr = ConstType(
+                try rvalueContext
+                    .check(expression: backingStoragePointerExpr)
+                    .lift
+            )
             let dstDecl = VarDeclaration(
                 sourceAnchor: node0.sourceAnchor,
                 identifier: dst,
-                explicitType: ConstType(TypeOf(backingStoragePointerExpr)),
+                explicitType: backingStoragePointerTypeExpr,
                 expression: backingStoragePointerExpr,
                 storage: .automaticStorage(offset: nil),
                 isMutable: false,
@@ -428,16 +426,24 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             }())
     }
 
-    public override func visit(typeof node: TypeOf) throws -> Expression? {
-        try rvalueContext.check(expression: node).lift
-    }
-
-    public override func visit(sizeof node: SizeOf) throws -> Expression? {
-        let type = try rvalueContext.check(expression: node.expr)
-        let size = memoryLayoutStrategy.sizeof(type: type)
-        return LiteralInt(
+    public override func visit(is node: Is) throws -> Expression? {
+        throw CompilerError(
             sourceAnchor: node.sourceAnchor,
-            value: size
+            message: "internal compiler error: `Is` nodes should have been erased in an earlier compiler pass: \(node)"
+        )
+    }
+    
+    public override func visit(typeof node: TypeOf) throws -> Expression? {
+        throw CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "internal compiler error: `TypeOf` nodes should have been erased in an earlier compiler pass: \(node)"
+        )
+    }
+    
+    public override func visit(sizeof node: SizeOf) throws -> Expression? {
+        throw CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "internal compiler error: `SizeOf` nodes should have been erased in an earlier compiler pass: \(node)"
         )
     }
     

@@ -2065,22 +2065,6 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
     }
 
-    func testRvalue_Is_comptime_bool() throws {
-        let symbols = Env(tuples: [
-            ("foo", Symbol(type: .booleanType(.compTimeBool(true))))
-        ])
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(
-            expr: Is(
-                expr: Identifier("foo"),
-                testType: PrimitiveType(.booleanType(.compTimeBool(true)))
-            )
-        )
-        let expected = TackInstructionNode(.lio(.o(0), true))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
-    }
-
     func testRvalue_Assignment_ToPrimitiveScalar() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, storage: .staticStorage(offset: 0x1000)))
@@ -4073,14 +4057,6 @@ final class CoreToTackCompilerTests: XCTestCase {
         let actual = try compiler.visit(asm: Asm(assemblyCode: "HLT"))
         let expected = TackInstructionNode(.inlineAssembly("HLT"))
         XCTAssertEqual(actual, expected)
-    }
-
-    func testRvalue_SizeOf() throws {
-        let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: SizeOf(ExprUtils.makeU8(value: 1)))
-        let expected = TackInstructionNode(.liuw(.w(0), 1))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
     }
 
     func testRvalue_FunctionByIdentifier() throws {

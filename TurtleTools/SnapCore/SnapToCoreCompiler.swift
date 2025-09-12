@@ -65,6 +65,7 @@ public final class SnapToCoreCompiler {
             .eraseMethodCalls()?
             .synthesizeTerminalReturnStatements()?
             .eraseImplPass()?
+            .eraseCompileTimeExpressions(memoryLayoutStrategy)?
             .matchPass()?
             .exposeImplicitConversions()?
             .eraseUnions(memoryLayoutStrategy)?

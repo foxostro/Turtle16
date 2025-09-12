@@ -435,82 +435,6 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    func testTypeTestExpression() throws {
-        let input = Block(children: [
-            Is(expr: LiteralBool(false), testType: u16)
-        ])
-        .reconnect(parent: nil)
-
-        let expected = Block(children: [
-            LiteralBool(false)
-        ])
-        .reconnect(parent: nil)
-
-        let actual = try input.decomposeExpressions()
-        XCTAssertEqual(actual, expected)
-    }
-
-    func testTypeOfExpression() throws {
-        let input = Block(children: [
-            TypeOf(
-                Binary(
-                    op: .plus,
-                    left: LiteralInt(1),
-                    right: LiteralInt(1)
-                )
-            )
-        ])
-        .reconnect(parent: nil)
-
-        let expected = Block(children: [
-            PrimitiveType(.u8)
-        ])
-        .reconnect(parent: nil)
-
-        let actual = try input.decomposeExpressions()
-        XCTAssertEqual(actual, expected)
-    }
-
-    func testSizeOfExpression_GiveAnExpression() throws {
-        let input = Block(children: [
-            VarDeclaration(identifier: a, explicitType: u16),
-            SizeOf(a)
-        ])
-        .reconnect(parent: nil)
-
-        let expected = Block(children: [
-            VarDeclaration(identifier: a, explicitType: u16),
-            LiteralInt(1)
-        ])
-        .reconnect(parent: nil)
-
-        let compiler = CompilerPassDecomposeExpressions(
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()
-        )
-        let actual = try compiler.run(input)
-        XCTAssertEqual(actual, expected)
-    }
-
-    func testSizeOfExpression_NameAType() throws {
-        let input = Block(children: [
-            SizeOf(u16)
-        ])
-        .reconnect(parent: nil)
-
-        let expected = Block(
-            children: [
-                LiteralInt(1)
-            ]
-        )
-        .reconnect(parent: nil)
-
-        let compiler = CompilerPassDecomposeExpressions(
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()
-        )
-        let actual = try compiler.run(input)
-        XCTAssertEqual(actual, expected)
-    }
-
     // Decomposing a bare identifier yields the identifier itself again.
     // If the identifier is for a non-escaping variable of a primitive type then
     // the hope is that this allows it to be mapped directly to a Tack register
@@ -1247,7 +1171,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                         ),
                         VarDeclaration(
                             identifier: TempRef(1),
-                            explicitType: ConstType(TypeOf(AddressOf(TempRef(0))))
+                            explicitType: ConstType(PointerType(ConstType(Foo)))
                         ),
                         InitialAssignment(
                             lexpr: TempRef(1),
@@ -1320,7 +1244,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                         ),
                         VarDeclaration(
                             identifier: TempRef(1),
-                            explicitType: ConstType(TypeOf(AddressOf(TempRef(0))))
+                            explicitType: ConstType(PointerType(ConstType(Foo)))
                         ),
                         InitialAssignment(
                             lexpr: TempRef(1),
@@ -1629,7 +1553,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
 }
 
 extension VarDeclaration {
-    fileprivate convenience init(
+    convenience init(
         identifier: Identifier,
         explicitType: Expression? = nil,
         expression: Expression? = nil,

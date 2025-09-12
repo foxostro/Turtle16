@@ -2577,33 +2577,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     func rvalue(is expr: Is) throws -> AbstractSyntaxTreeNode {
-        let exprType = try typeCheck(rexpr: expr)
-
-        switch exprType {
-        case .booleanType(.compTimeBool(let val)):
-            let tempResult = nextRegister(type: .o)
-            let result = TackInstructionNode(
-                instruction: .lio(tempResult.unwrapBool!, val),
-                sourceAnchor: expr.sourceAnchor,
-                symbols: symbols
-            )
-            pushRegister(tempResult)
-            return result
-
-        default:
-            switch try typeCheck(rexpr: expr.expr) {
-            case .unionType(_):
-                throw CompilerError(
-                    sourceAnchor: expr.sourceAnchor,
-                    message: "internal compiler error: unions should have been erased in a previous compiler pass"
-                )
-
-            default:
-                fatalError(
-                    "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(expr)"
-                )
-            }
-        }
+        throw CompilerError(
+            sourceAnchor: expr.sourceAnchor,
+            message: "internal compiler error: `Is` nodes should have been erased in an earlier compiler pass: \(expr)"
+        )
     }
 
     func rvalue(assignment expr: Assignment) throws -> AbstractSyntaxTreeNode {
@@ -3357,16 +3334,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     func rvalue(sizeof expr: SizeOf) throws -> AbstractSyntaxTreeNode {
-        let targetType = try typeCheck(rexpr: expr.expr)
-        let size = memoryLayoutStrategy.sizeof(type: targetType)
-        let dest = nextRegister(type: .w)
-        pushRegister(dest)
-        let result = TackInstructionNode(
-            instruction: .liuw(dest.unwrap16!, size),
+        throw CompilerError(
             sourceAnchor: expr.sourceAnchor,
-            symbols: symbols
+            message: "internal compiler error: `SizeOf` nodes should have been erased in an earlier compiler pass: \(expr)"
         )
-        return result
     }
 
     func rvalue(eseq: Eseq) throws -> AbstractSyntaxTreeNode {

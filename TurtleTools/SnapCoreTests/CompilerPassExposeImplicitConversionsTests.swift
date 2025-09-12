@@ -570,4 +570,67 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
+    
+    // TODO: The compiler has special handling of Range.count but maybe it shouldn't
+    func testGetCountOfRange() throws {
+        let shared = [
+            // Range is normally declared in the runtime, but that's not
+            // available here, in this unit test.
+            StructDeclaration(
+                identifier: Identifier("Range"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "begin",
+                        type: PrimitiveType(.u16)
+                    ),
+                    StructDeclaration.Member(
+                        name: "limit",
+                        type: PrimitiveType(.u16)
+                    )
+                ]
+            ),
+            VarDeclaration(
+                identifier: Identifier("a"),
+                explicitType: Identifier("Range"),
+                expression: nil,
+                storage: .staticStorage(offset: nil),
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Get(
+                    expr: Identifier("a"),
+                    member: Identifier("count")
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Binary(
+                    op: .minus,
+                    left: Get(
+                        expr: Unary(
+                            op: .ampersand,
+                            expression: Identifier("a")
+                        ),
+                        member: Identifier("limit")
+                    ),
+                    right: Get(
+                        expr: Unary(
+                            op: .ampersand,
+                            expression: Identifier("a")
+                        ),
+                        member: Identifier("begin")
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.exposeImplicitConversions()
+        XCTAssertEqual(actual, expected)
+    }
 }

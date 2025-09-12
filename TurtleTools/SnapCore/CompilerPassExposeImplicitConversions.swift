@@ -157,12 +157,20 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
                 op: .minus,
                 left: Get(
                     sourceAnchor: node0.sourceAnchor,
-                    expr: node0.expr,
+                    expr: Unary(
+                        sourceAnchor: node0.sourceAnchor,
+                        op: .ampersand,
+                        expression: node0.expr
+                    ),
                     member: Identifier("limit")
                 ),
                 right: Get(
                     sourceAnchor: node0.sourceAnchor,
-                    expr: node0.expr,
+                    expr: Unary(
+                        sourceAnchor: node0.sourceAnchor,
+                        op: .ampersand,
+                        expression: node0.expr
+                    ),
                     member: Identifier("begin")
                 )
             )

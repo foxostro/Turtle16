@@ -1513,6 +1513,119 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testAssignmentExpression_RightHandSideIsStructInitializer_ZeroMembers() throws {
+        let shared = [
+            StructDeclaration(
+                identifier: Foo,
+                members: []
+            ),
+            VarDeclaration(identifier: a, explicitType: Foo)
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: a,
+                    rexpr: StructInitializer(
+                        identifier: Foo,
+                        arguments: []
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: shared + [
+                Eseq(
+                    seq: Seq(
+                        children: [
+                            VarDeclaration(
+                                identifier: TempRef(0),
+                                explicitType: ConstType(PointerType(ConstType(Foo)))
+                            ),
+                            InitialAssignment(
+                                lexpr: TempRef(0),
+                                rexpr: AddressOf(a)
+                            )
+                        ]
+                    ),
+                    expr: Get(expr: TempRef(0), member: pointee)
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testAssignmentExpression_RightHandSideIsStructInitializer() throws {
+        let shared = [
+            StructDeclaration(
+                identifier: Foo,
+                members: [
+                    StructDeclaration.Member(
+                        name: bar.identifier,
+                        type: bool
+                    )
+                ]
+            ),
+            VarDeclaration(identifier: a, explicitType: Foo)
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: a,
+                    rexpr: StructInitializer(
+                        identifier: Foo,
+                        arguments: [
+                            StructInitializer.Argument(
+                                name: bar.identifier,
+                                expr: LiteralBool(false)
+                            )
+                        ]
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: shared + [
+                Eseq(
+                    seq: Seq(
+                        children: [
+                            VarDeclaration(
+                                identifier: TempRef(0),
+                                explicitType: ConstType(PointerType(ConstType(Foo)))
+                            ),
+                            InitialAssignment(
+                                lexpr: TempRef(0),
+                                rexpr: AddressOf(a)
+                            ),
+                            InitialAssignment(
+                                lexpr: Get(
+                                    expr: Temp(
+                                        i: 1,
+                                        expr: AddressOf(Get(expr: TempRef(0), member: bar)),
+                                        explicitType: ConstType(PointerType(ConstType(bool)))
+                                    ),
+                                    member: pointee
+                                ),
+                                rexpr: Temp(i: 2, expr: LiteralBool(false))
+                            )
+                        ]
+                    ),
+                    expr: Get(expr: TempRef(0), member: pointee)
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
 }
 
 extension VarDeclaration {

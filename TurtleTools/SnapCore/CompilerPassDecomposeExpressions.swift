@@ -235,10 +235,62 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
     
     private func decomposeAssignmentWithStructInitializer(_ node0: Assignment) throws -> Expression? {
-        throw CompilerError(
-            sourceAnchor: node0.sourceAnchor,
-            message: "internal compiler error: unimplemented"
+        // Expressions of the form `Assignment(_, StructInitializer(...))`,
+        // are decomposed into a sequence of assignments, one for each member.
+        let object = node0.rexpr as! StructInitializer
+        let lexpr = try visit(expr: node0.lexpr)!
+        
+        let dstPtr = Identifier(
+            sourceAnchor: lexpr.sourceAnchor,
+            identifier: nextTempName()
         )
+        let dstPtrDecl = try VarDeclaration(
+            sourceAnchor: node0.sourceAnchor,
+            identifier: dstPtr,
+            explicitType: nil,
+            expression: Unary(
+                sourceAnchor: node0.sourceAnchor,
+                op: .ampersand,
+                expression: lexpr
+            ),
+            storage: .automaticStorage(offset: nil),
+            isMutable: false,
+            visibility: .privateVisibility
+        )
+            .inferExplicitType(typeContext)
+        
+        _ = try SnapSubcompilerVarDeclaration(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
+            .compile(dstPtrDecl)
+        
+        let assignments = try object.arguments.compactMap { arg in
+            try visit(
+                expr: InitialAssignment(
+                    sourceAnchor: arg.expr.sourceAnchor,
+                    lexpr: Get(expr: dstPtr, member: Identifier(arg.name)),
+                    rexpr: arg.expr
+                )
+            )
+        }
+        
+        let eseq = Eseq(
+            sourceAnchor: node0.sourceAnchor,
+            seq: dstPtrDecl
+                .breakOutInitialAssignment()
+                .appending(children: assignments),
+            expr: Get(
+                sourceAnchor: node0.sourceAnchor,
+                expr: dstPtr,
+                member: Identifier(
+                    sourceAnchor: node0.sourceAnchor,
+                    identifier: pointee
+                )
+            )
+        )
+        return eseq
     }
 
     public override func visit(subscript node0: Subscript) throws -> Expression? {

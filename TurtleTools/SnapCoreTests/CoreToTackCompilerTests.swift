@@ -719,29 +719,6 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
-    func testRvalue_As_union_to_union() throws {
-        let symbols = Env(tuples: [
-            (
-                "foo",
-                Symbol(
-                    type: .unionType(UnionTypeInfo([.u16])),
-                    storage: .staticStorage(offset: 0xabcd)
-                )
-            )
-        ])
-        symbols.frameLookupMode = .set(Frame())
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(
-            expr: As(
-                expr: Identifier("foo"),
-                targetType: UnionType([PrimitiveType(.u16)])
-            )
-        )
-        let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
-    }
-
     func testRvalue_Bitcast_u16_to_pointer() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, storage: .staticStorage(offset: 0xabcd)))
@@ -2540,46 +2517,6 @@ final class CoreToTackCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "lvalue required")
         }
-    }
-
-    func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
-        let symbols = Env()
-        let traitDecl = TraitDeclaration(
-            identifier: Identifier("Foo"),
-            members: [],
-            visibility: .privateVisibility
-        )
-        try TraitScanner(symbols: symbols).scan(trait: traitDecl)
-
-        let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
-        symbols.bind(
-            identifier: "foo",
-            symbol: Symbol(
-                type: .pointer(traitObjectType),
-                storage: .staticStorage(offset: 0x1000)
-            )
-        )
-
-        let traitType = try symbols.resolveType(identifier: traitDecl.identifier.identifier)
-        symbols.bind(
-            identifier: "bar",
-            symbol: Symbol(type: traitType, storage: .staticStorage(offset: 0x2000))
-        )
-
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(
-            expr: Assignment(
-                lexpr: Identifier("foo"),
-                rexpr: Identifier("bar")
-            )
-        )
-        let expected = Seq(children: [
-            TackInstructionNode(.lip(.p(0), 0x1000)),
-            TackInstructionNode(.lip(.p(1), 0x2000)),
-            TackInstructionNode(.sp(.p(1), .p(0), 0))
-        ])
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_Get_array_count() throws {

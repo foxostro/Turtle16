@@ -1540,6 +1540,20 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
 
         let rtype = try typeCheck(rexpr: rexpr)
+        
+        guard !rtype.isUnionType && !ltype.isUnionType else {
+            throw CompilerError(
+                sourceAnchor: rexpr.sourceAnchor,
+                message: "internal compiler error: unions should have been erased in a previous compiler pass"
+            )
+        }
+        
+        guard !rtype.isTraitType && !ltype.isTraitType else {
+            throw CompilerError(
+                sourceAnchor: rexpr.sourceAnchor,
+                message: "internal compiler error: traits should have been erased in a previous compiler pass"
+            )
+        }
 
         if canValueBeTriviallyReinterpreted(ltype, rtype) {
             // The expression produces a value whose bitpattern can be trivially
@@ -1789,141 +1803,24 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
-        case (_, .unionType(_)),
-             (.unionType(_), _):
-            
-            throw CompilerError(
-                sourceAnchor: rexpr.sourceAnchor,
-                message: "internal compiler error: unions should have been erased in a previous compiler pass"
-            )
-
-        case (.constPointer(let a), .traitType(let b)),
-            (.pointer(let a), .traitType(let b)),
-            (.constPointer(let a), .constTraitType(let b)),
-            (.pointer(let a), .constTraitType(let b)):
-            let structType = a.unwrapStructType()
-            let nameOfVtableInstance = nameOfVtableInstance(
-                traitName: b.name,
-                structName: structType.name
-            )
-            result = try rvalue(
-                expr: StructInitializer(
-                    sourceAnchor: rexpr.sourceAnchor,
-                    expr: Identifier(
-                        sourceAnchor: rexpr.sourceAnchor,
-                        identifier: b.nameOfTraitObjectType
-                    ),
-                    arguments: [
-                        // Take the pointer to the object and cast as an opaque *void
-                        StructInitializer.Argument(
-                            name: "object",
-                            expr: Bitcast(
-                                sourceAnchor: rexpr.sourceAnchor,
-                                expr: rexpr,
-                                targetType: PointerType(
-                                    sourceAnchor: rexpr.sourceAnchor,
-                                    typ: PrimitiveType(
-                                        sourceAnchor: rexpr.sourceAnchor,
-                                        typ: .void
-                                    )
-                                )
-                            )
-                        ),
-
-                        // Attach a pointer to the appropriate vtable instance.
-                        StructInitializer.Argument(
-                            name: "vtable",
-                            expr: Unary(
-                                sourceAnchor: rexpr.sourceAnchor,
-                                op: .ampersand,
-                                expression: Identifier(
-                                    sourceAnchor: rexpr.sourceAnchor,
-                                    identifier: nameOfVtableInstance
-                                )
-                            )
-                        )
-                    ]
-                )
-            )
-
-        case (.constStructType(let structType), .traitType(let b)),
-            (.structType(let structType), .traitType(let b)),
-            (.constStructType(let structType), .constTraitType(let b)),
-            (.structType(let structType), .constTraitType(let b)):
-            let nameOfVtableInstance = nameOfVtableInstance(
-                traitName: b.name,
-                structName: structType.name
-            )
-            let objectPointer = Unary(
-                sourceAnchor: rexpr.sourceAnchor,
-                op: .ampersand,
-                expression: rexpr
-            )
-            result = try rvalue(
-                expr: StructInitializer(
-                    sourceAnchor: rexpr.sourceAnchor,
-                    identifier: Identifier(
-                        sourceAnchor: rexpr.sourceAnchor,
-                        identifier: b.nameOfTraitObjectType
-                    ),
-                    arguments: [
-                        // Take the pointer to the object and cast as an opaque *void
-                        StructInitializer.Argument(
-                            name: "object",
-                            expr: Bitcast(
-                                sourceAnchor: rexpr.sourceAnchor,
-                                expr: objectPointer,
-                                targetType: PointerType(
-                                    sourceAnchor: rexpr.sourceAnchor,
-                                    typ: PrimitiveType(
-                                        sourceAnchor: rexpr.sourceAnchor,
-                                        typ: .void
-                                    )
-                                )
-                            )
-                        ),
-
-                        // Attach a pointer to the appropriate vtable instance.
-                        StructInitializer.Argument(
-                            name: "vtable",
-                            expr: Unary(
-                                sourceAnchor: rexpr.sourceAnchor,
-                                op: .ampersand,
-                                expression: Identifier(
-                                    sourceAnchor: rexpr.sourceAnchor,
-                                    identifier: nameOfVtableInstance
-                                )
-                            )
-                        )
-                    ]
-                )
-            )
-
         case (_, .constPointer(let b)),
-            (_, .pointer(let b)):
+             (_, .pointer(let b)):
+            
+            guard !rtype.isTraitType else {
+                throw CompilerError(
+                    sourceAnchor: rexpr.sourceAnchor,
+                    message: "internal compiler error: traits should have been erased in a previous compiler pass"
+                )
+            }
+            
             if rtype.correspondingConstType == b.correspondingConstType {
                 result = try lvalue(expr: rexpr)
             }
             else {
-                switch rtype {
-                case .traitType(let a), .constTraitType(let a):
-                    let traitObjectType = try? symbols!.resolveType(
-                        identifier: a.nameOfTraitObjectType
-                    )
-                    if traitObjectType == b {
-                        result = try lvalue(expr: rexpr)
-                    }
-                    else {
-                        fatalError(
-                            "Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)"
-                        )
-                    }
-
-                default:
-                    fatalError(
-                        "Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)"
-                    )
-                }
+                throw CompilerError(
+                    sourceAnchor: rexpr.sourceAnchor,
+                    message: "Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)"
+                )
             }
 
         default:
@@ -1965,9 +1862,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             (.constDynamicArray, .dynamicArray),
             (.dynamicArray, .constDynamicArray),
             (.dynamicArray, .dynamicArray),
-            (.unionType, .unionType),
-            (.traitType, .constTraitType),
-            (.constTraitType, .traitType),
             (.structType, .constStructType),
             (.constStructType, .structType):
             result = true

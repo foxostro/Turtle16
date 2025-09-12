@@ -3274,12 +3274,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         )
     }
 
-    func rvalue(eseq: Eseq) throws -> AbstractSyntaxTreeNode {
-        let visitedStmts = try visit(seq: eseq.seq)
-        let seq0 = (visitedStmts as? Seq) ?? Seq(sourceAnchor: eseq.sourceAnchor)
-        let expr = try rvalue(expr: eseq.expr)
-        let seq1 = seq0.appending(child: expr)
-        return seq1
+    func rvalue(eseq expr: Eseq) throws -> AbstractSyntaxTreeNode {
+        throw CompilerError(
+            sourceAnchor: expr.sourceAnchor,
+            message: "internal compiler error: `Eseq` nodes should have been erased in an earlier compiler pass: \(expr)"
+        )
     }
 
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {

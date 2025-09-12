@@ -3078,22 +3078,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
 
-    func rvalue(call expr: Call, typ: FunctionTypeInfo) throws -> AbstractSyntaxTreeNode {
-        do {
-            return try rvalueInner(call: expr, typ: typ)
-        }
-        catch let err as CompilerError {
-            guard let rewritten = try rewriteStructMemberFunctionCallIfPossible(expr) else {
-                throw err
-            }
-            return rewritten
-        }
-    }
-
-    fileprivate func rvalueInner(
+    func rvalue(
         call expr: Call,
         typ: FunctionTypeInfo
     ) throws -> AbstractSyntaxTreeNode {
+        
         _ = try RvalueExpressionTypeChecker(symbols: symbols!).checkInner(call: expr, typ: typ)
 
         let calleeType = try typeCheck(rexpr: expr.callee)
@@ -3276,61 +3265,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         }
         return outerSeq
-    }
-
-    fileprivate func rewriteStructMemberFunctionCallIfPossible(
-        _ expr: Call
-    ) throws -> AbstractSyntaxTreeNode? {
-        func matchStructMemberFunctionCall(
-            _ expr: Call
-        ) throws -> StructMemberFunctionCallMatcher.Match? {
-            try StructMemberFunctionCallMatcher(
-                call: expr,
-                typeChecker: rvalueContext
-            )
-            .match()
-        }
-
-        func rewriteStructMemberFunctionCall(
-            _ match: StructMemberFunctionCallMatcher.Match
-        ) throws -> AbstractSyntaxTreeNode {
-            let expr = match.callExpr
-            let tempSelf = try makeCompilerTemporary(
-                expr.sourceAnchor,
-                PrimitiveType(match.firstArgumentType)
-            )
-            let assign = try rvalue(
-                assignment: InitialAssignment(
-                    sourceAnchor: expr.sourceAnchor,
-                    lexpr: tempSelf,
-                    rexpr: match.getExpr.expr
-                )
-            )
-            registerStack.removeLast()
-            return Seq(
-                sourceAnchor: expr.sourceAnchor,
-                children: [
-                    assign,
-                    try rvalue(
-                        call: Call(
-                            sourceAnchor: expr.sourceAnchor,
-                            callee: Get(
-                                sourceAnchor: expr.sourceAnchor,
-                                expr: tempSelf,
-                                member: match.getExpr.member
-                            ),
-                            arguments: [tempSelf] + expr.arguments
-                        ),
-                        typ: match.fnType
-                    )
-                ]
-            )
-        }
-
-        guard let match = try matchStructMemberFunctionCall(expr) else {
-            return nil
-        }
-        return try rewriteStructMemberFunctionCall(match)
     }
 
     func rvalue(sizeof expr: SizeOf) throws -> AbstractSyntaxTreeNode {

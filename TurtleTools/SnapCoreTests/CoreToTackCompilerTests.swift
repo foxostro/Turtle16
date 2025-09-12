@@ -4236,10 +4236,8 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_Assignment_ToSymbolWithRegisterStorage_w() throws {
-        let t0: TackInstruction.Register16 = .w(0)
-        let t1: TackInstruction.Register16 = .w(1000)
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, storage: .registerStorage(.w(t1))))
+            ("foo", Symbol(type: .u16, storage: .registerStorage(.w(.w(1000)))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -4248,19 +4246,14 @@ final class CoreToTackCompilerTests: XCTestCase {
                 rexpr: LiteralInt(1000)
             )
         )
-        let expected = Seq(children: [
-            TackInstructionNode(.liuw(t0, 1000)),
-            TackInstructionNode(.movw(t1, t0))
-        ])
+        let expected = TackInstructionNode(.liuw(.w(1000), 1000))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(t1))
+        XCTAssertEqual(compiler.registerStack.last, .w(.w(1000)))
     }
 
     func testRvalue_Assignment_ToSymbolWithRegisterStorage_b() throws {
-        let t0: TackInstruction.Register8 = .b(0)
-        let t1: TackInstruction.Register8 = .b(1000)
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u8, storage: .registerStorage(.b(t1))))
+            ("foo", Symbol(type: .u8, storage: .registerStorage(.b(.b(1000)))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -4269,19 +4262,14 @@ final class CoreToTackCompilerTests: XCTestCase {
                 rexpr: LiteralInt(42)
             )
         )
-        let expected = Seq(children: [
-            TackInstructionNode(.liub(t0, 42)),
-            TackInstructionNode(.movb(t1, t0))
-        ])
+        let expected = TackInstructionNode(.liub(.b(1000), 42))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .b(t1))
+        XCTAssertEqual(compiler.registerStack.last, .b(.b(1000)))
     }
 
     func testRvalue_Assignment_ToSymbolWithRegisterStorage_o() throws {
-        let t0: TackInstruction.RegisterBoolean = .o(0)
-        let t1: TackInstruction.RegisterBoolean = .o(1000)
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .bool, storage: .registerStorage(.o(t1))))
+            ("foo", Symbol(type: .bool, storage: .registerStorage(.o(.o(1000)))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(
@@ -4290,12 +4278,9 @@ final class CoreToTackCompilerTests: XCTestCase {
                 rexpr: LiteralBool(true)
             )
         )
-        let expected = Seq(children: [
-            TackInstructionNode(.lio(t0, true)),
-            TackInstructionNode(.movo(t1, t0))
-        ])
+        let expected = TackInstructionNode(.lio(.o(1000), true))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .o(t1))
+        XCTAssertEqual(compiler.registerStack.last, .o(.o(1000)))
     }
 
     func testRvalue_ReadSymbolWithRegisterStorage_p() throws {
@@ -4397,10 +4382,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 rexpr: LiteralInt(1000)
             )
         )
-        let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(1), 1000)),
-            TackInstructionNode(.movw(.w(0), .w(1)))
-        ])
+        let expected = TackInstructionNode(.liuw(.w(0), 1000))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
         XCTAssertEqual(

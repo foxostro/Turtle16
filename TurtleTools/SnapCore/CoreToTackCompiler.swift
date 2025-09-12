@@ -53,17 +53,22 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return registerStack.last!
     }
 
-    func nextRegister(type: RegisterType) -> Register {
-        let result: Register = {
-            switch type {
-            case .p: return .p(.p(nextRegisterIndex))
-            case .w: return .w(.w(nextRegisterIndex))
-            case .b: return .b(.b(nextRegisterIndex))
-            case .o: return .o(.o(nextRegisterIndex))
-            }
-        }()
-        nextRegisterIndex += 1
-        return result
+    func nextRegister(type: RegisterType, hint: Register? = nil) -> Register {
+        if let hint {
+            assert(hint.type == type)
+            return hint
+        }
+        else {
+            let result: Register =
+                switch type {
+                case .p: .p(.p(nextRegisterIndex))
+                case .w: .w(.w(nextRegisterIndex))
+                case .b: .b(.b(nextRegisterIndex))
+                case .o: .o(.o(nextRegisterIndex))
+                }
+            nextRegisterIndex += 1
+            return result
+        }
     }
 
     public init(
@@ -1514,19 +1519,22 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     func compileAndConvertExpression(
         rexpr: Expression,
         ltype: SymbolType,
-        isExplicitCast: Bool
+        isExplicitCast: Bool,
+        destination desiredDst: Register? = nil
     ) throws -> AbstractSyntaxTreeNode {
         if let getExpr = rexpr as? Get,
             let member = getExpr.member as? Identifier,
             let structInitializer = getExpr.expr as? StructInitializer
         {
-            let argument = structInitializer.arguments.first(where: { $0.name == member.identifier }
-            )
+            let argument = structInitializer.arguments.first {
+                $0.name == member.identifier
+            }
             let memberExpr = argument!.expr
             let result = try compileAndConvertExpression(
                 rexpr: memberExpr,
                 ltype: ltype,
-                isExplicitCast: isExplicitCast
+                isExplicitCast: isExplicitCast,
+                destination: desiredDst
             )
             return result
         }
@@ -1546,7 +1554,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             (.booleanType(.compTimeBool(let a)), .constBool):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
-            let dst = nextRegister(type: .o)
+            let dst = nextRegister(type: .o, hint: desiredDst)
             pushRegister(dst)
             result = TackInstructionNode(
                 instruction: .lio(dst.unwrapBool!, a),
@@ -1558,7 +1566,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
-            let dst = nextRegister(type: .b)
+            let dst = nextRegister(type: .b, hint: desiredDst)
             pushRegister(dst)
             result = TackInstructionNode(
                 instruction: .liub(dst.unwrap8!, a),
@@ -1570,7 +1578,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
-            let dst = nextRegister(type: .b)
+            let dst = nextRegister(type: .b, hint: desiredDst)
             pushRegister(dst)
             result = TackInstructionNode(
                 instruction: .lib(dst.unwrap8!, a),
@@ -1582,7 +1590,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
-            let dst = nextRegister(type: .w)
+            let dst = nextRegister(type: .w, hint: desiredDst)
             pushRegister(dst)
             result = TackInstructionNode(
                 instruction: .liw(dst.unwrap16!, a),
@@ -1594,7 +1602,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
-            let dst = nextRegister(type: .w)
+            let dst = nextRegister(type: .w, hint: desiredDst)
             pushRegister(dst)
             result = TackInstructionNode(
                 instruction: .liuw(dst.unwrap16!, a),
@@ -1611,7 +1619,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     try rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
-                let dst = nextRegister(type: .w)
+                let dst = nextRegister(type: .w, hint: desiredDst)
                 pushRegister(dst)
                 children += [
                     TackInstructionNode(
@@ -1629,7 +1637,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     try rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
-                let dst = nextRegister(type: .w)
+                let dst = nextRegister(type: .w, hint: desiredDst)
                 pushRegister(dst)
                 children += [
                     TackInstructionNode(
@@ -1649,7 +1657,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     try rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
-                let dst = nextRegister(type: .b)
+                let dst = nextRegister(type: .b, hint: desiredDst)
                 pushRegister(dst)
                 children += [
                     TackInstructionNode(
@@ -1671,7 +1679,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     try rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
-                let dst = nextRegister(type: .b)
+                let dst = nextRegister(type: .b, hint: desiredDst)
                 pushRegister(dst)
                 children += [
                     TackInstructionNode(
@@ -2755,29 +2763,40 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 let rvalueProc = try compileAndConvertExpression(
                     rexpr: expr.rexpr,
                     ltype: ltype,
-                    isExplicitCast: false
+                    isExplicitCast: false,
+                    destination: dst
                 )
                 let src = popRegister()
-
-                let mov: TackInstruction? =
-                    switch (dst, src) {
-                    case (.p(let p1), .p(let p0)): .movp(p1, p0)
-                    case (.w(let w1), .w(let w0)): .movw(w1, w0)
-                    case (.b(let b1), .b(let b0)): .movb(b1, b0)
-                    case (.o(let o1), .o(let o0)): .movo(o1, o0)
-                    default: nil
-                    }
-
-                result = Seq(
-                    sourceAnchor: expr.sourceAnchor,
-                    children: [
-                        rvalueProc,
+                
+                var children: [AbstractSyntaxTreeNode] = [
+                    rvalueProc
+                ]
+                
+                if src != dst {
+                    let mov: TackInstruction =
+                        switch (dst, src) {
+                        case (.p(let p1), .p(let p0)): .movp(p1, p0)
+                        case (.w(let w1), .w(let w0)): .movw(w1, w0)
+                        case (.b(let b1), .b(let b0)): .movb(b1, b0)
+                        case (.o(let o1), .o(let o0)): .movo(o1, o0)
+                        default:
+                            throw CompilerError(
+                                sourceAnchor: expr.sourceAnchor,
+                                message: "internal compiler error: failed to generate appropriate MOV instruction for (\(dst), \(src))"
+                            )
+                        }
+                    children.append(
                         TackInstructionNode(
-                            instruction: mov!,
+                            instruction: mov,
                             sourceAnchor: expr.sourceAnchor,
                             symbols: symbols
                         )
-                    ]
+                    )
+                }
+
+                result = Seq(
+                    sourceAnchor: expr.sourceAnchor,
+                    children: children
                 )
 
                 pushRegister(dst)

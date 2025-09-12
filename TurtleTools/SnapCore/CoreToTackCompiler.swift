@@ -20,8 +20,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     public internal(set) var registerStack: [Register] = []
     private var nextRegisterIndex = 0
     private let kOOB = "__oob"
-    private let kHalt = "hlt"
-    private let kSyscall = "__syscall"
 
     private let kSliceName = "Slice"
     private let kSliceBase = "base"

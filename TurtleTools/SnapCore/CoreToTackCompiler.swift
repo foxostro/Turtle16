@@ -3005,26 +3005,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             ]
 
         case .constStructType(let typ), .structType(let typ):
-            // TODO: The compiler has special handling of Range.count but maybe it shouldn't
-            if typ.name == "Range", name == "count" {
-                let calcCount = Binary(
-                    sourceAnchor: expr.sourceAnchor,
-                    op: .minus,
-                    left: Get(
-                        sourceAnchor: expr.sourceAnchor,
-                        expr: expr.expr,
-                        member: Identifier("limit")
-                    ),
-                    right: Get(
-                        sourceAnchor: expr.sourceAnchor,
-                        expr: expr.expr,
-                        member: Identifier("begin")
-                    )
-                )
-                let result = try rvalue(binary: calcCount)
-                return result
-            }
-
             let symbol = try typ.symbols.resolve(identifier: name)
             let offset = symbol.storage.offset!
 

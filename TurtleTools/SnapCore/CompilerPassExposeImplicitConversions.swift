@@ -146,40 +146,51 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     
     public override func visit(get node0: Get) throws -> Expression {
         let objectType = try rvalueContext.check(expression: node0.expr)
-        guard let typ = objectType.maybeUnwrapStructType() else { return node0 }
         
-        // TODO: The compiler has special handling of Range.count but maybe it shouldn't
-        if let member = node0.member as? Identifier,
-           typ.name == "Range", member.identifier == "count" {
-            
-            return Binary(
-                sourceAnchor: node0.sourceAnchor,
-                op: .minus,
-                left: Get(
+        switch objectType {
+        case .structType(let typ), .constStructType(let typ):
+            // TODO: The compiler has special handling of Range.count but maybe it shouldn't
+            if let member = node0.member as? Identifier,
+               typ.name == "Range", member.identifier == "count" {
+                
+                return Binary(
                     sourceAnchor: node0.sourceAnchor,
-                    expr: Unary(
+                    op: .minus,
+                    left: Get(
                         sourceAnchor: node0.sourceAnchor,
-                        op: .ampersand,
-                        expression: node0.expr
+                        expr: Unary(
+                            sourceAnchor: node0.sourceAnchor,
+                            op: .ampersand,
+                            expression: node0.expr
+                        ),
+                        member: Identifier("limit")
                     ),
-                    member: Identifier("limit")
-                ),
-                right: Get(
-                    sourceAnchor: node0.sourceAnchor,
-                    expr: Unary(
+                    right: Get(
                         sourceAnchor: node0.sourceAnchor,
-                        op: .ampersand,
-                        expression: node0.expr
-                    ),
-                    member: Identifier("begin")
+                        expr: Unary(
+                            sourceAnchor: node0.sourceAnchor,
+                            op: .ampersand,
+                            expression: node0.expr
+                        ),
+                        member: Identifier("begin")
+                    )
                 )
+            }
+            
+            let node1 = node0.withExpr(
+                try conversion(expr: node0.expr, to: .pointer(objectType))
             )
+            return node1
+            
+        case .dynamicArray, .constDynamicArray:
+            let node1 = node0.withExpr(
+                try conversion(expr: node0.expr, to: .pointer(objectType))
+            )
+            return node1
+            
+        default:
+            return node0
         }
-        
-        let node1 = node0.withExpr(
-            try conversion(expr: node0.expr, to: .pointer(objectType))
-        )
-        return node1
     }
     
     public override func visit(binary node0: Binary) throws -> Expression? {

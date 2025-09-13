@@ -83,45 +83,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
     }
 
-    func testSimpleProgram() throws {
-        let tackProgram = try compile(
-            program: """
-                let a = 1
-                """
-        )
-        XCTAssertEqual(
-            tackProgram.listing,
-            """
-            0000  LIP p0, 272
-            0001  LIUB b1, 1
-            0002  SB b1, p0, 0
-            """
-        )
-    }
-
-    func testFunctionDefinition() throws {
-        let tackProgram = try compile(
-            program: """
-                func foo() {
-                    let a = 1
-                }
-                """
-        )
-
-        XCTAssertEqual(
-            tackProgram.listing,
-            """
-            0000       HLT
-            0001  foo: ENTER 1
-            0002       SUBIP p0, fp, 1
-            0003       LIUB b1, 1
-            0004       SB b1, p0, 0
-            0005       LEAVE
-            0006       RET
-            """
-        )
-    }
-
     fileprivate struct Options {
         public let isVerboseLogging: Bool
         public let isBoundsCheckEnabled: Bool

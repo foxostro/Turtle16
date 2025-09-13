@@ -11,14 +11,23 @@ import TurtleCore
 /// Bubble Eseq nodes up the AST, toward the root, until they can be erased.
 public final class CompilerPassEraseEseq: CompilerPass {
     public override func visit(eseq node0: Eseq) throws -> Expression? {
-        guard let node1 = try super.visit(eseq: node0) as? Eseq else {
+        let node1 = try super.visit(eseq: node0)
+        guard let node1 = node1 as? Eseq else {
             throw CompilerError(
                 sourceAnchor: node0.sourceAnchor,
-                message: "internal compiler error: expected Eseq: \(node0)"
+                message: "internal compiler error: expected Eseq: \(String(describing: node1))"
             )
         }
         if node1.seq.children.isEmpty {
             return node1.expr
+        }
+        else if let expr = node1.expr as? Eseq {
+            let node2 = node1
+                .withSeq(
+                    node1.seq.appending(children: expr.seq.children)
+                )
+                .withExpr(expr.expr)
+            return node2
         }
         else {
             return node1

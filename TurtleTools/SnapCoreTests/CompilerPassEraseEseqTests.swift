@@ -1308,4 +1308,51 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testEraseEseqInExprOfEseq() throws {
+        let expected = Eseq(
+            seq: Seq(
+                children: [
+                    VarDeclaration(
+                        identifier: Identifier("bar"),
+                        explicitType: PrimitiveType(.u8),
+                        expression: nil,
+                        storage: .automaticStorage(offset: nil)
+                    ),
+                    VarDeclaration(
+                        identifier: Identifier("foo"),
+                        explicitType: PrimitiveType(.u8),
+                        expression: nil,
+                        storage: .automaticStorage(offset: nil)
+                    )
+                ]
+            ),
+            expr: Identifier("foo")
+        )
+        let input = Eseq(
+            seq: Seq(
+                children: [
+                    VarDeclaration(
+                        identifier: Identifier("bar"),
+                        explicitType: PrimitiveType(.u8),
+                        expression: nil,
+                        storage: .automaticStorage(offset: nil)
+                    )
+                ]
+            ),
+            expr: Eseq(
+                seq: Seq(children: [
+                    VarDeclaration(
+                        identifier: Identifier("foo"),
+                        explicitType: PrimitiveType(.u8),
+                        expression: nil,
+                        storage: .automaticStorage(offset: nil)
+                    )
+                ]),
+                expr: Identifier("foo")
+            )
+        )
+        let actual = try input.eraseEseq()?.flatten()
+        XCTAssertEqual(actual, expected)
+    }
 }

@@ -147,27 +147,21 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 storage: .automaticStorage(offset: nil),
                 isMutable: false
             ),
-            Eseq(
-                seq: Seq(
-                    children: [
-                        InitialAssignment(
-                            lexpr: Get(expr: AddressOf(foo), member: tag),
-                            rexpr: LiteralInt(1)
-                        )
-                    ]
-                ),
-                expr: InitialAssignment(
-                    lexpr: Get(
-                        expr: Bitcast(
-                            expr: AddressOf(
-                                Get(expr: AddressOf(foo), member: payload)
-                            ),
-                            targetType: PointerType(ConstType(PrimitiveType(.bool)))
+            InitialAssignment(
+                lexpr: Get(expr: AddressOf(foo), member: tag),
+                rexpr: LiteralInt(1)
+            ),
+            InitialAssignment(
+                lexpr: Get(
+                    expr: Bitcast(
+                        expr: AddressOf(
+                            Get(expr: AddressOf(foo), member: payload)
                         ),
-                        member: pointee
+                        targetType: PointerType(ConstType(PrimitiveType(.bool)))
                     ),
-                    rexpr: LiteralBool(false)
-                )
+                    member: pointee
+                ),
+                rexpr: LiteralBool(false)
             )
         ])
         .reconnect(parent: nil)

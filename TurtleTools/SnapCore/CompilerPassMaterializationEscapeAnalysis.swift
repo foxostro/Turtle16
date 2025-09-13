@@ -89,7 +89,6 @@ public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDe
 extension AbstractSyntaxTreeNode {
     /// Mark eligible variables with the "register" storage class
     public func escapeAnalysis() throws -> AbstractSyntaxTreeNode? {
-        let result = try CompilerPassMaterializationEscapeAnalysis().run(self)
-        return result
+        try CompilerPassMaterializationEscapeAnalysis().run(self)
     }
 }

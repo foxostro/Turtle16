@@ -84,7 +84,7 @@ public final class CompilerPassEraseCompileTimeExpressions: CompilerPassWithDecl
                     sourceAnchor: node0.expr.sourceAnchor,
                     value: count!
                 ),
-                targetType: PrimitiveType(.u16),
+                targetType: PrimitiveType(typ),
             )
             
         default:

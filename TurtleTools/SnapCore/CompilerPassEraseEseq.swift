@@ -10,6 +10,21 @@ import TurtleCore
 
 /// Bubble Eseq nodes up the AST, toward the root, until they can be erased.
 public final class CompilerPassEraseEseq: CompilerPass {
+    public struct Options: OptionSet {
+        public let rawValue: UInt
+        public static let ignoreLoopCondition = Options(rawValue: 1 << 0)
+        public init(rawValue: UInt) {
+            self.rawValue = rawValue
+        }
+    }
+    
+    public let options: Options
+    
+    public init(options: Options = [], symbols: Env? = nil) {
+        self.options = options
+        super.init(symbols)
+    }
+    
     public override func visit(eseq node0: Eseq) throws -> Expression? {
         let node1 = try super.visit(eseq: node0)
         guard let node1 = node1 as? Eseq else {
@@ -82,7 +97,7 @@ public final class CompilerPassEraseEseq: CompilerPass {
     }
 
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
-        guard !(node0.condition is Eseq) else {
+        guard options.contains(.ignoreLoopCondition) || !(node0.condition is Eseq) else {
             throw CompilerError(
                 sourceAnchor: node0.condition.sourceAnchor,
                 message: "internal compiler error: unable to erase an Eseq when used as the condition of a while-loop"
@@ -528,7 +543,9 @@ public final class CompilerPassEraseEseq: CompilerPass {
 
 extension AbstractSyntaxTreeNode {
     /// Bubble Eseq nodes up the AST, toward the root, until they can be erased.
-    public func eraseEseq() throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassEraseEseq().visit(self)
+    public func eraseEseq(
+        options opts: CompilerPassEraseEseq.Options = []
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassEraseEseq(options: opts).visit(self)
     }
 }

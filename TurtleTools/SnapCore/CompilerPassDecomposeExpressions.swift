@@ -586,7 +586,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     private func isCompilerTemporary(_ expr: Expression?) -> Bool {
         guard let expr = expr as? Identifier else { return false }
         let type = try? rvalueContext.check(identifier: expr)
-        return (true == type?.isPrimitive) && expr.identifier.hasPrefix(tempPrefix)
+        return (true == type?.isPrimitive) && expr.identifier.hasPrefix("__")
     }
 }
 

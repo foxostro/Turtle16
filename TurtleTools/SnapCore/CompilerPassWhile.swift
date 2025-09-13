@@ -11,14 +11,16 @@ import TurtleCore
 /// Compiler pass to lower and erase "while" statements
 public final class CompilerPassWhile: CompilerPassWithDeclScan {
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
+        let condition = try visit(expr: node0.condition)!
+        let conditionType = try rvalueContext.check(expression: condition)
+        guard conditionType.isBooleanType else {
+            throw CompilerError(
+                sourceAnchor: node0.condition.sourceAnchor,
+                message: "cannot convert value of type `\(conditionType)' to type `bool'"
+            )
+        }
         let symbols = symbols!
         let s = node0.sourceAnchor
-        let condition = As(
-            sourceAnchor: node0.condition.sourceAnchor,
-            expr: node0.condition,
-            targetType: PrimitiveType(.bool)
-        )
-        try rvalueContext.check(expression: condition)
         let labelHead = symbols.nextLabel()
         let labelTail = symbols.nextLabel()
         let node1 = Seq(
@@ -30,13 +32,12 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
                     condition: condition,
                     target: labelTail
                 ),
-                node0.body,
+                try visit(node0.body)!,
                 Goto(sourceAnchor: s, target: labelHead),
                 LabelDeclaration(sourceAnchor: s, identifier: labelTail)
             ]
         )
-        let node2 = try super.visit(node1)
-        return node2
+        return node1
     }
 }
 

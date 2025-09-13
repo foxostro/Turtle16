@@ -100,18 +100,19 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
 
     private let a = Identifier("a")
     private let b = Identifier("b")
-    private let i = Identifier("i")
     private let bar = Identifier("bar")
     private let baz = Identifier("baz")
+    private let bool = PrimitiveType(.bool)
+    private let count = Identifier("count")
     private let foo = Identifier("foo")
     private let Foo = Identifier("Foo")
+    private let i = Identifier("i")
     private let MyStruct1 = Identifier("MyStruct1")
     private let MyStruct2 = Identifier("MyStruct2")
     private let pointee = Identifier("pointee")
     private let ptr = Identifier("ptr")
     private let u8 = PrimitiveType(.u8)
     private let u16 = PrimitiveType(.u16)
-    private let bool = PrimitiveType(.bool)
 
     func testReturnStatement() throws {
         let input = Block(children: [
@@ -1730,6 +1731,25 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
+    
+    // Ignore Get expressions where the object has a dynamic array type.
+    // This is a special case escape hatch which will be removed after we add a
+    // new compiler pass to erase dynamic arrays.
+    func testIgnoreGetExpressionAppliedToDynamicArrayType() throws {
+        let shared = [
+            VarDeclaration(identifier: foo, explicitType: DynamicArrayType(u16))
+        ]
+        let input = Block(
+            children: shared + [
+                Get(expr: foo, member: count)
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let actual = try input.decomposeExpressions()
+        let expected = input
         XCTAssertEqual(actual, expected)
     }
 }

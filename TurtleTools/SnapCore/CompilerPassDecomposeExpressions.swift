@@ -321,9 +321,13 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
 
     public override func visit(get node0: Get) throws -> Expression? {
+        let objectType = try rvalueContext.check(expression: node0.expr)
+        
+        // TODO: DynamicArray types should be erased in an earlier compiler pass
+        guard !objectType.isDynamicArrayType else { return node0 }
+        
         // If the object of the Get expression is something that evaluates to a
         // pointer type then extract that pointer value to a new temporary.
-        let objectType = try rvalueContext.check(expression: node0.expr)
         guard objectType.isPointerType else {
             throw CompilerError(
                 sourceAnchor: node0.sourceAnchor,

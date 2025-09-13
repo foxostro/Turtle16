@@ -273,6 +273,15 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public var isStructType: Bool {
         maybeUnwrapStructType() != nil
     }
+    
+    public var isDynamicArrayType: Bool {
+        switch self {
+        case .dynamicArray, .constDynamicArray:
+            true
+        default:
+            false
+        }
+    }
 
     public var isArrayType: Bool {
         switch self {

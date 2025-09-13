@@ -65,7 +65,7 @@ public final class CompilerPassForIn: CompilerPass {
                         member: count
                     ),
                     storage: .automaticStorage(offset: nil),
-                    isMutable: false
+                    isMutable: true
                 ),
                 VarDeclaration(
                     sourceAnchor: node1.sourceAnchor,

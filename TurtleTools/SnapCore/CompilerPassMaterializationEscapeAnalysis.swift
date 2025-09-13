@@ -64,7 +64,7 @@ public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDe
             
             escapes.insert(decl)
         }
-        return node
+        return try super.visit(unary: node)
     }
     
     public override func visit(

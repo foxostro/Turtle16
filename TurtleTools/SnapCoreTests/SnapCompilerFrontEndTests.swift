@@ -2861,7 +2861,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                 struct Foo {
                     buffer: []const u8
                 }
-                let foo = Foo {
+                var foo = Foo {
                     .buffer = "Hello, World!"
                 }
                 foo.buffer = foo.buffer[0..5]

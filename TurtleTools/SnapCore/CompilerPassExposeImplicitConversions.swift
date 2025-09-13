@@ -137,10 +137,14 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         let lexpr = try visit(expr: node0.lexpr)!
         let lvalueType = try lvalueContext.check(expression: lexpr)!
         guard !lvalueType.isUnionType else { return node0 }
-        let rexpr = try visit(expr: node0.rexpr)!
-        let node1 = node0.withRexpr(
-            try conversion(expr: rexpr, to: lvalueType)
-        )
+        let node1 = node0
+            .withLexpr(lexpr)
+            .withRexpr(
+                try conversion(
+                    expr: try visit(expr: node0.rexpr)!,
+                    to: lvalueType
+                )
+            )
         return node1
     }
     

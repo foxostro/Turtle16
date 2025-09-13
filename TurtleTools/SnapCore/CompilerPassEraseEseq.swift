@@ -73,14 +73,13 @@ public final class CompilerPassEraseEseq: CompilerPass {
     }
 
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try super.visit(while: node0)
-        guard let node1 = node1 as? While else { return node1 }
-        guard let eseq = node1.condition as? Eseq else { return node1 }
-        let node2 = Seq(
-            sourceAnchor: node1.sourceAnchor,
-            children: eseq.seq.children + [node1.withCondition(eseq.expr)]
-        )
-        return node2
+        guard !(node0.condition is Eseq) else {
+            throw CompilerError(
+                sourceAnchor: node0.condition.sourceAnchor,
+                message: "internal compiler error: unable to erase an Eseq when used as the condition of a while-loop"
+            )
+        }
+        return try super.visit(while: node0)
     }
 
     public override func visit(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {

@@ -70,11 +70,11 @@ public final class SnapToCoreCompiler {
             .exposeImplicitConversions()?
             .eraseUnions(memoryLayoutStrategy)?
             .escapeAnalysis()?
-            .eraseEseq()?
             .assertPass()?
             .returnPass()?
             .whilePass()?
             .ifPass()?
+            .eraseEseq()?
             .flatten()
         guard let block = core as? Block else {
             throw CompilerError(

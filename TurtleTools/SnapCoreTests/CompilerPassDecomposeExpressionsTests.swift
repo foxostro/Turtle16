@@ -10,6 +10,26 @@ import SnapCore
 import TurtleCore
 import XCTest
 
+extension VarDeclaration {
+    convenience init(
+        identifier: Identifier,
+        explicitType: Expression? = nil,
+        expression: Expression? = nil,
+        storage: SymbolStorage = .automaticStorage(offset: nil),
+        isMutable: Bool = false
+    ) {
+        self.init(
+            sourceAnchor: nil,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: .privateVisibility
+        )
+    }
+}
+
 final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     var symbols: Env!
     var staticStorageFrame: Frame!
@@ -89,6 +109,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     private let MyStruct2 = Identifier("MyStruct2")
     private let pointee = Identifier("pointee")
     private let ptr = Identifier("ptr")
+    private let u8 = PrimitiveType(.u8)
     private let u16 = PrimitiveType(.u16)
     private let bool = PrimitiveType(.bool)
 
@@ -1640,24 +1661,75 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-}
-
-extension VarDeclaration {
-    convenience init(
-        identifier: Identifier,
-        explicitType: Expression? = nil,
-        expression: Expression? = nil,
-        storage: SymbolStorage = .automaticStorage(offset: nil),
-        isMutable: Bool = false
-    ) {
-        self.init(
-            sourceAnchor: nil,
-            identifier: identifier,
-            explicitType: explicitType,
-            expression: expression,
-            storage: storage,
-            isMutable: isMutable,
-            visibility: .privateVisibility
+    
+    func testExtractArrayConversionByValueBecauseItHasNoLvalue() throws {
+        let arrType = ArrayType(
+            count: LiteralInt(0),
+            elementType: u16
         )
+        let shared = [
+            VarDeclaration(
+                identifier: foo,
+                explicitType: arrType,
+                isMutable: true
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: foo,
+                    rexpr: As(
+                        expr: LiteralArray(
+                            arrayType: ArrayType(
+                                count: LiteralInt(0),
+                                elementType: u8
+                            ),
+                            elements: []
+                        ),
+                        targetType: arrType
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let temp0 = Temp(
+            i: 0,
+            expr: AddressOf(foo),
+            explicitType: ConstType(PointerType(arrType))
+        )
+        let temp1 = Temp(
+            i: 1,
+            expr: LiteralArray(
+                arrayType: ArrayType(
+                    count: LiteralInt(0),
+                    elementType: u8
+                ),
+                elements: []
+            ),
+            explicitType: ConstType(
+                ArrayType(
+                    count: LiteralInt(0),
+                    elementType: u8
+                )
+            )
+        )
+        let temp2 = Temp(
+            i: 2,
+            expr: As(expr: temp1, targetType: arrType),
+            explicitType: ConstType(arrType)
+        )
+        let expected = Block(
+            children: shared + [
+                Assignment(
+                    lexpr: Get(expr: temp0, member: pointee),
+                    rexpr: temp2
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
     }
 }

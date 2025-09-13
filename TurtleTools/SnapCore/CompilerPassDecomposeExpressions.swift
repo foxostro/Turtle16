@@ -476,10 +476,13 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             return try extractByValue(expr)
         }
         
-        guard !(expr is LiteralString) && !(expr is LiteralArray) else {
+        guard !(expr is LiteralString),
+              !(expr is LiteralArray),
+              let _ = try lvalueContext.check(expression: expr) else {
+            
             return try extractByValue(expr)
         }
-    
+        
         let get = Get(
             sourceAnchor: expr.sourceAnchor,
             expr: try extract(

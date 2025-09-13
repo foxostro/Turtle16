@@ -11,6 +11,8 @@ import TurtleCore
 /// Erase expressions which are to be evaluated at compile-time
 /// This includes `Is`, `TypeOf`, and `SizeOf` nodes.
 public final class CompilerPassEraseCompileTimeExpressions: CompilerPassWithDeclScan {
+    private let usize: SymbolType = .u16 // TODO: The type to use for `usize` should be determined by policy at a higher level
+    
     public override func visit(is node: Is) throws -> Expression? {
         let exprType = try rvalueContext.check(expression: node.expr)
         
@@ -45,7 +47,7 @@ public final class CompilerPassEraseCompileTimeExpressions: CompilerPassWithDecl
             ),
             targetType: PrimitiveType(
                 sourceAnchor: node.sourceAnchor,
-                typ: .u16
+                typ: usize
             )
         )
     }
@@ -77,14 +79,17 @@ public final class CompilerPassEraseCompileTimeExpressions: CompilerPassWithDecl
     
     public override func visit(get node0: Get) throws -> Expression? {
         switch try rvalueContext.check(expression: node0.expr) {
-        case .array(count: let count, elementType: let typ) where count != nil:
+        case .array(count: let count, elementType: _) where count != nil:
             As(
                 sourceAnchor: node0.expr.sourceAnchor,
                 expr: LiteralInt(
                     sourceAnchor: node0.expr.sourceAnchor,
                     value: count!
                 ),
-                targetType: PrimitiveType(typ),
+                targetType: PrimitiveType(
+                    sourceAnchor: node0.expr.sourceAnchor,
+                    typ: usize
+                )
             )
             
         default:

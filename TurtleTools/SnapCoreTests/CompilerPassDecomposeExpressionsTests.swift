@@ -152,69 +152,6 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    func testForInStatement_OverString() throws {
-        let input = Block(children: [
-            ForIn(
-                identifier: i,
-                sequenceExpr: LiteralString(""),
-                body: Block()
-            )
-        ])
-        .reconnect(parent: nil)
-
-        let temp0 = Temp(i: 0, expr: LiteralString(""))
-        let expected = Block(children: [
-            ForIn(
-                identifier: i,
-                sequenceExpr: temp0,
-                body: Block()
-            )
-        ])
-        .reconnect(parent: nil)
-
-        let actual = try input.decomposeExpressions()
-        XCTAssertEqual(actual, expected)
-    }
-    
-    func testForInStatement_OverArray() throws {
-        let input = Block(children: [
-            ForIn(
-                identifier: i,
-                sequenceExpr: LiteralArray(
-                    arrayType: ArrayType(
-                        count: nil,
-                        elementType: PrimitiveType(.u8)
-                    ),
-                    elements: []
-                ),
-                body: Block()
-            )
-        ])
-        .reconnect(parent: nil)
-
-        let temp0 = Temp(
-            i: 0,
-            expr: LiteralArray(
-                arrayType: ArrayType(
-                    count: nil,
-                    elementType: PrimitiveType(.u8)
-                ),
-                elements: []
-            )
-        )
-        let expected = Block(children: [
-            ForIn(
-                identifier: i,
-                sequenceExpr: temp0,
-                body: Block()
-            )
-        ])
-        .reconnect(parent: nil)
-
-        let actual = try input.decomposeExpressions()
-        XCTAssertEqual(actual, expected)
-    }
-
     func testMatchStatement() throws {
         let input = Block(children: [
             Match(

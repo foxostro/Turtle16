@@ -39,8 +39,9 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
     
     public override func visit(forIn node: ForIn) throws -> AbstractSyntaxTreeNode? {
-        node.withSequenceExpr(
-            try extract(expr: try visit(expr: node.sequenceExpr))!
+        throw CompilerError(
+            sourceAnchor: node.sourceAnchor,
+            message: "internal compiler error: expected ForIn statements to have been erased in an earlier compiler pass"
         )
     }
     

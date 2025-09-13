@@ -294,6 +294,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let symbol = resolution.0
             let depth = resolution.1
             assert(depth >= 0)
+            
+            guard !symbol.storage.isRegisterStorage else {
+                throw CompilerError(
+                    sourceAnchor: node.sourceAnchor,
+                    message: "internal compiler error: symbol with register storage has no memory address: \(symbol)"
+                )
+            }
+            
             let result = computeAddressOfSymbol(
                 sourceAnchor: node.sourceAnchor,
                 symbol: symbol,
@@ -1032,7 +1040,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
         case .registerStorage:
-            fatalError("symbol has no memory address: \(symbol)")
+            fatalError("internal compiler error: symbol with register storage has no memory address: \(symbol)")
         }
         return Seq(sourceAnchor: sourceAnchor, children: children)
     }

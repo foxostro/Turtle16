@@ -312,7 +312,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                         lexpr: TempRef(0),
                         rexpr: AddressOf(foo)
                     ),
-                    Assignment(
+                    InitialAssignment(
                         lexpr: Get(
                             expr: Temp(
                                 i: 2,
@@ -975,7 +975,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 lexpr: TempRef(0),
                                 rexpr: AddressOf(foo)
                             ),
-                            Assignment(
+                            InitialAssignment(
                                 lexpr: Get(
                                     expr: Temp(
                                         i: 2,
@@ -991,7 +991,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 ),
                                 rexpr: Temp(i: 3, expr: LiteralInt(1000))
                             ),
-                            Assignment(
+                            InitialAssignment(
                                 lexpr: Get(
                                     expr: Temp(
                                         i: 5,
@@ -1007,7 +1007,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 ),
                                 rexpr: Temp(i: 6, expr: LiteralInt(2000))
                             ),
-                            Assignment(
+                            InitialAssignment(
                                 lexpr: Get(
                                     expr: Temp(
                                         i: 8,

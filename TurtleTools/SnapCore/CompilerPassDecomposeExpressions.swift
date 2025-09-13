@@ -196,7 +196,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 )
             )
             let rexpr = try extract(expr: el)!
-            let a = Assignment(
+            let a = InitialAssignment(
                 sourceAnchor: el.sourceAnchor,
                 lexpr: lexpr,
                 rexpr: rexpr

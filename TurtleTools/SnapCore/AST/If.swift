@@ -47,6 +47,26 @@ public final class If: AbstractSyntaxTreeNode {
             id: id
         )
     }
+    
+    public func withThenBranch(_ thenBranch: AbstractSyntaxTreeNode) -> If {
+        If(
+            sourceAnchor: sourceAnchor,
+            condition: condition,
+            then: thenBranch,
+            else: elseBranch,
+            id: id
+        )
+    }
+    
+    public func withElseBranch(_ elseBranch: AbstractSyntaxTreeNode?) -> If {
+        If(
+            sourceAnchor: sourceAnchor,
+            condition: condition,
+            then: thenBranch,
+            else: elseBranch,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

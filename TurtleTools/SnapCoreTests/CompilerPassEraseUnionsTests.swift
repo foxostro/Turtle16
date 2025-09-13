@@ -18,6 +18,10 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
     private let tag = Identifier("tag")
     private let payload = Identifier("payload")
     private let pointee = Identifier("pointee")
+    
+    private func AddressOf(_ expr: Expression) -> Unary {
+        Unary(op: .ampersand, expression: expr)
+    }
 
     func testEraseUnionTypeExpression_ZeroMembers() throws {
         let input = Block(children: [
@@ -147,10 +151,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 seq: Seq(
                     children: [
                         InitialAssignment(
-                            lexpr: Get(
-                                expr: foo,
-                                member: tag
-                            ),
+                            lexpr: Get(expr: AddressOf(foo), member: tag),
                             rexpr: LiteralInt(1)
                         )
                     ]
@@ -158,12 +159,8 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 expr: InitialAssignment(
                     lexpr: Get(
                         expr: Bitcast(
-                            expr: Unary(
-                                op: .ampersand,
-                                expression: Get(
-                                    expr: foo,
-                                    member: payload
-                                )
+                            expr: AddressOf(
+                                Get(expr: AddressOf(foo), member: payload)
                             ),
                             targetType: PointerType(ConstType(PrimitiveType(.bool)))
                         ),
@@ -288,19 +285,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             Eseq(
                 seq: Seq(children: [
                     Assignment(
-                        lexpr: Get(expr: foo, member: tag),
+                        lexpr: Get(expr: AddressOf(foo), member: tag),
                         rexpr: LiteralInt(0)
                     )
                 ]),
                 expr: Assignment(
                     lexpr: Get(
                         expr: Bitcast(
-                            expr: Unary(
-                                op: .ampersand,
-                                expression: Get(
-                                    expr: foo,
-                                    member: payload
-                                )
+                            expr: AddressOf(
+                                Get(expr: AddressOf(foo), member: payload)
                             ),
                             targetType: PointerType(PrimitiveType(.u16))
                         ),
@@ -356,19 +349,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             Eseq(
                 seq: Seq(children: [
                     Assignment(
-                        lexpr: Get(expr: foo, member: tag),
+                        lexpr: Get(expr: AddressOf(foo), member: tag),
                         rexpr: LiteralInt(1)
                     )
                 ]),
                 expr: Assignment(
                     lexpr: Get(
                         expr: Bitcast(
-                            expr: Unary(
-                                op: .ampersand,
-                                expression: Get(
-                                    expr: foo,
-                                    member: payload
-                                )
+                            expr: AddressOf(
+                                Get(expr: AddressOf(foo), member: payload)
                             ),
                             targetType: PointerType(PrimitiveType(.bool))
                         ),
@@ -423,7 +412,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             ),
             Binary(
                 op: .eq,
-                left: Get(expr: foo, member: tag),
+                left: Get(expr: AddressOf(foo), member: tag),
                 right: LiteralInt(1)
             )
         ])
@@ -478,7 +467,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                                 op: .bang,
                                 expression: Binary(
                                     op: .eq,
-                                    left: Get(expr: foo, member: tag),
+                                    left: Get(expr: AddressOf(foo), member: tag),
                                     right: LiteralInt(1)
                                 )
                             ),
@@ -499,12 +488,8 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 expr:
                     Get(
                         expr: Bitcast(
-                            expr: Unary(
-                                op: .ampersand,
-                                expression: Get(
-                                    expr: foo,
-                                    member: payload
-                                )
+                            expr: AddressOf(
+                                Get(expr: AddressOf(foo), member: payload)
                             ),
                             targetType: PointerType(PrimitiveType(.bool))
                         ),
@@ -563,7 +548,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                                 op: .bang,
                                 expression: Binary(
                                     op: .eq,
-                                    left: Get(expr: foo, member: tag),
+                                    left: Get(expr: AddressOf(foo), member: tag),
                                     right: LiteralInt(0)
                                 )
                             ),
@@ -585,12 +570,8 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                     As(
                         expr: Get(
                             expr: Bitcast(
-                                expr: Unary(
-                                    op: .ampersand,
-                                    expression: Get(
-                                        expr: foo,
-                                        member: payload
-                                    )
+                                expr: AddressOf(
+                                    Get(expr: AddressOf(foo), member: payload)
                                 ),
                                 targetType: PointerType(PrimitiveType(.u16))
                             ),
@@ -632,12 +613,13 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             return typ
         }()
 
+        let t0 = Identifier("__eraseUnions_temp0")
         let expected = Block(children: [
             Eseq(
                 seq: Seq(
                     children: [
                         VarDeclaration(
-                            identifier: Identifier("__temp0"),
+                            identifier: t0,
                             explicitType: structTyp,
                             expression: nil,
                             storage: .automaticStorage(offset: nil),
@@ -645,7 +627,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                         ),
                         InitialAssignment(
                             lexpr: Get(
-                                expr: Identifier("__temp0"),
+                                expr: AddressOf(t0),
                                 member: Identifier("tag")
                             ),
                             rexpr: LiteralInt(0)
@@ -653,10 +635,9 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                         InitialAssignment(
                             lexpr: Get(
                                 expr: Bitcast(
-                                    expr: Unary(
-                                        op: .ampersand,
-                                        expression: Get(
-                                            expr: Identifier("__temp0"),
+                                    expr: AddressOf(
+                                        Get(
+                                            expr: AddressOf(t0),
                                             member: payload
                                         )
                                     ),
@@ -668,7 +649,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                         )
                     ]
                 ),
-                expr: Identifier("__temp0")
+                expr: t0
             )
         ])
         .reconnect(parent: nil)

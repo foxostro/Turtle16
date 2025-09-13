@@ -16,7 +16,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     private let tagType: SymbolType = .u16
     private let tagOffset = 0
     private let payloadOffset: Int
-    private let tempPrefix = "__temp"
+    private let tempPrefix = "__eraseUnions_temp"
 
     public override init(
         symbols: Env? = nil,
@@ -86,7 +86,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                     op: .ampersand,
                     expression: Get(
                         sourceAnchor: s,
-                        expr: node1.expr,
+                        expr: AddressOf(node1.expr),
                         member: Identifier(
                             sourceAnchor: s,
                             identifier: payload
@@ -190,7 +190,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                         sourceAnchor: s,
                         lexpr: Get(
                             sourceAnchor: s,
-                            expr: temp,
+                            expr: AddressOf(temp),
                             member: Identifier(sourceAnchor: s, identifier: tag)
                         ),
                         rexpr: LiteralInt(sourceAnchor: s, value: tagValue)
@@ -202,7 +202,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                                 expr: Unary(
                                     op: .ampersand,
                                     expression: Get(
-                                        expr: temp,
+                                        expr: AddressOf(temp),
                                         member: Identifier(sourceAnchor: s, identifier: payload)
                                     )
                                 ),
@@ -245,7 +245,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             op: .eq,
             left: Get(
                 sourceAnchor: node1.expr.sourceAnchor,
-                expr: node1.expr,
+                expr: AddressOf(node1.expr),
                 member: Identifier(
                     sourceAnchor: node1.expr.sourceAnchor,
                     identifier: tag
@@ -371,7 +371,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                         .withLexpr(
                             Get(
                                 sourceAnchor: node1.sourceAnchor,
-                                expr: node1.lexpr,
+                                expr: AddressOf(node1.lexpr),
                                 member: Identifier(
                                     sourceAnchor: node1.sourceAnchor,
                                     identifier: tag
@@ -393,7 +393,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                         expr: Unary(
                             op: .ampersand,
                             expression: Get(
-                                expr: node1.lexpr,
+                                expr: AddressOf(node1.lexpr),
                                 member: Identifier(
                                     sourceAnchor: node1.sourceAnchor,
                                     identifier: payload
@@ -444,6 +444,14 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     
     private func nextTempName() -> String {
         symbols!.tempName(prefix: tempPrefix)
+    }
+    
+    private func AddressOf(_ expr: Expression) -> Unary {
+        Unary(
+            sourceAnchor: expr.sourceAnchor,
+            op: .ampersand,
+            expression: expr,
+        )
     }
 }
 

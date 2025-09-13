@@ -74,6 +74,23 @@ public final class CompilerPassEraseCompileTimeExpressions: CompilerPassWithDecl
         }
         return try super.visit(expr: expr)
     }
+    
+    public override func visit(get node0: Get) throws -> Expression? {
+        switch try rvalueContext.check(expression: node0.expr) {
+        case .array(count: let count, elementType: let typ) where count != nil:
+            As(
+                sourceAnchor: node0.expr.sourceAnchor,
+                expr: LiteralInt(
+                    sourceAnchor: node0.expr.sourceAnchor,
+                    value: count!
+                ),
+                targetType: PrimitiveType(.u16),
+            )
+            
+        default:
+            node0
+        }
+    }
 }
 
 extension AbstractSyntaxTreeNode {

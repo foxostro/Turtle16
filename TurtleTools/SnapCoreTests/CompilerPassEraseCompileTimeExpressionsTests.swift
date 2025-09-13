@@ -520,4 +520,32 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testGetCountOfArray() throws {
+        let shared = [
+            VarDeclaration(
+                identifier: a,
+                explicitType: ArrayType(
+                    count: LiteralInt(10),
+                    elementType: PrimitiveType(.u8)
+                ),
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Get(expr: a, member: Identifier("count"))
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let expected = Block(
+            children: shared + [
+                As(expr: LiteralInt(10), targetType: u16)
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.eraseCompileTimeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
 }

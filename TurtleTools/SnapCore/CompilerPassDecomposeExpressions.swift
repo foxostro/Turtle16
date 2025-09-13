@@ -289,10 +289,31 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     }
 
     public override func visit(subscript node0: Subscript) throws -> Expression? {
-        let argument = try extract(expr: try visit(expr: node0.argument))
-        let subscriptable = try extract(
-            expr: try visit(expr: node0.subscriptable)
-        )
+        // Range literals in a subscript have special meaning must be preserved.
+        let argument =
+            if let range = node0.argument as? StructInitializer,
+               let ident = range.expr as? Identifier,
+               ident.identifier == "Range" {
+                
+                node0.argument
+            }
+            else {
+                try extract(expr: try visit(expr: node0.argument))
+            }
+        let subscriptable =
+            switch node0.subscriptable {
+            case let expr as Get where (expr.member as? Identifier)?.identifier == pointee:
+                expr.withExpr(
+                    try extract(
+                        expr: try visit(expr: expr.expr)
+                    )!
+                )
+                
+            default:
+                try extract(
+                    expr: try visit(expr: node0.subscriptable)
+                )
+            }
         let node1 = node0
             .withArgument(argument!)
             .withSubscriptable(subscriptable!)

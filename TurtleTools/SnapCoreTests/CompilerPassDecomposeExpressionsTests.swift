@@ -1256,7 +1256,13 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         )
         let expected = Block(
             children: shared + [
-                Subscript(subscriptable: temp1, argument: temp0)
+                Subscript(
+                    subscriptable: Get(
+                        expr: temp1,
+                        member: pointee
+                    ),
+                    argument: temp0
+                )
             ]
         )
             .reconnect(parent: nil)
@@ -1304,7 +1310,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         )
         let temp2 = Temp(
             i: 2,
-            expr: AddressOf(Subscript(subscriptable: temp1, argument: temp0)),
+            expr: AddressOf(
+                Subscript(
+                    subscriptable: Get(expr: temp1, member: pointee),
+                    argument: temp0
+                )
+            ),
             explicitType: ConstType(PointerType(u16))
         )
         let temp3 = Temp(i: 3, expr: LiteralInt(1000))
@@ -1361,7 +1372,10 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         )
         let temp2 = Temp(
             i: 2,
-            expr: Subscript(subscriptable: temp1, argument: temp0),
+            expr: Subscript(
+                subscriptable: Get(expr: temp1, member: pointee),
+                argument: temp0
+            ),
             explicitType: ConstType(u16)
         )
         let expected = Block(

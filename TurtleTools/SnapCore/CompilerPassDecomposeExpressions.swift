@@ -112,9 +112,9 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             // In all other cases, decompose the expression by extracting the
             // value of the child to a new temp value and then apply the
             // operator to the temp value.
-            return node0.withExpression(
-                try extract(expr: try visit(expr: node0.child))!
-            )
+            let child1 = try visit(expr: node0.child)
+            let expr1 = try extract(expr: child1)
+            return node0.withExpression(expr1!)
         }
     }
 
@@ -291,11 +291,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
     public override func visit(subscript node0: Subscript) throws -> Expression? {
         let argument = try extract(expr: try visit(expr: node0.argument))
         let subscriptable = try extract(
-            expr: Unary(
-                sourceAnchor: node0.sourceAnchor,
-                op: .ampersand,
-                expression: try visit(expr: node0.subscriptable)!
-            )
+            expr: try visit(expr: node0.subscriptable)
         )
         let node1 = node0
             .withArgument(argument!)
@@ -463,39 +459,15 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             return try extractByValue(expr)
         }
     
-        let temp = Identifier(
-            sourceAnchor: expr.sourceAnchor,
-            identifier: nextTempName()
-        )
-        let tempDecl = try VarDeclaration(
-            sourceAnchor: expr.sourceAnchor,
-            identifier: temp,
-            explicitType: nil,
-            expression: Unary(
-                sourceAnchor: expr.sourceAnchor,
-                op: .ampersand,
-                expression: expr
-            ),
-            storage: .automaticStorage(offset: nil),
-            isMutable: false,
-            visibility: .privateVisibility
-        )
-            .inferExplicitType(typeContext)
-        _ = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .compile(tempDecl)
-        
-        let eseq = Eseq(
-            sourceAnchor: expr.sourceAnchor,
-            seq: tempDecl.breakOutInitialAssignment(),
-            expr: temp
-        )
         let get = Get(
             sourceAnchor: expr.sourceAnchor,
-            expr: eseq,
+            expr: try extract(
+                expr: Unary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .ampersand,
+                    expression: expr
+                )
+            )!,
             member: Identifier(
                 sourceAnchor: expr.sourceAnchor,
                 identifier: pointee

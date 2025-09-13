@@ -38,14 +38,6 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
         let node2 = try super.visit(node1)
         return node2
     }
-
-    private func rvalueContext() -> RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-    }
 }
 
 extension AbstractSyntaxTreeNode {

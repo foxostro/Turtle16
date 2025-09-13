@@ -19,8 +19,8 @@ public final class While: AbstractSyntaxTreeNode {
         body: AbstractSyntaxTreeNode,
         id: ID = ID()
     ) {
-        self.condition = condition.withSourceAnchor(sourceAnchor)
-        self.body = body.withSourceAnchor(sourceAnchor)
+        self.condition = condition
+        self.body = body
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
 

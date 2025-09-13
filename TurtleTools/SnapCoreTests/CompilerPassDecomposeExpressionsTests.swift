@@ -1553,6 +1553,93 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
+    
+    func testSubscriptArgumentOfLiteralRangeMustBePreserved() throws {
+        let shared = [
+            StructDeclaration(
+                identifier: Identifier("Range"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "begin",
+                        type: PrimitiveType(.u16)
+                    ),
+                    StructDeclaration.Member(
+                        name: "limit",
+                        type: PrimitiveType(.u16)
+                    )
+                ]
+            ),
+            VarDeclaration(
+                identifier: foo,
+                explicitType: PointerType(
+                    ArrayType(
+                        count: LiteralInt(10),
+                        elementType: PrimitiveType(.u8)
+                    )
+                )
+            )
+        ]
+        let input = Block(
+            children: shared + [
+                Subscript(
+                    subscriptable: Get(expr: foo, member: pointee),
+                    argument: StructInitializer(
+                        identifier: Identifier("Range"),
+                        arguments: [
+                            StructInitializer.Argument(
+                                name: "begin",
+                                expr: LiteralInt(0)
+                            ),
+                            StructInitializer.Argument(
+                                name: "limit",
+                                expr: LiteralInt(5)
+                            )
+                        ]
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Subscript(
+                    subscriptable: Get(
+                        expr: Temp(
+                            i: 0,
+                            expr: foo,
+                            explicitType: ConstType(
+                                PointerType(
+                                    ArrayType(
+                                        count: LiteralInt(10),
+                                        elementType: PrimitiveType(.u8)
+                                    )
+                                )
+                            )
+                        ),
+                        member: pointee
+                    ),
+                    argument: StructInitializer(
+                        identifier: Identifier("Range"),
+                        arguments: [
+                            StructInitializer.Argument(
+                                name: "begin",
+                                expr: LiteralInt(0)
+                            ),
+                            StructInitializer.Argument(
+                                name: "limit",
+                                expr: LiteralInt(5)
+                            )
+                        ]
+                    )
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+
+        let actual = try input.decomposeExpressions()
+        XCTAssertEqual(actual, expected)
+    }
 }
 
 extension VarDeclaration {

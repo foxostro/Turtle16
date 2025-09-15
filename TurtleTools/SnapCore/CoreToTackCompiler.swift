@@ -2573,27 +2573,15 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         else if let structInitializer = expr.rexpr as? StructInitializer {
 
             let children = try structInitializer.arguments.map {
-                let g = Get(
-                    sourceAnchor: expr.lexpr.sourceAnchor,
-                    expr: expr.lexpr,
-                    member: Identifier($0.name)
-                )
-                let assig: Assignment =
-                    if expr is InitialAssignment {
-                        InitialAssignment(
-                            sourceAnchor: expr.sourceAnchor,
-                            lexpr: g,
-                            rexpr: $0.expr
+                return expr
+                    .withLexpr(
+                        Get(
+                            sourceAnchor: expr.lexpr.sourceAnchor,
+                            expr: expr.lexpr,
+                            member: Identifier($0.name)
                         )
-                    }
-                    else {
-                        Assignment(
-                            sourceAnchor: expr.sourceAnchor,
-                            lexpr: g,
-                            rexpr: $0.expr
-                        )
-                    }
-                return assig
+                    )
+                    .withRexpr($0.expr)
             }
             .map {
                 try rvalue(expr: $0)

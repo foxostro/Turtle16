@@ -1507,7 +1507,7 @@ public final class Env: Hashable {
     /// symbol to the specified block. The closure may modify the symbol, which
     /// will update it in the environment when the block returns.
     public func withSymbol(
-        sourceAnchor: SourceAnchor? = nil,
+        sourceAnchor s: SourceAnchor? = nil,
         identifier ident: String,
         block: (inout Symbol) throws -> Void
     ) throws {
@@ -1516,11 +1516,15 @@ public final class Env: Hashable {
             symbolTable[ident] = symbol
         }
         else if let parent {
-            try parent.withSymbol(identifier: ident, block: block)
+            try parent.withSymbol(
+                sourceAnchor: s,
+                identifier: ident,
+                block: block
+            )
         }
         else {
             throw CompilerError(
-                sourceAnchor: sourceAnchor,
+                sourceAnchor: s,
                 message: "use of unresolved identifier: `\(ident)'"
             )
         }

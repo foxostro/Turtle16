@@ -1468,6 +1468,28 @@ public final class Env: Hashable {
     public func bind(identifier: String, typeRecord: TypeRecord) {
         typeTable[identifier] = typeRecord
     }
+    
+    /// Given an identifier, resolve the corresponding symbol, and pass that
+    /// symbol to the specified block. The closure may modify the symbol, which
+    /// will update it in the environment when the block returns.
+    public func withSymbol(
+        sourceAnchor: SourceAnchor? = nil,
+        identifier ident: String,
+        block: (Symbol) throws -> Symbol
+    ) throws {
+        if let symbol = symbolTable[ident] {
+            symbolTable[ident] = try block(symbol)
+        }
+        else if let parent {
+            try parent.withSymbol(identifier: ident, block: block)
+        }
+        else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "use of unresolved identifier: `\(ident)'"
+            )
+        }
+    }
 
     /// Given an identifier, resolve to the corresponding symbol, or return nil
     public func maybeResolve(identifier: String) -> Symbol? {

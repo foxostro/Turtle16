@@ -8,6 +8,20 @@
 
 import TurtleCore
 
+public struct TypeCheckerOptions: OptionSet {
+    public let rawValue: UInt
+    
+    /// Instructs the type checker to ignore rules which prohibit assigning
+    /// a value to an initialized const variable. This permits an escape
+    /// hatch so CoreToTackCompiler can lower certain expressions.
+    /// TODO: Remove the `bypassConstAssignmentRules` hack
+    public static let bypassConstAssignmentRules = TypeCheckerOptions(rawValue: 1 << 0)
+    
+    public init(rawValue: UInt) {
+        self.rawValue = rawValue
+    }
+}
+
 /// Given an expression, determines the result type.
 /// Throws a compiler error when the result type cannot be determined, e.g., due
 /// to a type error in the expression.
@@ -15,6 +29,7 @@ public class RvalueExpressionTypeChecker {
     let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
+    private let options: TypeCheckerOptions
 
     public convenience init(_ symbols: Env) {
         self.init(symbols: symbols)
@@ -23,18 +38,21 @@ public class RvalueExpressionTypeChecker {
     public init(
         symbols: Env = Env(),
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
+        options: TypeCheckerOptions = []
     ) {
         self.symbols = symbols
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.options = options
     }
 
     func rvalueContext() -> RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: options
         )
     }
 
@@ -42,7 +60,8 @@ public class RvalueExpressionTypeChecker {
         LvalueExpressionTypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: options
         )
     }
 
@@ -449,11 +468,13 @@ public class RvalueExpressionTypeChecker {
         )
     }
     
-    /// An assignment to a const 'let' variable is only 
+    /// An assignment to a const 'let' variable is acceptable when the variable
+    /// is known to be uninitialized.
     private func isAssignmentToConstAcceptable(
         _ assignment: Assignment,
         _ ltype: SymbolType
     ) -> Bool {
+        guard !options.contains(.bypassConstAssignmentRules) else { return true }
         guard ltype.isConst else { return true }
         guard !(assignment is InitialAssignment) else { return true }
         
@@ -1442,7 +1463,8 @@ public class RvalueExpressionTypeChecker {
         let inner = RvalueExpressionTypeChecker(
             symbols: symbolsWithTypeArguments,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: options
         )
 
         // Evaluate the function type template using the above symbols to get

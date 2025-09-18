@@ -65,6 +65,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             return result
         }
     }
+    
+    override var typeCheckerOptions: TypeCheckerOptions {
+        [.bypassConstAssignmentRules]
+    }
 
     public init(
         symbols: Env = Env(),
@@ -570,7 +574,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     func lvalue(arraySlice expr: Subscript) throws -> AbstractSyntaxTreeNode {
-        assert(isAcceptableArraySliceArgument(expr.argument))
+        guard isAcceptableArraySliceArgument(expr.argument) else {
+            throw CompilerError(
+                sourceAnchor: expr.argument.sourceAnchor,
+                message: "internal compiler error: expression is not an acceptable argument to an array slice")
+        }
 
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
         let beginExpr = Get(expr: expr.argument, member: Identifier(kRangeBegin))
@@ -2567,7 +2575,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         else if let structInitializer = expr.rexpr as? StructInitializer {
 
             let children = try structInitializer.arguments.map {
-                return expr
+                expr
                     .withLexpr(
                         Get(
                             sourceAnchor: expr.lexpr.sourceAnchor,
@@ -2576,10 +2584,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         )
                     )
                     .withRexpr($0.expr)
-            }
-            .map {
-                try rvalue(expr: $0)
-            }
+                }
+                .map {
+                    try rvalue(expr: $0)
+                }
             result = Seq(sourceAnchor: expr.sourceAnchor, children: children)
             // TODO: We don't push a result register on the stack here. This may be a bug.
         }

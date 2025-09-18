@@ -12,12 +12,17 @@ public class CompilerPassWithDeclScan: CompilerPass {
     let staticStorageFrame: Frame
     let memoryLayoutStrategy: MemoryLayoutStrategy
     var modules: [String: Module] = [:]
+    
+    var typeCheckerOptions: TypeCheckerOptions {
+        []
+    }
 
     public var rvalueContext: RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: typeCheckerOptions
         )
     }
 
@@ -25,7 +30,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
         LvalueExpressionTypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: typeCheckerOptions
         )
     }
 
@@ -33,7 +39,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
         TypeContextTypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: typeCheckerOptions
         )
     }
 

@@ -13,22 +13,26 @@ public final class LvalueExpressionTypeChecker {
     private let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
+    private let options: TypeCheckerOptions
 
     public init(
         symbols: Env = Env(),
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
+        options: TypeCheckerOptions = []
     ) {
         self.symbols = symbols
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.options = options
     }
 
     func rvalueContext() -> RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: options
         )
     }
 

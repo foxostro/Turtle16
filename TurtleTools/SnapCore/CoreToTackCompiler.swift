@@ -2444,12 +2444,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         }
 
-        guard false == ltype.isConst || (expr is InitialAssignment) else {
-            fatalError(
-                "Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(expr)"
-            )
-        }
-
         let size = memoryLayoutStrategy.sizeof(type: ltype)
         let result: Seq
 

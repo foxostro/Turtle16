@@ -29,27 +29,53 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithOnlyElseClause() throws {
-        let symbols = Env(tuples: [
-            ("result", Symbol(type: .u8))
-        ])
-        let input = Match(
-            expr: Identifier("result"),
-            clauses: [],
-            elseClause: Block(children: [
-                Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(42))
-            ])
-        )
-        let expected = Block(children: [
-            Block(children: [
-                Assignment(
-                    lexpr: Identifier("result"),
-                    rexpr: LiteralInt(42)
+        let input = Block(
+            children: [
+                VarDeclaration(
+                    identifier: Identifier("result"),
+                    explicitType: PrimitiveType(.u8),
+                    isMutable: false
+                ),
+                Match(
+                    expr: Identifier("result"),
+                    clauses: [],
+                    elseClause: Block(
+                        children: [
+                            Assignment(
+                                lexpr: Identifier("result"),
+                                rexpr: LiteralInt(42)
+                            )
+                        ]
+                    )
                 )
-            ])
-        ])
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: [
+                VarDeclaration(
+                    identifier: Identifier("result"),
+                    explicitType: PrimitiveType(.u8),
+                    isMutable: false
+                ),
+                Block(
+                    children: [
+                        Block(
+                            children: [
+                                Assignment(
+                                    lexpr: Identifier("result"),
+                                    rexpr: LiteralInt(42)
+                                )
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+            .reconnect(parent: nil)
 
-        let compiler = CompilerPassMatch(symbols: symbols)
-        let output = try compiler.run(input)
+        let output = try input.matchPass()
         XCTAssertEqual(output, expected)
     }
 
@@ -124,78 +150,121 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithOnlyOneClause() throws {
-        let symbols = Env(tuples: [
-            ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .u8))
-        ])
-        let input = Match(
-            expr: Identifier("test"),
-            clauses: [
-                Match.Clause(
-                    valueIdentifier: Identifier("foo"),
-                    valueType: PrimitiveType(.u8),
-                    block: Block(children: [
-                        Assignment(lexpr: Identifier("result"), rexpr: Identifier("foo"))
-                    ])
-                )
-            ],
-            elseClause: nil
-        )
-        let expected = Block(children: [
+        let shared = [
             VarDeclaration(
-                identifier: Identifier("__index"),
-                explicitType: nil,
-                expression: Identifier("test"),
-                storage: .automaticStorage(offset: nil),
-                isMutable: true
+                identifier: Identifier("result"),
+                explicitType: PrimitiveType(.u8),
+                isMutable: false
             ),
-            If(
-                condition: Is(
-                    expr: Identifier("__index"),
-                    testType: PrimitiveType(.u8)
-                ),
-                then: Block(children: [
-                    VarDeclaration(
-                        identifier: Identifier("foo"),
-                        explicitType: nil,
-                        expression: As(expr: Identifier("__index"), targetType: PrimitiveType(.u8)),
-                        storage: .automaticStorage(offset: nil),
-                        isMutable: false
-                    ),
-                    Block(children: [
-                        Assignment(
-                            lexpr: Identifier("result"),
-                            rexpr: Identifier("foo")
-                        )
-                    ])
-                ])
+            VarDeclaration(
+                identifier: Identifier("test"),
+                explicitType: PrimitiveType(.u8),
+                isMutable: false
             )
-        ])
-        let compiler = CompilerPassMatch(symbols: symbols)
-        let output = try compiler.run(input)
+        ]
+        let input = Block(
+            children: shared + [
+                Match(
+                    expr: Identifier("test"),
+                    clauses: [
+                        Match.Clause(
+                            valueIdentifier: Identifier("foo"),
+                            valueType: PrimitiveType(.u8),
+                            block: Block(children: [
+                                Assignment(lexpr: Identifier("result"), rexpr: Identifier("foo"))
+                            ])
+                        )
+                    ],
+                    elseClause: nil
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Block(
+                    children: [
+                        VarDeclaration(
+                            identifier: Identifier("__index"),
+                            explicitType: nil,
+                            expression: Identifier("test"),
+                            storage: .automaticStorage(offset: nil),
+                            isMutable: true
+                        ),
+                        If(
+                            condition: Is(
+                                expr: Identifier("__index"),
+                                testType: PrimitiveType(.u8)
+                            ),
+                            then: Block(
+                                children: [
+                                    VarDeclaration(
+                                        identifier: Identifier("foo"),
+                                        explicitType: nil,
+                                        expression: As(expr: Identifier("__index"), targetType: PrimitiveType(.u8)),
+                                        storage: .automaticStorage(offset: nil),
+                                        isMutable: false
+                                    ),
+                                    Block(
+                                        children: [
+                                            Assignment(
+                                                lexpr: Identifier("result"),
+                                                rexpr: Identifier("foo")
+                                            )
+                                        ]
+                                    )
+                                ]
+                            )
+                        )
+                    ]
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let output = try input.matchPass()
         XCTAssertEqual(output, expected)
     }
 
     func testCompileMatchStatementWithUnionTypeAndNonexhaustiveClauses() {
-        let symbols = Env(tuples: [
-            ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
-        ])
-        let input = Match(
-            expr: Identifier("test"),
-            clauses: [
-                Match.Clause(
-                    valueIdentifier: Identifier("foo"),
-                    valueType: PrimitiveType(.u8),
-                    block: Block(children: [
-                        Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(1))
-                    ])
+        let input = Block(
+            children: [
+                VarDeclaration(
+                    identifier: Identifier("result"),
+                    explicitType: PrimitiveType(.u8),
+                    isMutable: false
+                ),
+                VarDeclaration(
+                    identifier: Identifier("test"),
+                    explicitType: UnionType([
+                        PrimitiveType(.u8), PrimitiveType(.bool)
+                    ]),
+                    isMutable: false
+                ),
+                Match(
+                    expr: Identifier("test"),
+                    clauses: [
+                        Match.Clause(
+                            valueIdentifier: Identifier("foo"),
+                            valueType: PrimitiveType(.u8),
+                            block: Block(
+                                children: [
+                                    Assignment(
+                                        lexpr: Identifier("result"),
+                                        rexpr: LiteralInt(1)
+                                    )
+                                ]
+                            )
+                        )
+                    ],
+                    elseClause: nil
                 )
-            ],
-            elseClause: nil
+            ]
         )
-        let compiler = CompilerPassMatch(symbols: symbols)
-        XCTAssertThrowsError(try compiler.run(input)) {
+            .reconnect(parent: nil)
+        
+        XCTAssertThrowsError(try input.matchPass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(
@@ -206,89 +275,130 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithUnionTypeAndExhaustiveClauses() throws {
-        let symbols = Env(tuples: [
-            ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
-        ])
-        let input = Match(
-            expr: Identifier("test"),
-            clauses: [
-                Match.Clause(
-                    valueIdentifier: Identifier("foo"),
-                    valueType: PrimitiveType(.u8),
-                    block: Block(children: [
-                        Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(1))
-                    ])
-                ),
-                Match.Clause(
-                    valueIdentifier: Identifier("foo"),
-                    valueType: PrimitiveType(.bool),
-                    block: Block(children: [
-                        Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(2))
-                    ])
-                )
-            ],
-            elseClause: nil
-        )
-        let expected = Block(children: [
+        let shared = [
             VarDeclaration(
-                identifier: Identifier("__index"),
-                explicitType: nil,
-                expression: Identifier("test"),
-                storage: .automaticStorage(offset: nil),
-                isMutable: true
+                identifier: Identifier("result"),
+                explicitType: PrimitiveType(.u8),
+                isMutable: false
             ),
-            If(
-                condition: Is(
-                    expr: Identifier("__index"),
-                    testType: PrimitiveType(.bool)
-                ),
-                then: Block(children: [
-                    VarDeclaration(
-                        identifier: Identifier("foo"),
-                        explicitType: nil,
-                        expression: As(
-                            expr: Identifier("__index"),
-                            targetType: PrimitiveType(.bool)
-                        ),
-                        storage: .automaticStorage(offset: nil),
-                        isMutable: false
-                    ),
-                    Block(children: [
-                        Assignment(
-                            lexpr: Identifier("result"),
-                            rexpr: LiteralInt(2)
-                        )
-                    ])
+            VarDeclaration(
+                identifier: Identifier("test"),
+                explicitType: UnionType([
+                    PrimitiveType(.u8), PrimitiveType(.bool)
                 ]),
-                else: If(
-                    condition: Is(
-                        expr: Identifier("__index"),
-                        testType: PrimitiveType(.u8)
-                    ),
-                    then: Block(children: [
-                        VarDeclaration(
-                            identifier: Identifier("foo"),
-                            explicitType: nil,
-                            expression: As(
-                                expr: Identifier("__index"),
-                                targetType: PrimitiveType(.u8)
-                            ),
-                            storage: .automaticStorage(offset: nil),
-                            isMutable: false
-                        ),
-                        Block(children: [
-                            Assignment(
-                                lexpr: Identifier("result"),
-                                rexpr: LiteralInt(1)
-                            )
-                        ])
-                    ])
-                )
+                isMutable: false
             )
-        ])
-        let compiler = CompilerPassMatch(symbols: symbols)
-        let output = try compiler.run(input)
+        ]
+        let input = Block(
+            children: shared + [
+                Match(
+                    expr: Identifier("test"),
+                    clauses: [
+                        Match.Clause(
+                            valueIdentifier: Identifier("foo"),
+                            valueType: PrimitiveType(.u8),
+                            block: Block(
+                                children: [
+                                    Assignment(
+                                        lexpr: Identifier("result"),
+                                        rexpr: LiteralInt(1)
+                                    )
+                                ]
+                            )
+                        ),
+                        Match.Clause(
+                            valueIdentifier: Identifier("foo"),
+                            valueType: PrimitiveType(.bool),
+                            block: Block(
+                                children: [
+                                    Assignment(
+                                        lexpr: Identifier("result"),
+                                        rexpr: LiteralInt(2)
+                                    )
+                                ]
+                            )
+                        )
+                    ],
+                    elseClause: nil
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: shared + [
+                Block(
+                    children: [
+                        VarDeclaration(
+                            identifier: Identifier("__index"),
+                            explicitType: nil,
+                            expression: Identifier("test"),
+                            storage: .automaticStorage(offset: nil),
+                            isMutable: true
+                        ),
+                        If(
+                            condition: Is(
+                                expr: Identifier("__index"),
+                                testType: PrimitiveType(.bool)
+                            ),
+                            then: Block(
+                                children: [
+                                    VarDeclaration(
+                                        identifier: Identifier("foo"),
+                                        explicitType: nil,
+                                        expression: As(
+                                            expr: Identifier("__index"),
+                                            targetType: PrimitiveType(.bool)
+                                        ),
+                                        storage: .automaticStorage(offset: nil),
+                                        isMutable: false
+                                    ),
+                                    Block(
+                                        children: [
+                                            Assignment(
+                                                lexpr: Identifier("result"),
+                                                rexpr: LiteralInt(2)
+                                            )
+                                        ]
+                                    )
+                                ]
+                            ),
+                            else: If(
+                                condition: Is(
+                                    expr: Identifier("__index"),
+                                    testType: PrimitiveType(.u8)
+                                ),
+                                then: Block(
+                                    children: [
+                                        VarDeclaration(
+                                            identifier: Identifier("foo"),
+                                            explicitType: nil,
+                                            expression: As(
+                                                expr: Identifier("__index"),
+                                                targetType: PrimitiveType(.u8)
+                                            ),
+                                            storage: .automaticStorage(offset: nil),
+                                            isMutable: false
+                                        ),
+                                        Block(
+                                            children: [
+                                                Assignment(
+                                                    lexpr: Identifier("result"),
+                                                    rexpr: LiteralInt(1)
+                                                )
+                                            ]
+                                        )
+                                    ]
+                                )
+                            )
+                        )
+                    ]
+                )
+            ]
+        )
+            .reconnect(parent: nil)
+        
+        let output = try input.matchPass()
         XCTAssertEqual(output, expected)
     }
 }

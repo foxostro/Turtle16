@@ -313,6 +313,35 @@ public class CompilerPassWithDeclScan: CompilerPass {
             )
         return call
     }
+    
+    public override func visit(assignment node0: Assignment) throws -> Expression? {
+        let node1 = try super.visit(assignment: node0)
+        if let node1 = node1 as? Assignment {
+            try markVariablesAsInitialized(in: node1.lexpr)
+        }
+        return node1
+    }
+    
+    private func markVariablesAsInitialized(in lexpr: Expression) throws {
+        let symbols = symbols!
+        
+        switch lexpr {
+        case let lexpr as Identifier:
+            try symbols.withFacts(lexpr) {
+                $0.initStatus = .initialized
+            }
+            
+        case let lexpr as Get where lexpr.member.isPointee:
+            // If the Get expr is a pointer dereference then ignore it.
+            // We do not attempt any kind of data flow analysis to figure out
+            // what it's pointing to right now.
+            // TODO: Consider making it a compile-time error to take the address of an uninitialized variable, or to take the value of such a variable in an expression.
+            break
+            
+        default:
+            break
+        }
+    }
 }
 
 extension Env {

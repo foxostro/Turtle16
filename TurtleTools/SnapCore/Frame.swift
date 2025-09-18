@@ -20,7 +20,7 @@ public final class Frame: Hashable {
     public let growthDirection: GrowthDirection
     public private(set) var storagePointer: Int
     public let initialStoragePointer: Int
-    public private(set) var symbols: [Pair] = []
+    private var symbols: [Pair] = []
 
     public init(storagePointer: Int = 0, growthDirection: GrowthDirection = .up) {
         self.initialStoragePointer = storagePointer

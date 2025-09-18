@@ -370,3 +370,17 @@ extension Env {
         }
     }
 }
+
+fileprivate let pointee = "pointee"
+
+extension Expression {
+    public var isPointee: Bool {
+        switch self {
+        case let self as Identifier:
+            self.identifier == pointee
+            
+        default:
+            false
+        }
+    }
+}

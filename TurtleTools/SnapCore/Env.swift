@@ -1529,6 +1529,31 @@ public final class Env: Hashable {
             )
         }
     }
+    
+    /// Resolve the identifier and update symbol facts in the specified block
+    public func withFacts(
+        _ identifier: Identifier,
+        block: (inout Symbol.Facts) throws -> Void
+    ) throws {
+        try withFacts(
+            sourceAnchor: identifier.sourceAnchor,
+            identifier: identifier.identifier,
+            block: block
+        )
+    }
+    
+    /// Resolve the identifier and update symbol facts in the specified block
+    public func withFacts(
+        sourceAnchor s: SourceAnchor? = nil,
+        identifier ident: String,
+        block: (inout Symbol.Facts) throws -> Void
+    ) throws {
+        try withSymbol(sourceAnchor: s, identifier: ident) { symbol in
+            var facts = symbol.facts
+            try block(&facts)
+            symbol = symbol.withFacts(facts)
+        }
+    }
 
     /// Given an identifier, resolve to the corresponding symbol, or return nil
     public func maybeResolve(identifier: String) -> Symbol? {

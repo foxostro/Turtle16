@@ -1007,6 +1007,14 @@ public final class PrimitiveType: Expression {
             id: id
         )
     }
+    
+    public func withType(_ typ: SymbolType) -> PrimitiveType {
+        PrimitiveType(
+            sourceAnchor: sourceAnchor,
+            typ: typ,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

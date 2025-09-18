@@ -7488,4 +7488,111 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, .pointer(Foo))
     }
+    
+    func testFailBecauseAssignmentCannotMutateAConstVariable() {
+        let expr = Assignment(
+            lexpr: Identifier("foo"),
+            rexpr: LiteralInt(1)
+        )
+        let symbols = Env(
+            tuples: [
+                (
+                    "foo",
+                    Symbol(
+                        type: .constI16,
+                        facts: Symbol.Facts(initStatus: .initialized)
+                    )
+                )
+            ]
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo' of type `const i16'")
+        }
+    }
+    
+    func testAcceptAssignmentToConstVariableKnownToBeUninitialized() throws {
+        let expr = Assignment(
+            lexpr: Identifier("foo"),
+            rexpr: LiteralInt(1)
+        )
+        let symbols = Env(
+            tuples: [
+                (
+                    "foo",
+                    Symbol(
+                        type: .constI16,
+                        facts: Symbol.Facts(initStatus: .uninitialized)
+                    )
+                )
+            ]
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let actual: SymbolType = try typeChecker.check(expression: expr)
+        let expected: SymbolType = .constI16
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testInitialAssignmentBypassesRestrictionsOnConstVariables() throws {
+        let expr = InitialAssignment(
+            lexpr: Identifier("foo"),
+            rexpr: LiteralInt(1)
+        )
+        let symbols = Env(
+            tuples: [
+                (
+                    "foo",
+                    Symbol(
+                        type: .constI16,
+                        facts: Symbol.Facts(initStatus: .initialized)
+                    )
+                )
+            ]
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let actual: SymbolType = try typeChecker.check(expression: expr)
+        let expected: SymbolType = .constI16
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testFailBecauseAssignmentCannotMutateThroughPointerToConst() {
+        let expr = Assignment(
+            lexpr: Get(
+                expr: Identifier("foo"),
+                member: Identifier("pointee")
+            ),
+            rexpr: LiteralInt(1)
+        )
+        let symbols = Env(
+            tuples: [
+                ("foo", Symbol(type: .pointer(.constI16)))
+            ]
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot assign to expression of type `const i16'")
+        }
+    }
+    
+    func testFailBecauseAssignmentRequiresLvalue() {
+        let expr = Assignment(
+            lexpr: Unary(op: .ampersand, expression: Identifier("foo")),
+            rexpr: LiteralInt(1)
+        )
+        let symbols = Env(
+            tuples: [
+                ("foo", Symbol(type: .u16))
+            ]
+        )
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "lvalue required in assignment")
+        }
+    }
 }

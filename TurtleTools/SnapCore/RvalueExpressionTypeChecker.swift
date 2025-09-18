@@ -417,27 +417,27 @@ public class RvalueExpressionTypeChecker {
     }
 
     public func check(assignment: Assignment) throws -> SymbolType {
-        guard let ltype = try lvalueContext().check(expression: assignment.lexpr) else {
+        let ltype = try lvalueContext().check(expression: assignment.lexpr)
+        guard let ltype else {
             throw CompilerError(
                 sourceAnchor: assignment.lexpr.sourceAnchor,
                 message: "lvalue required in assignment"
             )
         }
-
-        guard !ltype.isConst || (assignment is InitialAssignment) else {
-            switch assignment.lexpr {
-            case let identifier as Identifier:
-                throw CompilerError(
-                    sourceAnchor: assignment.lexpr.sourceAnchor,
-                    message:
-                        "cannot assign to constant `\(identifier.identifier)' of type `\(ltype)'"
-                )
-            default:
-                throw CompilerError(
-                    sourceAnchor: assignment.lexpr.sourceAnchor,
-                    message: "cannot assign to expression of type `\(ltype)'"
-                )
-            }
+        
+        // Guard against inappropriate assignment to an initialized const var
+        guard isAssignmentToConstAcceptable(assignment, ltype) else {
+            let message: String =
+                if let ident = (assignment.lexpr as? Identifier)?.identifier {
+                    "cannot assign to constant `\(ident)' of type `\(ltype)'"
+                }
+                else {
+                    "cannot assign to expression of type `\(ltype)'"
+                }
+            throw CompilerError(
+                sourceAnchor: assignment.lexpr.sourceAnchor,
+                message: message
+            )
         }
 
         let rtype = try rvalueContext().check(expression: assignment.rexpr)
@@ -447,6 +447,24 @@ public class RvalueExpressionTypeChecker {
             sourceAnchor: assignment.rexpr.sourceAnchor,
             messageWhenNotConvertible: "cannot assign value of type `\(rtype)' to type `\(ltype)'"
         )
+    }
+    
+    /// An assignment to a const 'let' variable is only 
+    private func isAssignmentToConstAcceptable(
+        _ assignment: Assignment,
+        _ ltype: SymbolType
+    ) -> Bool {
+        guard ltype.isConst else { return true }
+        guard !(assignment is InitialAssignment) else { return true }
+        
+        guard let ident = assignment.lexpr as? Identifier,
+           let symbol = symbols.maybeResolve(identifier: ident.identifier),
+           symbol.facts.initStatus == .uninitialized else {
+            
+            return false
+        }
+        
+        return true
     }
 
     public enum TypeConversionStatus {

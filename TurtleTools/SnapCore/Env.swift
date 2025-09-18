@@ -1154,16 +1154,34 @@ public struct Symbol: Hashable {
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
     public let decl: AbstractSyntaxTreeNode.ID?
+    
+    /// As the compiler visits the program AST, it can keep track of facts about
+    /// each symbol, such as statically known values, whether it's ever assigned
+    /// to, and so on.
+    public let facts: Facts
+    
+    public struct Facts: Hashable {
+        public enum InitStatus: Hashable {
+            case uninitialized, maybeInitialized, initialized
+        }
+        var initStatus: InitStatus
+        
+        public init(initStatus: InitStatus = .uninitialized) {
+            self.initStatus = initStatus
+        }
+    }
 
     public init(
         type: SymbolType,
         offset: Int?,
-        visibility: SymbolVisibility = .privateVisibility
+        visibility: SymbolVisibility = .privateVisibility,
+        facts: Facts = Facts()
     ) {
         self.init(
             type: type,
             storage: .staticStorage(offset: offset),
-            visibility: visibility
+            visibility: visibility,
+            facts: facts
         )
     }
 
@@ -1171,12 +1189,14 @@ public struct Symbol: Hashable {
         type: SymbolType,
         storage: SymbolStorage = .staticStorage(offset: nil),
         visibility: SymbolVisibility = .privateVisibility,
-        decl: AbstractSyntaxTreeNode.ID? = nil
+        decl: AbstractSyntaxTreeNode.ID? = nil,
+        facts: Facts = Facts()
     ) {
         self.type = type
         self.storage = storage
         self.visibility = visibility
         self.decl = decl
+        self.facts = facts
     }
 
     public func withType(_ type: SymbolType) -> Symbol {
@@ -1184,7 +1204,8 @@ public struct Symbol: Hashable {
             type: type,
             storage: storage,
             visibility: visibility,
-            decl: decl
+            decl: decl,
+            facts: facts
         )
     }
 
@@ -1193,7 +1214,8 @@ public struct Symbol: Hashable {
             type: type,
             storage: storage,
             visibility: visibility,
-            decl: decl
+            decl: decl,
+            facts: facts
         )
     }
 
@@ -1202,7 +1224,8 @@ public struct Symbol: Hashable {
             type: type,
             storage: storage,
             visibility: visibility,
-            decl: decl
+            decl: decl,
+            facts: facts
         )
     }
     
@@ -1211,7 +1234,18 @@ public struct Symbol: Hashable {
             type: type,
             storage: storage,
             visibility: visibility,
-            decl: decl
+            decl: decl,
+            facts: facts
+        )
+    }
+    
+    public func withFacts(_ facts: Facts) -> Symbol {
+        Symbol(
+            type: type,
+            storage: storage,
+            visibility: visibility,
+            decl: decl,
+            facts: facts
         )
     }
 }

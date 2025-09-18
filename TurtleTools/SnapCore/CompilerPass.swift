@@ -484,8 +484,6 @@ public class CompilerPass {
             try visit(eseq: eseq)
         case let node as Binary:
             try visit(binary: node)
-        case let expr as InitialAssignment:
-            try visit(initialAssignment: expr)
         case let expr as Assignment:
             try visit(assignment: expr)
         case let node as Call:
@@ -615,10 +613,6 @@ public class CompilerPass {
             },
             id: node.id
         )
-    }
-
-    public func visit(initialAssignment node: InitialAssignment) throws -> Expression? {
-        try visit(assignment: node)
     }
 
     public func visit(assignment node: Assignment) throws -> Expression? {

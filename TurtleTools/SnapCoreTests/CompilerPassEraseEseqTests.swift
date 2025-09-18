@@ -623,59 +623,6 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    func testEraseEseqInInitialAssignment() throws {
-        let expected = Eseq(
-            seq: Seq(children: [
-                VarDeclaration(
-                    identifier: Identifier("a"),
-                    explicitType: PrimitiveType(.i8),
-                    expression: nil,
-                    storage: .automaticStorage(offset: nil),
-                    isMutable: false
-                ),
-                VarDeclaration(
-                    identifier: Identifier("b"),
-                    explicitType: PrimitiveType(.i8),
-                    expression: nil,
-                    storage: .automaticStorage(offset: nil),
-                    isMutable: false
-                )
-            ]),
-            expr: InitialAssignment(
-                lexpr: Identifier("a"),
-                rexpr: Identifier("b")
-            )
-        )
-        let input = InitialAssignment(
-            lexpr: Eseq(
-                seq: Seq(children: [
-                    VarDeclaration(
-                        identifier: Identifier("a"),
-                        explicitType: PrimitiveType(.i8),
-                        expression: nil,
-                        storage: .automaticStorage(offset: nil),
-                        isMutable: false
-                    )
-                ]),
-                expr: Identifier("a")
-            ),
-            rexpr: Eseq(
-                seq: Seq(children: [
-                    VarDeclaration(
-                        identifier: Identifier("b"),
-                        explicitType: PrimitiveType(.i8),
-                        expression: nil,
-                        storage: .automaticStorage(offset: nil),
-                        isMutable: false
-                    )
-                ]),
-                expr: Identifier("b")
-            )
-        )
-        let actual = try input.eraseEseq()
-        XCTAssertEqual(actual, expected)
-    }
-
     func testEraseEseqInAssignment() throws {
         let expected = Eseq(
             seq: Seq(children: [

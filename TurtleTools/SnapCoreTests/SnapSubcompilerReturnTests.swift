@@ -87,7 +87,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
         XCTAssertEqual(
             output,
             Seq(children: [
-                InitialAssignment(
+                Assignment(
                     lexpr: Identifier("__returnValue"),
                     rexpr: LiteralInt(1)
                 ),

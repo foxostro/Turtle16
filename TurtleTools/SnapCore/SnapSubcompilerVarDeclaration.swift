@@ -23,7 +23,7 @@ public struct SnapSubcompilerVarDeclaration {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
 
-    public func compile(_ node: VarDeclaration) throws -> InitialAssignment? {
+    public func compile(_ node: VarDeclaration) throws -> Assignment? {
         let sourceAnchor = node.identifier.sourceAnchor
         let ident = node.identifier.identifier
 
@@ -43,7 +43,7 @@ public struct SnapSubcompilerVarDeclaration {
             )
         }
 
-        let result: InitialAssignment?
+        let result: Assignment?
 
         // If the variable declaration provided an explicit type expression then
         // the type checker can determine what type it evaluates to.
@@ -113,7 +113,7 @@ public struct SnapSubcompilerVarDeclaration {
             )
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
-            result = InitialAssignment(
+            result = Assignment(
                 sourceAnchor: node.sourceAnchor,
                 lexpr: node.identifier,
                 rexpr: varDeclExpr

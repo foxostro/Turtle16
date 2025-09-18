@@ -136,17 +136,6 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
         return node2
     }
 
-    /// InitialAssignment is rewritten to populate a trait-object
-    public override func visit(initialAssignment node0: InitialAssignment) throws -> Expression? {
-        guard let traitType = try maybeLookupCorrespondingTraitType(expr: node0.lexpr),
-            let rexpr1 = try convertToTraitObject(traitType, expr: node0.rexpr)
-        else {
-            return try super.visit(initialAssignment: node0)
-        }
-        let node1 = node0.withRexpr(rexpr1)
-        return node1
-    }
-
     /// Assignment is rewritten to populate a trait-object
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         guard let traitType = try maybeLookupCorrespondingTraitType(expr: node0.lexpr),

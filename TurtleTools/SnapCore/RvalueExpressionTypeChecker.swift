@@ -476,7 +476,6 @@ public class RvalueExpressionTypeChecker {
     ) -> Bool {
         guard !options.contains(.bypassConstAssignmentRules) else { return true }
         guard ltype.isConst else { return true }
-        guard !(assignment is InitialAssignment) else { return true }
         
         guard let ident = assignment.lexpr as? Identifier,
            let symbol = symbols.maybeResolve(identifier: ident.identifier),

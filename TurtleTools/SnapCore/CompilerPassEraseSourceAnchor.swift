@@ -160,10 +160,6 @@ public final class CompilerPassEraseSourceAnchor: CompilerPass {
         try super.visit(is: node)?.withSourceAnchor(nil)
     }
 
-    public override func visit(initialAssignment node: InitialAssignment) throws -> Expression? {
-        try super.visit(initialAssignment: node)?.withSourceAnchor(nil)
-    }
-
     public override func visit(assignment node: Assignment) throws -> Expression? {
         try super.visit(assignment: node)?.withSourceAnchor(nil)
     }

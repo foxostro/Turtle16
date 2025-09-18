@@ -494,118 +494,9 @@ final class CompilerPassImplForTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    func testRewriteInitialAssignment_DirectAssignmentOfConcreteInstance() throws {
-        // InitialAssignment expressions which assign to an instance of a trait
-        // are rewritten to direct manipulation of a trait object
-        let ast0 = serialFakeWithImplForAST.appending(children: [
-            VarDeclaration(
-                identifier: Identifier("serial"),
-                explicitType: Identifier("Serial"),
-                expression: nil,
-                storage: .automaticStorage(offset: nil),
-                isMutable: false,
-                visibility: .privateVisibility
-            ),
-            InitialAssignment(
-                lexpr: Identifier("serial"),
-                rexpr: Identifier("serialFake")
-            )
-        ])
-        let expected = compiledSerialFakeWithImplForAST.appending(children: [
-            VarDeclaration(
-                identifier: Identifier("serial"),
-                explicitType: Identifier("__Serial_object"),
-                expression: nil,
-                storage: .automaticStorage(offset: nil),
-                isMutable: false,
-                visibility: .privateVisibility
-            ),
-            InitialAssignment(
-                lexpr: Identifier("serial"),
-                rexpr: StructInitializer(
-                    identifier: Identifier("__Serial_object"),
-                    arguments: [
-                        StructInitializer.Argument(
-                            name: "object",
-                            expr: Bitcast(
-                                expr: Unary(
-                                    op: .ampersand,
-                                    expression: Identifier("serialFake")
-                                ),
-                                targetType: PointerType(PrimitiveType(.void))
-                            )
-                        ),
-                        StructInitializer.Argument(
-                            name: "vtable",
-                            expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        )
-                    ]
-                )
-            )
-        ])
-        let actual = try ast0.implForPass()
-        XCTAssertEqual(actual, expected)
-    }
-
-    func testRewriteInitialAssignment_TakeAddressOfConcreteInstance() throws {
-        // InitialAssignment expressions which assign to an instance of a trait
-        // are rewritten to direct manipulation of a trait object
-        let ast0 = serialFakeWithImplForAST.appending(children: [
-            VarDeclaration(
-                identifier: Identifier("serial"),
-                explicitType: Identifier("Serial"),
-                expression: nil,
-                storage: .automaticStorage(offset: nil),
-                isMutable: false,
-                visibility: .privateVisibility
-            ),
-            InitialAssignment(
-                lexpr: Identifier("serial"),
-                rexpr: Unary(
-                    op: .ampersand,
-                    expression: Identifier("serialFake")
-                )
-            )
-        ])
-        let expected = compiledSerialFakeWithImplForAST.appending(children: [
-            VarDeclaration(
-                identifier: Identifier("serial"),
-                explicitType: Identifier("__Serial_object"),
-                expression: nil,
-                storage: .automaticStorage(offset: nil),
-                isMutable: false,
-                visibility: .privateVisibility
-            ),
-            InitialAssignment(
-                lexpr: Identifier("serial"),
-                rexpr: StructInitializer(
-                    identifier: Identifier("__Serial_object"),
-                    arguments: [
-                        StructInitializer.Argument(
-                            name: "object",
-                            expr: Bitcast(
-                                expr: Unary(
-                                    op: .ampersand,
-                                    expression: Identifier("serialFake")
-                                ),
-                                targetType: PointerType(PrimitiveType(.void))
-                            )
-                        ),
-                        StructInitializer.Argument(
-                            name: "vtable",
-                            expr: Identifier("__Serial_SerialFake_vtable_instance")
-                        )
-                    ]
-                )
-            )
-        ])
-        let actual = try ast0.implForPass()
-        XCTAssertEqual(actual, expected)
-    }
-
     func testRewriteAssignment_DirectAssignmentOfConcreteInstance() throws {
-        // InitialAssignment expressions which assign to an instance of a trait
-        // are rewritten to direct manipulation of a trait object
+        // Assignment expressions which assign to an instance of a trait are
+        // rewritten to direct manipulation of a trait object.
         let ast0 = serialFakeWithImplForAST.appending(children: [
             VarDeclaration(
                 identifier: Identifier("serial"),
@@ -657,8 +548,8 @@ final class CompilerPassImplForTests: XCTestCase {
     }
 
     func testRewriteAssignment_TakeAddressOfConcreteInstance() throws {
-        // InitialAssignment expressions which assign to an instance of a trait
-        // are rewritten to direct manipulation of a trait object
+        // Assignment expressions which assign to an instance of a trait are
+        // rewritten to direct manipulation of a trait object.
         let ast0 = serialFakeWithImplForAST.appending(children: [
             VarDeclaration(
                 identifier: Identifier("serial"),

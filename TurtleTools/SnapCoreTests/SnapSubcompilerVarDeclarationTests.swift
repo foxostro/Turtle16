@@ -146,7 +146,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
             isMutable: false
         )
         let actual = try? compiler.compile(input)
-        let expected = InitialAssignment(
+        let expected = Assignment(
             lexpr: Identifier("foo"),
             rexpr: LiteralInt(0)
         )
@@ -176,7 +176,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
             isMutable: true
         )
         let actual = try? compiler.compile(input)
-        let expected = InitialAssignment(
+        let expected = Assignment(
             lexpr: Identifier("foo"),
             rexpr: LiteralInt(0)
         )
@@ -206,7 +206,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
             isMutable: false
         )
         let actual = try? compiler.compile(input)
-        let expected = InitialAssignment(
+        let expected = Assignment(
             lexpr: Identifier("foo"),
             rexpr: LiteralInt(0)
         )
@@ -236,7 +236,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
             isMutable: false
         )
         let actual = try? compiler.compile(input)
-        let expected = InitialAssignment(
+        let expected = Assignment(
             lexpr: Identifier("foo"),
             rexpr: LiteralInt(1000)
         )
@@ -266,7 +266,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
             isMutable: false
         )
         let actual = try? compiler.compile(input)
-        let expected = InitialAssignment(
+        let expected = Assignment(
             lexpr: Identifier("foo"),
             rexpr: LiteralBool(true)
         )
@@ -298,7 +298,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
             isMutable: false
         )
         let actual = try? compiler.compile(input)
-        let expected = InitialAssignment(
+        let expected = Assignment(
             lexpr: Identifier("foo"),
             rexpr: StructInitializer(identifier: Identifier("bar"), arguments: [])
         )
@@ -420,7 +420,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
             isMutable: false
         )
         let actual = try? compiler.compile(input)
-        let expected = InitialAssignment(
+        let expected = Assignment(
             lexpr: Identifier("foo"),
             rexpr: arrayExpr
         )

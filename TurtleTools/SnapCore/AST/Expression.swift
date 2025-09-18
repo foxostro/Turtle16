@@ -512,45 +512,6 @@ public class Assignment: Expression {
     }
 }
 
-// TODO: Remove InitialAssignment. I believe that with some extra bookkeeping in the symbol table, the compiler doesn't need InitialAssignment to determine whether an assignment is the first assignment to the symbol.
-public final class InitialAssignment: Assignment {
-    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InitialAssignment {
-        InitialAssignment(
-            sourceAnchor: sourceAnchor,
-            lexpr: lexpr,
-            rexpr: rexpr,
-            id: id
-        )
-    }
-
-    public override func withLexpr(_ lexpr: Expression) -> InitialAssignment {
-        InitialAssignment(
-            sourceAnchor: sourceAnchor,
-            lexpr: lexpr,
-            rexpr: rexpr,
-            id: id
-        )
-    }
-
-    public override func withRexpr(_ rexpr: Expression) -> InitialAssignment {
-        InitialAssignment(
-            sourceAnchor: sourceAnchor,
-            lexpr: lexpr,
-            rexpr: rexpr,
-            id: id
-        )
-    }
-    
-    public override func withNewId() -> InitialAssignment {
-        InitialAssignment(
-            sourceAnchor: sourceAnchor,
-            lexpr: lexpr,
-            rexpr: rexpr,
-            id: ID()
-        )
-    }
-}
-
 public final class Call: Expression {
     public let callee: Expression
     public let arguments: [Expression]

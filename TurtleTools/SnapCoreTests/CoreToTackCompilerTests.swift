@@ -2812,7 +2812,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             identifier: "foo",
             symbol: Symbol(
                 type: kSliceType,
-                storage: .staticStorage(offset: 0x1000)
+                storage: .staticStorage(offset: 0x1000),
+                facts: Symbol.Facts(initStatus: .uninitialized)
             )
         )
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
@@ -2831,7 +2832,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 )
             ]
         )
-        let actual = try compiler.rvalue(expr: InitialAssignment(lexpr: lexpr, rexpr: rexpr))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.addip(.p(1), .p(0), 0)),

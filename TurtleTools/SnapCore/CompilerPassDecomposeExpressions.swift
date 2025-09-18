@@ -196,7 +196,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 )
             )
             let rexpr = try extract(expr: el)!
-            let a = InitialAssignment(
+            let a = Assignment(
                 sourceAnchor: el.sourceAnchor,
                 lexpr: lexpr,
                 rexpr: rexpr
@@ -263,7 +263,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
         
         let assignments = try object.arguments.compactMap { arg in
             try visit(
-                expr: InitialAssignment(
+                expr: Assignment(
                     sourceAnchor: arg.expr.sourceAnchor,
                     lexpr: Get(expr: dstPtr, member: Identifier(arg.name)),
                     rexpr: arg.expr
@@ -404,7 +404,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             
             children += try node0.arguments.map { arg in
                 let child: Expression! = try visit(
-                    initialAssignment: InitialAssignment(
+                    assignment: Assignment(
                         sourceAnchor: node0.sourceAnchor,
                         lexpr: Get(
                             sourceAnchor: node0.sourceAnchor,

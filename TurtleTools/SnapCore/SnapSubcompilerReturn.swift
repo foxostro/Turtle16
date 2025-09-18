@@ -49,7 +49,7 @@ public struct SnapSubcompilerReturn {
                 identifier: kReturnValueIdentifier
             )
             output.append(
-                InitialAssignment(
+                Assignment(
                     sourceAnchor: node.sourceAnchor,
                     lexpr: lexpr,
                     rexpr: expr

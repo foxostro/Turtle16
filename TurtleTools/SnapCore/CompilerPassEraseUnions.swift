@@ -186,7 +186,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                         storage: .automaticStorage(offset: nil),
                         isMutable: false
                     ),
-                    InitialAssignment(
+                    Assignment(
                         sourceAnchor: s,
                         lexpr: Get(
                             sourceAnchor: s,
@@ -195,7 +195,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                         ),
                         rexpr: LiteralInt(sourceAnchor: s, value: tagValue)
                     ),
-                    InitialAssignment(
+                    Assignment(
                         lexpr: Get(
                             sourceAnchor: s,
                             expr: Bitcast(
@@ -301,7 +301,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         guard let expr = node0.expression, let rexpr = try visit(expr: expr) else { return decl }
         let myAssignment = try visit(
-            initialAssignment: InitialAssignment(
+            assignment: Assignment(
                 sourceAnchor: expr.sourceAnchor,
                 lexpr: identifier,
                 rexpr: rexpr
@@ -323,22 +323,16 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return eseq
     }
-
-    public func visit<T: Assignment>(someAssignment node0: T) throws -> Expression? {
+    
+    public override func visit(assignment node0: Assignment) throws -> Expression? {
         try rvalueContext.check(expression: node0) // make sure the expression type checks
-        let node1 =
-            switch node0 {
-            case let a as Assignment:
-                try super.visit(assignment: a)
-            case let a as InitialAssignment:
-                try super.visit(initialAssignment: a)
-            default:
-                throw CompilerError(
-                    sourceAnchor: node0.sourceAnchor,
-                    message: "expected an assignment"
-                )
-            }
-        guard let node1 = node1 as? T else { return node1 }
+        let node1 = try super.visit(assignment: node0)
+        guard let node1 = node1 as? Assignment else {
+            throw CompilerError(
+                sourceAnchor: node0.sourceAnchor,
+                message: "expected an assignment"
+            )
+        }
         let ltype = try lvalueContext.check(expression: node1.lexpr)
         guard let ltype else {
             throw CompilerError(
@@ -410,14 +404,6 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             )
         )
         return eseq
-    }
-    
-    public override func visit(initialAssignment node0: InitialAssignment) throws -> Expression? {
-        try visit(someAssignment: node0)
-    }
-    
-    public override func visit(assignment node0: Assignment) throws -> Expression? {
-        try visit(someAssignment: node0)
     }
 
     public override func visit(unionType: UnionType) throws -> Expression? {

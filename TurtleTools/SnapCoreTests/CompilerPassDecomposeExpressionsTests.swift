@@ -300,7 +300,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         ]
         let input = Block(
             children: shared + [
-                InitialAssignment(
+                Assignment(
                     lexpr: foo,
                     rexpr: LiteralArray(
                         arrayType: arrTyp,
@@ -330,11 +330,11 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                         storage: .automaticStorage(offset: nil),
                         isMutable: false
                     ),
-                    InitialAssignment(
+                    Assignment(
                         lexpr: TempRef(0),
                         rexpr: AddressOf(foo)
                     ),
-                    InitialAssignment(
+                    Assignment(
                         lexpr: Get(
                             expr: Temp(
                                 i: 2,
@@ -993,11 +993,11 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 identifier: TempRef(0),
                                 explicitType: ConstType(PointerType(arrType))
                             ),
-                            InitialAssignment(
+                            Assignment(
                                 lexpr: TempRef(0),
                                 rexpr: AddressOf(foo)
                             ),
-                            InitialAssignment(
+                            Assignment(
                                 lexpr: Get(
                                     expr: Temp(
                                         i: 2,
@@ -1013,7 +1013,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 ),
                                 rexpr: Temp(i: 3, expr: LiteralInt(1000))
                             ),
-                            InitialAssignment(
+                            Assignment(
                                 lexpr: Get(
                                     expr: Temp(
                                         i: 5,
@@ -1029,7 +1029,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 ),
                                 rexpr: Temp(i: 6, expr: LiteralInt(2000))
                             ),
-                            InitialAssignment(
+                            Assignment(
                                 lexpr: Get(
                                     expr: Temp(
                                         i: 8,
@@ -1132,11 +1132,11 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                             identifier: TempRef(1),
                             explicitType: ConstType(PointerType(ConstType(Foo)))
                         ),
-                        InitialAssignment(
+                        Assignment(
                             lexpr: TempRef(1),
                             rexpr: AddressOf(TempRef(0))
                         ),
-                        InitialAssignment(
+                        Assignment(
                             lexpr: Get(
                                 expr: Temp(
                                     i: 2,
@@ -1205,11 +1205,11 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                             identifier: TempRef(1),
                             explicitType: ConstType(PointerType(ConstType(Foo)))
                         ),
-                        InitialAssignment(
+                        Assignment(
                             lexpr: TempRef(1),
                             rexpr: AddressOf(TempRef(0))
                         ),
-                        InitialAssignment(
+                        Assignment(
                             lexpr: Get(
                                 expr: Temp(
                                     i: 2,
@@ -1220,7 +1220,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                             ),
                             rexpr: Temp(i: 3, expr: LiteralBool(false))
                         ),
-                        InitialAssignment(
+                        Assignment(
                             lexpr: Get(
                                 expr: Temp(
                                     i: 4,
@@ -1441,7 +1441,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 identifier: TempRef(0),
                                 explicitType: ConstType(PointerType(ConstType(Foo)))
                             ),
-                            InitialAssignment(
+                            Assignment(
                                 lexpr: TempRef(0),
                                 rexpr: AddressOf(a)
                             )
@@ -1497,11 +1497,11 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                                 identifier: TempRef(0),
                                 explicitType: ConstType(PointerType(ConstType(Foo)))
                             ),
-                            InitialAssignment(
+                            Assignment(
                                 lexpr: TempRef(0),
                                 rexpr: AddressOf(a)
                             ),
-                            InitialAssignment(
+                            Assignment(
                                 lexpr: Get(
                                     expr: Temp(
                                         i: 1,

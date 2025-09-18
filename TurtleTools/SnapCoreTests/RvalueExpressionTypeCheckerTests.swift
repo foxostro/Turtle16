@@ -6751,7 +6751,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .pointer(traitObjectType))
     }
 
-    func testInitialAssignment_automatic_conversion_from_struct_to_trait_object() throws {
+    func testAssignment_automatic_conversion_from_struct_to_trait_object() throws {
         let traitObjectType: SymbolType = .traitType(
             TraitTypeInfo(
                 name: "Foo",
@@ -6770,7 +6770,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         ])
 
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        let expr = InitialAssignment(
+        let expr = Assignment(
             lexpr: Identifier("foo"),
             rexpr: Identifier("bar")
         )
@@ -7525,28 +7525,6 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                     Symbol(
                         type: .constI16,
                         facts: Symbol.Facts(initStatus: .uninitialized)
-                    )
-                )
-            ]
-        )
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        let actual: SymbolType = try typeChecker.check(expression: expr)
-        let expected: SymbolType = .constI16
-        XCTAssertEqual(actual, expected)
-    }
-    
-    func testInitialAssignmentBypassesRestrictionsOnConstVariables() throws {
-        let expr = InitialAssignment(
-            lexpr: Identifier("foo"),
-            rexpr: LiteralInt(1)
-        )
-        let symbols = Env(
-            tuples: [
-                (
-                    "foo",
-                    Symbol(
-                        type: .constI16,
-                        facts: Symbol.Facts(initStatus: .initialized)
                     )
                 )
             ]

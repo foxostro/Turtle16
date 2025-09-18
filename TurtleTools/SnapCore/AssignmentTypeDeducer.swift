@@ -131,7 +131,7 @@ extension VarDeclaration {
                 sourceAnchor: sourceAnchor,
                 children: [
                     withExpression(nil),
-                    InitialAssignment(
+                    Assignment(
                         sourceAnchor: sourceAnchor,
                         lexpr: identifier,
                         rexpr: expression

@@ -147,11 +147,11 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 storage: .automaticStorage(offset: nil),
                 isMutable: false
             ),
-            InitialAssignment(
+            Assignment(
                 lexpr: Get(expr: AddressOf(foo), member: tag),
                 rexpr: LiteralInt(1)
             ),
-            InitialAssignment(
+            Assignment(
                 lexpr: Get(
                     expr: Bitcast(
                         expr: AddressOf(
@@ -619,14 +619,14 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                             storage: .automaticStorage(offset: nil),
                             isMutable: false
                         ),
-                        InitialAssignment(
+                        Assignment(
                             lexpr: Get(
                                 expr: AddressOf(t0),
                                 member: Identifier("tag")
                             ),
                             rexpr: LiteralInt(0)
                         ),
-                        InitialAssignment(
+                        Assignment(
                             lexpr: Get(
                                 expr: Bitcast(
                                     expr: AddressOf(

@@ -250,28 +250,6 @@ public final class CompilerPassEraseEseq: CompilerPass {
         return node2
     }
 
-    public override func visit(initialAssignment node0: InitialAssignment) throws -> Expression? {
-        let node1 = try super.visit(initialAssignment: node0)
-        guard let node1 = node1 as? InitialAssignment else { return node1 }
-        var node2 = node1
-        var seq = Seq(sourceAnchor: node1.sourceAnchor)
-        if let eseq = node1.lexpr as? Eseq {
-            seq = seq.appending(children: eseq.seq.children)
-            node2 = node2.withLexpr(eseq.expr)
-        }
-        if let eseq = node1.rexpr as? Eseq {
-            seq = seq.appending(children: eseq.seq.children)
-            node2 = node2.withRexpr(eseq.expr)
-        }
-        guard !seq.children.isEmpty else { return node1 }
-        let node3 = Eseq(
-            sourceAnchor: node2.sourceAnchor,
-            seq: seq,
-            expr: node2
-        )
-        return node3
-    }
-
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         let node1 = try super.visit(assignment: node0)
         guard let node1 = node1 as? Assignment else { return node1 }

@@ -1475,10 +1475,11 @@ public final class Env: Hashable {
     public func withSymbol(
         sourceAnchor: SourceAnchor? = nil,
         identifier ident: String,
-        block: (Symbol) throws -> Symbol
+        block: (inout Symbol) throws -> Void
     ) throws {
-        if let symbol = symbolTable[ident] {
-            symbolTable[ident] = try block(symbol)
+        if var symbol = symbolTable[ident] {
+            try block(&symbol)
+            symbolTable[ident] = symbol
         }
         else if let parent {
             try parent.withSymbol(identifier: ident, block: block)

@@ -1124,6 +1124,144 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
+    
+    func test_EndToEndIntegration_CanAssignToUninitializedConstant() throws {
+        let debugger = try run(
+            program: """
+                let foo: u16 = undefined
+                foo = 1000 // Not Error
+                """
+        )
+
+        XCTAssertEqual(debugger.loadSymbolU16("foo"), 1000)
+    }
+    
+    func test_EndToEndIntegration_CannotAssignToInitializedConstant_1() {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(
+                program: """
+                    let foo: u16 = 0
+                    foo = 1 // Error
+                    """
+            )
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "foo")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(
+                error.message,
+                "cannot assign to constant `foo' of type `const u16'"
+            )
+        }
+    }
+    
+    func test_EndToEndIntegration_CannotAssignToInitializedConstant_2() {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(
+                program: """
+                    let foo: u16 = undefined
+                    foo = 1 // Okay
+                    foo = 2 // Error
+                    """
+            )
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "foo")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
+            XCTAssertEqual(
+                error.message,
+                "cannot assign to constant `foo' of type `const u16'"
+            )
+        }
+    }
+    
+    func test_EndToEndIntegration_AssigningThroughPointerIsNotInitialization() {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(
+                program: """
+                    let foo: u16 = undefined
+                    let pointer = &foo // This line should probably be an error too.
+                    pointer.pointee = 1 // Error
+                    """
+            )
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "pointer.pointee")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
+            XCTAssertEqual(
+                error.message,
+                "cannot assign to expression of type `const u16'"
+            )
+        }
+    }
+    
+    func test_EndToEndIntegration_ConstStructInitWithStructInitializer_1() {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(
+                program: """
+                    struct Point { x: u16, y: u16 }
+                    let point: Point = undefined
+                    point = Point { .x = 1, .y = 2 } // Okay
+                    point = Point { .x = 10, .y = 20 } // Error
+                    """
+            )
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "point")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 3..<4)
+            XCTAssertEqual(
+                error.message,
+                "cannot assign to constant `point' of type `const Point'"
+            )
+        }
+    }
+    
+    func test_EndToEndIntegration_ConstStructInitWithStructInitializer_2() {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(
+                program: """
+                    struct Point { x: u16, y: u16 }
+                    let point: Point = undefined
+                    point = Point { .x = 1, .y = 2 } // Okay
+                    point.x = 10 // Error
+                    """
+            )
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "point.x")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 3..<4)
+            XCTAssertEqual(
+                error.message,
+                "cannot assign to expression of type `const u16'"
+            )
+        }
+    }
+    
+    func test_EndToEndIntegration_ConstStructInitWithStructInitializer_3() {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(
+                program: """
+                    struct Point { x: u16, y: u16 }
+                    let point: Point = undefined
+                    point.x = 10 // Error
+                    """
+            )
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "point.x")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
+            XCTAssertEqual(
+                error.message,
+                "cannot assign to expression of type `const u16'"
+            )
+        }
+    }
 
     func test_EndToEndIntegration_CastU16DownToU8() throws {
         let debugger = try run(

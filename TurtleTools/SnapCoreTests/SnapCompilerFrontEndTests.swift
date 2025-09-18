@@ -36,6 +36,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     fileprivate func expectError(
         _ result: Result<TackProgram, Error>,
+        file: String = #file,
+        line: Int = #line,
         _ block: (CompilerError) -> Void
     ) {
         switch result {
@@ -43,7 +45,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             block(error)
 
         default:
-            XCTFail()
+            XCTFail("\(file):\(line): unexpected success while expecting an error")
         }
     }
 

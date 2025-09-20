@@ -358,7 +358,11 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         }
     }
 
-    public var lift: Expression {  // TODO: Remove the `SymbolType.lift` property entirely
+    /// Return an expression for this type
+    /// Types may be expressed in the language of Expression nodes, which may
+    /// be inserted directly into the AST, or as a value of SymbolType, which
+    /// may be elegantly matched in a switch statement.
+    public var lift: Expression {
         switch self {
         case .void:
             PrimitiveType(.void)

@@ -153,6 +153,19 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
             id: id
         )
     }
+    
+    public func withConst(_ isConst: Bool) -> StructDeclaration {
+        StructDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            typeArguments: typeArguments,
+            members: members,
+            visibility: visibility,
+            isConst: isConst,
+            associatedTraitType: associatedTraitType,
+            id: id
+        )
+    }
 
     public func withNewId() -> StructDeclaration {
         StructDeclaration(

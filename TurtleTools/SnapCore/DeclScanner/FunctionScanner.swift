@@ -91,7 +91,7 @@ public struct FunctionScanner {
             let argumentType = functionType.arguments[i]
             let argumentName = node0.argumentNames[i]
             let symbol = Symbol(
-                type: argumentType.correspondingConstType,
+                type: argumentType,
                 storage: .automaticStorage(offset: -offset)
             )
             node0.symbols.bind(identifier: argumentName, symbol: symbol)

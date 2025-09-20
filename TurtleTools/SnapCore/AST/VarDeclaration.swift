@@ -87,6 +87,19 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
             id: id
         )
     }
+    
+    public func withMutable(_ isMutable: Bool) -> VarDeclaration {
+        VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: visibility,
+            id: id
+        )
+    }
 
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }

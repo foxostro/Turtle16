@@ -483,7 +483,7 @@ public class CompilerPass {
         case let node as Unary:
             try visit(unary: node)
         case let group as Group:
-            try visit(expr: group.expression)
+            try visit(group: group)
         case let eseq as Eseq:
             try visit(eseq: eseq)
         case let node as Binary:
@@ -537,6 +537,10 @@ public class CompilerPass {
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
+    }
+
+    public func visit(group: Group) throws -> Expression? {
+        try visit(expr: group.expression)
     }
 
     public func visit(unsupported node: UnsupportedExpression) throws -> Expression? {

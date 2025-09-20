@@ -116,7 +116,7 @@ public struct FunctionScanner {
             FunctionType(
                 sourceAnchor: node0.functionType.sourceAnchor,
                 name: functionType.name,
-                returnType: PrimitiveType(functionType.returnType),
+                returnType: functionType.returnType.lift,
                 arguments: functionType.arguments.map(\.lift)
             )
         )

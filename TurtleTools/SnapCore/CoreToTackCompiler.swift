@@ -313,13 +313,9 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
     func lvalue(subscript expr: Subscript) throws -> AbstractSyntaxTreeNode {
         let argumentType = try typeCheck(rexpr: expr.argument)
-
-        switch argumentType {
-        case .structType, .constStructType:
+        
+        guard !argumentType.isStructType else {
             return try lvalue(slice: expr)
-
-        default:
-            break
         }
 
         let elementType = try typeCheck(rexpr: expr)
@@ -368,11 +364,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let computeArrayBaseAddress =
             switch subscriptableType {
             case .pointer(.array(count: _, elementType: _)),
-                .pointer(.dynamicArray(elementType: _)),
-                .pointer(.constDynamicArray(elementType: _)),
-                .constPointer(.array(count: _, elementType: _)),
-                .constPointer(.dynamicArray(elementType: _)),
-                .constPointer(.constDynamicArray(elementType: _)):
+                 .pointer(.dynamicArray(elementType: _)):
 
                 try rvalue(expr: expr.subscriptable)
 
@@ -387,7 +379,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         // another load to extract the base address.
         let sliceAddr: Register!
         switch subscriptableType {
-        case .dynamicArray, .constDynamicArray:
+        case .dynamicArray:
             sliceAddr = popRegister()
             let baseAddr = nextRegister(type: .p)
             pushRegister(baseAddr)
@@ -465,7 +457,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         TackInstructionNode(.liw(tempUpperBound.unwrap16!, n))
                     ]
 
-                case .dynamicArray, .constDynamicArray:
+                case .dynamicArray:
                     // The upper bound is embedded in the slice object
                     children += [
                         TackInstructionNode(
@@ -559,7 +551,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         case .array:
             return try lvalue(arraySlice: expr)
 
-        case .dynamicArray, .constDynamicArray:
+        case .dynamicArray:
             return try lvalue(dynamicArraySlice: expr)
 
         default:
@@ -790,7 +782,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let result: Bool
         let argumentType = try? typeCheck(rexpr: argument)
         switch argumentType {
-        case .structType(let typ), .constStructType(let typ):
+        case .structType(let typ):
             if typ.name == kRangeName,
                 typ.symbols.maybeResolve(identifier: kRangeBegin) != nil,
                 typ.symbols.maybeResolve(identifier: kRangeLimit) != nil
@@ -1129,7 +1121,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         var children: [AbstractSyntaxTreeNode] = []
 
         switch resultType {
-        case .constStructType(let typ), .structType(let typ):
+        case .structType(let typ):
             let symbol = try typ.symbols.resolve(identifier: name)
             let offset = symbol.storage.offset!
             children += [
@@ -1146,7 +1138,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
 
-        case .constPointer(let typ), .pointer(let typ):
+        case .pointer(let typ):
             if name == "pointee" {
                 children += [
                     try rvalue(expr: expr.expr)
@@ -1154,7 +1146,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             }
             else {
                 switch typ {
-                case .constStructType(let b), .structType(let b):
+                case .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
                     let offset = symbol.storage.offset!
 
@@ -1560,7 +1552,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         }
 
-        if canValueBeTriviallyReinterpreted(ltype, rtype) {
+        guard !canValueBeTriviallyReinterpreted(ltype, rtype) else {
             // The expression produces a value whose bitpattern can be trivially
             // reinterpreted as the target type.
             return try rvalue(expr: rexpr)
@@ -1569,8 +1561,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let result: AbstractSyntaxTreeNode
 
         switch (rtype, ltype) {
-        case (.booleanType(.compTimeBool(let a)), .bool),
-            (.booleanType(.compTimeBool(let a)), .constBool):
+        case (.booleanType(.compTimeBool(let a)), .bool):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister(type: .o, hint: desiredDst)
@@ -1768,8 +1759,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             ]
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
-        case (.array(let n?, let a), .constDynamicArray(let b)),
-            (.array(let n?, let a), .dynamicArray(let b)):
+        case (.array(let n?, let a), .dynamicArray(let b)):
             assert(canValueBeTriviallyReinterpreted(b, a))
             let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, PrimitiveType(ltype))
             var children: [AbstractSyntaxTreeNode] = [
@@ -1808,8 +1798,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
-        case (_, .constPointer(let b)),
-             (_, .pointer(let b)):
+        case (_, .pointer(let b)):
             
             guard !rtype.isTraitType else {
                 throw CompilerError(
@@ -1818,7 +1807,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             }
             
-            if rtype.correspondingConstType == b.correspondingConstType {
+            if rtype == b {
                 result = try lvalue(expr: rexpr)
             }
             else {
@@ -1843,10 +1832,9 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         // So conversions from one array type to another are assumed to be fine
         // we only need determine whether the in-memory representations of
         // elements can be trivially reinterpreted as the new type. This is the
-        // case for conversions to and from "const" for example.
-        // Same thing for conversions of pointers and dynamic array types.
+        // case for of pointers and dynamic array types.
 
-        if ltype == rtype {
+        guard ltype != rtype else {
             return true
         }
 
@@ -1859,16 +1847,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         case (.arithmeticType(let a), .arithmeticType(let b)):
             result = a.canValueBeTriviallyReinterpretedAs(type: b)
 
-        case (.constPointer, .constPointer),
-            (.constPointer, .pointer),
-            (.pointer, .constPointer),
-            (.pointer, .pointer),
-            (.constDynamicArray, .constDynamicArray),
-            (.constDynamicArray, .dynamicArray),
-            (.dynamicArray, .constDynamicArray),
-            (.dynamicArray, .dynamicArray),
-            (.structType, .constStructType),
-            (.constStructType, .structType):
+        case (.pointer, .pointer), (.dynamicArray, .dynamicArray):
             result = true
 
         case (.array(_, let a), .array(_, let b)):
@@ -2618,7 +2597,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
 
         switch subscriptableType {
-        case .structType(let typ), .constStructType(let typ):
+        case .structType(let typ):
             guard typ.name == "Range" else {
                 fatalError("Cannot subscript an expression of type `\(subscriptableType)'")
             }
@@ -2698,7 +2677,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
 
-        case .constDynamicArray, .dynamicArray:
+        case .dynamicArray:
             assert(name == "count")
             children += [
                 try rvalue(expr: expr.expr)
@@ -2714,7 +2693,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
 
-        case .constStructType(let typ), .structType(let typ):
+        case .structType(let typ):
             let symbol = try typ.symbols.resolve(identifier: name)
             let offset = symbol.storage.offset!
 
@@ -2747,7 +2726,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 ]
             }
 
-        case .constPointer(let typ), .pointer(let typ):
+        case .pointer(let typ):
             if name == "pointee" {
                 children += [
                     try rvalue(expr: expr.expr)
@@ -2790,7 +2769,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         )
                     ]
 
-                case .constDynamicArray, .dynamicArray:
+                case .dynamicArray:
                     assert(name == "count")
                     children += [
                         try rvalue(expr: expr.expr)
@@ -2806,7 +2785,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         )
                     ]
 
-                case .constStructType(let b), .structType(let b):
+                case .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
                     let offset = symbol.storage.offset!
 
@@ -2902,7 +2881,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
 
         switch calleeType {
-        case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
+        case .function(let typ), .pointer(.function(let typ)):
             return try rvalue(call: expr, typ: typ)
 
         case .genericFunction(let typ):
@@ -3033,7 +3012,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
 
-        case .pointer, .constPointer:
+        case .pointer:
             children += [
                 try rvalue(expr: expr.callee),
                 TackInstructionNode(

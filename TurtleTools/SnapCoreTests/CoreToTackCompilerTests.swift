@@ -2787,7 +2787,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testFixBugInvolvingInitialAssignmentWithStructInitializer() throws {
         let symbols = Env()
-        let kSliceType: SymbolType = .constStructType(
+        let kSliceType: SymbolType = .structType(
             StructTypeInfo(
                 name: kSliceName,
                 fields: Env(tuples: [
@@ -3279,7 +3279,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_DynamicArraySlice_1() throws {
         let symbols = Env(
             tuples: [
-                ("foo", Symbol(type: .constDynamicArray(elementType: .u16), offset: 0x1000))
+                ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0x1000))
             ],
             typeDict: [
                 kRangeName: kRangeType,
@@ -3315,7 +3315,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_DynamicArraySlice_2() throws {
         let symbols = Env(
             tuples: [
-                ("foo", Symbol(type: .constDynamicArray(elementType: .u16), offset: 0x1000)),
+                ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0x1000)),
                 ("a", Symbol(type: .u16, offset: 0x2000)),
                 ("b", Symbol(type: .u16, offset: 0x2001))
             ],
@@ -3364,7 +3364,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 (
                     "foo",
                     Symbol(
-                        type: .constDynamicArray(elementType: .array(count: 3, elementType: .u16)),
+                        type: .dynamicArray(elementType: .array(count: 3, elementType: .u16)),
                         offset: 0x1000
                     )
                 )
@@ -3408,7 +3408,7 @@ final class CoreToTackCompilerTests: XCTestCase {
                 (
                     "foo",
                     Symbol(
-                        type: .constDynamicArray(elementType: .array(count: 3, elementType: .u16)),
+                        type: .dynamicArray(elementType: .array(count: 3, elementType: .u16)),
                         offset: 0x1000
                     )
                 ),

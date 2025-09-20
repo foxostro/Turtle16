@@ -33,7 +33,7 @@ public final class GenericsPartialEvaluator: CompilerPass {
     /// - Returns: The partially evaluated function, struct, or other object,
     ///   with replacements applied
     public static func eval<U, S>(_ ast0: U, replacements: S) throws -> U
-    where S: Sequence, S.Element == (ReplacementKey, PrimitiveType), U: AbstractSyntaxTreeNode {
+    where S: Sequence, S.Element == (ReplacementKey, Expression), U: AbstractSyntaxTreeNode {
         let replacementMap = Dictionary(uniqueKeysWithValues: replacements)
         let ast1 =
             try GenericsPartialEvaluator(symbols: nil, map: replacementMap)

@@ -11,6 +11,7 @@ import TurtleCore
 import XCTest
 
 final class CompilerPassGenericsTests: XCTestCase {
+    private let u16 = PrimitiveType(.u16)
 
     fileprivate func parse(_ text: String) -> TopLevel {
         try! SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
@@ -101,8 +102,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                     identifier: Identifier("foo[const u16]"),
                     functionType: FunctionType(
                         name: "foo[const u16]",
-                        returnType: PrimitiveType(.constU16),
-                        arguments: [PrimitiveType(.constU16)]
+                        returnType: ConstType(u16),
+                        arguments: [ConstType(u16)]
                     ),
                     argumentNames: ["a"],
                     body: Block(children: [
@@ -167,8 +168,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                     identifier: Identifier("foo[u16]"),
                     functionType: FunctionType(
                         name: "foo[u16]",
-                        returnType: PrimitiveType(.u16),
-                        arguments: [PrimitiveType(.u16)]
+                        returnType: u16,
+                        arguments: [u16]
                     ),
                     argumentNames: ["a"],
                     body: Block(children: [
@@ -179,7 +180,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ),
                 Call(
                     callee: Identifier("foo[u16]"),
-                    arguments: [PrimitiveType(.u16)]
+                    arguments: [u16]
                 )
             ]
         )
@@ -212,7 +213,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ),
                 Call(
                     callee: Identifier("foo"),
-                    arguments: [PrimitiveType(.u16)]
+                    arguments: [u16]
                 )
             ]
         )
@@ -252,8 +253,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expr = GenericTypeApplication(
             identifier: Identifier("foo"),
             arguments: [
-                PrimitiveType(.u16),
-                PrimitiveType(.u16)
+                u16,
+                u16
             ]
         )
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
@@ -367,12 +368,12 @@ final class CompilerPassGenericsTests: XCTestCase {
                 StructInitializer(
                     expr: GenericTypeApplication(
                         identifier: Identifier("foo"),
-                        arguments: [PrimitiveType(.u16)]
+                        arguments: [u16]
                     ),
                     arguments: [
                         StructInitializer.Argument(
                             name: "T",
-                            expr: PrimitiveType(.u16)
+                            expr: u16
                         )
                     ]
                 )
@@ -399,7 +400,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "bar",
-                        type: PrimitiveType(.u16)
+                        type: u16
                     )
                 ],
                 visibility: .privateVisibility,
@@ -410,7 +411,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [
                     StructInitializer.Argument(
                         name: "T",
-                        expr: PrimitiveType(.u16)
+                        expr: u16
                     )
                 ]
             )
@@ -437,12 +438,12 @@ final class CompilerPassGenericsTests: XCTestCase {
             StructInitializer(
                 expr: GenericTypeApplication(
                     identifier: Identifier("foo"),
-                    arguments: [PrimitiveType(.u16)]
+                    arguments: [u16]
                 ),
                 arguments: [
                     StructInitializer.Argument(
                         name: "T",
-                        expr: PrimitiveType(.u16)
+                        expr: u16
                     )
                 ]
             )
@@ -555,7 +556,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: GenericTypeApplication(
                         identifier: Identifier("MyStruct"),
                         arguments: [
-                            PrimitiveType(.u16)
+                            u16
                         ]
                     ),
                     arguments: [],
@@ -594,8 +595,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Identifier("foo"),
                             functionType: FunctionType(
                                 name: "foo",
-                                returnType: PrimitiveType(.u16),
-                                arguments: [PrimitiveType(.u16)]
+                                returnType: u16,
+                                arguments: [u16]
                             ),
                             argumentNames: ["arg1"],
                             typeArguments: [],
@@ -666,7 +667,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: GenericTypeApplication(
                         identifier: Identifier("MyStruct"),
                         arguments: [
-                            PrimitiveType(.u16)
+                            u16
                         ]
                     ),
                     arguments: []
@@ -759,7 +760,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: GenericTypeApplication(
                         identifier: Identifier("MyStruct"),
                         arguments: [
-                            PrimitiveType(.u16)
+                            u16
                         ]
                     ),
                     arguments: []
@@ -781,8 +782,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Identifier("foo"),
                             functionType: FunctionType(
                                 name: "foo",
-                                returnType: PrimitiveType(.u16),
-                                arguments: [PrimitiveType(.u16)]
+                                returnType: u16,
+                                arguments: [u16]
                             ),
                             argumentNames: ["arg1"],
                             typeArguments: [],
@@ -800,8 +801,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Identifier("bar"),
                             functionType: FunctionType(
                                 name: "bar",
-                                returnType: PrimitiveType(.u16),
-                                arguments: [PrimitiveType(.u16)]
+                                returnType: u16,
+                                arguments: [u16]
                             ),
                             argumentNames: ["arg1"],
                             typeArguments: [],
@@ -873,7 +874,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: GenericTypeApplication(
                         identifier: Identifier("MyStruct"),
                         arguments: [
-                            PrimitiveType(.u16)
+                            u16
                         ]
                     ),
                     arguments: []
@@ -938,7 +939,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     typeArguments: [],
                     traitTypeExpr: GenericTypeApplication(
                         identifier: Identifier("MyTrait"),
-                        arguments: [PrimitiveType(.u16)]
+                        arguments: [u16]
                     ),
                     structTypeExpr: Identifier("MyStruct"),
                     children: []
@@ -974,8 +975,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             type: PointerType(
                                 FunctionType(
                                     name: "foo",
-                                    returnType: PrimitiveType(.u16),
-                                    arguments: [PrimitiveType(.u16)]
+                                    returnType: u16,
+                                    arguments: [u16]
                                 )
                             )
                         )
@@ -994,8 +995,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Identifier("foo"),
                             functionType: FunctionType(
                                 name: "foo",
-                                returnType: PrimitiveType(.u16),
-                                arguments: [PrimitiveType(.u16)]
+                                returnType: u16,
+                                arguments: [u16]
                             ),
                             argumentNames: ["arg1"],
                             body: Block(
@@ -1044,7 +1045,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     typeArguments: [],
                     traitTypeExpr: GenericTypeApplication(
                         identifier: Identifier("MyTrait"),
-                        arguments: [PrimitiveType(.u16)]
+                        arguments: [u16]
                     ),
                     structTypeExpr: Identifier("MyStruct"),
                     children: [
@@ -1052,8 +1053,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Identifier("foo"),
                             functionType: FunctionType(
                                 name: "foo",
-                                returnType: PrimitiveType(.u16),
-                                arguments: [PrimitiveType(.u16)]
+                                returnType: u16,
+                                arguments: [u16]
                             ),
                             argumentNames: ["arg1"],
                             body: Block(
@@ -1099,8 +1100,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Identifier("foo[const u16]"),
                             functionType: FunctionType(
                                 name: "foo[const u16]",
-                                returnType: PrimitiveType(.constU16),
-                                arguments: [PrimitiveType(.constU16)]
+                                returnType: ConstType(u16),
+                                arguments: [ConstType(u16)]
                             ),
                             argumentNames: ["arg1"],
                             body: Block(
@@ -1196,8 +1197,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                     identifier: Identifier("foo[const u16]"),
                     functionType: FunctionType(
                         name: "foo[const u16]",
-                        returnType: PrimitiveType(.constU16),
-                        arguments: [PrimitiveType(.constU16)]
+                        returnType: ConstType(u16),
+                        arguments: [ConstType(u16)]
                     ),
                     argumentNames: ["a"],
                     body: Block(
@@ -1213,20 +1214,20 @@ final class CompilerPassGenericsTests: XCTestCase {
                     visibility: .privateVisibility
                 ),
                 Identifier("foo[const u16]")
-            ])
+            ]
+        )
             .reconnect(parent: nil)
 
-        let ast0 = try parse(
-            """
+        let ast0 = try parse("""
             func foo[T](a: T) -> T {
                 return a + 1
             }
             foo@[const u16]
             """
         )
-        .eraseSourceAnchors()?
-        .replaceTopLevelWithBlock()
-        .reconnect(parent: nil)
+            .eraseSourceAnchors()?
+            .replaceTopLevelWithBlock()
+            .reconnect(parent: nil)
         let ast1 = try CompilerPassGenerics().run(ast0)
         XCTAssertEqual(ast1, expected)
     }
@@ -1258,7 +1259,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 GenericTypeApplication(
                     identifier: Identifier("foo"),
                     arguments: [
-                        PrimitiveType(.u16)
+                        u16
                     ]
                 )
             ])
@@ -1297,7 +1298,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 GenericTypeApplication(
                     identifier: Identifier("foo"),
                     arguments: [
-                        PrimitiveType(.u16)
+                        u16
                     ]
                 )
             ])

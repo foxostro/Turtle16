@@ -255,19 +255,21 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
             sourceAnchor: expr.identifier.sourceAnchor,
             identifier: expr.identifier.identifier
         )
-        .unwrapGenericFunctionType()
+            .unwrapGenericFunctionType()
 
         // Instantiate the generic function with concrete type arguments
         typealias Key = GenericsPartialEvaluator.ReplacementKey
         let keys: [Key] = genericFunctionType.typeArguments
             .map { ident in
-                let scope = symbols.lookupIdOfEnclosingScope(identifier: ident.identifier)
+                let scope = symbols.lookupIdOfEnclosingScope(
+                    identifier: ident.identifier
+                )
                 return Key(identifier: ident.identifier, scope: scope)
             }
         let pairs = zip(
             keys,
             try expr.arguments.map {
-                PrimitiveType(try typeCheck(rexpr: $0))
+                try typeCheck(rexpr: $0).lift
             }
         )
         let ast0 = genericFunctionType.template
@@ -281,10 +283,11 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
                     .withNewId()
                     .withName(mangledName)
             )
-        let ast2 =
-            try GenericsPartialEvaluator
-            .eval(ast1, replacements: pairs)
-        // The expectation is that the template for a generic function has no symbols yet. The unbound type parameter makes that impossible. We scan it on instantiation when all types are known.
+        let ast2 = try GenericsPartialEvaluator.eval(ast1, replacements: pairs)
+        
+        // The expectation is that the template for a generic function has no
+        // symbols yet. The unbound type parameter makes that impossible.
+        // We scan it on instantiation when all types are known.
         try FunctionScanner(
             memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: ast2.symbols.parent!
@@ -359,9 +362,9 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
                 let scope = symbols.lookupIdOfEnclosingScope(identifier: ident.identifier)
                 return Key(identifier: ident.identifier, scope: scope)
             }
-        let values: [PrimitiveType] = try expr.arguments
-            .map { try typeCheck(rexpr: $0) }
-            .map { PrimitiveType($0) }
+        let values: [Expression] = try expr.arguments.map {
+            try typeCheck(rexpr: $0).lift
+        }
         let pairs = zip(keys, values)
 
         // Instantiate the generic struct declarations with concrete type arguments
@@ -445,7 +448,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         let pairs = zip(
             keys,
             try expr.arguments.map {
-                PrimitiveType(try typeCheck(rexpr: $0))
+                try typeCheck(rexpr: $0).lift
             }
         )
         let ast1 = try GenericsPartialEvaluator.eval(ast0, replacements: pairs)

@@ -361,7 +361,9 @@ public class CompilerPass {
             clauses: node.clauses.map { clause in
                 try Match.Clause(
                     sourceAnchor: clause.sourceAnchor,
-                    valueIdentifier: visit(identifier: clause.valueIdentifier) as! Identifier,
+                    valueIdentifier: with(context: .none) {
+                        try visit(identifier: clause.valueIdentifier)
+                    } as! Identifier,
                     valueType: with(context: .type) {
                         try visit(expr: clause.valueType)!
                     },

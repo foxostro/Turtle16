@@ -2794,14 +2794,14 @@ final class CoreToTackCompilerTests: XCTestCase {
                     (
                         kSliceBase,
                         Symbol(
-                            type: kSliceBaseAddressType.correspondingConstType,
+                            type: kSliceBaseAddressType,
                             offset: kSliceBaseAddressOffset
                         )
                     ),
                     (
                         kSliceCount,
                         Symbol(
-                            type: kSliceCountType.correspondingConstType,
+                            type: kSliceCountType,
                             offset: kSliceCountOffset
                         )
                     )

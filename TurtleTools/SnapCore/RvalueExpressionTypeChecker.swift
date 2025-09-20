@@ -8,14 +8,13 @@
 
 import TurtleCore
 
+/// There are no options today. This is in place for future expansion.
+/// Yeah, yeah, YAGNI, but this was useful once and will be useful again.
+/// For example, this is a place where a compiler pass could specify that the
+/// type checker should throw an error on even encountering a certain type of
+/// kind of type in that pass.
 public struct TypeCheckerOptions: OptionSet {
     public let rawValue: UInt
-    
-    /// Instructs the type checker to ignore rules which prohibit assigning
-    /// a value to an initialized const variable. This permits an escape
-    /// hatch so CoreToTackCompiler can lower certain expressions.
-    /// TODO: Remove the `bypassConstAssignmentRules` hack
-    public static let bypassConstAssignmentRules = TypeCheckerOptions(rawValue: 1 << 0)
     
     public init(rawValue: UInt) {
         self.rawValue = rawValue
@@ -474,7 +473,6 @@ public class RvalueExpressionTypeChecker {
         _ assignment: Assignment,
         _ ltype: SymbolType
     ) -> Bool {
-        guard !options.contains(.bypassConstAssignmentRules) else { return true }
         guard ltype.isConst else { return true }
         
         guard let ident = assignment.lexpr as? Identifier,

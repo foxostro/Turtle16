@@ -65,10 +65,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             return result
         }
     }
-    
-    override var typeCheckerOptions: TypeCheckerOptions {
-        [.bypassConstAssignmentRules]
-    }
 
     public init(
         symbols: Env = Env(),

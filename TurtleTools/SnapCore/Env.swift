@@ -1901,6 +1901,22 @@ public final class Env: Hashable {
         result.modulesAlreadyImported = modulesAlreadyImported
         return result
     }
+    
+    public func eraseConst() -> Env {
+        let result = Env()
+        result.declarationOrder = declarationOrder
+        result.symbolTable = symbolTable.mapValues { symbol in
+            symbol.withType(symbol.type.eraseConst())
+        }
+        result.typeTable = typeTable.mapValues { typeRecord in
+            typeRecord.withType(typeRecord.symbolType.eraseConst())
+        }
+        result.parent = parent
+        result.frameLookupMode = frameLookupMode
+        result.breadcrumb = breadcrumb
+        result.modulesAlreadyImported = modulesAlreadyImported
+        return result
+    }
 
     public func clear() {
         if case .set(let frame) = frameLookupMode {

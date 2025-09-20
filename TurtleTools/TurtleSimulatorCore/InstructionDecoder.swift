@@ -127,7 +127,7 @@ public class ProgrammableLogicDecoder: NSObject, InstructionDecoder {
             forResource: name,
             ofType: "jed"
         )!
-        let jedecText = try! String(contentsOfFile: path)
+        let jedecText = try! String(contentsOfFile: path, encoding: .utf8)
         let fuseListMaker = FuseListMaker()
         let parser = JEDECFuseFileParser(fuseListMaker)
         parser.parse(jedecText)

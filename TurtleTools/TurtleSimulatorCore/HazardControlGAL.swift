@@ -24,7 +24,7 @@ public final class HazardControlGAL: HazardControl {
 
     public static func makeGAL(_ name: String) -> ATF22V10 {
         let path = Bundle(for: self).path(forResource: name, ofType: "jed")!
-        let jedecText = try! String(contentsOfFile: path)
+        let jedecText = try! String(contentsOfFile: path, encoding: .utf8)
         let fuseListMaker = FuseListMaker()
         let parser = JEDECFuseFileParser(fuseListMaker)
         parser.parse(jedecText)

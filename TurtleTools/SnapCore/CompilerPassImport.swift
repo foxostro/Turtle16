@@ -103,7 +103,7 @@ public final class CompilerPassImport: CompilerPass {
             withExtension: "snap"
         ) { // Try retrieving the module from bundle resources.
             do {
-                let text = try String(contentsOf: url)
+                let text = try String(contentsOf: url, encoding: .utf8)
                 return (text, url)
             }
             catch {

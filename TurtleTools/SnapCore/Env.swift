@@ -1262,6 +1262,20 @@ public struct TypeRecord: Hashable, CustomStringConvertible {
     public var description: String {
         "TypeRecord(symbolType: \(symbolType), visibility: \(visibility))"
     }
+    
+    public func withType(_ symbolType: SymbolType) -> TypeRecord {
+        TypeRecord(
+            symbolType: symbolType,
+            visibility: visibility
+        )
+    }
+    
+    public func withVisibility(_ visibility: SymbolVisibility) -> TypeRecord {
+        TypeRecord(
+            symbolType: symbolType,
+            visibility: visibility
+        )
+    }
 }
 /// Instances of `Env` are connected in a linked list to represent nested
 /// lexical scopes.

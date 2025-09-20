@@ -90,8 +90,8 @@ public final class Match: AbstractSyntaxTreeNode {
     ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
-        let elseDesc =
-            elseClause == nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1)
+        let elseDesc = elseClause == nil ? "nil" : elseClause!
+            .makeIndentedDescription(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
             \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))

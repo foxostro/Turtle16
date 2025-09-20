@@ -21,7 +21,7 @@ final class CompilerPassEraseConstTests: XCTestCase {
         let expected = input
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseConstType() throws {
         let expected = Block(
             children: [
@@ -36,7 +36,7 @@ final class CompilerPassEraseConstTests: XCTestCase {
         let actual = try input.eraseConst()
         XCTAssertEqual(actual, expected)
     }
-    
+
     /// Rewrite all `PrimitiveType` nodes to remove all const-ness.
     /// Note that `PrimitiveType` is perhaps poorly named. The class allows a
     /// type which is represented by a value of `SymbolType` to be placed in an
@@ -55,7 +55,7 @@ final class CompilerPassEraseConstTests: XCTestCase {
         let actual = try input.eraseConst()
         XCTAssertEqual(actual, expected)
     }
-    
+
     /// Ensure we can erase const from inner types contained within SymbolType
     func testEraseConstFromPrimitiveType_pointerToConst() throws {
         let expected = Block(
@@ -71,7 +71,7 @@ final class CompilerPassEraseConstTests: XCTestCase {
         let actual = try input.eraseConst()
         XCTAssertEqual(actual, expected)
     }
-    
+
     /// Ensure we can erase const from inner types contained within SymbolType
     func testEraseConstFromPrimitiveType_struct() throws {
         let expected = Block(

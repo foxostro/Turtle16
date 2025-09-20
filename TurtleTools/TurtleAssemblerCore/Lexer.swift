@@ -13,6 +13,7 @@ public class Lexer: NSObject {
     public var isAtEnd: Bool {
         string == ""
     }
+
     public private(set) var tokens: [Token] = []
     public var lineNumber = 1
 
@@ -29,7 +30,7 @@ public class Lexer: NSObject {
     }
 
     public func peek(_ ahead: Int = 0) -> String? {
-        if ahead >= 0 && ahead < string.count {
+        if ahead >= 0, ahead < string.count {
             return String(Array(string)[ahead])
         }
         return nil
@@ -85,7 +86,7 @@ public class Lexer: NSObject {
             }
             catch let error as CompilerError {
                 errors.append(error)
-                advanceToNewline()  // recover by skipping to the next line
+                advanceToNewline() // recover by skipping to the next line
             }
             catch {
                 // This catch block should be unreachable because scanToken()

@@ -41,8 +41,7 @@ public struct SnapSubcompilerReturn {
                 ltype: enclosingFunctionType.returnType,
                 rtype: returnExpressionType,
                 sourceAnchor: node.sourceAnchor,
-                messageWhenNotConvertible:
-                    "cannot convert return expression of type `\(returnExpressionType)' to return type `\(enclosingFunctionType.returnType)'"
+                messageWhenNotConvertible: "cannot convert return expression of type `\(returnExpressionType)' to return type `\(enclosingFunctionType.returnType)'"
             )
             let lexpr = Identifier(
                 sourceAnchor: node.sourceAnchor,
@@ -56,7 +55,7 @@ public struct SnapSubcompilerReturn {
                 )
             )
         }
-        else if .void != enclosingFunctionType.returnType {
+        else if enclosingFunctionType.returnType != .void {
             throw CompilerError(
                 sourceAnchor: node.sourceAnchor,
                 message: "non-void function should return a value"

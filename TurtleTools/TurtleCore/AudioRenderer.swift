@@ -11,9 +11,9 @@ import Foundation
 
 private func callback(
     inRefCon: UnsafeMutableRawPointer,
-    ioActionFlags: UnsafeMutablePointer<AudioUnitRenderActionFlags>,
-    inTimeStamp: UnsafePointer<AudioTimeStamp>,
-    inBusNumber: UInt32,
+    ioActionFlags _: UnsafeMutablePointer<AudioUnitRenderActionFlags>,
+    inTimeStamp _: UnsafePointer<AudioTimeStamp>,
+    inBusNumber _: UInt32,
     inNumberFrames: UInt32,
     ioData: UnsafeMutablePointer<AudioBufferList>?
 ) -> OSStatus {
@@ -45,9 +45,9 @@ open class AudioRenderer {
     }
 
     public func start() {
-        guard false == isRunning else { return }
+        guard isRunning == false else { return }
 
-        if nil == audioComponent {
+        if audioComponent == nil {
             createAudioComponent()
         }
 
@@ -58,13 +58,13 @@ open class AudioRenderer {
     }
 
     public func stop() {
-        guard true == isRunning else { return }
+        guard isRunning == true else { return }
         let err = AudioOutputUnitStop(audioComponent)
         assert(err == noErr, "AudioOutputUnitStop: \(err)")
         isRunning = false
     }
 
-    open func render(_ inNumberFrames: UInt32, _ samples: UnsafeMutableBufferPointer<Float>) {
+    open func render(_: UInt32, _: UnsafeMutableBufferPointer<Float>) {
         // override in a subclass
     }
 

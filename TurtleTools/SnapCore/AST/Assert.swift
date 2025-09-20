@@ -21,7 +21,8 @@ public final class Assert: AbstractSyntaxTreeNode {
         enclosingTestName: String? = nil,
         id: ID = ID()
     ) {
-        self.condition = condition.withSourceAnchor(sourceAnchor)  // TODO: Remove call to withSourceAnchor?
+        self.condition = condition
+            .withSourceAnchor(sourceAnchor) // TODO: Remove call to withSourceAnchor?
         self.message = message
         self.enclosingTestName = enclosingTestName
         super.init(sourceAnchor: sourceAnchor, id: id)
@@ -89,7 +90,7 @@ public final class Assert: AbstractSyntaxTreeNode {
     }
 
     public var finalMessage: String {
-        if let enclosingTestName = enclosingTestName {
+        if let enclosingTestName {
             "\(message) in test \"\(enclosingTestName)\""
         }
         else {

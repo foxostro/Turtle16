@@ -26,7 +26,7 @@ public final class CompilerPassForIn: CompilerPass {
             identifier: symbols!.tempName(prefix: "__limit")
         )
         let count = Identifier(sourceAnchor: node1.sourceAnchor, identifier: "count")
-        let usize = PrimitiveType(.u16)  // TODO: This should use `usize' instead of assuming `u16'.
+        let usize = PrimitiveType(.u16) // TODO: This should use `usize' instead of assuming `u16'.
         let zero = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 0)
         let one = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 1)
 
@@ -126,9 +126,9 @@ public final class CompilerPassForIn: CompilerPass {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Lower and rewrite ForIn statements
-    public func forInPass() throws -> AbstractSyntaxTreeNode? {
+    func forInPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassForIn().run(self)
     }
 }

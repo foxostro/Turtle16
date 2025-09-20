@@ -20,6 +20,7 @@ public class Parser: NSObject {
             self.generator = generator
         }
     }
+
     public var productions: [Production] = []
     public var tokens: [Token] = []
 
@@ -27,7 +28,8 @@ public class Parser: NSObject {
     public var hasError: Bool {
         errors.count != 0
     }
-    public private(set) var syntaxTree: AbstractSyntaxTreeNode? = nil
+
+    public private(set) var syntaxTree: AbstractSyntaxTreeNode?
 
     public func parse() {
         var statements: [AbstractSyntaxTreeNode] = []
@@ -37,7 +39,7 @@ public class Parser: NSObject {
             }
             catch let error as CompilerError {
                 errors.append(error)
-                advanceToNewline()  // recover by skipping to the next line
+                advanceToNewline() // recover by skipping to the next line
             }
             catch {
                 // This catch block should be unreachable because
@@ -94,7 +96,7 @@ public class Parser: NSObject {
 
     @discardableResult func expect(type: AnyClass, error: Error) throws -> Token {
         let result = accept(type)
-        if nil == result {
+        if result == nil {
             throw error
         }
         return result!
@@ -103,7 +105,7 @@ public class Parser: NSObject {
     @discardableResult func expect(types: [AnyClass], error: Error) throws -> Token {
         for type in types {
             let result = accept(type)
-            if nil != result {
+            if result != nil {
                 return result!
             }
         }

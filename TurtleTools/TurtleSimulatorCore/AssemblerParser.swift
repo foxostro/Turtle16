@@ -10,8 +10,8 @@ import Foundation
 import TurtleCore
 
 public class AssemblerParser: Parser {
-    public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        if nil != accept(TokenEOF.self) {
+    public override final func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
+        if accept(TokenEOF.self) != nil {
             return []
         }
         else if let token = accept(TokenIdentifier.self) {
@@ -36,14 +36,14 @@ public class AssemblerParser: Parser {
         return [node]
     }
 
-    func consumeParameterList(instruction: Token) throws -> [Parameter] {
+    func consumeParameterList(instruction _: Token) throws -> [Parameter] {
         var parameters: [Parameter] = []
 
-        if nil != accept(TokenEOF.self) {
+        if accept(TokenEOF.self) != nil {
             return []
         }
 
-        if nil != accept(TokenNewline.self) {
+        if accept(TokenNewline.self) != nil {
             return []
         }
 
@@ -51,10 +51,10 @@ public class AssemblerParser: Parser {
             let param = try consumeSingleParameter()
             parameters.append(param)
 
-            if nil != (peek() as? TokenEOF) {
+            if (peek() as? TokenEOF) != nil {
                 break
             }
-            else if nil != (peek() as? TokenNewline) {
+            else if (peek() as? TokenNewline) != nil {
                 break
             }
             else {
@@ -82,22 +82,20 @@ public class AssemblerParser: Parser {
                 value: tokenNumber.literal
             )
             if accept(TokenParenLeft.self) != nil {
-                let identifier =
-                    try expect(
-                        type: TokenIdentifier.self,
-                        error: CompilerError(
-                            sourceAnchor: peek()?.sourceAnchor,
-                            message: "expected identifier"
-                        )
-                    ) as! TokenIdentifier
-                let rightParen =
-                    try expect(
-                        type: TokenParenRight.self,
-                        error: CompilerError(
-                            sourceAnchor: peek()?.sourceAnchor,
-                            message: "expected `)'"
-                        )
-                    ) as! TokenParenRight
+                let identifier = try expect(
+                    type: TokenIdentifier.self,
+                    error: CompilerError(
+                        sourceAnchor: peek()?.sourceAnchor,
+                        message: "expected identifier"
+                    )
+                ) as! TokenIdentifier
+                let rightParen = try expect(
+                    type: TokenParenRight.self,
+                    error: CompilerError(
+                        sourceAnchor: peek()?.sourceAnchor,
+                        message: "expected `)'"
+                    )
+                ) as! TokenParenRight
                 let paramIdentifier = ParameterIdentifier(
                     sourceAnchor: identifier.sourceAnchor,
                     value: identifier.lexeme

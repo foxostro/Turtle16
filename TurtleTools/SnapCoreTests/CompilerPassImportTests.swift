@@ -11,7 +11,6 @@ import TurtleCore
 import XCTest
 
 final class CompilerPassImportTests: XCTestCase {
-
     func testEmptyModuleName() throws {
         let input = Block(children: [
             Import(moduleName: "")
@@ -138,5 +137,4 @@ final class CompilerPassImportTests: XCTestCase {
         let output = try compiler.run(input)?.eraseSourceAnchors()
         XCTAssertEqual(expected, output)
     }
-
 }

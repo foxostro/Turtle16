@@ -12,7 +12,7 @@ public final class CompilerPassEraseConst: CompilerPassWithDeclScan {
     public override func visit(constType e: ConstType) throws -> Expression? {
         try visit(expr: e.typ)
     }
-    
+
     public override func visit(
         primitiveType expr0: PrimitiveType
     ) throws -> Expression? {
@@ -21,7 +21,7 @@ public final class CompilerPassEraseConst: CompilerPassWithDeclScan {
         let expr2 = expr1.withType(expr1.typ.eraseConst())
         return expr2
     }
-    
+
     public override func visit(
         varDecl node0: VarDeclaration
     ) throws -> AbstractSyntaxTreeNode? {
@@ -30,7 +30,7 @@ public final class CompilerPassEraseConst: CompilerPassWithDeclScan {
         let node2 = node1.withMutable(true)
         return node2
     }
-    
+
     public override func visit(
         struct node0: StructDeclaration
     ) throws -> AbstractSyntaxTreeNode? {
@@ -41,12 +41,11 @@ public final class CompilerPassEraseConst: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Rewrite the program to erase all Const types
     /// We assume the program has been type checked before this point and
     /// contains no const-related type checking errors.
-    public func eraseConst() throws -> AbstractSyntaxTreeNode? {
+    func eraseConst() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassEraseConst().run(self)
     }
 }
-

@@ -1,5 +1,5 @@
 //
-//  ExpressionUtils.swift
+//  ExprUtils.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 6/5/20.
@@ -8,10 +8,11 @@
 
 import SnapCore
 
-// The macOS 15 SDK added the new Foundation.Expression class, introducing a name collision with our own Expression class. This typealias resolves the ambiguity in favor of our type.
+// The macOS 15 SDK added the new Foundation.Expression class, introducing a name collision with our
+// own Expression class. This typealias resolves the ambiguity in favor of our type.
 public typealias Expression = SnapCore.Expression
 
-public struct ExprUtils {
+public enum ExprUtils {
     public static func makeU8(value: Int) -> Expression {
         assert(value >= UInt8.min && value <= UInt8.max)
         return As(

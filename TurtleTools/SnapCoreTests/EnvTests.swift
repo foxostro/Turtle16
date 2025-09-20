@@ -136,7 +136,7 @@ final class EnvTests: XCTestCase {
         )
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
-        case .structType(let typ):
+        case let .structType(typ):
             XCTAssertEqual(typ.name, "foo")
         default:
             XCTFail()
@@ -151,7 +151,7 @@ final class EnvTests: XCTestCase {
         )
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
-        case .structType(let typ):
+        case let .structType(typ):
             XCTAssertEqual(typ.name, "foo")
         default:
             XCTFail()

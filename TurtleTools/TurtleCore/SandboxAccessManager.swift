@@ -26,14 +26,13 @@ public class ConcreteSandboxAccessManager: SandboxAccessManager {
         do {
             let maybeBookmarksData = UserDefaults.standard.object(forKey: kBookmarksKey) as? Data
             if let bookmarksData = maybeBookmarksData {
-                bookmarks =
-                    try NSKeyedUnarchiver.unarchivedObject(
-                        ofClasses: [NSDictionary.self, NSURL.self, NSData.self],
-                        from: bookmarksData
-                    ) as! [URL: Data]
+                bookmarks = try NSKeyedUnarchiver.unarchivedObject(
+                    ofClasses: [NSDictionary.self, NSURL.self, NSData.self],
+                    from: bookmarksData
+                ) as! [URL: Data]
                 for bookmark in bookmarks {
                     var isStale = false
-                    let url = try URL.init(
+                    let url = try URL(
                         resolvingBookmarkData: bookmark.value,
                         options: NSURL.BookmarkResolutionOptions.withSecurityScope,
                         relativeTo: nil,
@@ -43,17 +42,17 @@ public class ConcreteSandboxAccessManager: SandboxAccessManager {
                 }
             }
         }
-        catch let error {
+        catch {
             NSLog("failed to restore bookmarks: \(error)")
         }
     }
 
     public func requestAccess(url: URL?) {
-        if let url = url {
+        if let url {
             do {
                 try tryRequestAccess(url: url)
             }
-            catch let error {
+            catch {
                 NSLog(
                     "failed to grant the requested access to url\n\turl: \(url)\n\terror: \(error)"
                 )
@@ -64,7 +63,7 @@ public class ConcreteSandboxAccessManager: SandboxAccessManager {
     func tryRequestAccess(url: URL) throws {
         if let data = bookmarks[url] {
             var isStale = false
-            let decodedUrl = try URL.init(
+            let decodedUrl = try URL(
                 resolvingBookmarkData: data,
                 options: NSURL.BookmarkResolutionOptions.withSecurityScope,
                 relativeTo: nil,

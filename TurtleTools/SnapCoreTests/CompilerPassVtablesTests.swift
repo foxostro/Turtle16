@@ -11,7 +11,6 @@ import TurtleCore
 import XCTest
 
 final class CompilerPassVtablesTests: XCTestCase {
-
     func testEmptyTrait() throws {
         let traitIdent = Identifier("Foo")
         let traitObjectIdent = Identifier("__Foo_object")
@@ -184,5 +183,4 @@ final class CompilerPassVtablesTests: XCTestCase {
         let actual = try input.vtablesPass()
         XCTAssertEqual(actual, expected)
     }
-
 }

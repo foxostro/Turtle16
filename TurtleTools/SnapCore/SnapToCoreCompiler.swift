@@ -81,8 +81,7 @@ public final class SnapToCoreCompiler {
             .flatten()
         guard let block = core as? Block else {
             throw CompilerError(
-                message:
-                    "internal compiler error: expected Block after lowering Snap to the core language representation"
+                message: "internal compiler error: expected Block after lowering Snap to the core language representation"
             )
         }
         return (block, testNames)
@@ -95,10 +94,10 @@ public final class SnapToCoreCompiler {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// The parser gives us an AST with a TopLevel node at the root. This node
     /// should be replaced by a Block node.
-    public func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
+    func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
         guard let top = self as? TopLevel else { return self }
         let block = Block(
             sourceAnchor: top.sourceAnchor,
@@ -109,7 +108,7 @@ extension AbstractSyntaxTreeNode {
     }
 
     /// Insert an import statement for an implicit import
-    public func withImplicitImport(
+    func withImplicitImport(
         moduleName: String?,
         intoGlobalNamespace global: Bool = false
     ) -> AbstractSyntaxTreeNode? {
@@ -129,8 +128,9 @@ extension AbstractSyntaxTreeNode {
         return result
     }
 
-    /// Lower a Snap program to an equivalent representation which uses only a small core of the language
-    public func snapToCore(
+    /// Lower a Snap program to an equivalent representation which uses only a small core of the
+    /// language
+    func snapToCore(
         shouldRunSpecificTest: String? = nil,
         injectModules: [(String, String)] = [],
         isUsingStandardLibrary: Bool = false,

@@ -9,7 +9,7 @@
 public final class TokenOperator: Token {
     public enum Operator: String, Hashable, CustomStringConvertible {
         case eq, ne, lt, gt, le, ge, plus, minus, star, divide, modulus, ampersand, doubleAmpersand,
-            pipe, doublePipe, bang, caret, leftDoubleAngle, rightDoubleAngle, tilde
+             pipe, doublePipe, bang, caret, leftDoubleAngle, rightDoubleAngle, tilde
 
         public var name: String { rawValue }
 
@@ -38,6 +38,7 @@ public final class TokenOperator: Token {
             }
         }
     }
+
     public let op: Operator
 
     public convenience init(op: Operator) {

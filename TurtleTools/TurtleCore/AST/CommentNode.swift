@@ -6,7 +6,8 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-// Sometimes, such as during source to source translation, we need to represent a comment in the AST.
+// Sometimes, such as during source to source translation, we need to represent a comment in the
+// AST.
 public final class CommentNode: AbstractSyntaxTreeNode {
     public let string: String
 

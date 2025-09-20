@@ -43,8 +43,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testExitsResetStateAfterSomeTime() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         XCTAssertFalse(cpu.isResetting)
@@ -54,11 +54,11 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testSetAndGetMemoryAccessClosures() {
         let cpu = SchematicLevelCPUModel()
         var count = 0
-        let load: (MemoryAddress) -> UInt16 = { (addr: MemoryAddress) in
+        let load: (MemoryAddress) -> UInt16 = { (_: MemoryAddress) in
             count += 1
-            return 0  // do nothing
+            return 0 // do nothing
         }
-        let store: (UInt16, MemoryAddress) -> Void = { (value: UInt16, addr: MemoryAddress) in
+        let store: (UInt16, MemoryAddress) -> Void = { (_: UInt16, _: MemoryAddress) in
             count += 1
         }
         cpu.load = load
@@ -70,11 +70,11 @@ final class SchematicLevelCPUModelTests: XCTestCase {
 
     func testNoStoresOrLoadsDuringReset() {
         let cpu = SchematicLevelCPUModel()
-        cpu.load = { (addr: MemoryAddress) in
+        cpu.load = { (_: MemoryAddress) in
             XCTFail()
-            return 0  // do nothing
+            return 0 // do nothing
         }
-        cpu.store = { (value: UInt16, addr: MemoryAddress) in
+        cpu.store = { (_: UInt16, _: MemoryAddress) in
             XCTFail()
         }
         cpu.reset()
@@ -110,12 +110,12 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testExecutingNOPHasNoEffectOnRegisters() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00000000_00000000,  // NOP
-            0b00000000_00000000,  // NOP
-            0b00000000_00000000,  // NOP
-            0b00000000_00000000,  // NOP
-            0b00000000_00000000  // NOP
+            0b00000000_00000000, // NOP
+            0b00000000_00000000, // NOP
+            0b00000000_00000000, // NOP
+            0b00000000_00000000, // NOP
+            0b00000000_00000000, // NOP
+            0b00000000_00000000 // NOP
         ]
         cpu.reset()
         cpu.setRegister(0, 0xcafe)
@@ -144,18 +144,18 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testHlt() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         XCTAssertFalse(cpu.isHalted)
-        cpu.step()  // -
+        cpu.step() // -
         XCTAssertFalse(cpu.isHalted)
-        cpu.step()  // IF
+        cpu.step() // IF
         XCTAssertFalse(cpu.isHalted)
-        cpu.step()  // ID
+        cpu.step() // ID
         XCTAssertFalse(cpu.isHalted)
-        cpu.step()  // EX
+        cpu.step() // EX
         XCTAssertTrue(cpu.isHalted)
     }
 
@@ -169,21 +169,21 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             observedLoadAddr = UInt16(addr.value)
             return 0xabcd
         }
-        cpu.store = { (value: UInt16, addr: MemoryAddress) in
+        cpu.store = { (_: UInt16, _: MemoryAddress) in
             XCTFail()
         }
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00010011_00100001  // LOAD r3, 1(r1)
+            0b00000000_00000000, // NOP
+            0b00010011_00100001 // LOAD r3, 1(r1)
         ]
         cpu.reset()
         cpu.setRegister(1, 0xfffe)
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xabcd, cpu.getRegister(3))
         XCTAssertEqual(0xffff, observedLoadAddr)
     }
@@ -204,19 +204,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
             observedStoreAddr = addr
         }
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00011111_00101111  // STORE r3, r1, -1 -- 0bkkkkkiiiaaabbbii
+            0b00000000_00000000, // NOP
+            0b00011111_00101111 // STORE r3, r1, -1 -- 0bkkkkkiiiaaabbbii
         ]
 
         cpu.reset()
         cpu.setRegister(1, 0x0000)
         cpu.setRegister(3, 0xabcd)
 
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
 
         XCTAssertEqual(observedStoreAddr?.value, 0xffff)
         XCTAssertEqual(observedStoreVal, 0xabcd)
@@ -225,16 +225,16 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testLi() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100011_00001101  // LI r3, 0xd
+            0b00000000_00000000, // NOP
+            0b00100011_00001101 // LI r3, 0xd
         ]
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xd, cpu.getRegister(3))
     }
 
@@ -243,50 +243,50 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // The immediate value embedded in the instruction is 128. The high bit
         // is set so this is sign-extended to 65408.
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100011_10000000  // LI r3, 65408
+            0b00000000_00000000, // NOP
+            0b00100011_10000000 // LI r3, 65408
         ]
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(65408, cpu.getRegister(3))
     }
 
     func testLui() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00101011_11001101  // LUI r3, 0xcd
+            0b00000000_00000000, // NOP
+            0b00101011_11001101 // LUI r3, 0xcd
         ]
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xcd00, cpu.getRegister(3))
     }
 
     func testCmp_equal() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00110000_00101000  // CMP r1, r2
+            0b00000000_00000000, // NOP
+            0b00110000_00101000 // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 2)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        XCTAssertEqual(0xabcd, cpu.getRegister(0))  // CMP does not store the result
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
         XCTAssertEqual(0, cpu.v)
@@ -296,20 +296,20 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testCmp_notEqual() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00110000_00101000  // CMP r1, r2
+            0b00000000_00000000, // NOP
+            0b00110000_00101000 // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
-        XCTAssertEqual(0xabcd, cpu.getRegister(0))  // CMP does not store the result
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
         XCTAssertEqual(0, cpu.v)
@@ -319,20 +319,20 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testCmp_lessThan() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00110000_00101000  // CMP r1, r2
+            0b00000000_00000000, // NOP
+            0b00110000_00101000 // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 1)
         cpu.setRegister(2, 2)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
-        XCTAssertEqual(0xabcd, cpu.getRegister(0))  // CMP does not store the result
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
         XCTAssertEqual(0, cpu.v)
@@ -342,20 +342,20 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testCmp_greaterThanOrEqualTo() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00110000_00101000  // CMP r1, r2
+            0b00000000_00000000, // NOP
+            0b00110000_00101000 // CMP r1, r2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
-        XCTAssertEqual(0xabcd, cpu.getRegister(0))  // CMP does not store the result
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
         XCTAssertEqual(0, cpu.v)
@@ -365,19 +365,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testAdd() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00111000_00101000  // ADD r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b00111000_00101000 // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(3, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -388,19 +388,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testAdd_signedOverflow() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00111000_00101000  // ADD r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b00111000_00101000 // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0x7fff)
         cpu.setRegister(2, 2)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0x8001, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -411,19 +411,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testAdd_unsignedOverflow() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00111000_00101000  // ADD r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b00111000_00101000 // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0xffff)
         cpu.setRegister(2, 2)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(1, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
@@ -434,19 +434,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testSub() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01000000_00101000  // SUB r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b01000000_00101000 // SUB r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 10)
         cpu.setRegister(2, 2)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(8, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
@@ -457,19 +457,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testSub_underflow_unsigned() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01000000_00101000  // SUB r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b01000000_00101000 // SUB r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xffff, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -480,19 +480,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testSub_underflow_signed() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01000000_00101000  // SUB r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b01000000_00101000 // SUB r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0x8000)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0x7fff, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
@@ -503,19 +503,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testAnd() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01001000_00101000  // AND r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b01001000_00101000 // AND r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0xabcd)
         cpu.setRegister(2, 0xf0f0)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xa0c0, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -526,19 +526,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testOr() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01010000_00101000  // OR r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b01010000_00101000 // OR r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0xabcd)
         cpu.setRegister(2, 0xf0f0)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xfbfd, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -549,8 +549,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testXor() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01011000_00000000  // XOR r0, r0, r0
+            0b00000000_00000000, // NOP
+            0b01011000_00000000 // XOR r0, r0, r0
         ]
         cpu.reset()
         cpu.setRegister(0, 0xcafe)
@@ -561,12 +561,12 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.setRegister(5, 0x5555)
         cpu.setRegister(6, 0x6666)
         cpu.setRegister(7, 0x7777)
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(cpu.getRegister(0), 0x0000)
         XCTAssertEqual(cpu.getRegister(1), 0x1111)
         XCTAssertEqual(cpu.getRegister(2), 0x2222)
@@ -580,19 +580,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testNot() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01100000_00101000  // NOT r0, r1
+            0b00000000_00000000, // NOP
+            0b01100000_00101000 // NOT r0, r1
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0b10101010_10101010)
         cpu.setRegister(2, 0b01010101_01010101)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0b01010101_01010101, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -603,19 +603,19 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testCmpi() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01101000_00100001  // CMPI r1, 1
+            0b00000000_00000000, // NOP
+            0b01101000_00100001 // CMPI r1, 1
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 2)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
-        XCTAssertEqual(0xabcd, cpu.getRegister(0))  // CMPI does not store the result
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMPI does not store the result
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
         XCTAssertEqual(0, cpu.v)
@@ -625,18 +625,18 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testAddi() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01110000_00100010  // ADDI r0, r1, 2
+            0b00000000_00000000, // NOP
+            0b01110000_00100010 // ADDI r0, r1, 2
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xffff)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(1, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
@@ -647,18 +647,18 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testSubi() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01111000_00100001  // SUBI r0, r1, 1
+            0b00000000_00000000, // NOP
+            0b01111000_00100001 // SUBI r0, r1, 1
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xffff, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -669,18 +669,18 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testAndi() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10000000_00101111  // ANDI r0, r1, 15
+            0b00000000_00000000, // NOP
+            0b10000000_00101111 // ANDI r0, r1, 15
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xffff)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0x000f, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -691,18 +691,18 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testOri() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10001000_00101111  // ORI r0, r1, 15
+            0b00000000_00000000, // NOP
+            0b10001000_00101111 // ORI r0, r1, 15
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xfff0)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xffff, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -713,18 +713,18 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testXori() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10010000_00101010  // XORI r0, r1, 10
+            0b00000000_00000000, // NOP
+            0b10010000_00101010 // XORI r0, r1, 10
         ]
         cpu.setRegister(0, 0xabcd)
         cpu.setRegister(1, 0xfffc)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0xfff6, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -736,20 +736,20 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // r0 = r1 + r2 + Cf
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11110000_00101000  // ADC r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b11110000_00101000 // ADC r0, r1, r2
         ]
         cpu.c = 1
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 1)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(3, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -761,20 +761,20 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // r0 = r1 + r2 + Cf
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11110000_00101000  // ADC r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b11110000_00101000 // ADC r0, r1, r2
         ]
         cpu.c = 0
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0)
         cpu.setRegister(2, 0)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(0, cpu.c)
@@ -786,20 +786,20 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // r0 = r1 - r2 - Cf
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11111000_00101000  // SBC r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b11111000_00101000 // SBC r0, r1, r2
         ]
         cpu.c = 1
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(0, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
@@ -811,20 +811,20 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // r0 = r1 - r2 - Cf
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11111000_00101000  // SBC r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b11111000_00101000 // SBC r0, r1, r2
         ]
         cpu.c = 0
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 1)
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
         XCTAssertEqual(1, cpu.getRegister(0))
         XCTAssertEqual(0, cpu.n)
         XCTAssertEqual(1, cpu.c)
@@ -835,22 +835,22 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testJmp_forward() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10100011_11111111  // JMP 1023 -- pc := pc + 1023
+            0b00000000_00000000, // NOP
+            0b10100011_11111111 // JMP 1023 -- pc := pc + 1023
         ]
         cpu.reset()
         XCTAssertEqual(0, cpu.pc)
-        cpu.step()  // -
+        cpu.step() // -
         XCTAssertEqual(1, cpu.pc)
-        cpu.step()  // IF
+        cpu.step() // IF
         XCTAssertEqual(2, cpu.pc)
-        cpu.step()  // ID
+        cpu.step() // ID
         XCTAssertEqual(3, cpu.pc)
-        cpu.step()  // EX
+        cpu.step() // EX
         XCTAssertEqual(1026, cpu.pc)
-        cpu.step()  // MEM
+        cpu.step() // MEM
         XCTAssertEqual(1027, cpu.pc)
-        cpu.step()  // WB
+        cpu.step() // WB
         XCTAssertEqual(1028, cpu.pc)
     }
 
@@ -861,13 +861,13 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // branch to the instruction immediately following the JMP.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10100111_11111111,  // JMP -1
-            0b01110000_00000001,  // ADDI r0, r0, 1
-            0b01110000_00000001,  // ADDI r0, r0, 1
-            0b01110000_00000001,  // ADDI r0, r0, 1
-            0b00000000_00000000,  // NOP (allow CPU a cycle to write back result of ADDI)
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b10100111_11111111, // JMP -1
+            0b01110000_00000001, // ADDI r0, r0, 1
+            0b01110000_00000001, // ADDI r0, r0, 1
+            0b01110000_00000001, // ADDI r0, r0, 1
+            0b00000000_00000000, // NOP (allow CPU a cycle to write back result of ADDI)
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 11)
@@ -881,8 +881,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // itself and execute again.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10100111_11111110  // JMP -2
+            0b00000000_00000000, // NOP
+            0b10100111_11111110 // JMP -2
         ]
         cpu.reset()
         cpu.step()
@@ -895,45 +895,45 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testJmp_backward() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10100111_11111110  // JMP -2 -- pc := pc - 2
+            0b00000000_00000000, // NOP
+            0b10100111_11111110 // JMP -2 -- pc := pc - 2
         ]
         cpu.reset()
         XCTAssertEqual(0, cpu.pc)
-        cpu.step()  // -
+        cpu.step() // -
         XCTAssertEqual(1, cpu.pc)
-        cpu.step()  // IF
+        cpu.step() // IF
         XCTAssertEqual(2, cpu.pc)
-        cpu.step()  // ID
+        cpu.step() // ID
         XCTAssertEqual(3, cpu.pc)
-        cpu.step()  // EX
+        cpu.step() // EX
         XCTAssertEqual(1, cpu.pc)
-        cpu.step()  // MEM
+        cpu.step() // MEM
         XCTAssertEqual(2, cpu.pc)
-        cpu.step()  // WB
+        cpu.step() // WB
         XCTAssertEqual(3, cpu.pc)
     }
 
     func testJmp_stallsPipelineToAvoidNeedForDelaySlots() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10100011_11111111,  // JMP 1023 -- pc := pc + 1023
-            0b00100000_00001101  // LI r0, 0xd
+            0b00000000_00000000, // NOP
+            0b10100011_11111111, // JMP 1023 -- pc := pc + 1023
+            0b00100000_00001101 // LI r0, 0xd
         ]
         cpu.reset()
         XCTAssertEqual(0, cpu.pc)
-        cpu.step()  // -
+        cpu.step() // -
         XCTAssertEqual(1, cpu.pc)
-        cpu.step()  // IF
+        cpu.step() // IF
         XCTAssertEqual(2, cpu.pc)
-        cpu.step()  // ID
+        cpu.step() // ID
         XCTAssertEqual(3, cpu.pc)
-        cpu.step()  // EX
+        cpu.step() // EX
         XCTAssertEqual(1026, cpu.pc)
-        cpu.step()  // MEM
+        cpu.step() // MEM
         XCTAssertEqual(1027, cpu.pc)
-        cpu.step()  // WB
+        cpu.step() // WB
         XCTAssertEqual(1028, cpu.pc)
         cpu.step()
         XCTAssertEqual(1029, cpu.pc)
@@ -943,24 +943,24 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testJr_ImmIsZero() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10101000_00100000,  // JR r1, 0 -- pc := r1 + 0
-            0b00100000_00001101  // LI r0, 0xd
+            0b00000000_00000000, // NOP
+            0b10101000_00100000, // JR r1, 0 -- pc := r1 + 0
+            0b00100000_00001101 // LI r0, 0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1026)
         XCTAssertEqual(0, cpu.pc)
-        cpu.step()  // -
+        cpu.step() // -
         XCTAssertEqual(1, cpu.pc)
-        cpu.step()  // IF
+        cpu.step() // IF
         XCTAssertEqual(2, cpu.pc)
-        cpu.step()  // ID
+        cpu.step() // ID
         XCTAssertEqual(3, cpu.pc)
-        cpu.step()  // EX
+        cpu.step() // EX
         XCTAssertEqual(1026, cpu.pc)
-        cpu.step()  // MEM
+        cpu.step() // MEM
         XCTAssertEqual(1027, cpu.pc)
-        cpu.step()  // WB
+        cpu.step() // WB
         XCTAssertEqual(1028, cpu.pc)
         cpu.step()
         XCTAssertEqual(1029, cpu.pc)
@@ -970,24 +970,24 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testJr_ImmIsPositive() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10101000_00101111,  // JR r1, 15 -- pc := r1 + 15
-            0b00100000_00001101  // LI r0, 0xd
+            0b00000000_00000000, // NOP
+            0b10101000_00101111, // JR r1, 15 -- pc := r1 + 15
+            0b00100000_00001101 // LI r0, 0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
         XCTAssertEqual(0, cpu.pc)
-        cpu.step()  // -
+        cpu.step() // -
         XCTAssertEqual(1, cpu.pc)
-        cpu.step()  // IF
+        cpu.step() // IF
         XCTAssertEqual(2, cpu.pc)
-        cpu.step()  // ID
+        cpu.step() // ID
         XCTAssertEqual(3, cpu.pc)
-        cpu.step()  // EX
+        cpu.step() // EX
         XCTAssertEqual(1015, cpu.pc)
-        cpu.step()  // MEM
+        cpu.step() // MEM
         XCTAssertEqual(1016, cpu.pc)
-        cpu.step()  // WB
+        cpu.step() // WB
         XCTAssertEqual(1017, cpu.pc)
         cpu.step()
         XCTAssertEqual(1018, cpu.pc)
@@ -997,24 +997,24 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testJr_ImmIsNegative() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10101000_00111111,  // JR r1, -1 -- pc := r1 - 1
-            0b00100000_00001101  // LI r0, 0xd
+            0b00000000_00000000, // NOP
+            0b10101000_00111111, // JR r1, -1 -- pc := r1 - 1
+            0b00100000_00001101 // LI r0, 0xd
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
         XCTAssertEqual(0, cpu.pc)
-        cpu.step()  // -
+        cpu.step() // -
         XCTAssertEqual(1, cpu.pc)
-        cpu.step()  // IF
+        cpu.step() // IF
         XCTAssertEqual(2, cpu.pc)
-        cpu.step()  // ID
+        cpu.step() // ID
         XCTAssertEqual(3, cpu.pc)
-        cpu.step()  // EX
+        cpu.step() // EX
         XCTAssertEqual(999, cpu.pc)
-        cpu.step()  // MEM
+        cpu.step() // MEM
         XCTAssertEqual(1000, cpu.pc)
-        cpu.step()  // WB
+        cpu.step() // WB
         XCTAssertEqual(1001, cpu.pc)
         cpu.step()
         XCTAssertEqual(1002, cpu.pc)
@@ -1024,8 +1024,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testJalr() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10110111_00100000  // JALR r7, r1, 0 -- r7 := pc + 1 ; pc := r1 + 0
+            0b00000000_00000000, // NOP
+            0b10110111_00100000 // JALR r7, r1, 0 -- r7 := pc + 1 ; pc := r1 + 0
         ]
         cpu.reset()
         cpu.setRegister(1, 1000)
@@ -1040,7 +1040,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1000, cpu.pc)
         cpu.step()
         XCTAssertEqual(1001, cpu.pc)
-        cpu.step()  // The JALR instruction writes back to register file now.
+        cpu.step() // The JALR instruction writes back to register file now.
         XCTAssertEqual(1002, cpu.pc)
         XCTAssertEqual(3, cpu.getRegister(7))
         cpu.step()
@@ -1051,13 +1051,13 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testJalr_andThenReturn() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b10110111_00100000,  // JALR r7, r1, 0 -- r7 := pc + 1 ; pc := r1 + 0
-            0b00001000_00000000,  // HLT
-            0b00000000_00000010,  // NOP
-            0b00100110_00001101,  // LI r6, 13
-            0b10101000_11111111,  // JR r7, -1 -- pc := r7 - 1
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b10110111_00100000, // JALR r7, r1, 0 -- r7 := pc + 1 ; pc := r1 + 0
+            0b00001000_00000000, // HLT
+            0b00000000_00000010, // NOP
+            0b00100110_00001101, // LI r6, 13
+            0b10101000_11111111, // JR r7, -1 -- pc := r7 - 1
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         cpu.setRegister(1, 4)
@@ -1146,8 +1146,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testBeq() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11000011_11111111  // BEQ 1023
+            0b00000000_00000000, // NOP
+            0b11000011_11111111 // BEQ 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1176,17 +1176,17 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBne_takeTheJump() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11001011_11111111  // BNE 1023
+            0b00000000_00000000, // NOP
+            0b11001011_11111111 // BNE 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1215,17 +1215,17 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBlt() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11010011_11111111  // BLT 1023
+            0b00000000_00000000, // NOP
+            0b11010011_11111111 // BLT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1255,17 +1255,17 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBgt() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11011011_11111111  // BGT 1023
+            0b00000000_00000000, // NOP
+            0b11011011_11111111 // BGT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1289,23 +1289,23 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         cpu.step()
 
                         // BGT jumps on (Z==0) && (N==V)
-                        if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
+                        if z == 0, (n == 0 && v == 0) || (n == 1 && v == 1) {
                             XCTAssertEqual(1026, cpu.pc)
                         }
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBltu() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11100011_11111111  // BLTU 1023
+            0b00000000_00000000, // NOP
+            0b11100011_11111111 // BLTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1335,17 +1335,17 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBgtu() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11101011_11111111  // BGTU 1023
+            0b00000000_00000000, // NOP
+            0b11101011_11111111 // BGTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -1369,24 +1369,24 @@ final class SchematicLevelCPUModelTests: XCTestCase {
                         cpu.step()
 
                         // BGTU jumps on C==1 && Z==0
-                        if c == 1 && z == 0 {
+                        if c == 1, z == 0 {
                             XCTAssertEqual(1026, cpu.pc)
                         }
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testDemonstrateHazard_RAW() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100001_00000000,  // LI r1, 0
-            0b00111000_00101000  // ADD r0, r1, r2
+            0b00000000_00000000, // NOP
+            0b00100001_00000000, // LI r1, 0
+            0b00111000_00101000 // ADD r0, r1, r2
         ]
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 1)
@@ -1460,9 +1460,9 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testDemonstrateHazard_Flags() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00110000_00101000,  // CMP r1, r2
-            0b11000011_11111111  // BEQ 1023
+            0b00000000_00000000, // NOP
+            0b00110000_00101000, // CMP r1, r2
+            0b11000011_11111111 // BEQ 1023
         ]
         cpu.reset()
         cpu.setRegister(1, 1)
@@ -1472,22 +1472,24 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.v = 0
         cpu.z = 0
         //            PC    IF    ID    EX    MEM    WB
-        cpu.step()  // BEQ   CMP   -     -     -      -
-        cpu.step()  // -     BEQ   CMP   -     -      -
-        cpu.step()  // -     -     BEQ   CMP   -      - (stalling, flags are updated at the end of the cycle)
-        cpu.step()  // -     -     BEQ   -     CMP    -
+        cpu.step() // BEQ   CMP   -     -     -      -
+        cpu.step() // -     BEQ   CMP   -     -      -
+        cpu
+            .step() // -     -     BEQ   CMP   -      - (stalling, flags are updated at the end of
+        // the cycle)
+        cpu.step() // -     -     BEQ   -     CMP    -
         XCTAssertEqual(cpu.outputID.ctl_EX, ID.nopControlWord)
     }
 
     func testDemonstrateHazard_MemoryLoad() {
         let cpu = SchematicLevelCPUModel()
-        cpu.load = { (addr: MemoryAddress) in
+        cpu.load = { (_: MemoryAddress) in
             1
         }
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00010000_11100000,  // LOAD r0, r7
-            0b00111010_00000100  // ADD r2, r0, r1
+            0b00000000_00000000, // NOP
+            0b00010000_11100000, // LOAD r0, r7
+            0b00111010_00000100 // ADD r2, r0, r1
         ]
         cpu.reset()
 
@@ -1560,11 +1562,11 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testCountdownLoop() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100111_00000101,  // LI r7, 5
-            0b01111111_11100001,  // SUBI r7, r7, 1
-            0b11001111_11111101,  // BNZ -3
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b00100111_00000101, // LI r7, 5
+            0b01111111_11100001, // SUBI r7, r7, 1
+            0b11001111_11111101, // BNZ -3
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 30)
@@ -1574,12 +1576,12 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testLoop() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100111_00000000,  // LI r7, 0
-            0b01110111_11100001,  // ADDI r7, r7, 1
-            0b01101000_11101001,  // CMPI r7, 1
-            0b11010111_11111100,  // BLT -4
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b00100111_00000000, // LI r7, 0
+            0b01110111_11100001, // ADDI r7, r7, 1
+            0b01101000_11101001, // CMPI r7, 1
+            0b11010111_11111100, // BLT -4
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 59)
@@ -1589,17 +1591,17 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testFibonacci() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100000_00000000,  // LI r0, 0
-            0b00100001_00000001,  // LI r1, 1
-            0b00100111_00000000,  // LI r7, 0
-            0b00111010_00000100,  // ADD r2, r0, r1
-            0b01110000_00100000,  // ADDI r0, r1, 0
-            0b01110111_11100001,  // ADDI r7, r7, 1
-            0b01110001_01000000,  // ADDI r1, r2, 0
-            0b01101000_11101001,  // CMPI r7, 9
-            0b11010111_11111001,  // BLT -7
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b00100000_00000000, // LI r0, 0
+            0b00100001_00000001, // LI r1, 1
+            0b00100111_00000000, // LI r7, 0
+            0b00111010_00000100, // ADD r2, r0, r1
+            0b01110000_00100000, // ADDI r0, r1, 0
+            0b01110111_11100001, // ADDI r7, r7, 1
+            0b01110001_01000000, // ADDI r1, r2, 0
+            0b01101000_11101001, // CMPI r7, 9
+            0b11010111_11111001, // BLT -7
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 89)
@@ -1613,18 +1615,18 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // stalls and saves a couple of cycles.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b01011000_00000000,  // XOR r0, r0, r0
-            0b01011001_00100100,  // XOR r1, r1, r1
-            0b01110001_00100001,  // ADDI r1, r1, 1
-            0b01011111_11111100,  // XOR r7, r7, r7
-            0b00111010_00000100,  // ADD r2, r0, r1
-            0b01110000_00100000,  // ADDI r0, r1, 0
-            0b01110111_11100001,  // ADDI r7, r7, 1
-            0b01110001_01000000,  // ADDI r1, r2, 0
-            0b01101000_11101001,  // CMPI r7, 9
-            0b11010111_11111001,  // BLT -7
-            0b00001000_00000000  // HLT
+            0b00000000_00000000, // NOP
+            0b01011000_00000000, // XOR r0, r0, r0
+            0b01011001_00100100, // XOR r1, r1, r1
+            0b01110001_00100001, // ADDI r1, r1, 1
+            0b01011111_11111100, // XOR r7, r7, r7
+            0b00111010_00000100, // ADD r2, r0, r1
+            0b01110000_00100000, // ADDI r0, r1, 0
+            0b01110111_11100001, // ADDI r7, r7, 1
+            0b01110001_01000000, // ADDI r1, r2, 0
+            0b01101000_11101001, // CMPI r7, 9
+            0b11010111_11111001, // BLT -7
+            0b00001000_00000000 // HLT
         ]
         cpu.reset()
         cpu.run(stepLimit: 87)
@@ -1645,10 +1647,10 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // This test ensures that the issue has been fixed in Rev B and later.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100000_00000000,  // LI r0, 0
-            0b00000000_00000000,  // NOP
-            0b00100111_00000000  // LI r7, 0
+            0b00000000_00000000, // NOP
+            0b00100000_00000000, // LI r0, 0
+            0b00000000_00000000, // NOP
+            0b00100111_00000000 // LI r7, 0
         ]
         cpu.reset()
         cpu.step()
@@ -1663,10 +1665,10 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // for detailed description of this hardware bug.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00100000_00000000,  // LI r0, 0
-            0b00000000_00000000,  // NOP
-            0b01110000_00100000  // ADDI r0, r1, 0
+            0b00000000_00000000, // NOP
+            0b00100000_00000000, // LI r0, 0
+            0b00000000_00000000, // NOP
+            0b01110000_00100000 // ADDI r0, r1, 0
         ]
         cpu.reset()
         cpu.step()
@@ -1730,7 +1732,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testCmp_SpotChecksForSignedLessThanComparison() {
         // BLT jumps on N!=V
         assertComparisonWorksAsExpectedForSpotChecks({ $0 < $1 }) {
-            (n: UInt, c: UInt, z: UInt, v: UInt) in
+            (n: UInt, _: UInt, _: UInt, v: UInt) in
             (n == 0 && v == 1) || (n == 1 && v == 0)
         }
     }
@@ -1738,7 +1740,7 @@ final class SchematicLevelCPUModelTests: XCTestCase {
     func testCmp_SpotChecksForSignedGreaterThanComparison() {
         // BGT jumps on (Z==0) && (N==V)
         assertComparisonWorksAsExpectedForSpotChecks({ $0 > $1 }) {
-            (n: UInt, c: UInt, z: UInt, v: UInt) in
+            (n: UInt, _: UInt, z: UInt, v: UInt) in
             z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1))
         }
     }
@@ -1753,8 +1755,8 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         // failure if there is an issue with some permutation of the parameters.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b00110000_00101000  // CMP r1, r2
+            0b00000000_00000000, // NOP
+            0b00110000_00101000 // CMP r1, r2
         ]
 
         let N = 100
@@ -1786,12 +1788,12 @@ final class SchematicLevelCPUModelTests: XCTestCase {
         cpu.setRegister(1, UInt16(bitPattern: r1))
         cpu.setRegister(2, UInt16(bitPattern: r2))
         cpu.reset()
-        cpu.step()  // -
-        cpu.step()  // IF
-        cpu.step()  // ID
-        cpu.step()  // EX
-        cpu.step()  // MEM
-        cpu.step()  // WB
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
 
         let evaluatedCondition: Bool = impl(cpu.n, cpu.c, cpu.z, cpu.v)
         if cond(r1, r2) {

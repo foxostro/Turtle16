@@ -18,9 +18,9 @@ public final class CompilerPassReturn: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "return" statements
-    public func returnPass() throws -> AbstractSyntaxTreeNode? {
+    func returnPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassReturn().run(self)
     }
 }

@@ -20,7 +20,8 @@ public final class TestDeclaration: AbstractSyntaxTreeNode {
         id: ID = ID()
     ) {
         self.name = name
-        self.body = body.withSourceAnchor(sourceAnchor)  // TODO: I don't think I should remap the source anchor here. Remove this.
+        self.body = body
+            .withSourceAnchor(sourceAnchor) // TODO: I don't think I should remap the source anchor here. Remove this.
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
 

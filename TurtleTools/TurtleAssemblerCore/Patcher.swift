@@ -38,7 +38,7 @@ public class Patcher: NSObject {
         for action in actions {
             let oldInstruction = instructions[action.index]
             let symbolValue = try resolveSymbol(identifier: action.symbol) + base
-            let immediate: UInt8 = UInt8((symbolValue >> action.shift) & 0xff)
+            let immediate = UInt8((symbolValue >> action.shift) & 0xff)
             let newInstruction = Instruction(
                 opcode: oldInstruction.opcode,
                 immediate: immediate

@@ -1,5 +1,5 @@
 //
-//  Subcompiler.swift
+//  SnapSubcompilerFunctionDeclarationTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 8/2/21.

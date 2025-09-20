@@ -31,8 +31,8 @@ final class ProgrammableLogicDecoderTests: XCTestCase {
             return result
         }
 
-        var expectedString: String = ""
-        var actualString: String = ""
+        var expectedString = ""
+        var actualString = ""
 
         let nbits = Int(log2(Double(pld.count)))
 
@@ -44,8 +44,7 @@ final class ProgrammableLogicDecoderTests: XCTestCase {
             let actual = pld.decode(index)
             let actualOutput = (actual >> signal) & 1
 
-            let row =
-                "\(index)\t"
+            let row = "\(index)\t"
                 + bstr(nbits, UInt(index))
                 + "\t" + bstr(1, expectedOutput)
                 + "\t" + bstr(1, actualOutput)

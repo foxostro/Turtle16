@@ -7,5 +7,5 @@
 //
 
 public class NullLogger: Logger {
-    public func append(_ format: String, _ args: CVarArg...) {}
+    public func append(_: String, _: CVarArg...) {}
 }

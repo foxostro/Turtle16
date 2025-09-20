@@ -24,16 +24,15 @@ struct DisassemblyView: NSViewRepresentable {
             self.viewModel = viewModel
         }
 
-        func numberOfRows(in tableView: NSTableView) -> Int {
+        func numberOfRows(in _: NSTableView) -> Int {
             viewModel.numberOfRows
         }
 
         func tableView(
-            _ tableView: NSTableView,
+            _: NSTableView,
             objectValueFor tableColumn: NSTableColumn?,
             row: Int
         ) -> Any? {
-
             switch tableColumn?.identifier {
             case Constant.addressIdentifier:
                 UInt16(row).hexadecimalString
@@ -96,7 +95,7 @@ struct DisassemblyView: NSViewRepresentable {
         return scrollView
     }
 
-    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+    func updateNSView(_ scrollView: NSScrollView, context _: Context) {
         guard let tableView = scrollView.documentView as? NSTableView else { return }
         tableView.reloadData()
         tableView.selectRowIndexes(
@@ -126,7 +125,8 @@ extension DisassemblyView {
 
         init(document: TurtleSimulatorDocument) {
             self.document = document
-            self.document.objectWillChange
+            self.document
+                .objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
                     self?.reloadData()

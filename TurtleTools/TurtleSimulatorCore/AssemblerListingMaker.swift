@@ -52,8 +52,7 @@ public struct AssemblerListingMaker {
         case let node as ParameterIdentifier:
             node.value
 
-        case let node as ParameterNumber:
-            "\(node.value)"
+        case let node as ParameterNumber: "\(node.value)"
 
         default:
             fatalError("unimplemented node: \(node)")
@@ -65,6 +64,6 @@ public struct AssemblerListingMaker {
     }
 
     public func makeListing(comment node: CommentNode) -> String {
-        node.string.split(separator: "\n").map({ "# \($0)" }).joined(separator: "\n")
+        node.string.split(separator: "\n").map { "# \($0)" }.joined(separator: "\n")
     }
 }

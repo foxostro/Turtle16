@@ -1,0 +1,23 @@
+--swiftversion 6
+--linebreaks lf
+--maxwidth 100
+--trimwhitespace always
+--indent 4
+--indentstrings true
+--indentcase false
+--allman false
+--disable elseOnSameLine
+--semicolons inline
+--disable trailingCommas
+--ranges nospace
+--hexliteralcase lowercase
+--binarygrouping ignore
+--enable wrapSwitchCases
+--enable wrapMultilineConditionalAssignment
+--enable wrapMultilineFunctionChains
+--disable wrapMultilineStatementBraces
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--type-delimiter space-after
+--modifier-order acl, override

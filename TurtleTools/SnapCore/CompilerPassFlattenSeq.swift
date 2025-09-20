@@ -44,9 +44,9 @@ public final class CompilerPassFlattenSeq: CompilerPass {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Flatten Seq nodes in the AST
-    public func flatten() throws -> AbstractSyntaxTreeNode? {
+    func flatten() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassFlattenSeq().visit(self)
     }
 }

@@ -74,7 +74,7 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withStorage(_ storage: SymbolStorage) -> VarDeclaration {
         VarDeclaration(
             sourceAnchor: sourceAnchor,
@@ -87,7 +87,7 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withMutable(_ isMutable: Bool) -> VarDeclaration {
         VarDeclaration(
             sourceAnchor: sourceAnchor,
@@ -132,7 +132,9 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
         return """
             \(indent0)\(selfDesc)
             \(indent1)identifier: \(identifier.makeIndentedDescription(depth: depth + 1))
-            \(indent1)explicitType: \(explicitType?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+            \(indent1)explicitType: \(explicitType?
+            .makeIndentedDescription(depth: depth + 1) ?? "nil"
+            )
             \(indent1)storage: \(storage)
             \(indent1)isMutable: \(isMutable ? "true" : "false")
             \(indent1)visibility: \(visibility)

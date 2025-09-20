@@ -18,8 +18,8 @@ public final class HazardControlGAL: HazardControl {
     public let stageTwoGAL: ATF22V10
 
     public override init() {
-        self.stageOneGAL = HazardControlGAL.makeGAL("HazardControl1")
-        self.stageTwoGAL = HazardControlGAL.makeGAL("HazardControl2")
+        stageOneGAL = HazardControlGAL.makeGAL("HazardControl1")
+        stageTwoGAL = HazardControlGAL.makeGAL("HazardControl2")
     }
 
     public static func makeGAL(_ name: String) -> ATF22V10 {

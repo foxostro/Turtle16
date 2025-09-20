@@ -14,7 +14,7 @@ import Foundation
 /// checksum.
 public struct JEDECFuseFileParser {
     public let maker: FuseListMaker
-    private let binaryDigits: CharacterSet = CharacterSet.init(charactersIn: "01")
+    private let binaryDigits: CharacterSet = .init(charactersIn: "01")
     private let fieldDelimiter = "*"
     private let fieldIdentifierF: Character = "F"
     private let fieldIdentifierL: Character = "L"
@@ -44,7 +44,7 @@ public struct JEDECFuseFileParser {
                     maker.set(begin: begin, bitmap: bitmap)
 
                 default:
-                    break  // ignore unimplemented
+                    break // ignore unimplemented
                 }
             }
         }

@@ -9,7 +9,6 @@
 import XCTest
 
 final class TurtleSimulatorUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }

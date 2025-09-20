@@ -54,7 +54,8 @@ extension PipelineView {
 
         init(document: TurtleSimulatorDocument) {
             self.document = document
-            self.document.objectWillChange
+            self.document
+                .objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
                     self?.reloadData()
@@ -74,8 +75,8 @@ extension PipelineView {
                     let disassembledInstruction: String?
                     if let pc = info.pc {
                         let disassembly = computer.disassembly.entries
-                        disassembledInstruction =
-                            disassembly.first(where: { $0.address == pc })?.mnemonic
+                        disassembledInstruction = disassembly.first(where: { $0.address == pc })?
+                            .mnemonic
                     }
                     else {
                         disassembledInstruction = nil

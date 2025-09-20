@@ -10,7 +10,7 @@ import Foundation
 import TurtleCore
 
 public final class AssemblerSingleInstructionCodeGenerator {
-    public var sourceAnchor: SourceAnchor? = nil
+    public var sourceAnchor: SourceAnchor?
     public let kOpcodeShift = 11
     public let kOperandShiftC = 8
     public let kOperandShiftA = 5

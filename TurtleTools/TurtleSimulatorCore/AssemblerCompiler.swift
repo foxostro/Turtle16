@@ -89,7 +89,7 @@ public final class AssemblerCompiler {
         }
     }
 
-    fileprivate func compileNode(_ node: AbstractSyntaxTreeNode) throws {
+    private func compileNode(_ node: AbstractSyntaxTreeNode) throws {
         switch node {
         case let instructionNode as InstructionNode:
             try compileInstruction(instructionNode)
@@ -102,14 +102,15 @@ public final class AssemblerCompiler {
         }
     }
 
-    fileprivate func compileInstruction(_ node: InstructionNode) throws {
+    private func compileInstruction(_ node: InstructionNode) throws {
         codeGenerator.sourceAnchor = node.sourceAnchor
 
         switch node.instruction {
         case kNOP:
             try compileNOP(node)
 
-        case kHLT, kBREAK:
+        case kHLT,
+             kBREAK:
             try compileHLT(node)
 
         case kLOAD:
@@ -219,21 +220,21 @@ public final class AssemblerCompiler {
         }
     }
 
-    fileprivate func compileNOP(_ node: InstructionNode) throws {
+    private func compileNOP(_ node: InstructionNode) throws {
         guard node.parameters.count == 0 else {
             throw errorExpectsZeroOperands(node)
         }
         codeGenerator.nop()
     }
 
-    fileprivate func compileHLT(_ node: InstructionNode) throws {
+    private func compileHLT(_ node: InstructionNode) throws {
         guard node.parameters.count == 0 else {
             throw errorExpectsZeroOperands(node)
         }
         codeGenerator.hlt()
     }
 
-    fileprivate func compileLOAD(_ node: InstructionNode) throws {
+    private func compileLOAD(_ node: InstructionNode) throws {
         guard (2...3).contains(node.parameters.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
         }
@@ -256,7 +257,7 @@ public final class AssemblerCompiler {
         try codeGenerator.load(destination, sourceAddress, offset)
     }
 
-    fileprivate func compileSTORE(_ node: InstructionNode) throws {
+    private func compileSTORE(_ node: InstructionNode) throws {
         guard (2...3).contains(node.parameters.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
         }
@@ -279,7 +280,7 @@ public final class AssemblerCompiler {
         try codeGenerator.store(source, destinationAddress, offset)
     }
 
-    fileprivate func compileLI(_ node: InstructionNode) throws {
+    private func compileLI(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
         }
@@ -292,7 +293,7 @@ public final class AssemblerCompiler {
         try codeGenerator.li(destination, immediate)
     }
 
-    fileprivate func compileLUI(_ node: InstructionNode) throws {
+    private func compileLUI(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
         }
@@ -305,7 +306,7 @@ public final class AssemblerCompiler {
         try codeGenerator.lui(destination, immediate)
     }
 
-    fileprivate func compileCMP(_ node: InstructionNode) throws {
+    private func compileCMP(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
         }
@@ -318,7 +319,7 @@ public final class AssemblerCompiler {
         try codeGenerator.cmp(left, right)
     }
 
-    fileprivate func compileADD(_ node: InstructionNode) throws {
+    private func compileADD(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -334,7 +335,7 @@ public final class AssemblerCompiler {
         try codeGenerator.add(destination, left, right)
     }
 
-    fileprivate func compileSUB(_ node: InstructionNode) throws {
+    private func compileSUB(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -350,7 +351,7 @@ public final class AssemblerCompiler {
         try codeGenerator.sub(destination, left, right)
     }
 
-    fileprivate func compileAND(_ node: InstructionNode) throws {
+    private func compileAND(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -366,7 +367,7 @@ public final class AssemblerCompiler {
         try codeGenerator.and(destination, left, right)
     }
 
-    fileprivate func compileOR(_ node: InstructionNode) throws {
+    private func compileOR(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -382,7 +383,7 @@ public final class AssemblerCompiler {
         try codeGenerator.or(destination, left, right)
     }
 
-    fileprivate func compileXOR(_ node: InstructionNode) throws {
+    private func compileXOR(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -398,7 +399,7 @@ public final class AssemblerCompiler {
         try codeGenerator.xor(destination, left, right)
     }
 
-    fileprivate func compileNOT(_ node: InstructionNode) throws {
+    private func compileNOT(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
         }
@@ -411,7 +412,7 @@ public final class AssemblerCompiler {
         try codeGenerator.not(destination, source)
     }
 
-    fileprivate func compileCMPI(_ node: InstructionNode) throws {
+    private func compileCMPI(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
         }
@@ -424,7 +425,7 @@ public final class AssemblerCompiler {
         try codeGenerator.cmpi(left, right)
     }
 
-    fileprivate func compileADDI(_ node: InstructionNode) throws {
+    private func compileADDI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -440,7 +441,7 @@ public final class AssemblerCompiler {
         try codeGenerator.addi(destination, left, right)
     }
 
-    fileprivate func compileSUBI(_ node: InstructionNode) throws {
+    private func compileSUBI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -456,7 +457,7 @@ public final class AssemblerCompiler {
         try codeGenerator.subi(destination, left, right)
     }
 
-    fileprivate func compileANDI(_ node: InstructionNode) throws {
+    private func compileANDI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -472,7 +473,7 @@ public final class AssemblerCompiler {
         try codeGenerator.andi(destination, left, right)
     }
 
-    fileprivate func compileORI(_ node: InstructionNode) throws {
+    private func compileORI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -488,7 +489,7 @@ public final class AssemblerCompiler {
         try codeGenerator.ori(destination, left, right)
     }
 
-    fileprivate func compileXORI(_ node: InstructionNode) throws {
+    private func compileXORI(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -504,11 +505,11 @@ public final class AssemblerCompiler {
         try codeGenerator.xori(destination, left, right)
     }
 
-    fileprivate func compileJMP(_ node: InstructionNode) throws {
+    private func compileJMP(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
-        guard nil == lookupRegister(node.parameters[0]) else {
+        guard lookupRegister(node.parameters[0]) == nil else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
@@ -517,7 +518,7 @@ public final class AssemblerCompiler {
         try codeGenerator.jmp(name)
     }
 
-    fileprivate func compileJR(_ node: InstructionNode) throws {
+    private func compileJR(_ node: InstructionNode) throws {
         guard (1...2).contains(node.parameters.count) else {
             throw errorExpectsOneOrTwoOperands(node)
         }
@@ -537,7 +538,7 @@ public final class AssemblerCompiler {
         try codeGenerator.jr(destination, offset)
     }
 
-    fileprivate func compileJALR(_ node: InstructionNode) throws {
+    private func compileJALR(_ node: InstructionNode) throws {
         guard (2...3).contains(node.parameters.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
         }
@@ -560,11 +561,11 @@ public final class AssemblerCompiler {
         try codeGenerator.jalr(link, destination, offset)
     }
 
-    fileprivate func compileBEQ(_ node: InstructionNode) throws {
+    private func compileBEQ(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
-        guard nil == lookupRegister(node.parameters[0]) else {
+        guard lookupRegister(node.parameters[0]) == nil else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
@@ -573,11 +574,11 @@ public final class AssemblerCompiler {
         try codeGenerator.beq(name)
     }
 
-    fileprivate func compileBNE(_ node: InstructionNode) throws {
+    private func compileBNE(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
-        guard nil == lookupRegister(node.parameters[0]) else {
+        guard lookupRegister(node.parameters[0]) == nil else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
@@ -586,11 +587,11 @@ public final class AssemblerCompiler {
         try codeGenerator.bne(name)
     }
 
-    fileprivate func compileBLT(_ node: InstructionNode) throws {
+    private func compileBLT(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
-        guard nil == lookupRegister(node.parameters[0]) else {
+        guard lookupRegister(node.parameters[0]) == nil else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
@@ -599,11 +600,11 @@ public final class AssemblerCompiler {
         try codeGenerator.blt(name)
     }
 
-    fileprivate func compileBGT(_ node: InstructionNode) throws {
+    private func compileBGT(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
-        guard nil == lookupRegister(node.parameters[0]) else {
+        guard lookupRegister(node.parameters[0]) == nil else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
@@ -612,11 +613,11 @@ public final class AssemblerCompiler {
         try codeGenerator.bgt(name)
     }
 
-    fileprivate func compileBLTU(_ node: InstructionNode) throws {
+    private func compileBLTU(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
-        guard nil == lookupRegister(node.parameters[0]) else {
+        guard lookupRegister(node.parameters[0]) == nil else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
@@ -625,11 +626,11 @@ public final class AssemblerCompiler {
         try codeGenerator.bltu(name)
     }
 
-    fileprivate func compileBGTU(_ node: InstructionNode) throws {
+    private func compileBGTU(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
-        guard nil == lookupRegister(node.parameters[0]) else {
+        guard lookupRegister(node.parameters[0]) == nil else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
@@ -638,7 +639,7 @@ public final class AssemblerCompiler {
         try codeGenerator.bgtu(name)
     }
 
-    fileprivate func compileADC(_ node: InstructionNode) throws {
+    private func compileADC(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -654,7 +655,7 @@ public final class AssemblerCompiler {
         try codeGenerator.adc(destination, left, right)
     }
 
-    fileprivate func compileSBC(_ node: InstructionNode) throws {
+    private func compileSBC(_ node: InstructionNode) throws {
         guard node.parameters.count == 3 else {
             throw errorExpectsThreeOperands(node)
         }
@@ -670,7 +671,7 @@ public final class AssemblerCompiler {
         try codeGenerator.sbc(destination, left, right)
     }
 
-    fileprivate func compileLA(_ node: InstructionNode) throws {
+    private func compileLA(_ node: InstructionNode) throws {
         guard node.parameters.count == 2 else {
             throw errorExpectsTwoOperands(node)
         }
@@ -683,7 +684,7 @@ public final class AssemblerCompiler {
         try codeGenerator.la(destination, name)
     }
 
-    fileprivate func compileCALL(_ node: InstructionNode) throws {
+    private func compileCALL(_ node: InstructionNode) throws {
         try compileNodes([
             InstructionNode(
                 instruction: kLA,
@@ -703,7 +704,7 @@ public final class AssemblerCompiler {
         ])
     }
 
-    fileprivate func compileCALLPTR(_ node: InstructionNode) throws {
+    private func compileCALLPTR(_ node: InstructionNode) throws {
         try compileNodes([
             InstructionNode(
                 instruction: kJALR,
@@ -716,9 +717,9 @@ public final class AssemblerCompiler {
         ])
     }
 
-    fileprivate let kSizeOfSavedRegisters = 7
+    private let kSizeOfSavedRegisters = 7
 
-    fileprivate func compileENTER(_ node: InstructionNode) throws {
+    private func compileENTER(_ node: InstructionNode) throws {
         // The ENTER instructions pushes physical registers on the stack and
         // then establishes a new stack frame by `fp <- sp ; sp <- sp - size`.
         // TODO: While this scheme will work, it would be more efficient to only save/restore registers which are actually used in a function.
@@ -852,7 +853,7 @@ public final class AssemblerCompiler {
         try compileNodes(instructions)
     }
 
-    fileprivate func compileLEAVE(_ node: InstructionNode) throws {
+    private func compileLEAVE(_: InstructionNode) throws {
         // The LEAVE instructions tears down the stack frame by doing
         // `sp <- fp` and then restores physical register values by popping
         // them off the stack.
@@ -932,7 +933,7 @@ public final class AssemblerCompiler {
         ])
     }
 
-    fileprivate func compileRET(_ node: InstructionNode) throws {
+    private func compileRET(_: InstructionNode) throws {
         try compileNodes([
             InstructionNode(
                 instruction: kJR,
@@ -944,13 +945,13 @@ public final class AssemblerCompiler {
         ])
     }
 
-    fileprivate func compileNodes(_ nodes: [InstructionNode]) throws {
+    private func compileNodes(_ nodes: [InstructionNode]) throws {
         for ins in nodes {
             try compileNode(ins)
         }
     }
 
-    fileprivate func lookupRegister(_ parameter: Parameter) -> AssemblerCodeGenerator.Register? {
+    private func lookupRegister(_ parameter: Parameter) -> AssemblerCodeGenerator.Register? {
         guard let identifier = (parameter as? ParameterIdentifier)?.value else {
             return nil
         }
@@ -970,13 +971,16 @@ public final class AssemblerCompiler {
         case "r4":
             return .r4
 
-        case "r5", "ra":
+        case "r5",
+             "ra":
             return .r5
 
-        case "r6", "sp":
+        case "r6",
+             "sp":
             return .r6
 
-        case "r7", "fp":
+        case "r7",
+             "fp":
             return .r7
 
         default:
@@ -984,236 +988,218 @@ public final class AssemblerCompiler {
         }
     }
 
-    fileprivate func errorUnknown(_ sourceAnchor: SourceAnchor?) -> CompilerError {
+    private func errorUnknown(_ sourceAnchor: SourceAnchor?) -> CompilerError {
         CompilerError(sourceAnchor: sourceAnchor, message: "unknown error")
     }
 
-    fileprivate func errorUnknownInstruction(_ node: AbstractSyntaxTreeNode) -> CompilerError {
+    private func errorUnknownInstruction(_ node: AbstractSyntaxTreeNode) -> CompilerError {
         CompilerError(sourceAnchor: node.sourceAnchor, message: "unknown instruction")
     }
 
-    fileprivate func errorExpectsZeroOperands(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsZeroOperands(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects zero operands: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsOneOperand(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsOneOperand(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects one operand: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsZeroOrOneOperands(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsZeroOrOneOperands(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects zero or one operands: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsOneOrTwoOperands(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsOneOrTwoOperands(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects one or two operands: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsTwoOperands(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsTwoOperands(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects two operands: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsTwoOrThreeOperands(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsTwoOrThreeOperands(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects two or three operands: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsThreeOperands(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsThreeOperands(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects three operands: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsFirstOperandToBeLabelIdentifier(
+    private func errorExpectsFirstOperandToBeLabelIdentifier(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the first operand to be a label identifier: `\(node.instruction)'"
+            message: "instruction expects the first operand to be a label identifier: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsSecondOperandToBeLabelIdentifier(
+    private func errorExpectsSecondOperandToBeLabelIdentifier(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the second operand to be a label identifier: `\(node.instruction)'"
+            message: "instruction expects the second operand to be a label identifier: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsFirstOperandToBeTheLinkRegister(
+    private func errorExpectsFirstOperandToBeTheLinkRegister(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the first operand to be the link register: `\(node.instruction)'"
+            message: "instruction expects the first operand to be the link register: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsFirstOperandToBeTheDestination(
+    private func errorExpectsFirstOperandToBeTheDestination(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the first operand to be the destination register: `\(node.instruction)'"
+            message: "instruction expects the first operand to be the destination register: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsFirstOperandToBeTheDestinationAddress(
+    private func errorExpectsFirstOperandToBeTheDestinationAddress(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the first operand to be the register containing the destination address: `\(node.instruction)'"
+            message: "instruction expects the first operand to be the register containing the destination address: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsFirstOperandToBeTheLeftOperand(
+    private func errorExpectsFirstOperandToBeTheLeftOperand(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the first operand to be a register containing the left operand: `\(node.instruction)'"
+            message: "instruction expects the first operand to be a register containing the left operand: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsFirstOperandToBeTheSize(_ node: InstructionNode) -> CompilerError {
+    private func errorExpectsFirstOperandToBeTheSize(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
             message: "instruction expects the operand to be the size: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsFirstOperandToBeTheSource(_ node: InstructionNode) -> CompilerError
-    {
+    private func errorExpectsFirstOperandToBeTheSource(_ node: InstructionNode) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the first operand to be the source register: `\(node.instruction)'"
+            message: "instruction expects the first operand to be the source register: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsSecondOperandToBeTheSource(
+    private func errorExpectsSecondOperandToBeTheSource(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the second operand to be the source register: `\(node.instruction)'"
+            message: "instruction expects the second operand to be the source register: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsSecondOperandToBeTheSourceAddress(
+    private func errorExpectsSecondOperandToBeTheSourceAddress(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the second operand to be the register containing the source address: `\(node.instruction)'"
+            message: "instruction expects the second operand to be the register containing the source address: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsSecondOperandToBeTheDestinationAddress(
+    private func errorExpectsSecondOperandToBeTheDestinationAddress(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the second operand to be the register containing the destination address: `\(node.instruction)'"
+            message: "instruction expects the second operand to be the register containing the destination address: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsSecondOperandToBeTheLeftOperand(
+    private func errorExpectsSecondOperandToBeTheLeftOperand(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the second operand to be a register containing the left operand: `\(node.instruction)'"
+            message: "instruction expects the second operand to be a register containing the left operand: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsSecondOperandToBeTheRightOperand(
+    private func errorExpectsSecondOperandToBeTheRightOperand(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the second operand to be a register containing the right operand: `\(node.instruction)'"
+            message: "instruction expects the second operand to be a register containing the right operand: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsSecondOperandToBeAnImmediateValue(
+    private func errorExpectsSecondOperandToBeAnImmediateValue(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the second operand to be an immediate value: `\(node.instruction)'"
+            message: "instruction expects the second operand to be an immediate value: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsOptionalSecondOperandToBeAnImmediateValue(
+    private func errorExpectsOptionalSecondOperandToBeAnImmediateValue(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the optional second operand to be an immediate value: `\(node.instruction)'"
+            message: "instruction expects the optional second operand to be an immediate value: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsThirdOperandToBeAnImmediateValue(
+    private func errorExpectsThirdOperandToBeAnImmediateValue(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the third operand to be an immediate value: `\(node.instruction)'"
+            message: "instruction expects the third operand to be an immediate value: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsThirdOperandToBeAnImmediateValueOffset(
+    private func errorExpectsThirdOperandToBeAnImmediateValueOffset(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the optional third operand to be an immediate value offset: `\(node.instruction)'"
+            message: "instruction expects the optional third operand to be an immediate value offset: `\(node.instruction)'"
         )
     }
 
-    fileprivate func errorExpectsThirdOperandToBeTheRightOperand(
+    private func errorExpectsThirdOperandToBeTheRightOperand(
         _ node: InstructionNode
     ) -> CompilerError {
         CompilerError(
             sourceAnchor: node.sourceAnchor,
-            message:
-                "instruction expects the third operand to be a register containing the right operand: `\(node.instruction)'"
+            message: "instruction expects the third operand to be a register containing the right operand: `\(node.instruction)'"
         )
     }
 }

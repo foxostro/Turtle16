@@ -25,13 +25,13 @@ public class EX_Output: NSObject, NSSecureCoding {
     public let associatedPC: UInt16?
 
     public override var description: String {
-        let n = (self.n == 0) ? "n" : "N"
-        let c = (self.c == 0) ? "c" : "C"
-        let z = (self.z == 0) ? "z" : "Z"
-        let v = (self.v == 0) ? "v" : "V"
-        let j = (self.j == 0) ? "J" : "j"
-        let a = (self.jabs == 0) ? "A" : "a"
-        let h = (self.hlt == 0) ? "H" : "h"
+        let n = (n == 0) ? "n" : "N"
+        let c = (c == 0) ? "c" : "C"
+        let z = (z == 0) ? "z" : "Z"
+        let v = (v == 0) ? "v" : "V"
+        let j = (j == 0) ? "J" : "j"
+        let a = (jabs == 0) ? "A" : "a"
+        let h = (hlt == 0) ? "H" : "h"
         return
             "\(n)\(c)\(z)\(v)\(j)\(a)\(h), y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), ctl: \(String(format: "%x", ctl)), selC: \(selC)"
     }
@@ -66,17 +66,17 @@ public class EX_Output: NSObject, NSSecureCoding {
 
     public required init?(coder: NSCoder) {
         guard let n = coder.decodeObject(forKey: "n") as? UInt,
-            let c = coder.decodeObject(forKey: "c") as? UInt,
-            let z = coder.decodeObject(forKey: "z") as? UInt,
-            let v = coder.decodeObject(forKey: "v") as? UInt,
-            let j = coder.decodeObject(forKey: "j") as? UInt,
-            let jabs = coder.decodeObject(forKey: "jabs") as? UInt,
-            let y = coder.decodeObject(forKey: "y") as? UInt16,
-            let hlt = coder.decodeObject(forKey: "hlt") as? UInt,
-            let storeOp = coder.decodeObject(forKey: "storeOp") as? UInt16,
-            let ctl = coder.decodeObject(forKey: "ctl") as? UInt,
-            let selC = coder.decodeObject(forKey: "selC") as? UInt,
-            let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
+              let c = coder.decodeObject(forKey: "c") as? UInt,
+              let z = coder.decodeObject(forKey: "z") as? UInt,
+              let v = coder.decodeObject(forKey: "v") as? UInt,
+              let j = coder.decodeObject(forKey: "j") as? UInt,
+              let jabs = coder.decodeObject(forKey: "jabs") as? UInt,
+              let y = coder.decodeObject(forKey: "y") as? UInt16,
+              let hlt = coder.decodeObject(forKey: "hlt") as? UInt,
+              let storeOp = coder.decodeObject(forKey: "storeOp") as? UInt16,
+              let ctl = coder.decodeObject(forKey: "ctl") as? UInt,
+              let selC = coder.decodeObject(forKey: "selC") as? UInt,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
         else {
             return nil
         }
@@ -121,17 +121,17 @@ public class EX_Output: NSObject, NSSecureCoding {
             return false
         }
         guard n == rhs.n,
-            c == rhs.c,
-            z == rhs.z,
-            v == rhs.v,
-            j == rhs.j,
-            jabs == rhs.jabs,
-            y == rhs.y,
-            hlt == rhs.hlt,
-            storeOp == rhs.storeOp,
-            ctl == rhs.ctl,
-            selC == rhs.selC,
-            associatedPC == rhs.associatedPC
+              c == rhs.c,
+              z == rhs.z,
+              v == rhs.v,
+              j == rhs.j,
+              jabs == rhs.jabs,
+              y == rhs.y,
+              hlt == rhs.hlt,
+              storeOp == rhs.storeOp,
+              ctl == rhs.ctl,
+              selC == rhs.selC,
+              associatedPC == rhs.associatedPC
         else {
             return false
         }
@@ -163,7 +163,7 @@ public class EX_Output: NSObject, NSSecureCoding {
 public class EX: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
 
-    public var associatedPC: UInt16? = nil
+    public var associatedPC: UInt16?
 
     public struct Input: Hashable {
         public let pc: UInt16
@@ -174,48 +174,48 @@ public class EX: NSObject, NSSecureCoding {
         public let associatedPC: UInt16?
 
         public init(ins: UInt) {
-            self.pc = 0
-            self.ctl = 0
-            self.a = 0
-            self.b = 0
+            pc = 0
+            ctl = 0
+            a = 0
+            b = 0
             self.ins = ins
-            self.associatedPC = nil
+            associatedPC = nil
         }
 
         public init(ins: UInt, b: UInt16, ctl: UInt) {
-            self.pc = 0
+            pc = 0
             self.ctl = ctl
-            self.a = 0
+            a = 0
             self.b = b
             self.ins = ins
-            self.associatedPC = nil
+            associatedPC = nil
         }
 
         public init(ins: UInt, b: UInt16, pc: UInt16, ctl: UInt) {
             self.pc = pc
             self.ctl = ctl
-            self.a = 0
+            a = 0
             self.b = b
             self.ins = ins
-            self.associatedPC = nil
+            associatedPC = nil
         }
 
         public init(ctl: UInt) {
-            self.pc = 0
+            pc = 0
             self.ctl = ctl
-            self.a = 0
-            self.b = 0
-            self.ins = 0
-            self.associatedPC = nil
+            a = 0
+            b = 0
+            ins = 0
+            associatedPC = nil
         }
 
         public init(a: UInt16, b: UInt16, ctl: UInt) {
-            self.pc = 0
+            pc = 0
             self.ctl = ctl
             self.a = a
             self.b = b
-            self.ins = 0
-            self.associatedPC = nil
+            ins = 0
+            associatedPC = nil
         }
 
         public init(
@@ -313,7 +313,7 @@ public class EX: NSObject, NSSecureCoding {
             }
             return val
         default:
-            assert(false)
+            assertionFailure()
             fatalError("unreachable")
         }
     }
@@ -335,13 +335,12 @@ public class EX: NSObject, NSSecureCoding {
             let val = UInt16(UInt16(input.ins & 0xff) << 8) & 0xff00
             return val
         default:
-            assert(false)  // unreachable
+            assertionFailure() // unreachable
             fatalError("unreachable")
         }
     }
 
-    public required override init() {
-    }
+    public override required init() {}
 
     public required init?(coder: NSCoder) {
         guard let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {

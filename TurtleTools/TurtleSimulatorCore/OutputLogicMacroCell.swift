@@ -40,13 +40,13 @@ public final class OutputLogicMacroCell {
         ) {
             assert(inputs.count == 24)
             assert(feedback.count == 10)
-            self.inputs = inputs.map({ (val) -> UInt? in
-                guard let val = val else {
+            self.inputs = inputs.map { val -> UInt? in
+                guard let val else {
                     return nil
                 }
                 return val & 1
-            })
-            self.feedback = feedback.map({ (val) -> UInt in val & 1 })
+            }
+            self.feedback = feedback.map { val -> UInt in val & 1 }
             self.ar = ar & 1
             self.sp = sp & 1
         }
@@ -58,11 +58,13 @@ public final class OutputLogicMacroCell {
         s0: UInt,
         s1: UInt
     ) {
-        self.outputEnableProductTermFuseMap = oe
+        outputEnableProductTermFuseMap = oe
         self.productTermFuseMaps = productTermFuseMaps
         self.s0 = s0 & 1
         self.s1 = s1 & 1
-        self.flipFlopState = 1  // I would have expected to need to reset this to zero but I have to reset to 1 to match behavior of real hardware. I'm not sure what's going on there.
+        flipFlopState =
+            1 // I would have expected to need to reset this to zero but I have to reset to 1 to
+        // match behavior of real hardware. I'm not sure what's going on there.
     }
 
     public func step(_ input: Input) -> UInt? {
@@ -85,20 +87,21 @@ public final class OutputLogicMacroCell {
 
         let result: UInt =
             switch (s1, s0) {
-            case (0, 0): (~flipFlopState) & 1
-            case (0, 1): (flipFlopState) & 1
-            case (1, 0): (~sumTerm) & 1
-            case (1, 1): (sumTerm) & 1
+            case (0, 0): ~flipFlopState & 1
+            case (0, 1): flipFlopState & 1
+            case (1, 0): ~sumTerm & 1
+            case (1, 1): sumTerm & 1
             default: abort()
             }
 
         prevResult = result
 
         let oe = outputEnableProductTermFuseMap.evaluate(
-            input.inputs.map({ (el) -> UInt in el ?? 1 })
-        ).reduce(
+            input.inputs.map { el -> UInt in el ?? 1 }
+        )
+        .reduce(
             1,
-            { (x, y) -> UInt in
+            { x, y -> UInt in
                 x & y
             }
         )
@@ -150,7 +153,7 @@ public final class OutputLogicMacroCell {
             modified[14] = input.inputs[14] ?? input.feedback[9]
         }
 
-        return modified.map({ (maybe) -> UInt in maybe! })
+        return modified.map { maybe -> UInt in maybe! }
     }
 
     public func evaluateSumTerm(_ input: Input) -> UInt {
@@ -158,12 +161,12 @@ public final class OutputLogicMacroCell {
             .map { (productTermFuseMap: ProductTermFuseMap) -> [UInt] in
                 productTermFuseMap.evaluate(configureCombinatorialInputs(input))
             }
-            .map { (productTerm) -> UInt in
-                productTerm.reduce(1) { (x, y) -> UInt in
+            .map { productTerm -> UInt in
+                productTerm.reduce(1) { x, y -> UInt in
                     x & y
                 }
             }
-            .reduce(0) { (x, y) -> UInt in
+            .reduce(0) { x, y -> UInt in
                 x | y
             }
     }

@@ -411,9 +411,10 @@ final class ATF22V10Tests: XCTestCase {
         )
 
         let generateLineDiagram = { (index: Int) in
-            results.map({ (row) -> String in
+            results.map { row -> String in
                 row[index] == 0 ? "_" : "#"
-            }).joined()
+            }
+            .joined()
         }
 
         XCTAssertEqual(generateLineDiagram(2), "#____##_")
@@ -526,9 +527,11 @@ final class ATF22V10Tests: XCTestCase {
         XCTAssertTrue(doesExactlyOneIndexMatch(results, 0b100001000, 0b100001000, 5))
 
         let generateLineDiagram = { (index: Int) in
-            results[0...264].map({ (row) -> String in
-                row[index] == 0 ? "_" : "#"
-            }).joined()
+            results[0...264]
+                .map { row -> String in
+                    row[index] == 0 ? "_" : "#"
+                }
+                .joined()
         }
 
         let hsync = generateLineDiagram(0)

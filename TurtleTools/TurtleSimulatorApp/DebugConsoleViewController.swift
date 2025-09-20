@@ -20,7 +20,7 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
     var cursor = 0
     var subscriptions = Set<AnyCancellable>()
 
-    public required init(debugger: DebugConsoleActor) {
+    required init(debugger: DebugConsoleActor) {
         self.debugger = debugger
         super.init(
             nibName: NSNib.Name("DebugConsoleViewController"),
@@ -28,7 +28,8 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         )
     }
 
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -49,11 +50,11 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
 
     private func subscribe() {
         NotificationCenter.default
-            .publisher(for: NSWindow.didBecomeKeyNotification, object: self.view.window)
+            .publisher(for: NSWindow.didBecomeKeyNotification, object: view.window)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-                self.debuggerInput.becomeFirstResponder()
+                debuggerInput.becomeFirstResponder()
             }
             .store(in: &subscriptions)
 
@@ -71,18 +72,18 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
             .store(in: &subscriptions)
     }
 
-    @objc func windowDidBecomeKey(notification: Notification) {
+    @objc func windowDidBecomeKey(notification _: Notification) {
         debuggerInput.becomeFirstResponder()
     }
 
-    @IBAction func submitCommandLine(_ sender: Any) {
-        let command: String
-        if debuggerInput.stringValue == "" {
-            command = history.last ?? ""
-        }
-        else {
-            command = debuggerInput.stringValue
-        }
+    @IBAction func submitCommandLine(_: Any) {
+        let command: String =
+            if debuggerInput.stringValue == "" {
+                history.last ?? ""
+            }
+            else {
+                debuggerInput.stringValue
+            }
         debugger.eval(command) { [weak self] debugConsole in
             guard let self else { return }
             if debugConsole.shouldQuit {
@@ -98,7 +99,7 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
 
     func control(
         _ control: NSControl,
-        textView: NSTextView,
+        textView _: NSTextView,
         doCommandBy commandSelector: Selector
     ) -> Bool {
         if !history.isEmpty, control === debuggerInput {

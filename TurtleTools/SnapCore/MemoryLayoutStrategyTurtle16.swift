@@ -11,38 +11,51 @@ public struct MemoryLayoutStrategyTurtle16: MemoryLayoutStrategy {
 
     public func sizeof(type: SymbolType) -> Int {
         switch type {
-        case .void, .function, .genericFunction, .genericStructType, .genericTraitType, .label:
+        case .void,
+             .function,
+             .genericFunction,
+             .genericStructType,
+             .genericTraitType,
+             .label:
             0
-        case .booleanType(let boolType):
+        case let .booleanType(boolType):
             switch boolType {
             case .compTimeBool:
                 0
-            case .immutableBool, .mutableBool:
+            case .immutableBool,
+                 .mutableBool:
                 1
             }
-        case .arithmeticType(let arithmeticType):
+        case let .arithmeticType(arithmeticType):
             switch arithmeticType {
             case .compTimeInt:
                 0
 
-            case .mutableInt(let width), .immutableInt(let width):
+            case let .mutableInt(width),
+                 let .immutableInt(width):
                 switch width {
-                case .i8, .u8:
+                case .i8,
+                     .u8:
                     1
-                case .i16, .u16:
+                case .i16,
+                     .u16:
                     1
                 }
             }
-        case .constPointer, .pointer:
+        case .constPointer,
+             .pointer:
             1
-        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .constTraitType(_),
-            .traitType(_):
+        case .constDynamicArray(elementType: _),
+             .dynamicArray(elementType: _),
+             .constTraitType(_),
+             .traitType:
             2
-        case .array(let count, let elementType):
+        case let .array(count, elementType):
             (count ?? 0) * sizeof(type: elementType)
-        case .constStructType(let typ), .structType(let typ):
+        case let .constStructType(typ),
+             let .structType(typ):
             sizeof(struct: typ)
-        case .unionType(let typ):
+        case let .unionType(typ):
             sizeof(union: typ)
         }
     }

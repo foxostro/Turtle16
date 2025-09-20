@@ -59,7 +59,7 @@ final class TackDebuggerTests: XCTestCase {
         do {
             tackProgram = try compiler.compile(program: program)
         }
-        catch (let error as CompilerError) {
+        catch let error as CompilerError {
             let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
             print("compile error: \(omnibusError.message)")
             throw error
@@ -84,14 +84,14 @@ final class TackDebuggerTests: XCTestCase {
         return debugger
     }
 
-    public func testLoadSymbolU8_NotFound() {
+    func testLoadSymbolU8_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolU8("foo"))
     }
 
-    public func testLoadSymbolU8_WrongType() {
+    func testLoadSymbolU8_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -108,7 +108,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolU8("foo"))
     }
 
-    public func testLoadSymbolU8_Success() {
+    func testLoadSymbolU8_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -126,14 +126,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual(0xcd, debugger.loadSymbolU8("foo"))
     }
 
-    public func testLoadSymbolU16_NotFound() {
+    func testLoadSymbolU16_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolU16("foo"))
     }
 
-    public func testLoadSymbolU16_WrongType() {
+    func testLoadSymbolU16_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -150,7 +150,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolU16("foo"))
     }
 
-    public func testLoadSymbolU16_Success() {
+    func testLoadSymbolU16_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -168,14 +168,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual(0xabcd, debugger.loadSymbolU16("foo"))
     }
 
-    public func testLoadSymbolI8_NotFound() {
+    func testLoadSymbolI8_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolI8("foo"))
     }
 
-    public func testLoadSymbolI8_WrongType() {
+    func testLoadSymbolI8_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -192,7 +192,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolI8("foo"))
     }
 
-    public func testLoadSymbolI8_Success() {
+    func testLoadSymbolI8_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -210,14 +210,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual(-1, debugger.loadSymbolI8("foo"))
     }
 
-    public func testLoadSymbolI16_NotFound() {
+    func testLoadSymbolI16_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolI16("foo"))
     }
 
-    public func testLoadSymbolI16_WrongType() {
+    func testLoadSymbolI16_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -234,7 +234,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolI16("foo"))
     }
 
-    public func testLoadSymbolI16_Success() {
+    func testLoadSymbolI16_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -252,14 +252,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual(-1, debugger.loadSymbolI16("foo"))
     }
 
-    public func testLoadSymbolBool_NotFound() {
+    func testLoadSymbolBool_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolBool("foo"))
     }
 
-    public func testLoadSymbolBool_WrongType() {
+    func testLoadSymbolBool_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -276,7 +276,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolBool("foo"))
     }
 
-    public func testLoadSymbolBool_Success() {
+    func testLoadSymbolBool_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -294,14 +294,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual(true, debugger.loadSymbolBool("foo"))
     }
 
-    public func testLoadSymbolPointer_NotFound() {
+    func testLoadSymbolPointer_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolPointer("foo"))
     }
 
-    public func testLoadSymbolPointer_WrongType() {
+    func testLoadSymbolPointer_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -318,7 +318,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolPointer("foo"))
     }
 
-    public func testLoadSymbolPointer_Success() {
+    func testLoadSymbolPointer_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -336,14 +336,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual(0xabcd, debugger.loadSymbolPointer("foo"))
     }
 
-    public func testLoadSymbolArrayOfU8_NotFound() {
+    func testLoadSymbolArrayOfU8_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolArrayOfU8(3, "foo"))
     }
 
-    public func testLoadSymbolSymbolArrayOfU8_WrongType() {
+    func testLoadSymbolSymbolArrayOfU8_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -360,7 +360,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolArrayOfU8(3, "foo"))
     }
 
-    public func testLoadSymbolSymbolArrayOfU8_Success() {
+    func testLoadSymbolSymbolArrayOfU8_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -380,14 +380,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual([0xaa, 0xbb, 0xcc], debugger.loadSymbolArrayOfU8(3, "foo"))
     }
 
-    public func testLoadSymbolArrayOfU16_NotFound() {
+    func testLoadSymbolArrayOfU16_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolArrayOfU16(3, "foo"))
     }
 
-    public func testLoadSymbolArrayOfU16_WrongType() {
+    func testLoadSymbolArrayOfU16_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -404,7 +404,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolArrayOfU16(3, "foo"))
     }
 
-    public func testLoadSymbolArrayOfU16_Success() {
+    func testLoadSymbolArrayOfU16_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -424,14 +424,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual([0xaaaa, 0xbbbb, 0xcccc], debugger.loadSymbolArrayOfU16(3, "foo"))
     }
 
-    public func testLoadSymbolString_NotFound() {
+    func testLoadSymbolString_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolString("foo"))
     }
 
-    public func testLoadSymbolString_WrongType() {
+    func testLoadSymbolString_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -448,7 +448,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolString("foo"))
     }
 
-    public func testLoadSymbolString_Success() {
+    func testLoadSymbolString_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -468,14 +468,14 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertEqual("ABC", debugger.loadSymbolString("foo"))
     }
 
-    public func testLoadSymbolStringSlice_NotFound() {
+    func testLoadSymbolStringSlice_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         XCTAssertNil(debugger.loadSymbolStringSlice("foo"))
     }
 
-    public func testLoadSymbolStringSlice_WrongType() {
+    func testLoadSymbolStringSlice_WrongType() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
@@ -492,7 +492,7 @@ final class TackDebuggerTests: XCTestCase {
         XCTAssertNil(debugger.loadSymbolStringSlice("foo"))
     }
 
-    public func testLoadSymbolStringSlice_Success() {
+    func testLoadSymbolStringSlice_Success() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)

@@ -13,11 +13,11 @@ import TurtleCore
 /// be the appropriate explicitType inferred for the variable.
 struct AssignmentTypeDeducer {
     let typeContext: TypeContextTypeChecker
-    
+
     init(_ typeContext: TypeContextTypeChecker) {
         self.typeContext = typeContext
     }
-    
+
     func explicitTypeExpression(
         varDecl node: VarDeclaration
     ) throws -> Expression {
@@ -27,7 +27,7 @@ struct AssignmentTypeDeducer {
         }
         return explicitType
     }
-    
+
     private func unableToDeduceType(varDecl node: VarDeclaration) -> CompilerError {
         CompilerError(
             sourceAnchor: node.identifier.sourceAnchor,
@@ -36,7 +36,7 @@ struct AssignmentTypeDeducer {
             node.identifier.identifier
         )
     }
-    
+
     private func maybeExplicitTypeExpression(
         varDecl node: VarDeclaration
     ) throws -> Expression? {
@@ -48,7 +48,7 @@ struct AssignmentTypeDeducer {
 
         let ltype0 = try typeContext.check(expression: ltypeExpr0)
         let ltypeExpr1 =
-            if ltype0.isArrayType && ltype0.arrayCount == nil {
+            if ltype0.isArrayType, ltype0.arrayCount == nil {
                 rtypeExpr
             }
             else {
@@ -57,10 +57,10 @@ struct AssignmentTypeDeducer {
 
         return ltypeExpr1
     }
-    
+
     private func rtypeExpr(varDecl node: VarDeclaration) throws -> Expression? {
         guard let expr = node.expression else { return nil }
-        
+
         // Simplify the type expression where we can obviously avoid a TypeOf
         // expression. This avoids issues where the argument to TypeOf no longer
         // type checks after various lowering steps have been applied. We do not
@@ -82,7 +82,7 @@ struct AssignmentTypeDeducer {
                 )
                 .lift
             }
-        
+
         // The explicit type must account for immutability of the variable too.
         let type1 =
             if node.isMutable {
@@ -95,8 +95,8 @@ struct AssignmentTypeDeducer {
     }
 }
 
-extension Expression {
-    fileprivate func withConstType() -> ConstType {
+private extension Expression {
+    func withConstType() -> ConstType {
         if let self = self as? ConstType {
             self
         }
@@ -109,13 +109,13 @@ extension Expression {
     }
 }
 
-extension VarDeclaration {
-    public func inferExplicitType(
+public extension VarDeclaration {
+    func inferExplicitType(
         _ typeContext: TypeContextTypeChecker
     ) throws -> VarDeclaration {
         if explicitType == nil {
-            withExplicitType(
-                try AssignmentTypeDeducer(typeContext).explicitTypeExpression(
+            try withExplicitType(
+                AssignmentTypeDeducer(typeContext).explicitTypeExpression(
                     varDecl: self
                 )
             )
@@ -124,8 +124,8 @@ extension VarDeclaration {
             self
         }
     }
-    
-    public func breakOutInitialAssignment() -> Seq {
+
+    func breakOutInitialAssignment() -> Seq {
         if let expression {
             Seq(
                 sourceAnchor: sourceAnchor,

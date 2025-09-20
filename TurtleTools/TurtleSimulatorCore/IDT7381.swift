@@ -74,7 +74,7 @@ public class IDT7381: NSObject, NSSecureCoding {
     public var b: UInt16 = 0
     public var f: UInt16 = 0
 
-    public required override init() {
+    public override required init() {
         a = 0
         b = 0
         f = 0
@@ -82,8 +82,8 @@ public class IDT7381: NSObject, NSSecureCoding {
 
     public required init?(coder: NSCoder) {
         guard let a = coder.decodeObject(forKey: "a") as? UInt16,
-            let b = coder.decodeObject(forKey: "b") as? UInt16,
-            let f = coder.decodeObject(forKey: "f") as? UInt16
+              let b = coder.decodeObject(forKey: "b") as? UInt16,
+              let f = coder.decodeObject(forKey: "f") as? UInt16
         else {
             return nil
         }
@@ -123,13 +123,13 @@ public class IDT7381: NSObject, NSSecureCoding {
             b = input.b
         }
 
-        let portF: UInt16?
-        if input.oe == 0 {
-            portF = fmux(input: input)
-        }
-        else {
-            portF = nil
-        }
+        let portF: UInt16? =
+            if input.oe == 0 {
+                fmux(input: input)
+            }
+            else {
+                nil
+            }
 
         let c16 = computeC16(input: input)
         let z = computeZ(input: input)
@@ -171,7 +171,7 @@ public class IDT7381: NSObject, NSSecureCoding {
         case (1, 1, 1):
             result = 0xffff
         default:
-            assert(false)  // unreachable
+            assertionFailure() // unreachable
             abort()
         }
         return result
@@ -235,13 +235,13 @@ public class IDT7381: NSObject, NSSecureCoding {
 
         // If the two operands have the same sign and the sum has a different
         // sign then overflow has occurred. Otherwise, there is no overflow.
-        let ovf: UInt
-        if (r1 & 0x8000) == (s1 & 0x8000) {
-            ovf = ((r1 & 0x8000) != (result & 0x8000)) ? 1 : 0
-        }
-        else {
-            ovf = 0
-        }
+        let ovf: UInt =
+            if (r1 & 0x8000) == (s1 & 0x8000) {
+                ((r1 & 0x8000) != (result & 0x8000)) ? 1 : 0
+            }
+            else {
+                0
+            }
 
         return ovf
     }
@@ -257,7 +257,7 @@ public class IDT7381: NSObject, NSSecureCoding {
         case (1, 1):
             return amux(input: input)
         default:
-            assert(false)  // unreachable
+            assertionFailure() // unreachable
             abort()
         }
     }
@@ -273,7 +273,7 @@ public class IDT7381: NSObject, NSSecureCoding {
         case (1, 1):
             return bmux(input: input)
         default:
-            assert(false)  // unreachable
+            assertionFailure() // unreachable
             abort()
         }
     }
@@ -304,8 +304,8 @@ public class IDT7381: NSObject, NSSecureCoding {
             return false
         }
         guard a == rhs.a,
-            b == rhs.b,
-            f == rhs.f
+              b == rhs.b,
+              f == rhs.f
         else {
             return false
         }

@@ -12,8 +12,8 @@ public class ThrottledQueue {
     let queue: DispatchQueue
     let maxInterval: Double
 
-    var job: DispatchWorkItem = DispatchWorkItem(block: {})
-    var previousRun: Date = Date.distantPast
+    var job: DispatchWorkItem = .init(block: {})
+    var previousRun: Date = .distantPast
 
     public init(queue: DispatchQueue, maxInterval: Double) {
         self.queue = queue

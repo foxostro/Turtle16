@@ -241,9 +241,9 @@ public final class CompilerPassEraseSourceAnchor: CompilerPass {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     // Remove all source anchors from all nodes in the AST
-    public func eraseSourceAnchors() throws -> AbstractSyntaxTreeNode? {
+    func eraseSourceAnchors() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassEraseSourceAnchor().run(self)
     }
 }

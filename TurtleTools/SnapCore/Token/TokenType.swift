@@ -12,7 +12,7 @@ public final class TokenType: Token {
     public let representedType: SymbolType
 
     public init(sourceAnchor: SourceAnchor, type: SymbolType) {
-        self.representedType = type
+        representedType = type
         super.init(sourceAnchor: sourceAnchor)
     }
 

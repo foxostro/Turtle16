@@ -12,9 +12,9 @@ public enum ResetType {
     case soft, hard
 }
 
-extension Notification.Name {
-    public static let computerStateDidChange = Notification.Name("computerStateDidChange")
-    public static let computerIsFreeRunningDidChange = Notification.Name(
+public extension Notification.Name {
+    static let computerStateDidChange = Notification.Name("computerStateDidChange")
+    static let computerIsFreeRunningDidChange = Notification.Name(
         "computerIsFreeRunningDidChange"
     )
 }
@@ -130,7 +130,7 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         }
         cpu.load = { [weak self] in
             guard let self else { return 0 }
-            return self.load(address: $0)
+            return load(address: $0)
         }
     }
 
@@ -154,7 +154,7 @@ public class TurtleComputer: NSObject, NSSecureCoding {
 
     public required convenience init?(coder: NSCoder) {
         guard let cpu = coder.decodeObject(of: SchematicLevelCPUModel.self, forKey: "cpu"),
-            let ram = coder.decodeObject(forKey: "ram") as? [UInt16]
+              let ram = coder.decodeObject(forKey: "ram") as? [UInt16]
         else {
             return nil
         }
@@ -225,10 +225,10 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         public let entries: [Disassembler.Entry]
     }
 
-    fileprivate var cachedDisassembly: Disassembly? = nil
+    fileprivate var cachedDisassembly: Disassembly?
 
     public var disassembly: Disassembly {
-        if nil == cachedDisassembly {
+        if cachedDisassembly == nil {
             let disassembler = Disassembler()
             let entries = disassembler.disassemble(cpu.instructions)
             let labels = disassembler.labels
@@ -243,8 +243,8 @@ public class TurtleComputer: NSObject, NSSecureCoding {
 
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? TurtleComputer,
-            ram == rhs.ram,
-            cpu == rhs.cpu
+              ram == rhs.ram,
+              cpu == rhs.cpu
         else {
             return false
         }

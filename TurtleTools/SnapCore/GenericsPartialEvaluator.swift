@@ -20,6 +20,7 @@ public final class GenericsPartialEvaluator: CompilerPass {
         let identifier: String
         let scope: ScopeIdentifier
     }
+
     public typealias ReplacementMap = [ReplacementKey: Expression]
 
     private let map: ReplacementMap
@@ -32,11 +33,13 @@ public final class GenericsPartialEvaluator: CompilerPass {
     ///   is the expression which replaces it.
     /// - Returns: The partially evaluated function, struct, or other object,
     ///   with replacements applied
-    public static func eval<U, S>(_ ast0: U, replacements: S) throws -> U
-    where S: Sequence, S.Element == (ReplacementKey, Expression), U: AbstractSyntaxTreeNode {
+    public static func eval<U>(
+        _ ast0: U,
+        replacements: some Sequence<(ReplacementKey, Expression)>
+    ) throws -> U
+        where U: AbstractSyntaxTreeNode {
         let replacementMap = Dictionary(uniqueKeysWithValues: replacements)
-        let ast1 =
-            try GenericsPartialEvaluator(symbols: nil, map: replacementMap)
+        let ast1 = try GenericsPartialEvaluator(symbols: nil, map: replacementMap)
             .run(ast0) as! U
         return ast1
     }
@@ -54,11 +57,11 @@ public final class GenericsPartialEvaluator: CompilerPass {
     }
 
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let node1 = VarDeclaration(
+        let node1 = try VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
-            identifier: node0.identifier,  // Do not rewrite the identifier of the new symbol
-            explicitType: try node0.explicitType.flatMap { try visit(expr: $0) },
-            expression: try node0.expression.flatMap { try visit(expr: $0) },
+            identifier: node0.identifier, // Do not rewrite the identifier of the new symbol
+            explicitType: node0.explicitType.flatMap { try visit(expr: $0) },
+            expression: node0.expression.flatMap { try visit(expr: $0) },
             storage: node0.storage,
             isMutable: node0.isMutable,
             visibility: node0.visibility,
@@ -68,16 +71,16 @@ public final class GenericsPartialEvaluator: CompilerPass {
     }
 
     public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let node1 = StructDeclaration(
+        let node1 = try StructDeclaration(
             sourceAnchor: node0.sourceAnchor,
-            identifier: node0.identifier,  // Do not rewrite the identifier of the new type
-            typeArguments: try node0.typeArguments.compactMap {
+            identifier: node0.identifier, // Do not rewrite the identifier of the new type
+            typeArguments: node0.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
-            members: try node0.members.map {
-                StructDeclaration.Member(
+            members: node0.members.map {
+                try StructDeclaration.Member(
                     name: $0.name,
-                    type: try visit(expr: $0.memberType)!
+                    type: visit(expr: $0.memberType)!
                 )
             },
             visibility: node0.visibility,

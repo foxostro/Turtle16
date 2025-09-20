@@ -99,7 +99,7 @@ final class IDTests: XCTestCase {
         decoder.opcodeDecodeROM[Int(index)] = ID.nopControlWord
         id.decoder = decoder
         let output = id.step(input: ID.Input(ins: 0xffff, rst: 0))
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testDecodeControlWordForNOP() throws {
@@ -109,7 +109,7 @@ final class IDTests: XCTestCase {
         decoder.opcodeDecodeROM[Int(index)] = ID.nopControlWord
         id.decoder = decoder
         let output = id.step(input: ID.Input(ins: 0))
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testReadRegisterA() throws {
@@ -133,9 +133,9 @@ final class IDTests: XCTestCase {
         let decoder = OpcodeDecoderROM()
         decoder.opcodeDecodeROM[Int(entry)] = 1
         id.decoder = decoder
-        let ins: UInt16 = UInt16(hltOpcode << 11)
+        let ins = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins))
-        XCTAssertEqual(output.ctl_EX & 1, 1)  // HLT control line is active
+        XCTAssertEqual(output.ctl_EX & 1, 1) // HLT control line is active
     }
 
     func testFlushOnJump() throws {
@@ -145,10 +145,10 @@ final class IDTests: XCTestCase {
         let decoder = OpcodeDecoderROM()
         decoder.opcodeDecodeROM[Int(entry)] = 1
         id.decoder = decoder
-        let ins: UInt16 = UInt16(hltOpcode << 11)
+        let ins = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins, j: 0))
         XCTAssertEqual(output.stall, 0)
-        XCTAssertEqual(output.ctl_EX, ID.nopControlWord)  // no active control lines
+        XCTAssertEqual(output.ctl_EX, ID.nopControlWord) // no active control lines
     }
 
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA() throws {
@@ -162,7 +162,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -172,8 +173,11 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0xabcd)
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.a, 0xabcd)  // The A operand comes from Y_EX instead of register file port A.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.a,
+            0xabcd
+        ) // The A operand comes from Y_EX instead of register file port A.
         XCTAssertEqual(output.ctl_EX, ID.nopControlWord)
     }
 
@@ -188,14 +192,15 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in EX wants to write storeOP_EX back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in EX wants to write storeOP_EX back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
         let output = id.step(input: ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0))
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rA() throws {
@@ -209,7 +214,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -219,8 +225,11 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0xabcd)
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.a, 0xabcd)  // The A operand comes from Y_MEM instead of register file port A.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.a,
+            0xabcd
+        ) // The A operand comes from Y_MEM instead of register file port A.
         XCTAssertEqual(output.ctl_EX, ID.nopControlWord)
     }
 
@@ -235,7 +244,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -243,8 +253,8 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rB() throws {
@@ -258,7 +268,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -268,8 +279,11 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0xabcd)
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.b, 0xabcd)  // The B operand comes from Y_EX instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.b,
+            0xabcd
+        ) // The B operand comes from Y_EX instead of register file port B.
         XCTAssertEqual(output.ctl_EX, ID.nopControlWord)
     }
 
@@ -284,14 +298,15 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in EX wants to write storeOP_EX back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in EX wants to write storeOP_EX back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
         let output = id.step(input: ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0))
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rB() throws {
@@ -305,7 +320,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -315,8 +331,11 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0xabcd)
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.b, 0xabcd)  // The B operand comes from Y_MEM instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.b,
+            0xabcd
+        ) // The B operand comes from Y_MEM instead of register file port B.
         XCTAssertEqual(output.ctl_EX, ID.nopControlWord)
     }
 
@@ -331,7 +350,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -339,8 +359,8 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA_and_rB() throws {
@@ -354,7 +374,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -364,9 +385,15 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0xabcd)
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.a, 0xabcd)  // The A operand comes from Y_EX instead of register file port A.
-        XCTAssertEqual(output.b, 0xabcd)  // The B operand comes from Y_EX instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.a,
+            0xabcd
+        ) // The A operand comes from Y_EX instead of register file port A.
+        XCTAssertEqual(
+            output.b,
+            0xabcd
+        ) // The B operand comes from Y_EX instead of register file port B.
         XCTAssertEqual(output.ctl_EX, ID.nopControlWord)
     }
 
@@ -381,14 +408,15 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in EX wants to write storeOP_EX back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in EX wants to write storeOP_EX back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
         let output = id.step(input: ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0))
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rA_and_rB() throws {
@@ -402,7 +430,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -412,9 +441,15 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0xabcd)
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.a, 0xabcd)  // The A operand comes from Y_MEM instead of register file port A.
-        XCTAssertEqual(output.b, 0xabcd)  // The B operand comes from Y_MEM instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.a,
+            0xabcd
+        ) // The A operand comes from Y_MEM instead of register file port A.
+        XCTAssertEqual(
+            output.b,
+            0xabcd
+        ) // The B operand comes from Y_MEM instead of register file port B.
         XCTAssertEqual(output.ctl_EX, ID.nopControlWord)
     }
 
@@ -429,7 +464,8 @@ final class IDTests: XCTestCase {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -437,8 +473,8 @@ final class IDTests: XCTestCase {
             input: ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testStallOnFlagsHazard() throws {
@@ -447,7 +483,7 @@ final class IDTests: XCTestCase {
         let input = ID.Input(ins: beq << 11, ctl_EX: 0b11111_11111111_11011111)
         let output = id.step(input: input)
         XCTAssertEqual(output.stall, 1)
-        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111)  // no active control lines
+        XCTAssertEqual(output.ctl_EX, 0b11111_11111111_11111111) // no active control lines
     }
 
     func testEquality_Equal() throws {

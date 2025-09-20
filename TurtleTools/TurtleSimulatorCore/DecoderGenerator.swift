@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension UInt {
-    public func asBinaryString() -> String {
+public extension UInt {
+    func asBinaryString() -> String {
         var result = String(self, radix: 2)
         if result.count < 32 {
             result = String(repeatElement("0", count: 32 - result.count)) + result
@@ -18,8 +18,8 @@ extension UInt {
     }
 }
 
-extension UInt16 {
-    public func asBinaryString() -> String {
+public extension UInt16 {
+    func asBinaryString() -> String {
         var result = String(self, radix: 2)
         if result.count < 16 {
             result = String(repeatElement("0", count: 16 - result.count)) + result
@@ -90,16 +90,18 @@ public struct DecoderGenerator {
         case b, pc, imm, immShift
         public func controlWord() -> UInt {
             switch self {
-            case .b: return 0b00
-            case .pc: return 0b01
-            case .imm: return 0b10
-            case .immShift: return 0b11
+            case .b: 0b00
+            case .pc: 0b01
+            case .imm: 0b10
+            case .immShift: 0b11
             }
         }
     }
+
     public struct SelStoreOpTag {
         let tag: UInt
     }
+
     public static func SelStoreOp(_ op: SelStoreOpEnum) -> SelStoreOpTag {
         let val = op.controlWord()
         assert(val < 4)
@@ -110,16 +112,18 @@ public struct DecoderGenerator {
         case b, imm_4_0, imm_10_8_1_0, imm_10_0
         public func controlWord() -> UInt {
             switch self {
-            case .b: return 0b00
-            case .imm_4_0: return 0b01
-            case .imm_10_8_1_0: return 0b10
-            case .imm_10_0: return 0b11
+            case .b: 0b00
+            case .imm_4_0: 0b01
+            case .imm_10_8_1_0: 0b10
+            case .imm_10_0: 0b11
             }
         }
     }
+
     public struct SelRightOpTag {
         let tag: UInt
     }
+
     public static func SelRightOp(_ op: SelRightOpEnum) -> SelRightOpTag {
         let val = op.controlWord()
         assert(val < 4)
@@ -130,35 +134,38 @@ public struct DecoderGenerator {
         case add, sub, and, or, xor, not
         public func controlWord() -> UInt {
             switch self {
-            case .add: return 0b011
-            case .sub: return 0b010
-            case .and: return 0b110
-            case .or: return 0b101
-            case .xor: return 0b100
-            case .not: return 0b001
+            case .add: 0b011
+            case .sub: 0b010
+            case .and: 0b110
+            case .or: 0b101
+            case .xor: 0b100
+            case .not: 0b001
             }
         }
     }
+
     public enum RSMuxMode {
-        case af  // Left is A, Right is F
-        case az  // Left is A, Right is 0
-        case zb  // Left is 0, Right is B
-        case ab  // Left is A, Right is B
+        case af // Left is A, Right is F
+        case az // Left is A, Right is 0
+        case zb // Left is 0, Right is B
+        case ab // Left is A, Right is B
 
         public func controlWord() -> UInt {
             switch self {
-            case .af: return 0b00
-            case .az: return 0b01
-            case .zb: return 0b10
-            case .ab: return 0b11
+            case .af: 0b00
+            case .az: 0b01
+            case .zb: 0b10
+            case .ab: 0b11
             }
         }
     }
+
     public struct ALUControlTag {
         let i: UInt
         let rs: UInt
         let c0: UInt
     }
+
     public static func ALUControl(fn: ALUFunction, rs: RSMuxMode, c0: UInt) -> ALUControlTag {
         assert(c0 < 2)
         let i = fn.controlWord()
@@ -175,17 +182,19 @@ public struct DecoderGenerator {
     public enum WriteBackSrcEnum {
         case aluResult, storeOp
     }
+
     public struct WriteBackSrcTag {
         let tag: UInt
     }
+
     public static func WriteBackSrc(_ val: WriteBackSrcEnum) -> WriteBackSrcTag {
-        let tag: UInt
-        switch val {
-        case .aluResult:
-            tag = 0
-        case .storeOp:
-            tag = 1
-        }
+        let tag: UInt =
+            switch val {
+            case .aluResult:
+                0
+            case .storeOp:
+                1
+            }
         return WriteBackSrcTag(tag: tag & 1)
     }
 
@@ -515,7 +524,7 @@ public struct DecoderGenerator {
                         }
 
                         // BGT jumps on (Z==0) && (N==V)
-                        if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
+                        if z == 0, (n == 0 && v == 0) || (n == 1 && v == 1) {
                             makeControlWord(
                                 &controlWords,
                                 index: makeIndex(
@@ -545,7 +554,7 @@ public struct DecoderGenerator {
                         }
 
                         // BGTU jumps on C==1 && Z==0
-                        if c == 1 && z == 0 {
+                        if c == 1, z == 0 {
                             makeControlWord(
                                 &controlWords,
                                 index: makeIndex(
@@ -644,10 +653,10 @@ public struct DecoderGenerator {
                                 DecoderGenerator.RightOperandIsUnused
                             ]
                         )
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
 
         return controlWords
     }
@@ -666,32 +675,29 @@ public struct DecoderGenerator {
                 next = prev & ~(1 << signal)
             }
             else if let signal = signal_ as? SelStoreOpTag {
-                next =
-                    (prev & ~(0b11 << DecoderGenerator.SelStoreOpA))
+                next = (prev & ~(0b11 << DecoderGenerator.SelStoreOpA))
                     | (signal.tag << DecoderGenerator.SelStoreOpA)
             }
             else if let signal = signal_ as? SelRightOpTag {
-                next =
-                    (prev & ~(0b11 << DecoderGenerator.SelRightOpA))
+                next = (prev & ~(0b11 << DecoderGenerator.SelRightOpA))
                     | (signal.tag << DecoderGenerator.SelRightOpA)
             }
             else if let signal = signal_ as? ALUControlTag {
-                next =
-                    (prev
-                        & ~(0b111 << DecoderGenerator.I0)
-                        & ~(1 << DecoderGenerator.C0)
-                        & ~(0b11 << DecoderGenerator.RS0))
+                next = (prev
+                    & ~(0b111 << DecoderGenerator.I0)
+                    & ~(1 << DecoderGenerator.C0)
+                    & ~(0b11 << DecoderGenerator.RS0)
+                )
                     | (signal.i << DecoderGenerator.I0)
                     | (signal.c0 << DecoderGenerator.C0)
                     | (signal.rs << DecoderGenerator.RS0)
             }
             else if let signal = signal_ as? WriteBackSrcTag {
-                next =
-                    (prev & ~(1 << DecoderGenerator.WriteBackSrcFlag))
+                next = (prev & ~(1 << DecoderGenerator.WriteBackSrcFlag))
                     | (signal.tag << DecoderGenerator.WriteBackSrcFlag)
             }
             else {
-                assert(false)
+                assertionFailure()
                 abort()
             }
             controlWords[index] = next
@@ -711,8 +717,7 @@ public struct DecoderGenerator {
         assert(v <= 1)
         assert(opcode >= 0)
         assert(opcode <= 31)
-        let index =
-            (n << 8)
+        let index = (n << 8)
             | (v << 7)
             | (z << 6)
             | (c << 5)
@@ -735,10 +740,10 @@ public struct DecoderGenerator {
                             opcode: opcode
                         )
                         indices.append(Int(index))
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
         return indices
     }
 

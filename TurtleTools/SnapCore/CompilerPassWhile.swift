@@ -23,7 +23,7 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
         let s = node0.sourceAnchor
         let labelHead = symbols.nextLabel()
         let labelTail = symbols.nextLabel()
-        let node1 = Seq(
+        let node1 = try Seq(
             sourceAnchor: s,
             children: [
                 LabelDeclaration(sourceAnchor: s, identifier: labelHead),
@@ -32,7 +32,7 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
                     condition: condition,
                     target: labelTail
                 ),
-                try visit(node0.body)!,
+                visit(node0.body)!,
                 Goto(sourceAnchor: s, target: labelHead),
                 LabelDeclaration(sourceAnchor: s, identifier: labelTail)
             ]
@@ -41,9 +41,9 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "while" statements
-    public func whilePass() throws -> AbstractSyntaxTreeNode? {
+    func whilePass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassWhile().run(self)
     }
 }

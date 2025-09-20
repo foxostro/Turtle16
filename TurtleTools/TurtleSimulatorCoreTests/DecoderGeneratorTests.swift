@@ -709,9 +709,9 @@ final class DecoderGeneratorTests: XCTestCase {
                     )
                     let ctlHighZ = decoder[indexForPassCondition]
                     XCTAssertTrue(isRelativeJump(ctlHighZ))
-                }  // v
-            }  // c
-        }  // n
+                } // v
+            } // c
+        } // n
     }
 
     func testOpcodeBne() throws {
@@ -740,16 +740,16 @@ final class DecoderGeneratorTests: XCTestCase {
                     )
                     let ctlHighZ = decoder[indexForPassCondition]
                     XCTAssertTrue(isRelativeJump(ctlHighZ))
-                }  // v
-            }  // c
-        }  // n
+                } // v
+            } // c
+        } // n
     }
 
     func testBlt() {
         let cpu = makeCPU()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11010011_11111111  // BLT 1023
+            0b00000000_00000000, // NOP
+            0b11010011_11111111 // BLT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -779,17 +779,17 @@ final class DecoderGeneratorTests: XCTestCase {
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBgt() {
         let cpu = makeCPU()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11011011_11111111  // BGT 1023
+            0b00000000_00000000, // NOP
+            0b11011011_11111111 // BGT 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -813,23 +813,23 @@ final class DecoderGeneratorTests: XCTestCase {
                         cpu.step()
 
                         // BGT jumps on (Z==0) && (N==V)
-                        if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
+                        if z == 0, (n == 0 && v == 0) || (n == 1 && v == 1) {
                             XCTAssertEqual(1026, cpu.pc)
                         }
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBltu() {
         let cpu = makeCPU()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11100011_11111111  // BLTU 1023
+            0b00000000_00000000, // NOP
+            0b11100011_11111111 // BLTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -859,17 +859,17 @@ final class DecoderGeneratorTests: XCTestCase {
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testBgtu() {
         let cpu = makeCPU()
         cpu.instructions = [
-            0b00000000_00000000,  // NOP
-            0b11101011_11111111  // BGTU 1023
+            0b00000000_00000000, // NOP
+            0b11101011_11111111 // BGTU 1023
         ]
 
         let bits = [UInt(0), UInt(1)]
@@ -893,16 +893,16 @@ final class DecoderGeneratorTests: XCTestCase {
                         cpu.step()
 
                         // BGTU jumps on C==1 && Z==0
-                        if c == 1 && z == 0 {
+                        if c == 1, z == 0 {
                             XCTAssertEqual(1026, cpu.pc)
                         }
                         else {
                             XCTAssertEqual(4, cpu.pc)
                         }
-                    }  // v
-                }  // z
-            }  // c
-        }  // n
+                    } // v
+                } // z
+            } // c
+        } // n
     }
 
     func testOpcodeAdc() throws {
@@ -966,9 +966,9 @@ final class DecoderGeneratorTests: XCTestCase {
                     XCTAssertEqual((controlWordPass >> WBEN) & 1, 0)
                     XCTAssertEqual((controlWordPass >> LeftOperandIsUnused) & 1, 0)
                     XCTAssertEqual((controlWordPass >> RightOperandIsUnused) & 1, 0)
-                }  // v
-            }  // z
-        }  // n
+                } // v
+            } // z
+        } // n
     }
 
     func testOpcodeSbc() throws {
@@ -1032,8 +1032,8 @@ final class DecoderGeneratorTests: XCTestCase {
                     XCTAssertEqual((controlWordPass >> WBEN) & 1, 0)
                     XCTAssertEqual((controlWordPass >> LeftOperandIsUnused) & 1, 0)
                     XCTAssertEqual((controlWordPass >> RightOperandIsUnused) & 1, 0)
-                }  // v
-            }  // z
-        }  // n
+                } // v
+            } // z
+        } // n
     }
 }

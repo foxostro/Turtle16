@@ -19,16 +19,16 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "internal compiler error: no symbols")
         }
     }
-    
+
     func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
-        let input = Block(children: [ Return(LiteralBool(true)) ]).reconnect(parent: nil)
+        let input = Block(children: [Return(LiteralBool(true))]).reconnect(parent: nil)
         XCTAssertThrowsError(try input.exposeImplicitConversions()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "return is invalid outside of a function")
         }
     }
-    
+
     func testUnexpectedNonVoidReturnValueInVoidFunction() {
         let input = Block(
             children: [
@@ -48,8 +48,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         XCTAssertThrowsError(try input.exposeImplicitConversions()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -59,7 +59,7 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
             )
         }
     }
-    
+
     func testNonVoidFunctionShouldReturnAValue() {
         let input = Block(
             children: [
@@ -79,15 +79,15 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         XCTAssertThrowsError(try input.exposeImplicitConversions()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "non-void function should return a value")
         }
     }
-    
+
     func testVoidFunctionCanOmitTheExpressionFromTheReturnStatement() throws {
         let input = Block(
             children: [
@@ -107,12 +107,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, input)
     }
-    
+
     func testFunctionReturnValueHasTypeExactlyMatchingFunctionReturnType() throws {
         let input = Block(
             children: [
@@ -132,12 +132,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, input)
     }
-    
+
     func testIfReturnValueTypeIsNotExactMatchThenItMustBeImplicitlyConvertible() {
         let input = Block(
             children: [
@@ -157,15 +157,18 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         XCTAssertThrowsError(try input.exposeImplicitConversions()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot convert return expression of type `u8' to return type `bool'")
+            XCTAssertEqual(
+                compilerError?.message,
+                "cannot convert return expression of type `u8' to return type `bool'"
+            )
         }
     }
-    
+
     func testInsertConversionWhenReturnValueTypeIsImplicitlyConvertibleToTheReturnType() throws {
         let input = Block(
             children: [
@@ -185,8 +188,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: [
                 FunctionDeclaration(
@@ -210,12 +213,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEmptyStructInitializerExpressionPassesThroughUnmodified() throws {
         let input = Block(
             children: [
@@ -223,12 +226,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 StructInitializer(identifier: Identifier("Foo"), arguments: [])
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, input)
     }
-    
+
     func testStructInitializerArgumentIsUnmodifiedWhereExactlyMatchingTheTypeOfTheField() throws {
         let input = Block(
             children: [
@@ -241,18 +244,22 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 StructInitializer(
                     identifier: Identifier("Foo"),
                     arguments: [
-                        StructInitializer.Argument(name: "bar", expr: ExprUtils.makeBool(value: false))
+                        StructInitializer.Argument(
+                            name: "bar",
+                            expr: ExprUtils.makeBool(value: false)
+                        )
                     ]
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, input)
     }
-    
-    func testInsertExplicitConversionWhereStructInitializerArgumentTypeDoesNotExactlyMatch() throws {
+
+    func testInsertExplicitConversionWhereStructInitializerArgumentTypeDoesNotExactlyMatch() throws
+    {
         let input = Block(
             children: [
                 StructDeclaration(
@@ -269,8 +276,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: [
                 StructDeclaration(
@@ -293,12 +300,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // A function value may be implicitly converted to a pointer in assignment.
     func testImplicitConversionOfFunctionToFunctionPointer() throws {
         let fooTyp = FunctionType(
@@ -329,8 +336,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Assignment(
@@ -342,12 +349,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // A struct value may be implicitly converted to a pointer in assignment.
     func testImplicitConversionOfStructValueToPointerInAssignment() throws {
         let shared = [
@@ -378,8 +385,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Assignment(
@@ -391,12 +398,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // Rewrite Get expressions so the object is always a pointer
     // Note that a Get expression applied to an object is the same as the Get
     // expression applied to a pointer to that object.
@@ -424,8 +431,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 Get(expr: Identifier("object"), member: Identifier("value"))
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Get(
@@ -437,12 +444,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // ...unless the object is already a pointer, in which case do not convert
     func testObjectOfAGetExpressionIsConvertedToAPointer_UnlessItAlreadyIsOne() throws {
         let shared = [
@@ -474,8 +481,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Get(
@@ -487,12 +494,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // Expose implicit conversions of the operands of a binary operator
     func testExposeImplicitConversionsInBinaryOperatorExpression() throws {
         let shared = [
@@ -513,8 +520,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Binary(
@@ -527,12 +534,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // Expose implicit conversions during an assignment
     func testExposeImplicitConversionsInAssignment() throws {
         let shared = [
@@ -552,8 +559,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Assignment(
@@ -565,12 +572,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // TODO: The compiler has special handling of Range.count but maybe it shouldn't
     func testGetCountOfRange() throws {
         let shared = [
@@ -605,8 +612,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Binary(
@@ -628,12 +635,12 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testImplicitConversionOfArrayToDynamicArray() throws {
         let shared = [
             VarDeclaration(
@@ -662,8 +669,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Assignment(
@@ -675,8 +682,8 @@ final class CompilerPassExposeImplicitConversionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.exposeImplicitConversions()
         XCTAssertEqual(actual, expected)
     }

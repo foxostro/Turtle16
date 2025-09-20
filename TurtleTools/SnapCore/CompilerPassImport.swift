@@ -20,7 +20,6 @@ public final class CompilerPassImport: CompilerPass {
         injectModules: [(String, String)] = [],
         runtimeSupport: String? = nil
     ) {
-
         var moduleSourceCache: [String: String] = [:]
         for pair in injectModules {
             moduleSourceCache[pair.0] = pair.1
@@ -54,8 +53,7 @@ public final class CompilerPassImport: CompilerPass {
                 url: moduleURL
             )
             let module1 = module0.reconnect(parent: nil)
-            let module2 =
-                (runtimeSupport == moduleName)
+            let module2 = (runtimeSupport == moduleName)
                 ? module1.withUseGlobalNamespace(true)
                 : module1.withImplicitImport(
                     moduleName: runtimeSupport,
@@ -79,18 +77,16 @@ public final class CompilerPassImport: CompilerPass {
         // Try retrieving the module from the manually injected modules first.
         // If it's here then do not try to read from file.
         if let sourceCode = moduleSourceCache[moduleName] {
-            return (sourceCode, URL.init(string: moduleName)!)
+            return (sourceCode, URL(string: moduleName)!)
         }
 
         // Try retrieving the module from file.
         if let sourceAnchor,
-            let url = URL.init(
-                string: moduleName.appending(".snap"),
-                relativeTo: sourceAnchor.url?.deletingLastPathComponent()
-            ),
-            FileManager.default.fileExists(atPath: url.path)
-        {
-
+           let url = URL(
+               string: moduleName.appending(".snap"),
+               relativeTo: sourceAnchor.url?.deletingLastPathComponent()
+           ),
+           FileManager.default.fileExists(atPath: url.path) {
             do {
                 let text = try String(contentsOf: url, encoding: String.Encoding.utf8)
                 return (text, url)
@@ -105,7 +101,7 @@ public final class CompilerPassImport: CompilerPass {
         else if let url = Bundle(for: type(of: self)).url(
             forResource: moduleName,
             withExtension: "snap"
-        ) {  // Try retrieving the module from bundle resources.
+        ) { // Try retrieving the module from bundle resources.
             do {
                 let text = try String(contentsOf: url)
                 return (text, url)
@@ -158,10 +154,11 @@ public func parse(text: String, url: URL) throws -> TopLevel {
     return topLevel
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Insert module nodes into the AST for any modules that are imported
-    /// - Parameter injectModules: A list of module name and module source code which overrides modules found on the file system.
-    public func importPass(
+    /// - Parameter injectModules: A list of module name and module source code which overrides
+    /// modules found on the file system.
+    func importPass(
         injectModules: [(String, String)],
         runtimeSupport: String? = nil
     ) throws -> AbstractSyntaxTreeNode? {

@@ -19,7 +19,6 @@ import TurtleCore
 ///   concrete instantiation of the trait. The concrete trait type is inserted
 ///   into the AST.
 public final class CompilerPassGenerics: CompilerPassWithDeclScan {
-
     /// Maps an ID which uniquely identifies a point in the AST to a list of
     /// nodes to be inserted just after this point.
     fileprivate typealias PendingInsertions = [(
@@ -218,7 +217,6 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         genericTypeApplication expr: GenericTypeApplication,
         symbols: Env
     ) throws -> Expression? {
-
         let typeChecker = RvalueExpressionTypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
@@ -227,17 +225,18 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         let exprTyp = try typeChecker.check(expression: expr)
         let concreteDeclaration =
             switch exprTyp {
-            case .function(let typ):
+            case let .function(typ):
                 try visit(expr: expr, symbols: symbols, concreteFunctionType: typ)
-            case .structType(let typ), .constStructType(let typ):
+            case let .structType(typ),
+                 let .constStructType(typ):
                 try visit(expr: expr, symbols: symbols, concreteStructType: typ)
-            case .traitType(let typ), .constTraitType(let typ):
+            case let .traitType(typ),
+                 let .constTraitType(typ):
                 try visit(expr: expr, symbols: symbols, concreteTraitType: typ)
             default:
                 throw CompilerError(
                     sourceAnchor: expr.sourceAnchor,
-                    message:
-                        "internal compiler error: expected expression to have a function type: `\(expr)'"
+                    message: "internal compiler error: expected expression to have a function type: `\(expr)'"
                 )
             }
         return concreteDeclaration
@@ -248,14 +247,13 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         symbols: Env,
         concreteFunctionType: FunctionTypeInfo
     ) throws -> Expression? {
-
         let mangledName = concreteFunctionType.mangledName!
         let concreteIdent = Identifier(mangledName)
         let genericFunctionType = try symbols.resolveTypeOfIdentifier(
             sourceAnchor: expr.identifier.sourceAnchor,
             identifier: expr.identifier.identifier
         )
-            .unwrapGenericFunctionType()
+        .unwrapGenericFunctionType()
 
         // Instantiate the generic function with concrete type arguments
         typealias Key = GenericsPartialEvaluator.ReplacementKey
@@ -266,15 +264,14 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
                 )
                 return Key(identifier: ident.identifier, scope: scope)
             }
-        let pairs = zip(
+        let pairs = try zip(
             keys,
-            try expr.arguments.map {
+            expr.arguments.map {
                 try typeCheck(rexpr: $0).lift
             }
         )
         let ast0 = genericFunctionType.template
-        let ast1 =
-            ast0
+        let ast1 = ast0
             .clone()
             .eraseTypeArguments()
             .withIdentifier(mangledName)
@@ -284,7 +281,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
                     .withName(mangledName)
             )
         let ast2 = try GenericsPartialEvaluator.eval(ast1, replacements: pairs)
-        
+
         // The expectation is that the template for a generic function has no
         // symbols yet. The unbound type parameter makes that impossible.
         // We scan it on instantiation when all types are known.
@@ -311,7 +308,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
 
     /// Determine if a concrete type has already been instantiated in the environment
     private func alreadyInstantiated(_ ident: String) -> Bool {
-        nil != concreteTypesAlreadyInstantiated.last { $0.contains(ident) }
+        concreteTypesAlreadyInstantiated.last { $0.contains(ident) } != nil
     }
 
     /// Note that a concrete type has been instantiated in the environment
@@ -334,7 +331,6 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         symbols: Env,
         concreteStructType: StructTypeInfo
     ) throws -> Expression? {
-
         let concreteIdent = Identifier(concreteStructType.name)
 
         // Prevent recursive instantiation
@@ -378,13 +374,11 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
 
         // Instantiate each Impl node
         for implNode0 in genericStructType.implNodes {
-            let implNode1 =
-                implNode0
+            let implNode1 = implNode0
                 .clone()
                 .eraseTypeArguments()
                 .withStructTypeExpr(concreteIdent)
-            let implNode2 =
-                try GenericsPartialEvaluator
+            let implNode2 = try GenericsPartialEvaluator
                 .eval(implNode1, replacements: pairs)
             let implNode3 = try visit(implNode2)!
             appendPendingInsertion(implNode3, after: implNode0.id)
@@ -392,13 +386,11 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
 
         // Instantiate each ImplFor node
         for implForNode0 in genericStructType.implForNodes {
-            let implForNode1 =
-                implForNode0
+            let implForNode1 = implForNode0
                 .clone()
                 .eraseTypeArguments()
                 .withStructTypeExpr(concreteIdent)
-            let implForNode2 =
-                try GenericsPartialEvaluator
+            let implForNode2 = try GenericsPartialEvaluator
                 .eval(implForNode1, replacements: pairs)
             let implForNode3 = try visit(implForNode2)!
             appendPendingInsertion(implForNode3, after: implForNode0.id)
@@ -412,7 +404,6 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         symbols: Env,
         concreteTraitType: TraitTypeInfo
     ) throws -> Expression? {
-
         let concreteIdent = Identifier(concreteTraitType.name)
 
         // Prevent recursive instantiation
@@ -445,9 +436,9 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
                 let scope = symbols.lookupIdOfEnclosingScope(identifier: ident.identifier)
                 return Key(identifier: ident.identifier, scope: scope)
             }
-        let pairs = zip(
+        let pairs = try zip(
             keys,
-            try expr.arguments.map {
+            expr.arguments.map {
                 try typeCheck(rexpr: $0).lift
             }
         )
@@ -459,21 +450,20 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
 
     public override func visit(call expr0: Call) throws -> Expression? {
-        let calleeType: SymbolType
-        if let symbols,
-            let identifier = expr0.callee as? Identifier
-        {
-            calleeType = try symbols.resolveTypeOfIdentifier(
-                sourceAnchor: identifier.sourceAnchor,
-                identifier: identifier.identifier
-            )
-        }
-        else {
-            calleeType = try typeCheck(rexpr: expr0.callee)
-        }
+        let calleeType: SymbolType =
+            if let symbols,
+            let identifier = expr0.callee as? Identifier {
+                try symbols.resolveTypeOfIdentifier(
+                    sourceAnchor: identifier.sourceAnchor,
+                    identifier: identifier.identifier
+                )
+            }
+            else {
+                try typeCheck(rexpr: expr0.callee)
+            }
 
         switch calleeType {
-        case .genericFunction(let typ):
+        case let .genericFunction(typ):
             let typeChecker = RvalueExpressionTypeChecker(
                 symbols: symbols!,
                 staticStorageFrame: staticStorageFrame,
@@ -504,7 +494,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         let resultType = try typeCheck(rexpr: expr0.expr)
 
         switch resultType {
-        case .constStructType(let typ), .structType(let typ):
+        case let .constStructType(typ),
+             let .structType(typ):
             let member = try visit(genericTypeApplication: app, symbols: typ.symbols)!
             let expr1 = expr0.withMember(member)
             return expr1
@@ -520,9 +511,9 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Erase generics, rewriting in terms of new concrete types
-    public func genericsPass() throws -> AbstractSyntaxTreeNode? {
+    func genericsPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassGenerics().run(self)
     }
 }

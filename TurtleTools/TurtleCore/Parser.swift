@@ -9,13 +9,14 @@
 open class Parser {
     public let lineMapper: SourceLineRangeMapper!
     public var tokens: [Token] = []
-    public private(set) var previous: Token? = nil
+    public private(set) var previous: Token?
 
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool {
         errors.count != 0
     }
-    public private(set) var syntaxTree: TopLevel? = nil
+
+    public private(set) var syntaxTree: TopLevel?
 
     public init(tokens: [Token] = [], lineMapper: SourceLineRangeMapper! = nil) {
         self.tokens = tokens
@@ -41,7 +42,7 @@ open class Parser {
             syntaxTree = nil
         }
         else {
-            let sourceAnchor = statements.map({ $0.sourceAnchor }).reduce(
+            let sourceAnchor = statements.map(\.sourceAnchor).reduce(
                 statements.first?.sourceAnchor,
                 { $0?.union($1) }
             )
@@ -100,7 +101,7 @@ open class Parser {
 
     private func accept(typeInQuestion: AnyClass, shouldIgnoreNewlines: Bool) -> Token? {
         var stepsToAdvance = 0
-        while shouldIgnoreNewlines && (nil != (peek(stepsToAdvance) as? TokenNewline)) {
+        while shouldIgnoreNewlines, (peek(stepsToAdvance) as? TokenNewline) != nil {
             stepsToAdvance += 1
         }
         if let token = peek(stepsToAdvance) {
@@ -135,7 +136,7 @@ open class Parser {
 
     public func accept(operators ops: [TokenOperator.Operator]) -> TokenOperator? {
         var stepsToAdvance = 0
-        while nil != (peek(stepsToAdvance) as? TokenNewline) {
+        while (peek(stepsToAdvance) as? TokenNewline) != nil {
             stepsToAdvance += 1
         }
         if let token = peek(stepsToAdvance) as? TokenOperator {
@@ -151,7 +152,7 @@ open class Parser {
 
     @discardableResult public func expect(type: AnyClass, error: Error) throws -> Token {
         let result = accept(type)
-        if nil == result {
+        if result == nil {
             throw error
         }
         return result!
@@ -160,7 +161,7 @@ open class Parser {
     @discardableResult public func expect(types: [AnyClass], error: Error) throws -> Token {
         for type in types {
             let result = accept(type)
-            if nil != result {
+            if result != nil {
                 return result!
             }
         }

@@ -78,8 +78,7 @@ public struct StructScanner {
             fields: members,
             associatedTraitType: node.associatedTraitType
         )
-        let type: SymbolType =
-            node.isConst
+        let type: SymbolType = node.isConst
             ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
 
         guard !symbols.exists(identifier: mangledName, maxDepth: 0) else {
@@ -147,7 +146,7 @@ public struct StructScanner {
         // Throw an error if the identifier is already bound in the environment
         // and cannot be shadowed. The error is thrown at this point to ensure
         // that errors for above cases are given priority.
-        guard nil == preexistingType else {
+        guard preexistingType == nil else {
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "struct declaration redefines existing type: `\(mangledName)'"

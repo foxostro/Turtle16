@@ -215,15 +215,15 @@ final class DisassemblerTests: XCTestCase {
     func testDisassembleSeveralInstructions() throws {
         let disassembler = Disassembler()
         let program: [UInt16] = [
-            0b00100000_00000000,  // LI r0, 0
-            0b00100001_00000001,  // LI r1, 1
-            0b00100111_00000000,  // LI r7, 0
-            0b00111010_00000100,  // ADD r2, r0, r1
-            0b01110000_00100000,  // ADDI r0, r1, 0
-            0b01110111_11100001,  // ADDI r7, r7, 1
-            0b01110001_01000000,  // ADDI r1, r2, 0
-            0b01101000_11101001,  // CMPI r7, 9
-            0b00001000_00000000  // HLT
+            0b00100000_00000000, // LI r0, 0
+            0b00100001_00000001, // LI r1, 1
+            0b00100111_00000000, // LI r7, 0
+            0b00111010_00000100, // ADD r2, r0, r1
+            0b01110000_00100000, // ADDI r0, r1, 0
+            0b01110111_11100001, // ADDI r7, r7, 1
+            0b01110001_01000000, // ADDI r1, r2, 0
+            0b01101000_11101001, // CMPI r7, 9
+            0b00001000_00000000 // HLT
         ]
         let result = disassembler.disassembleToText(program)
         XCTAssertEqual(
@@ -246,16 +246,16 @@ final class DisassemblerTests: XCTestCase {
     func testDisassembleSeveralInstructionsWithLabels() throws {
         let disassembler = Disassembler()
         let program: [UInt16] = [
-            0b00100000_00000000,  // LI r0, 0
-            0b00100001_00000001,  // LI r1, 1
-            0b00100111_00000000,  // LI r7, 0
-            0b00111010_00000100,  // ADD r2, r0, r1
-            0b01110000_00100000,  // ADDI r0, r1, 0
-            0b01110111_11100001,  // ADDI r7, r7, 1
-            0b01110001_01000000,  // ADDI r1, r2, 0
-            0b01101000_11101001,  // CMPI r7, 9
-            0b11010111_11111001,  // BLT -7
-            0b00001000_00000000  // HLT
+            0b00100000_00000000, // LI r0, 0
+            0b00100001_00000001, // LI r1, 1
+            0b00100111_00000000, // LI r7, 0
+            0b00111010_00000100, // ADD r2, r0, r1
+            0b01110000_00100000, // ADDI r0, r1, 0
+            0b01110111_11100001, // ADDI r7, r7, 1
+            0b01110001_01000000, // ADDI r1, r2, 0
+            0b01101000_11101001, // CMPI r7, 9
+            0b11010111_11111001, // BLT -7
+            0b00001000_00000000 // HLT
         ]
         let result = disassembler.disassembleToText(program)
         XCTAssertEqual(
@@ -294,15 +294,15 @@ final class DisassemblerTests: XCTestCase {
     func testDisassembleSeveralInstructionsWithBadInstruction() throws {
         let disassembler = Disassembler()
         let program: [UInt16] = [
-            0b00100000_00000000,  // LI r0, 0
-            0b00100001_00000001,  // LI r1, 1
-            0b00100111_00000000,  // LI r7, 0
-            0b00111010_00000100,  // ADD r2, r0, r1
-            0b01110000_00100000,  // ADDI r0, r1, 0
-            0b01110111_11100001,  // ADDI r7, r7, 1
-            0b01110001_01000000,  // ADDI r1, r2, 0
-            0b10111011_11111111,  // 0xBBFF
-            0b00001000_00000000  // HLT
+            0b00100000_00000000, // LI r0, 0
+            0b00100001_00000001, // LI r1, 1
+            0b00100111_00000000, // LI r7, 0
+            0b00111010_00000100, // ADD r2, r0, r1
+            0b01110000_00100000, // ADDI r0, r1, 0
+            0b01110111_11100001, // ADDI r7, r7, 1
+            0b01110001_01000000, // ADDI r1, r2, 0
+            0b10111011_11111111, // 0xBBFF
+            0b00001000_00000000 // HLT
         ]
         let result = disassembler.disassembleToText(program)
         XCTAssertEqual(

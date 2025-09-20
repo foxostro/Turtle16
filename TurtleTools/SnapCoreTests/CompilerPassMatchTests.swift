@@ -50,8 +50,8 @@ final class CompilerPassMatchTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: [
                 VarDeclaration(
@@ -73,7 +73,7 @@ final class CompilerPassMatchTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let output = try input.matchPass()
         XCTAssertEqual(output, expected)
@@ -179,8 +179,8 @@ final class CompilerPassMatchTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Block(
@@ -202,7 +202,10 @@ final class CompilerPassMatchTests: XCTestCase {
                                     VarDeclaration(
                                         identifier: Identifier("foo"),
                                         explicitType: nil,
-                                        expression: As(expr: Identifier("__index"), targetType: PrimitiveType(.u8)),
+                                        expression: As(
+                                            expr: Identifier("__index"),
+                                            targetType: PrimitiveType(.u8)
+                                        ),
                                         storage: .automaticStorage(offset: nil),
                                         isMutable: false
                                     ),
@@ -221,8 +224,8 @@ final class CompilerPassMatchTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let output = try input.matchPass()
         XCTAssertEqual(output, expected)
     }
@@ -262,8 +265,8 @@ final class CompilerPassMatchTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         XCTAssertThrowsError(try input.matchPass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -323,8 +326,8 @@ final class CompilerPassMatchTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Block(
@@ -396,8 +399,8 @@ final class CompilerPassMatchTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let output = try input.matchPass()
         XCTAssertEqual(output, expected)
     }

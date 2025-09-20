@@ -35,7 +35,7 @@ public final class SnapCommandLineArgumentParser {
     }
 
     public func parse() throws {
-        try advance()  // strip off the program name
+        try advance() // strip off the program name
         try parseOptions()
         try parseInputFilenames()
         if options.isEmpty {
@@ -54,7 +54,7 @@ public final class SnapCommandLineArgumentParser {
             options.append(.run)
 
         default:
-            break  // do nothing
+            break // do nothing
         }
 
         while !args.isEmpty {

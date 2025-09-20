@@ -2278,9 +2278,9 @@ final class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(
             compiler.instructions,
             [
-                0b00100000_00000010,  // LI
-                0b00101000_00000000,  // LUI
-                0b00001000_00000000  // HLT
+                0b00100000_00000010, // LI
+                0b00101000_00000000, // LUI
+                0b00001000_00000000 // HLT
             ]
         )
         XCTAssertEqual(
@@ -2479,13 +2479,13 @@ final class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(5), 1005)
         XCTAssertEqual(debugger.computer.getRegister(6), 0xfff1)
         XCTAssertEqual(debugger.computer.getRegister(7), 0xfff9)
-        XCTAssertEqual(debugger.computer.ram[0xffff], 1000)  // r0
-        XCTAssertEqual(debugger.computer.ram[0xfffe], 1001)  // r1
-        XCTAssertEqual(debugger.computer.ram[0xfffd], 1002)  // r2
-        XCTAssertEqual(debugger.computer.ram[0xfffc], 1003)  // r3
-        XCTAssertEqual(debugger.computer.ram[0xfffb], 1004)  // r4
-        XCTAssertEqual(debugger.computer.ram[0xfffa], 1005)  // r5
-        XCTAssertEqual(debugger.computer.ram[0xfff9], 42)  // fp
+        XCTAssertEqual(debugger.computer.ram[0xffff], 1000) // r0
+        XCTAssertEqual(debugger.computer.ram[0xfffe], 1001) // r1
+        XCTAssertEqual(debugger.computer.ram[0xfffd], 1002) // r2
+        XCTAssertEqual(debugger.computer.ram[0xfffc], 1003) // r3
+        XCTAssertEqual(debugger.computer.ram[0xfffb], 1004) // r4
+        XCTAssertEqual(debugger.computer.ram[0xfffa], 1005) // r5
+        XCTAssertEqual(debugger.computer.ram[0xfff9], 42) // fp
     }
 
     func test_LEAVE_pops_registers_from_memory() throws {
@@ -2508,13 +2508,13 @@ final class AssemblerCompilerTests: XCTestCase {
         debugger.computer.setRegister(5, 0)
         debugger.computer.setRegister(6, 0xfff9)
         debugger.computer.setRegister(7, 0xfff9)
-        debugger.computer.ram[0xffff] = 1000  // r0
-        debugger.computer.ram[0xfffe] = 1001  // r1
-        debugger.computer.ram[0xfffd] = 1002  // r2
-        debugger.computer.ram[0xfffc] = 1003  // r3
-        debugger.computer.ram[0xfffb] = 1004  // r4
-        debugger.computer.ram[0xfffa] = 1005  // r5
-        debugger.computer.ram[0xfff9] = 42  // fp
+        debugger.computer.ram[0xffff] = 1000 // r0
+        debugger.computer.ram[0xfffe] = 1001 // r1
+        debugger.computer.ram[0xfffd] = 1002 // r2
+        debugger.computer.ram[0xfffc] = 1003 // r3
+        debugger.computer.ram[0xfffb] = 1004 // r4
+        debugger.computer.ram[0xfffa] = 1005 // r5
+        debugger.computer.ram[0xfff9] = 42 // fp
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1000)
         XCTAssertEqual(debugger.computer.getRegister(1), 1001)

@@ -11,7 +11,7 @@ import TurtleCore
 public final class CompilerPassTestDeclaration: CompilerPass {
     public private(set) var testNames: [String] = []
     public private(set) var testDeclarations: [TestDeclaration] = []
-    var currentTest: TestDeclaration? = nil
+    var currentTest: TestDeclaration?
     var depth = 0
     let shouldRunSpecificTest: String?
 
@@ -28,8 +28,7 @@ public final class CompilerPassTestDeclaration: CompilerPass {
             var children = result.children
 
             if let testName = shouldRunSpecificTest,
-                let testDeclaration = testDeclarations.first(where: { $0.name == testName })
-            {
+               let testDeclaration = testDeclarations.first(where: { $0.name == testName }) {
                 let fnSymbols = Env(parent: result.symbols)
                 let bodySymbols = Env(parent: fnSymbols)
                 testDeclaration.body.symbols.parent = bodySymbols
@@ -57,15 +56,13 @@ public final class CompilerPassTestDeclaration: CompilerPass {
                 ]
             }
             else {
-                let hasMain =
-                    result.children.first(where: {
-                        if let functionDeclaration = $0 as? FunctionDeclaration,
-                            functionDeclaration.identifier.identifier == kMainFunctionName
-                        {
-                            return true
-                        }
-                        return false
-                    }) != nil
+                let hasMain = result.children.first(where: {
+                    if let functionDeclaration = $0 as? FunctionDeclaration,
+                       functionDeclaration.identifier.identifier == kMainFunctionName {
+                        return true
+                    }
+                    return false
+                }) != nil
                 if hasMain {
                     children += [
                         Call(callee: Identifier(kMainFunctionName), arguments: [])
@@ -109,7 +106,7 @@ public final class CompilerPassTestDeclaration: CompilerPass {
         testNames.append(modifiedNode.name)
         testDeclarations.append(modifiedNode)
 
-        return nil  // Erase TestDeclaration at this point.
+        return nil // Erase TestDeclaration at this point.
     }
 
     public override func visit(assert node: Assert) throws -> AbstractSyntaxTreeNode {
@@ -117,9 +114,9 @@ public final class CompilerPassTestDeclaration: CompilerPass {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Erase test declarations and replace with a synthesized test runner.
-    public func desugarTestDeclarations(
+    func desugarTestDeclarations(
         testNames: inout [String],
         shouldRunSpecificTest: String?
     ) throws -> AbstractSyntaxTreeNode? {

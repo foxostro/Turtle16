@@ -178,7 +178,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
 
     fileprivate func makeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if argumentNames.isEmpty {
             result = "none"
         }
@@ -194,7 +194,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
 
     fileprivate func makeTypeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if typeArguments.isEmpty {
             result = "none"
         }

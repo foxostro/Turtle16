@@ -14,7 +14,8 @@ public final class HazardControlMockup: HazardControl {
         input: StageOneInput
     ) -> StageOneOutput {
         // For `fwd_a', we really want an expression like the following:
-        //   let fwd_a = ~((sel_a_matches_sel_c_ex | wben_EX | writeBackSrc_EX) & (sel_a_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM))
+        //   let fwd_a = ~((sel_a_matches_sel_c_ex | wben_EX | writeBackSrc_EX) &
+        //   (sel_a_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM))
         // However, the ATF22V10 (equivalent to the venerable GAL22V10) is very
         // particular about the way we program it. All equations must be defined
         // as a series of terms ANDed together, and that list of terms is ORed
@@ -23,62 +24,67 @@ public final class HazardControlMockup: HazardControl {
         //
         // The Swift compiler demands that we split this expression
         // into separate subexpressions. We can't do this on the GAL.
-        let a: UInt =
-            (input.sel_a_matches_sel_c_ex & input.sel_a_matches_sel_c_mem)
+        let a: UInt = (input.sel_a_matches_sel_c_ex & input.sel_a_matches_sel_c_mem)
             | (input.sel_a_matches_sel_c_ex & input.wben_MEM)
             | (input.sel_a_matches_sel_c_ex & input.writeBackSrc_MEM)
-        let b: UInt =
-            (input.wben_EX & input.sel_a_matches_sel_c_mem) | (input.wben_EX & input.wben_MEM)
+        let b: UInt = (input.wben_EX & input.sel_a_matches_sel_c_mem) |
+            (input.wben_EX & input.wben_MEM)
             | (input.wben_EX & input.writeBackSrc_MEM)
-        let c: UInt =
-            (input.writeBackSrc_EX & input.sel_a_matches_sel_c_mem)
+        let c: UInt = (input.writeBackSrc_EX & input.sel_a_matches_sel_c_mem)
             | (input.writeBackSrc_EX & input.wben_MEM)
             | (input.writeBackSrc_EX & input.writeBackSrc_MEM)
         let fwd_a = ~(a | b | c)
 
         // For `fwd_b', we really want an expression like the following:
-        //   let fwd_b = ~((sel_b_matches_sel_c_ex | wben_EX | writeBackSrc_EX) & (sel_b_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM))
+        //   let fwd_b = ~((sel_b_matches_sel_c_ex | wben_EX | writeBackSrc_EX) &
+        //   (sel_b_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM))
         // However, we can't write it that way for the same reasons as `fwd_a'.
         //
         // The Swift compiler demands that we split this expression
         // into separate subexpressions. We can't do this on the GAL.
-        let d: UInt =
-            (input.sel_b_matches_sel_c_ex & input.sel_b_matches_sel_c_mem)
+        let d: UInt = (input.sel_b_matches_sel_c_ex & input.sel_b_matches_sel_c_mem)
             | (input.sel_b_matches_sel_c_ex & input.wben_MEM)
             | (input.sel_b_matches_sel_c_ex & input.writeBackSrc_MEM)
-        let e: UInt =
-            (input.wben_EX & input.sel_b_matches_sel_c_mem) | (input.wben_EX & input.wben_MEM)
+        let e: UInt = (input.wben_EX & input.sel_b_matches_sel_c_mem) |
+            (input.wben_EX & input.wben_MEM)
             | (input.wben_EX & input.writeBackSrc_MEM)
-        let f: UInt =
-            (input.writeBackSrc_EX & input.sel_b_matches_sel_c_mem)
+        let f: UInt = (input.writeBackSrc_EX & input.sel_b_matches_sel_c_mem)
             | (input.writeBackSrc_EX & input.wben_MEM)
             | (input.writeBackSrc_EX & input.writeBackSrc_MEM)
         let fwd_b = ~(d | e | f)
 
-        let fwd_ex_to_a: UInt =
-            (input.sel_a_matches_sel_c_ex | input.wben_EX | input.writeBackSrc_EX)
-        let fwd_ex_to_b: UInt =
-            (input.sel_b_matches_sel_c_ex | input.wben_EX | input.writeBackSrc_EX)
+        let fwd_ex_to_a: UInt = (input.sel_a_matches_sel_c_ex | input.wben_EX | input
+            .writeBackSrc_EX
+        )
+        let fwd_ex_to_b: UInt = (input.sel_b_matches_sel_c_ex | input.wben_EX | input
+            .writeBackSrc_EX
+        )
 
-        let fwd_mem_to_a: UInt =
-            (input.sel_a_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM)
+        let fwd_mem_to_a: UInt = (input.sel_a_matches_sel_c_mem | input.wben_MEM | input
+            .writeBackSrc_MEM
+        )
             | (~input.sel_a_matches_sel_c_ex & ~input.wben_EX & ~input.writeBackSrc_EX)
-        let fwd_mem_to_b: UInt =
-            (input.sel_b_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM)
+        let fwd_mem_to_b: UInt = (input.sel_b_matches_sel_c_mem | input.wben_MEM | input
+            .writeBackSrc_MEM
+        )
             | (~input.sel_b_matches_sel_c_ex & ~input.wben_EX & ~input.writeBackSrc_EX)
 
-        let need_to_forward_storeOp_EX_to_a: UInt =
-            (input.sel_a_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX
-                | input.left_operand_is_unused)
-        let need_to_forward_storeOp_MEM_to_a: UInt =
-            (input.sel_a_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM
-                | input.left_operand_is_unused)
-        let need_to_forward_storeOp_EX_to_b: UInt =
-            (input.sel_b_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX
-                | input.right_operand_is_unused)
-        let need_to_forward_storeOp_MEM_to_b: UInt =
-            (input.sel_b_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM
-                | input.right_operand_is_unused)
+        let need_to_forward_storeOp_EX_to_a: UInt = (input.sel_a_matches_sel_c_ex | input
+            .wben_EX | ~input.writeBackSrc_EX
+            | input.left_operand_is_unused
+        )
+        let need_to_forward_storeOp_MEM_to_a: UInt = (input.sel_a_matches_sel_c_mem | input
+            .wben_MEM | ~input.writeBackSrc_MEM
+            | input.left_operand_is_unused
+        )
+        let need_to_forward_storeOp_EX_to_b: UInt = (input.sel_b_matches_sel_c_ex | input
+            .wben_EX | ~input.writeBackSrc_EX
+            | input.right_operand_is_unused
+        )
+        let need_to_forward_storeOp_MEM_to_b: UInt = (input.sel_b_matches_sel_c_mem | input
+            .wben_MEM | ~input.writeBackSrc_MEM
+            | input.right_operand_is_unused
+        )
 
         let result = StageOneOutput(
             fwd_a: fwd_a & 1,
@@ -109,14 +115,14 @@ public final class HazardControlMockup: HazardControl {
         // between this code and the HDL used for U73, an ATF22V10.
         let isFlagsHazard: UInt = input.opcode3 & input.opcode4 & ~input.ctl_EX5
 
-        let flush: UInt =
-            ~(~(input.j & ~isFlagsHazard & input.need_to_forward_storeOp_EX_to_a
+        let flush: UInt = ~(~(input.j & ~isFlagsHazard & input.need_to_forward_storeOp_EX_to_a
+                & input.need_to_forward_storeOp_MEM_to_a & input.need_to_forward_storeOp_EX_to_b
+                & input.need_to_forward_storeOp_MEM_to_b
+        ))
+        let stall = ~(~isFlagsHazard & input.need_to_forward_storeOp_EX_to_a
             & input.need_to_forward_storeOp_MEM_to_a & input.need_to_forward_storeOp_EX_to_b
-            & input.need_to_forward_storeOp_MEM_to_b))
-        let stall =
-            ~(~isFlagsHazard & input.need_to_forward_storeOp_EX_to_a
-            & input.need_to_forward_storeOp_MEM_to_a & input.need_to_forward_storeOp_EX_to_b
-            & input.need_to_forward_storeOp_MEM_to_b)
+            & input.need_to_forward_storeOp_MEM_to_b
+        )
 
         return StageTwoOutput(
             flush: flush & 1,

@@ -18,7 +18,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
     private let tag = Identifier("tag")
     private let payload = Identifier("payload")
     private let pointee = Identifier("pointee")
-    
+
     private func AddressOf(_ expr: Expression) -> Unary {
         Unary(op: .ampersand, expression: expr)
     }
@@ -172,7 +172,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
             .flatten()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testAssignUnionValueToUnionValueOfSameType() throws {
         let input = Block(children: [
             VarDeclaration(
@@ -367,7 +367,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    public func testUnionIs() throws {
+    func testUnionIs() throws {
         let input = Block(children: [
             VarDeclaration(
                 identifier: foo,
@@ -416,7 +416,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    public func testUnionAs() throws {
+    func testUnionAs() throws {
         let input = Block(children: [
             VarDeclaration(
                 identifier: foo,
@@ -480,15 +480,15 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                     ]
                 ),
                 expr:
-                    Get(
-                        expr: Bitcast(
-                            expr: AddressOf(
-                                Get(expr: AddressOf(foo), member: payload)
-                            ),
-                            targetType: PointerType(PrimitiveType(.bool))
+                Get(
+                    expr: Bitcast(
+                        expr: AddressOf(
+                            Get(expr: AddressOf(foo), member: payload)
                         ),
-                        member: pointee
-                    )
+                        targetType: PointerType(PrimitiveType(.bool))
+                    ),
+                    member: pointee
+                )
             )
         ])
         .reconnect(parent: nil)
@@ -497,7 +497,7 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    public func testUnionAs_WithImplicitlyConvertibleType() throws {
+    func testUnionAs_WithImplicitlyConvertibleType() throws {
         let input = Block(children: [
             VarDeclaration(
                 identifier: foo,
@@ -561,18 +561,18 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                     ]
                 ),
                 expr:
-                    As(
-                        expr: Get(
-                            expr: Bitcast(
-                                expr: AddressOf(
-                                    Get(expr: AddressOf(foo), member: payload)
-                                ),
-                                targetType: PointerType(PrimitiveType(.u16))
+                As(
+                    expr: Get(
+                        expr: Bitcast(
+                            expr: AddressOf(
+                                Get(expr: AddressOf(foo), member: payload)
                             ),
-                            member: pointee
+                            targetType: PointerType(PrimitiveType(.u16))
                         ),
-                        targetType: PrimitiveType(.u8)
-                    )
+                        member: pointee
+                    ),
+                    targetType: PrimitiveType(.u8)
+                )
             )
         ])
         .reconnect(parent: nil)
@@ -580,8 +580,8 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
         let actual = try input.eraseUnions(memoryLayoutStrategy)
         XCTAssertEqual(actual, expected)
     }
-    
-    public func testConversionToUnionType() throws {
+
+    func testConversionToUnionType() throws {
         let input = Block(children: [
             As(
                 expr: LiteralBool(true),
@@ -595,7 +595,10 @@ final class CompilerPassEraseUnionsTests: XCTestCase {
                 frameLookupMode: .set(Frame()),
                 tuples: [
                     (tag.identifier, Symbol(type: .u16, offset: 0)),
-                    (payload.identifier, Symbol(type: .array(count: 1, elementType: .u8), offset: 1))
+                    (
+                        payload.identifier,
+                        Symbol(type: .array(count: 1, elementType: .u8), offset: 1)
+                    )
                 ]
             )
             fields.frameLookupMode = .set(Frame())

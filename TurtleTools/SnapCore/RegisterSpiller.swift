@@ -10,7 +10,7 @@ import TurtleCore
 import TurtleSimulatorCore
 
 /// Insert register spill code into the program
-public struct RegisterSpiller {
+public enum RegisterSpiller {
     public enum SpillError: Error, CustomStringConvertible {
         case missingLeadingEnter
         case missingSpillSlot
@@ -49,7 +49,7 @@ public struct RegisterSpiller {
 
             let oldSizeOnEnter = (oldEnter.parameters.first as? ParameterNumber)?.value ?? 0
             spillSlotOffset += oldSizeOnEnter
-            let maxSpillSlot = spilledIntervals.compactMap({ $0.spillSlot }).max() ?? 0
+            let maxSpillSlot = spilledIntervals.compactMap(\.spillSlot).max() ?? 0
             let updatedSizeOnEnter = oldSizeOnEnter + maxSpillSlot + 1
 
             nodes1[0] = InstructionNode(
@@ -101,29 +101,29 @@ public struct RegisterSpiller {
                         to: tempReg.value
                     )
                     let offset = -(spillSlotOffset + spillSlot + 1)
-                    let spillLoadCode: [AbstractSyntaxTreeNode]
-                    if offset > 15 || offset < -16 {
-                        spillLoadCode = [
-                            InstructionNode(
-                                instruction: kLI,
-                                parameters: [ra, ParameterNumber(offset & 0x00ff)]
-                            ),
-                            InstructionNode(
-                                instruction: kLUI,
-                                parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]
-                            ),
-                            InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
-                            InstructionNode(instruction: kLOAD, parameters: [tempReg, ra])
-                        ]
-                    }
-                    else {
-                        spillLoadCode = [
-                            InstructionNode(
-                                instruction: kLOAD,
-                                parameters: [tempReg, fp, ParameterNumber(offset)]
-                            )
-                        ]
-                    }
+                    let spillLoadCode: [AbstractSyntaxTreeNode] =
+                        if offset > 15 || offset < -16 {
+                            [
+                                InstructionNode(
+                                    instruction: kLI,
+                                    parameters: [ra, ParameterNumber(offset & 0x00ff)]
+                                ),
+                                InstructionNode(
+                                    instruction: kLUI,
+                                    parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]
+                                ),
+                                InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
+                                InstructionNode(instruction: kLOAD, parameters: [tempReg, ra])
+                            ]
+                        }
+                        else {
+                            [
+                                InstructionNode(
+                                    instruction: kLOAD,
+                                    parameters: [tempReg, fp, ParameterNumber(offset)]
+                                )
+                            ]
+                        }
                     prefix = prefix + spillLoadCode
                 }
 
@@ -143,29 +143,29 @@ public struct RegisterSpiller {
                         to: tempReg.value
                     )
                     let offset = -(spillSlotOffset + spillSlot + 1)
-                    let spillStoreCode: [AbstractSyntaxTreeNode]
-                    if offset > 15 || offset < -16 {
-                        spillStoreCode = [
-                            InstructionNode(
-                                instruction: kLI,
-                                parameters: [ra, ParameterNumber(offset & 0x00ff)]
-                            ),
-                            InstructionNode(
-                                instruction: kLUI,
-                                parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]
-                            ),
-                            InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
-                            InstructionNode(instruction: kSTORE, parameters: [tempReg, ra])
-                        ]
-                    }
-                    else {
-                        spillStoreCode = [
-                            InstructionNode(
-                                instruction: kSTORE,
-                                parameters: [tempReg, fp, ParameterNumber(offset)]
-                            )
-                        ]
-                    }
+                    let spillStoreCode: [AbstractSyntaxTreeNode] =
+                        if offset > 15 || offset < -16 {
+                            [
+                                InstructionNode(
+                                    instruction: kLI,
+                                    parameters: [ra, ParameterNumber(offset & 0x00ff)]
+                                ),
+                                InstructionNode(
+                                    instruction: kLUI,
+                                    parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]
+                                ),
+                                InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
+                                InstructionNode(instruction: kSTORE, parameters: [tempReg, ra])
+                            ]
+                        }
+                        else {
+                            [
+                                InstructionNode(
+                                    instruction: kSTORE,
+                                    parameters: [tempReg, fp, ParameterNumber(offset)]
+                                )
+                            ]
+                        }
                     postfix = spillStoreCode + postfix
                 }
             }

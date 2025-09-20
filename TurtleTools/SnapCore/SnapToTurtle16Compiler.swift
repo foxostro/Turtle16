@@ -65,12 +65,10 @@ public struct SnapToTurtle16Compiler {
     }
 }
 
-extension TackProgram {
-    fileprivate func machineCode() throws -> ([UInt16], TopLevel) {
+private extension TackProgram {
+    func machineCode() throws -> ([UInt16], TopLevel) {
         var assembly: TopLevel!
-        let instructions =
-            try self
-            .assemble()
+        let instructions = try assemble()
             .registerAllocation()
             .map {
                 assembly = $0
@@ -81,26 +79,27 @@ extension TackProgram {
         return (instructions, assembly)
     }
 
-    fileprivate func assemble() throws -> TopLevel {
+    func assemble() throws -> TopLevel {
         try TackToTurtle16Compiler().visit(TopLevel(children: [ast])) as! TopLevel
     }
 }
 
-extension TopLevel {
-    fileprivate func map(_ block: (TopLevel) -> TopLevel) -> TopLevel {
+private extension TopLevel {
+    func map(_ block: (TopLevel) -> TopLevel) -> TopLevel {
         block(self)
     }
 
-    fileprivate func registerAllocation() throws -> TopLevel {
+    func registerAllocation() throws -> TopLevel {
         try RegisterAllocatorDriver().compile(topLevel: self)
     }
 
-    fileprivate func lowerAssembly() throws -> TopLevel {
+    func lowerAssembly() throws -> TopLevel {
         let topLevel0 = try SnapSubcompilerSubroutine().visit(self) as! TopLevel
 
         // The hardware requires us to place a NOP at the first instruction.
         let topLevel1: TopLevel =
-            if topLevel0.children.first != InstructionNode(instruction: kNOP) {
+            if topLevel0.children
+                .first != InstructionNode(instruction: kNOP) {
                 topLevel0.inserting(
                     children: [
                         InstructionNode(instruction: kNOP)
@@ -115,7 +114,7 @@ extension TopLevel {
         return topLevel1
     }
 
-    fileprivate func machineCode() throws -> [UInt16] {
+    func machineCode() throws -> [UInt16] {
         let compiler = AssemblerCompiler()
         compiler.compile(self)
         if let error = compiler.errors.first {

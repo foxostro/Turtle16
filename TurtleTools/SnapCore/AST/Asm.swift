@@ -42,7 +42,7 @@ public final class Asm: AbstractSyntaxTreeNode {
         wantsLeadingWhitespace: Bool = false
     ) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let indentedAssemblyCode: String =
+        let indentedAssemblyCode =
             if assemblyCode == "" {
                 " (empty)"
             }

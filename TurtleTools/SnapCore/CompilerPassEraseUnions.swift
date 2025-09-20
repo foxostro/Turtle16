@@ -23,14 +23,14 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         staticStorageFrame: Frame = Frame(),
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) {
-        self.payloadOffset = memoryLayoutStrategy.sizeof(type: tagType)
+        payloadOffset = memoryLayoutStrategy.sizeof(type: tagType)
         super.init(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
         )
     }
-    
+
     public override func visit(as node0: As) throws -> Expression? {
         try rvalueContext.check(expression: node0) // Make sure the `As` expression is type-sound.
         let objectType = try rvalueContext.check(expression: node0.expr)
@@ -38,10 +38,10 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         let node1 = try super.visit(as: node0)
         guard let node1 = node1 as? As else { return node1 }
         let result =
-            if case .unionType(let info) = objectType {
+            if case let .unionType(info) = objectType {
                 try convertFromUnionValue(info, node1)
             }
-            else if case .unionType(let info) = targetType {
+            else if case let .unionType(info) = targetType {
                 try convertToUnionValue(info, objectType, node1)
             }
             else {
@@ -144,7 +144,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return eseq
     }
-    
+
     private func convertToUnionValue(
         _ unionTypeInfo: UnionTypeInfo,
         _ objectType: SymbolType,
@@ -166,7 +166,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                 message: "expected the target type to match one of the union types, but `\(objectType)' does not match any of {\(unionTypesDesc)}"
             )
         }
-        let eseq = Eseq(
+        let eseq = try Eseq(
             sourceAnchor: s,
             seq: Seq(
                 sourceAnchor: s,
@@ -178,7 +178,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                             .structType(
                                 StructTypeInfo(
                                     name: "",
-                                    fields: try fields(for: unionTypeInfo)
+                                    fields: fields(for: unionTypeInfo)
                                 )
                             )
                         ),
@@ -224,7 +224,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         let node1 = try super.visit(is: node0)
         guard let node1 = node1 as? Is else { return node1 }
         let exprType = try rvalueContext.check(expression: node1.expr)
-        guard case .unionType(let unionTypeInfo) = exprType else { return node1 }
+        guard case let .unionType(unionTypeInfo) = exprType else { return node1 }
         let testType = try rvalueContext.check(expression: node1.testType)
         let tagValue = unionTypeInfo.members.firstIndex { member in
             rvalueContext.areTypesAreConvertible(
@@ -266,7 +266,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         .compile(node0)
         let actualType: SymbolType = try rvalueContext.check(identifier: node0.identifier)
-        guard case .unionType(_) = actualType else {
+        guard case .unionType = actualType else {
             return node0
         }
 
@@ -285,10 +285,10 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                 message: "expected an explicit type"
             )
         }
-        let decl = VarDeclaration(
+        let decl = try VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
-            explicitType: try with(context: .type) {
+            explicitType: with(context: .type) {
                 try node0.explicitType.flatMap {
                     try visit(expr: $0)
                 }
@@ -323,7 +323,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return eseq
     }
-    
+
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         try rvalueContext.check(expression: node0) // make sure the expression type checks
         let node1 = try super.visit(assignment: node0)
@@ -340,7 +340,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                 message: "expected lvalue"
             )
         }
-        guard case .unionType(let unionTypeInfo) = ltype else { return node1 }
+        guard case let .unionType(unionTypeInfo) = ltype else { return node1 }
         let rtype = try rvalueContext.check(expression: node1.rexpr)
         guard rtype.correspondingConstType != ltype.correspondingConstType else { return node0 }
         let tagValue = unionTypeInfo.members.firstIndex { member in
@@ -414,7 +414,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     }
 
     public func fields(for info: UnionTypeInfo) throws -> Env {
-        let payloadSize = info.members.reduce(0) { (accum, type) in
+        let payloadSize = info.members.reduce(0) { accum, type in
             max(accum, memoryLayoutStrategy.sizeof(type: type))
         }
         let payloadType: SymbolType = .array(count: payloadSize, elementType: .u8)
@@ -427,11 +427,11 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
         )
         return env
     }
-    
+
     private func nextTempName() -> String {
         symbols!.tempName(prefix: tempPrefix)
     }
-    
+
     private func AddressOf(_ expr: Expression) -> Unary {
         Unary(
             sourceAnchor: expr.sourceAnchor,
@@ -441,9 +441,9 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Lower and erase union types from the program being compiled
-    public func eraseUnions(
+    func eraseUnions(
         _ m: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassEraseUnions(memoryLayoutStrategy: m).run(self)

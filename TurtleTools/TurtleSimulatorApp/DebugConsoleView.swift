@@ -16,11 +16,11 @@ struct DebugConsoleView: NSViewControllerRepresentable {
 
     @StateObject var viewModel: ViewModel
 
-    func makeNSViewController(context: Context) -> DebugConsoleViewController {
+    func makeNSViewController(context _: Context) -> DebugConsoleViewController {
         DebugConsoleViewController(debugger: viewModel.document.debugger)
     }
 
-    func updateNSViewController(_ uiViewController: DebugConsoleViewController, context: Context) {
+    func updateNSViewController(_: DebugConsoleViewController, context _: Context) {
         // nothing to do
     }
 }

@@ -54,9 +54,9 @@ public struct StructMemberFunctionCallMatcher {
 
     func getFunctionType() throws -> FunctionTypeInfo? {
         switch try typeChecker.check(expression: expr.callee) {
-        case .function(let typ),
-            .pointer(.function(let typ)),
-            .constPointer(.function(let typ)):
+        case let .function(typ),
+             let .pointer(.function(typ)),
+             let .constPointer(.function(typ)):
             typ
 
         default:

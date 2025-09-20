@@ -6415,13 +6415,13 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
         XCTAssertEqual(actual, expected)
-        let actualSize: Int?
-        if let actual = actual {
-            actualSize = memoryLayoutStrategy.sizeof(type: actual)
-        }
-        else {
-            actualSize = nil
-        }
+        let actualSize: Int? =
+            if let actual {
+                memoryLayoutStrategy.sizeof(type: actual)
+            }
+            else {
+                nil
+            }
         XCTAssertEqual(actualSize, 6)
     }
 
@@ -6446,13 +6446,13 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
         XCTAssertEqual(actual, expected)
-        let actualSize: Int?
-        if let actual = actual {
-            actualSize = memoryLayoutStrategy.sizeof(type: actual)
-        }
-        else {
-            actualSize = nil
-        }
+        let actualSize: Int? =
+            if let actual {
+                memoryLayoutStrategy.sizeof(type: actual)
+            }
+            else {
+                nil
+            }
         XCTAssertEqual(actualSize, 6)
     }
 
@@ -7465,7 +7465,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
     }
-    
+
     func testImplicitConversionFromStructValueToStructPointer() throws {
         let Foo: SymbolType = .structType(
             StructTypeInfo(name: "Foo", fields: Env())
@@ -7480,7 +7480,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             ]
         )
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        
+
         let expr = Assignment(
             lexpr: Identifier("foo"),
             rexpr: Identifier("bar")
@@ -7488,7 +7488,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, .pointer(Foo))
     }
-    
+
     func testFailBecauseAssignmentCannotMutateAConstVariable() {
         let expr = Assignment(
             lexpr: Identifier("foo"),
@@ -7509,10 +7509,13 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to constant `foo' of type `const i16'")
+            XCTAssertEqual(
+                compilerError?.message,
+                "cannot assign to constant `foo' of type `const i16'"
+            )
         }
     }
-    
+
     func testAcceptAssignmentToConstVariableKnownToBeUninitialized() throws {
         let expr = Assignment(
             lexpr: Identifier("foo"),
@@ -7534,7 +7537,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expected: SymbolType = .constI16
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testFailBecauseAssignmentCannotMutateThroughPointerToConst() {
         let expr = Assignment(
             lexpr: Get(
@@ -7552,10 +7555,13 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot assign to expression of type `const i16'")
+            XCTAssertEqual(
+                compilerError?.message,
+                "cannot assign to expression of type `const i16'"
+            )
         }
     }
-    
+
     func testFailBecauseAssignmentRequiresLvalue() {
         let expr = Assignment(
             lexpr: Unary(op: .ampersand, expression: Identifier("foo")),

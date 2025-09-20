@@ -10,9 +10,9 @@ import Combine
 import Foundation
 import TurtleCore
 
-extension Notification.Name {
-    public static let debuggerStateDidChange = Notification.Name("debuggerStateDidChange")
-    public static let debuggerIsFreeRunningDidChange = Notification.Name(
+public extension Notification.Name {
+    static let debuggerStateDidChange = Notification.Name("debuggerStateDidChange")
+    static let debuggerIsFreeRunningDidChange = Notification.Name(
         "debuggerIsFreeRunningDidChange"
     )
 }
@@ -26,6 +26,7 @@ public final class DebugConsoleActor {
         case textCommand(String, completionHandler: (DebugConsole) -> Void)
         case compiledCommand(DebugConsoleInstruction)
     }
+
     private var commandQueue = [Command]()
     private var subscriptions = Set<AnyCancellable>()
 
@@ -135,13 +136,13 @@ public final class DebugConsoleActor {
 
     private func processCommand(_ command: Command?) {
         switch command {
-        case .textCommand(let text, let completionHandler):
+        case let .textCommand(text, completionHandler):
             debugConsole.eval(text)
             DispatchQueue.main.async { [debugConsole] in
                 completionHandler(debugConsole)
             }
 
-        case .compiledCommand(let instruction):
+        case let .compiledCommand(instruction):
             debugConsole.interpreter.runOne(instruction: instruction)
 
         case .none:

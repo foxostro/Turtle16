@@ -40,10 +40,10 @@ public struct SourceLineRangeMapper: Hashable {
                 }
             }
         }
-        if nil == lowerBound {
+        if lowerBound == nil {
             return (lineRanges.count - 1)..<lineRanges.count
         }
-        if nil == upperBound {
+        if upperBound == nil {
             return (lineRanges.count - 1)..<lineRanges.count
         }
         return lowerBound!..<(upperBound! + 1)
@@ -59,11 +59,10 @@ public struct SourceLineRangeMapper: Hashable {
             text.distance(from: text.startIndex, to: text.endIndex) >= begin,
             "Anchor has bad begin index of \(begin) when largest valid index is \(text.distance(from: text.startIndex, to: text.endIndex))"
         )
-        let range =
-            text.index(
-                text.startIndex,
-                offsetBy: begin
-            )..<text.index(text.startIndex, offsetBy: end)
+        let range = text.index(
+            text.startIndex,
+            offsetBy: begin
+        )..<text.index(text.startIndex, offsetBy: end)
         return SourceAnchor(range: range, lineMapper: self)
     }
 }

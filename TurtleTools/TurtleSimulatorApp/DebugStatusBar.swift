@@ -63,7 +63,8 @@ extension DebugStatusBar {
 
         init(document: TurtleSimulatorDocument) {
             self.document = document
-            self.document.objectWillChange
+            self.document
+                .objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
                     self?.reloadData()

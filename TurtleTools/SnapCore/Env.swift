@@ -30,7 +30,12 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public var isPrimitive: Bool {
         switch self {
-        case .void, .booleanType, .arithmeticType, .pointer, .constPointer, .label:
+        case .void,
+             .booleanType,
+             .arithmeticType,
+             .pointer,
+             .constPointer,
+             .label:
             true
 
         default:
@@ -40,13 +45,18 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public var isConst: Bool {
         switch self {
-        case .void, .function, .label:
+        case .void,
+             .function,
+             .label:
             true
-        case .booleanType(let typ):
+        case let .booleanType(typ):
             typ.isConst
-        case .arithmeticType(let typ):
+        case let .arithmeticType(typ):
             typ.isConst
-        case .constDynamicArray, .constPointer, .constStructType, .constTraitType:
+        case .constDynamicArray,
+             .constPointer,
+             .constStructType,
+             .constTraitType:
             true
         default:
             false
@@ -57,19 +67,19 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         switch self {
         case .booleanType:
             .constBool
-        case .arithmeticType(let arithmeticType):
+        case let .arithmeticType(arithmeticType):
             .arithmeticType(.immutableInt(arithmeticType.intClass!))
-        case .array(count: let n, elementType: let typ):
+        case let .array(count: n, elementType: typ):
             .array(count: n, elementType: typ.correspondingConstType)
-        case .dynamicArray(elementType: let typ):
+        case let .dynamicArray(elementType: typ):
             .constDynamicArray(elementType: typ)
-        case .structType(let typ):
+        case let .structType(typ):
             .constStructType(typ)
-        case .pointer(let typ):
+        case let .pointer(typ):
             .constPointer(typ)
-        case .unionType(let typ):
+        case let .unionType(typ):
             .unionType(typ.correspondingConstType)
-        case .traitType(let typ):
+        case let .traitType(typ):
             .constTraitType(typ)
         default:
             self
@@ -80,36 +90,36 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         switch self {
         case .booleanType:
             .bool
-        case .arithmeticType(let arithmeticType):
+        case let .arithmeticType(arithmeticType):
             .arithmeticType(.mutableInt(arithmeticType.intClass!))
-        case .array(count: let n, elementType: let typ):
+        case let .array(count: n, elementType: typ):
             .array(count: n, elementType: typ.correspondingMutableType)
-        case .constDynamicArray(elementType: let typ):
+        case let .constDynamicArray(elementType: typ):
             .dynamicArray(elementType: typ)
-        case .constStructType(let typ):
+        case let .constStructType(typ):
             .structType(typ)
-        case .constPointer(let typ):
+        case let .constPointer(typ):
             .pointer(typ)
-        case .unionType(let typ):
+        case let .unionType(typ):
             .unionType(typ.correspondingMutableType)
-        case .constTraitType(let typ):
+        case let .constTraitType(typ):
             .traitType(typ)
         default:
             self
         }
     }
-    
+
     public var isUnionType: Bool {
         maybeUnwrapUnionType() != nil
     }
-    
+
     public func unwrapUnionType() -> UnionTypeInfo {
         maybeUnwrapUnionType()!
     }
 
     public func maybeUnwrapUnionType() -> UnionTypeInfo? {
         switch self {
-        case .unionType(let typ):
+        case let .unionType(typ):
             typ
         default:
             nil
@@ -118,7 +128,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public func unwrapGenericFunctionType() -> GenericFunctionType {
         switch self {
-        case .genericFunction(let typ):
+        case let .genericFunction(typ):
             typ
         default:
             abort()
@@ -131,7 +141,8 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public func maybeUnwrapPointerType() -> SymbolType? {
         switch self {
-        case .pointer(let typ), .constPointer(let typ):
+        case let .pointer(typ),
+             let .constPointer(typ):
             typ
         default:
             nil
@@ -144,7 +155,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public func maybeUnwrapFunctionType() -> FunctionTypeInfo? {
         switch self {
-        case .function(let typ):
+        case let .function(typ):
             typ
         default:
             nil
@@ -157,7 +168,8 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public func maybeUnwrapStructType() -> StructTypeInfo? {
         switch self {
-        case .constStructType(let typ), .structType(let typ):
+        case let .constStructType(typ),
+             let .structType(typ):
             typ
         default:
             nil
@@ -170,7 +182,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public func maybeUnwrapGenericStructType() -> GenericStructTypeInfo? {
         switch self {
-        case .genericStructType(let typ):
+        case let .genericStructType(typ):
             typ
         default:
             nil
@@ -183,7 +195,8 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public func maybeUnwrapTraitType() -> TraitTypeInfo? {
         switch self {
-        case .constTraitType(let typ), .traitType(let typ):
+        case let .constTraitType(typ),
+             let .traitType(typ):
             typ
         default:
             nil
@@ -196,8 +209,8 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public func unwrapGenericTraitType() -> GenericTraitTypeInfo {
         switch self {
-        case .genericTraitType(let typ):
-            return typ
+        case let .genericTraitType(typ):
+            typ
         default:
             abort()
         }
@@ -220,7 +233,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             false
         }
     }
-    
+
     public var isCompileTimeBooleanType: Bool {
         switch self {
         case .booleanType(.compTimeBool(_)):
@@ -238,7 +251,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             false
         }
     }
-    
+
     public var isCompileTimeArithmeticType: Bool {
         switch self {
         case .arithmeticType(.compTimeInt(_)):
@@ -247,14 +260,14 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             false
         }
     }
-    
+
     public func unwrapArithmeticType() -> ArithmeticTypeInfo {
         maybeUnwrapArithmeticType()!
     }
 
     public func maybeUnwrapArithmeticType() -> ArithmeticTypeInfo? {
         switch self {
-        case .arithmeticType(let typ):
+        case let .arithmeticType(typ):
             typ
         default:
             nil
@@ -263,7 +276,8 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public var isPointerType: Bool {
         switch self {
-        case .pointer, .constPointer:
+        case .pointer,
+             .constPointer:
             true
         default:
             false
@@ -273,10 +287,11 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public var isStructType: Bool {
         maybeUnwrapStructType() != nil
     }
-    
+
     public var isDynamicArrayType: Bool {
         switch self {
-        case .dynamicArray, .constDynamicArray:
+        case .dynamicArray,
+             .constDynamicArray:
             true
         default:
             false
@@ -305,7 +320,8 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         switch self {
         case .array(count: _, let elementType):
             elementType
-        case .constDynamicArray(let elementType), .dynamicArray(let elementType):
+        case let .constDynamicArray(elementType),
+             let .dynamicArray(elementType):
             elementType
         default:
             abort()
@@ -314,47 +330,30 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case .void:
-            "void"
-        case .booleanType(let a):
-            "\(a)"
-        case .arithmeticType(let arithmeticType):
-            "\(arithmeticType)"
-        case .array(let count, let elementType):
-            if let count = count {
+        case .void: "void"
+        case let .booleanType(a): "\(a)"
+        case let .arithmeticType(arithmeticType): "\(arithmeticType)"
+        case let .array(count, elementType):
+            if let count {
                 "[\(count)]\(elementType)"
             }
             else {
                 "[_]\(elementType)"
             }
-        case .constDynamicArray(let elementType):
-            "const []\(elementType)"
-        case .dynamicArray(let elementType):
-            "[]\(elementType)"
-        case .function(let functionType):
-            "\(functionType)"
-        case .genericFunction(let genericFunctionType):
-            "\(genericFunctionType)"
-        case .constStructType(let typ):
-            "const \(typ.shortDescription)"
-        case .structType(let typ):
-            "\(typ.shortDescription)"
-        case .genericStructType(let typ):
-            "\(typ)"
-        case .constTraitType(let typ):
-            "const \(typ.name)"
-        case .traitType(let typ):
-            "\(typ.name)"
-        case .genericTraitType(let genericTraitType):
-            "\(genericTraitType)"
-        case .constPointer(let pointee):
-            "const *\(pointee)"
-        case .pointer(let pointee):
-            "*\(pointee)"
-        case .unionType(let typ):
-            "\(typ)"
-        case .label:
-            "label"
+        case let .constDynamicArray(elementType): "const []\(elementType)"
+        case let .dynamicArray(elementType): "[]\(elementType)"
+        case let .function(functionType): "\(functionType)"
+        case let .genericFunction(genericFunctionType): "\(genericFunctionType)"
+        case let .constStructType(typ): "const \(typ.shortDescription)"
+        case let .structType(typ): "\(typ.shortDescription)"
+        case let .genericStructType(typ): "\(typ)"
+        case let .constTraitType(typ): "const \(typ.name)"
+        case let .traitType(typ): "\(typ.name)"
+        case let .genericTraitType(genericTraitType): "\(genericTraitType)"
+        case let .constPointer(pointee): "const *\(pointee)"
+        case let .pointer(pointee): "*\(pointee)"
+        case let .unionType(typ): "\(typ)"
+        case .label: "label"
         }
     }
 
@@ -367,22 +366,22 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         case .void:
             PrimitiveType(.void)
 
-        case .function(let typ):
+        case let .function(typ):
             FunctionType(
                 name: typ.name,
                 returnType: typ.returnType.lift,
-                arguments: typ.arguments.map { $0.lift }
+                arguments: typ.arguments.map(\.lift)
             )
 
-        case .genericFunction(let typ):
+        case let .genericFunction(typ):
             GenericFunctionType(
                 template: typ.template,
                 enclosingImplId: typ.enclosingImplId
             )
 
-        case .booleanType(let typ):
+        case let .booleanType(typ):
             switch typ {
-            case .compTimeBool(let val):
+            case let .compTimeBool(val):
                 LiteralBool(val)
             case .immutableBool:
                 ConstType(PrimitiveType(.bool))
@@ -390,38 +389,38 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
                 PrimitiveType(.bool)
             }
 
-        case .arithmeticType(let typ):
+        case let .arithmeticType(typ):
             switch typ {
-            case .compTimeInt(let val):
+            case let .compTimeInt(val):
                 LiteralInt(val)
-            case .immutableInt(let cls):
+            case let .immutableInt(cls):
                 ConstType(PrimitiveType(.arithmeticType(.mutableInt(cls))))
-            case .mutableInt(let cls):
+            case let .mutableInt(cls):
                 PrimitiveType(.arithmeticType(.mutableInt(cls)))
             }
 
-        case .array(let count, let elementType):
+        case let .array(count, elementType):
             ArrayType(
                 count: count == nil ? nil : LiteralInt(count!),
                 elementType: elementType.lift
             )
 
-        case .constDynamicArray(let elementType):
+        case let .constDynamicArray(elementType):
             ConstType(DynamicArrayType(elementType.lift))
 
-        case .dynamicArray(let elementType):
+        case let .dynamicArray(elementType):
             DynamicArrayType(elementType.lift)
 
-        case .constPointer(let typ):
+        case let .constPointer(typ):
             ConstType(PointerType(typ.lift))
 
-        case .pointer(let typ):
+        case let .pointer(typ):
             PointerType(typ.lift)
 
         case .constStructType:
-            ConstType(self.correspondingMutableType.lift)
+            ConstType(correspondingMutableType.lift)
 
-        case .structType(let typ):
+        case let .structType(typ):
             if typ.name.isEmpty {
                 PrimitiveType(self)
             }
@@ -433,39 +432,46 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             PrimitiveType(self)
 
         case .constTraitType:
-            ConstType(self.correspondingMutableType.lift)
+            ConstType(correspondingMutableType.lift)
 
-        case .traitType(let typ):
+        case let .traitType(typ):
             Identifier(typ.name)
 
-        case .genericTraitType(let typ):
+        case let .genericTraitType(typ):
             Identifier(typ.name)
 
-        case .unionType(let typ):
+        case let .unionType(typ):
             UnionType(typ.members.map(\.lift))
 
         case .label:
             fatalError("cannot lift a label")
         }
     }
-    
+
     /// Return a type equivalent to this one, without any const-ness
     /// This is not exactly the same as the type returned by
     /// `correspondingMutableType` as that only removes const-ness from the
     /// outermost type of a compound type with non-trivial structure.
     public func eraseConst() -> SymbolType {
         switch self {
-        case .booleanType, .arithmeticType, .array, .unionType:
+        case .booleanType,
+             .arithmeticType,
+             .array,
+             .unionType:
             correspondingMutableType
-        case .dynamicArray(elementType: let typ), .constDynamicArray(elementType: let typ):
+        case let .dynamicArray(elementType: typ),
+             let .constDynamicArray(elementType: typ):
             .dynamicArray(elementType: typ.eraseConst())
-        case .structType(let typ), .constStructType(let typ):
+        case let .structType(typ),
+             let .constStructType(typ):
             .structType(typ.eraseConst())
-        case .pointer(let typ), .constPointer(let typ):
+        case let .pointer(typ),
+             let .constPointer(typ):
             .pointer(typ.eraseConst())
-        case .traitType(let typ), .constTraitType(let typ):
+        case let .traitType(typ),
+             let .constTraitType(typ):
             .traitType(typ.eraseConst())
-        case .function(let typ):
+        case let .function(typ):
             .function(typ.eraseConst())
         default:
             self
@@ -495,8 +501,8 @@ public enum SymbolStorage: Hashable {
 
     public var offset: Int? {
         switch self {
-        case .automaticStorage(let offset),
-            .staticStorage(let offset):
+        case let .automaticStorage(offset),
+             let .staticStorage(offset):
             offset
 
         case .registerStorage:
@@ -527,7 +533,7 @@ public enum SymbolStorage: Hashable {
 
     public var register: Register? {
         switch self {
-        case .registerStorage(let r): r
+        case let .registerStorage(r): r
         default: nil
         }
     }
@@ -551,7 +557,7 @@ public enum BooleanTypeInfo: Hashable, CustomStringConvertible {
     case compTimeBool(Bool)
 
     public func canValueBeTriviallyReinterpretedAs(type: BooleanTypeInfo) -> Bool {
-        !(self.isCompTime || type.isCompTime)
+        !(isCompTime || type.isCompTime)
     }
 
     public var isCompTime: Bool {
@@ -559,7 +565,8 @@ public enum BooleanTypeInfo: Hashable, CustomStringConvertible {
         case .compTimeBool:
             true
 
-        case .immutableBool, .mutableBool:
+        case .immutableBool,
+             .mutableBool:
             false
         }
     }
@@ -569,21 +576,19 @@ public enum BooleanTypeInfo: Hashable, CustomStringConvertible {
         case .mutableBool:
             false
 
-        case .immutableBool, .compTimeBool:
+        case .immutableBool,
+             .compTimeBool:
             true
         }
     }
 
     public var description: String {
         switch self {
-        case .mutableBool:
-            "bool"
+        case .mutableBool: "bool"
 
-        case .immutableBool:
-            "const bool"
+        case .immutableBool: "const bool"
 
-        case .compTimeBool(let a):
-            "boolean constant \(a)"
+        case let .compTimeBool(a): "boolean constant \(a)"
         }
     }
 }
@@ -592,7 +597,7 @@ public enum IntClass: Hashable, CustomStringConvertible, CaseIterable {
     case u8, u16, i8, i16
 
     public static func binaryResultType(left: IntClass?, right: IntClass?) -> IntClass? {
-        guard let left = left, let right = right else {
+        guard let left, let right else {
             return nil
         }
 
@@ -609,10 +614,12 @@ public enum IntClass: Hashable, CustomStringConvertible, CaseIterable {
 
     public var isSigned: Bool {
         switch self {
-        case .i8, .i16:
+        case .i8,
+             .i16:
             true
 
-        case .u8, .u16:
+        case .u8,
+             .u16:
             false
         }
     }
@@ -646,7 +653,7 @@ public enum IntClass: Hashable, CustomStringConvertible, CaseIterable {
 
     public static func smallestClassContaining(value: Int) -> IntClass? {
         for intClass in IntClass.allCases {
-            if value >= intClass.min && value <= intClass.max {
+            if value >= intClass.min, value <= intClass.max {
                 return intClass
             }
         }
@@ -674,36 +681,39 @@ public enum ArithmeticTypeInfo: Hashable, CustomStringConvertible {
 
     public var intClass: IntClass? {
         switch self {
-        case .mutableInt(let a), .immutableInt(let a):
+        case let .mutableInt(a),
+             let .immutableInt(a):
             a
 
-        case .compTimeInt(let value):
+        case let .compTimeInt(value):
             IntClass.smallestClassContaining(value: value)
         }
     }
 
     public var min: Int {
         switch self {
-        case .compTimeInt(let constantValue):
+        case let .compTimeInt(constantValue):
             constantValue
 
-        case .mutableInt(let a), .immutableInt(let a):
+        case let .mutableInt(a),
+             let .immutableInt(a):
             a.min
         }
     }
 
     public var max: Int {
         switch self {
-        case .compTimeInt(let constantValue):
+        case let .compTimeInt(constantValue):
             constantValue
 
-        case .mutableInt(let a), .immutableInt(let a):
+        case let .mutableInt(a),
+             let .immutableInt(a):
             a.max
         }
     }
 
     public func canValueBeTriviallyReinterpretedAs(type dst: ArithmeticTypeInfo) -> Bool {
-        if self.isCompTime || dst.isCompTime {
+        if isCompTime || dst.isCompTime {
             return false
         }
 
@@ -721,7 +731,8 @@ public enum ArithmeticTypeInfo: Hashable, CustomStringConvertible {
         case .compTimeInt:
             true
 
-        case .mutableInt, .immutableInt:
+        case .mutableInt,
+             .immutableInt:
             false
         }
     }
@@ -731,21 +742,19 @@ public enum ArithmeticTypeInfo: Hashable, CustomStringConvertible {
         case .mutableInt:
             false
 
-        case .immutableInt, .compTimeInt:
+        case .immutableInt,
+             .compTimeInt:
             true
         }
     }
 
     public var description: String {
         switch self {
-        case .mutableInt(let width):
-            "\(width)"
+        case let .mutableInt(width): "\(width)"
 
-        case .immutableInt(let width):
-            "const \(width)"
+        case let .immutableInt(width): "const \(width)"
 
-        case .compTimeInt(let value):
-            "integer constant \(value)"
+        case let .compTimeInt(value): "integer constant \(value)"
         }
     }
 }
@@ -795,7 +804,7 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
     }
 
     public var description: String {
-        let name = self.name ?? ""
+        let name = name ?? ""
         return "func \(name)(\(argumentsDescription)) -> \(returnType)"
     }
 
@@ -854,7 +863,7 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
             ast: ast
         )
     }
-    
+
     public func eraseConst() -> FunctionTypeInfo {
         FunctionTypeInfo(
             name: name,
@@ -891,7 +900,7 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
     ) {
         self.name = name
         self.fields = fields
-        self.symbols = fields
+        symbols = fields
         self.associatedTraitType = associatedTraitType
         self.associatedModuleName = associatedModuleName
     }
@@ -913,7 +922,7 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
             associatedModuleName: associatedModuleName
         )
     }
-    
+
     /// Return info for a struct equivalent to this one, without any const-ness
     public func eraseConst() -> StructTypeInfo {
         StructTypeInfo(
@@ -923,9 +932,9 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
             associatedModuleName: associatedModuleName
         )
     }
-    
+
     private var isShortDescriptionRunning = 0 // avoid infinite recursion
-    
+
     public var shortDescription: String {
         isShortDescriptionRunning += 1
         defer { isShortDescriptionRunning -= 1 }
@@ -934,7 +943,9 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
         let membersDesc = symbols.declarationOrder
             .map {
                 guard let sym = symbols.symbolTable[$0] else {
-                    fatalError("internal compiler error: an identifier in `declarationOrder` is expected to also be present in `smybolTable` but this one was missing: \($0)")
+                    fatalError(
+                        "internal compiler error: an identifier in `declarationOrder` is expected to also be present in `smybolTable` but this one was missing: \($0)"
+                    )
                 }
                 return "\($0):\(sym.type)"
             }
@@ -1081,7 +1092,7 @@ public final class TraitTypeInfo: Hashable, CustomStringConvertible {
         // Avoid recursive comparisons. These can occur if a trait contains a
         // method with a parameter whose type is a pointer to the trait. If we
         // don't detect these cases then we get infinite recursion.
-        guard false == isDoingEqualityTest else { return true }
+        guard isDoingEqualityTest == false else { return true }
         isDoingEqualityTest = true
         defer { isDoingEqualityTest = false }
 
@@ -1126,7 +1137,7 @@ public final class TraitTypeInfo: Hashable, CustomStringConvertible {
             (name: name, type: symbol.type)
         }
     }
-    
+
     /// Return info for a trait equivalent to this one, without any const-ness
     public func eraseConst() -> TraitTypeInfo {
         TraitTypeInfo(
@@ -1175,11 +1186,11 @@ public final class UnionTypeInfo: Hashable, CustomStringConvertible {
     }
 
     public var correspondingConstType: UnionTypeInfo {
-        UnionTypeInfo(members.map({ $0.correspondingConstType }))
+        UnionTypeInfo(members.map(\.correspondingConstType))
     }
 
     public var correspondingMutableType: UnionTypeInfo {
-        UnionTypeInfo(members.map({ $0.correspondingMutableType }))
+        UnionTypeInfo(members.map(\.correspondingMutableType))
     }
 
     public static func == (lhs: UnionTypeInfo, rhs: UnionTypeInfo) -> Bool {
@@ -1211,18 +1222,19 @@ public struct Symbol: Hashable {
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
     public let decl: AbstractSyntaxTreeNode.ID?
-    
+
     /// As the compiler visits the program AST, it can keep track of facts about
     /// each symbol, such as statically known values, whether it's ever assigned
     /// to, and so on.
     public let facts: Facts
-    
+
     public struct Facts: Hashable {
         public enum InitStatus: Hashable {
             case uninitialized, maybeInitialized, initialized
         }
+
         var initStatus: InitStatus
-        
+
         public init(initStatus: InitStatus = .uninitialized) {
             self.initStatus = initStatus
         }
@@ -1285,7 +1297,7 @@ public struct Symbol: Hashable {
             facts: facts
         )
     }
-    
+
     public func withDecl(_ decl: AbstractSyntaxTreeNode.ID) -> Symbol {
         Symbol(
             type: type,
@@ -1295,7 +1307,7 @@ public struct Symbol: Hashable {
             facts: facts
         )
     }
-    
+
     public func withFacts(_ facts: Facts) -> Symbol {
         Symbol(
             type: type,
@@ -1315,14 +1327,14 @@ public struct TypeRecord: Hashable, CustomStringConvertible {
     public var description: String {
         "TypeRecord(symbolType: \(symbolType), visibility: \(visibility))"
     }
-    
+
     public func withType(_ symbolType: SymbolType) -> TypeRecord {
         TypeRecord(
             symbolType: symbolType,
             visibility: visibility
         )
     }
-    
+
     public func withVisibility(_ visibility: SymbolVisibility) -> TypeRecord {
         TypeRecord(
             symbolType: symbolType,
@@ -1330,6 +1342,7 @@ public struct TypeRecord: Hashable, CustomStringConvertible {
         )
     }
 }
+
 /// Instances of `Env` are connected in a linked list to represent nested
 /// lexical scopes.
 public final class Env: Hashable {
@@ -1373,7 +1386,7 @@ public final class Env: Hashable {
         case set(Frame)
 
         public var isSet: Bool {
-            if case .set(_) = self {
+            if case .set = self {
                 true
             }
             else {
@@ -1381,21 +1394,23 @@ public final class Env: Hashable {
             }
         }
     }
+
     public var frameLookupMode: FrameLookupMode = .inherit
     public var frame: Frame? {
         switch frameLookupMode {
         case .inherit:
             parent?.frame
 
-        case .set(let frame):
+        case let .set(frame):
             frame
         }
     }
+
     private var stackFrameIndex: Int {
         var index = 0
         var curr: Env? = self
         repeat {
-            if case .set(_) = curr?.frameLookupMode {
+            if case .set = curr?.frameLookupMode {
                 index += 1
             }
             curr = curr?.parent
@@ -1411,19 +1426,19 @@ public final class Env: Hashable {
 
         public var description: String {
             switch self {
-            case .functionType(let typ): "function(\(typ))"
-            case .module(let name, let g): "module(\(name), \(g)"
-            case .structType(let name): "struct(\(name))"
-            case .traitType(let name): "trait(\(name))"
+            case let .functionType(typ): "function(\(typ))"
+            case let .module(name, g): "module(\(name), \(g)"
+            case let .structType(name): "struct(\(name))"
+            case let .traitType(name): "trait(\(name))"
             }
         }
 
         public var name: String? {
             switch self {
-            case .functionType(let typ): typ.name
-            case .module(let name, _): name
-            case .structType(let name): name
-            case .traitType(let name): name
+            case let .functionType(typ): typ.name
+            case let .module(name, _): name
+            case let .structType(name): name
+            case let .traitType(name): name
             }
         }
 
@@ -1432,13 +1447,13 @@ public final class Env: Hashable {
         /// this breadcrumb is not a module at all.
         public var useGlobalNamespace: Bool? {
             switch self {
-            case .module(_, let useGlobalNamespace): useGlobalNamespace
+            case let .module(_, useGlobalNamespace): useGlobalNamespace
             default: nil
             }
         }
     }
 
-    public var breadcrumb: Breadcrumb? = nil
+    public var breadcrumb: Breadcrumb?
 
     public var breadcrumbs: [Breadcrumb] {
         let myBreadcrumb: [Breadcrumb] =
@@ -1450,10 +1465,12 @@ public final class Env: Hashable {
 
     public var enclosingFunctionType: FunctionTypeInfo? {
         switch breadcrumb {
-        case .functionType(let typ):
+        case let .functionType(typ):
             typ
 
-        case .structType, .traitType, .module:
+        case .structType,
+             .traitType,
+             .module:
             nil
 
         case .none:
@@ -1473,9 +1490,9 @@ public final class Env: Hashable {
     ) {
         parent = p
         frameLookupMode = s
-        typeTable = typeDict.mapValues({
+        typeTable = typeDict.mapValues {
             TypeRecord(symbolType: $0, visibility: .privateVisibility)
-        })
+        }
 
         for (identifier, symbol) in tuples {
             bind(identifier: identifier, symbol: symbol)
@@ -1493,7 +1510,7 @@ public final class Env: Hashable {
     }
 
     public func exists(identifier: String, maxDepth: Int = Int.max) -> Bool {
-        if nil != symbolTable[identifier] {
+        if symbolTable[identifier] != nil {
             true
         }
         else if maxDepth > 0 {
@@ -1505,7 +1522,7 @@ public final class Env: Hashable {
     }
 
     public func existsAsType(identifier: String, maxDepth: Int = Int.max) -> Bool {
-        if nil != typeTable[identifier] {
+        if typeTable[identifier] != nil {
             true
         }
         else if maxDepth > 0 {
@@ -1537,13 +1554,13 @@ public final class Env: Hashable {
     public func bind(identifier: String, symbol: Symbol) {
         #if false
             let offset = symbol.maybeOffset == nil ? "nil" : "\(symbol.offset)"
-            let stackFrameDesc: String
-            if let frame {
-                stackFrameDesc = "\(frame)"
-            }
-            else {
-                stackFrameDesc = "nil"
-            }
+            let stackFrameDesc =
+                if let frame {
+                    "\(frame)"
+                }
+                else {
+                    "nil"
+                }
             print(
                 "\(self) -- bind \(identifier): \(symbol.type) at offset=\(offset) and stackFrame=\(stackFrameDesc)"
             )
@@ -1573,7 +1590,7 @@ public final class Env: Hashable {
     public func bind(identifier: String, typeRecord: TypeRecord) {
         typeTable[identifier] = typeRecord
     }
-    
+
     /// Given an identifier, resolve the corresponding symbol, and pass that
     /// symbol to the specified block. The closure may modify the symbol, which
     /// will update it in the environment when the block returns.
@@ -1600,7 +1617,7 @@ public final class Env: Hashable {
             )
         }
     }
-    
+
     /// Resolve the identifier and update symbol facts in the specified block
     public func withFacts(
         _ identifier: Identifier,
@@ -1612,7 +1629,7 @@ public final class Env: Hashable {
             block: block
         )
     }
-    
+
     /// Resolve the identifier and update symbol facts in the specified block
     public func withFacts(
         sourceAnchor s: SourceAnchor? = nil,
@@ -1901,7 +1918,7 @@ public final class Env: Hashable {
         result.modulesAlreadyImported = modulesAlreadyImported
         return result
     }
-    
+
     public func eraseConst() -> Env {
         let result = Env()
         result.declarationOrder = declarationOrder
@@ -1919,7 +1936,7 @@ public final class Env: Hashable {
     }
 
     public func clear() {
-        if case .set(let frame) = frameLookupMode {
+        if case let .set(frame) = frameLookupMode {
             frame.reset()
         }
         declarationOrder = []
@@ -1931,20 +1948,18 @@ public final class Env: Hashable {
     }
 }
 
-extension SymbolType {
+public extension SymbolType {
     /// Return true if the type includes a Module type somewhere in the def'n
-    public func hasModule(
+    func hasModule(
         _ sym: Env,
         _ workingSet: [SymbolType] = []
     ) throws -> Bool {
-
         guard !workingSet.contains(self) else { return false }
 
         let typeChecker = TypeContextTypeChecker(symbols: sym)
 
         let anyExprHasModule: ([Expression]) throws -> Bool = { exprs in
-            let result =
-                try exprs
+            let result = try exprs
                 .compactMap {
                     try? typeChecker.check(expression: $0)
                 }
@@ -1955,41 +1970,49 @@ extension SymbolType {
         }
 
         return switch self {
-        case .void, .booleanType, .arithmeticType, .label:
+        case .void,
+             .booleanType,
+             .arithmeticType,
+             .label:
             false
 
-        case .function(let typ):
+        case let .function(typ):
             try typ.arguments.first {
                 try $0.hasModule(sym, workingSet.union(self))
             } != nil
 
-        case .genericFunction(let typ):
+        case let .genericFunction(typ):
             try anyExprHasModule(typ.arguments + typ.typeArguments)
 
         case .array(count: _, let elementType),
-            .constDynamicArray(let elementType),
-            .dynamicArray(let elementType),
-            .constPointer(let elementType),
-            .pointer(let elementType):
+             let .constDynamicArray(elementType),
+             let .dynamicArray(elementType),
+             let .constPointer(elementType),
+             let .pointer(elementType):
             try elementType.hasModule(sym, workingSet.union(self))
 
-        case .constStructType(let typ), .structType(let typ):
-            try typ.fields.symbolTable.map(\.value.type).first {  // This specifically ignores methods.
-                try $0.hasModule(sym, workingSet.union(self))
-            } != nil || typ.isModule
+        case let .constStructType(typ),
+             let .structType(typ):
+            try typ.fields
+                .symbolTable
+                .map(\.value.type)
+                .first { // This specifically ignores methods.
+                    try $0.hasModule(sym, workingSet.union(self))
+                } != nil || typ.isModule
 
-        case .genericStructType(let typ):
+        case let .genericStructType(typ):
             try anyExprHasModule(typ.typeArguments)
 
-        case .constTraitType(let typ), .traitType(let typ):
+        case let .constTraitType(typ),
+             let .traitType(typ):
             try typ.members.map(\.type).first {
                 try $0.hasModule(sym, workingSet.union(self))
             } != nil
 
-        case .genericTraitType(let typ):
+        case let .genericTraitType(typ):
             try anyExprHasModule(typ.typeArguments)
 
-        case .unionType(let typ):
+        case let .unionType(typ):
             try typ.members.first {
                 try $0.hasModule(sym, workingSet.union(self))
             } != nil
@@ -1997,8 +2020,8 @@ extension SymbolType {
     }
 }
 
-extension Array where Element: Equatable {
-    fileprivate func union(_ newElement: Element) -> [Element] {
+private extension Array where Element: Equatable {
+    func union(_ newElement: Element) -> [Element] {
         if contains(newElement) {
             self
         }

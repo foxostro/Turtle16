@@ -14,7 +14,7 @@ public struct TackFlattener {
     private var instructions: [(TackInstruction, SourceAnchor?, Env?, String?)] = []
     private var didProcessSubroutine = false
     private var labels: [String: Int] = [:]
-    private var currentSubroutine: String? = nil
+    private var currentSubroutine: String?
 
     public static func compile(_ node: AbstractSyntaxTreeNode) throws -> TackProgram {
         var flattener = TackFlattener()

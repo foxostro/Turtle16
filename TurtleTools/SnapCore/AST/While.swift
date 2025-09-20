@@ -41,7 +41,7 @@ public final class While: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withBody(_ body: AbstractSyntaxTreeNode) -> While {
         While(
             sourceAnchor: sourceAnchor,

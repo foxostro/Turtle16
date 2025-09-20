@@ -18,7 +18,8 @@ final class CompilerPassWhileTests: XCTestCase {
                     condition: LiteralInt(0),
                     body: Block()
                 )
-            ])
+            ]
+        )
         XCTAssertThrowsError(try node.whilePass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)

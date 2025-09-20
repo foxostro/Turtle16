@@ -1255,7 +1255,7 @@ final class CompilerPassEraseEseqTests: XCTestCase {
         let actual = try input.eraseEseq()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testEraseEseqInExprOfEseq() throws {
         let expected = Eseq(
             seq: Seq(

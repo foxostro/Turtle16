@@ -28,16 +28,16 @@ public final class SnapCommandLineDriver {
     public var stdout: TextOutputStream = String()
     public var stderr: TextOutputStream = String()
     let arguments: [String]
-    public private(set) var inputFileName: URL? = nil
-    public private(set) var programOutputFileName: URL? = nil
-    public private(set) var irOutputFileName: URL? = nil
-    public private(set) var asmOutputFileName: URL? = nil
+    public private(set) var inputFileName: URL?
+    public private(set) var programOutputFileName: URL?
+    public private(set) var irOutputFileName: URL?
+    public private(set) var asmOutputFileName: URL?
     public var shouldOutputIR = false
     public var shouldOutputAssembly = false
     public var shouldDoASTDump = false
     public var shouldListTests = false
     public var verb: Verb = .compile
-    public var chooseSpecificTest: String? = nil
+    public var chooseSpecificTest: String?
     public var shouldBeQuiet = false
     public var shouldEnableOptimizations = true
     let kRuntime = "runtime_Turtle16"
@@ -73,7 +73,7 @@ public final class SnapCommandLineDriver {
 
         if shouldListTests {
             let fileName = inputFileName!.relativePath
-            let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+            let maybeText = try String(data: Data(contentsOf: inputFileName!), encoding: .utf8)
             guard let text = maybeText else {
                 throw SnapCommandLineDriverError(
                     "failed to read input file as UTF-8 text: \(fileName)"
@@ -100,13 +100,13 @@ public final class SnapCommandLineDriver {
         }
     }
 
-    fileprivate func reportInfoMessage(_ message: String) {
+    private func reportInfoMessage(_ message: String) {
         if !shouldBeQuiet {
-            self.stdout.write(message)
+            stdout.write(message)
         }
     }
 
-    fileprivate func printNumberOfInstructionWordsUsed(_ program: TurtleProgram) {
+    private func printNumberOfInstructionWordsUsed(_ program: TurtleProgram) {
         let numberOfInstructions = program.instructions.count
         if numberOfInstructions > 32767 {
             reportInfoMessage(
@@ -120,12 +120,12 @@ public final class SnapCommandLineDriver {
 
     func doVerbTest() throws {
         let fileName = inputFileName!.relativePath
-        let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+        let maybeText = try String(data: Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
         let testNames = try collectNamesOfTests(text, fileName)
-        if let chooseSpecificTest = chooseSpecificTest {
+        if let chooseSpecificTest {
             try runSpecificTest(chooseSpecificTest, text, fileName)
         }
         else {
@@ -136,12 +136,12 @@ public final class SnapCommandLineDriver {
         status = 0
     }
 
-    fileprivate func collectNamesOfTests(_ text: String, _ fileName: String) throws -> [String] {
+    private func collectNamesOfTests(_ text: String, _ fileName: String) throws -> [String] {
         let testNames: [String]
         do {
             testNames = try SnapToTurtle16Compiler().collectTestNames(
                 program: text,
-                url: URL.init(string: fileName),
+                url: URL(string: fileName),
                 options: SnapToTurtle16Compiler.Options(
                     isBoundsCheckEnabled: true,
                     isUsingStandardLibrary: false,
@@ -155,14 +155,12 @@ public final class SnapCommandLineDriver {
         return testNames
     }
 
-    fileprivate func runSpecificTest(_ testName: String, _ text: String, _ fileName: String) throws
-    {
+    private func runSpecificTest(_ testName: String, _ text: String, _: String) throws {
         reportInfoMessage("Running test \"\(testName)\"...\n")
         let program = try compile(program: text, shouldRunSpecificTest: testName)
         printNumberOfInstructionWordsUsed(program)
         let directory: URL = inputFileName!.deletingPathExtension().deletingLastPathComponent()
-        let baseName: String =
-            inputFileName!.deletingPathExtension().lastPathComponent + " -- \(testName)"
+        let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent + " -- \(testName)"
         irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
         asmOutputFileName = URL(fileURLWithPath: baseName + ".asm", relativeTo: directory)
         if shouldOutputIR {
@@ -177,18 +175,18 @@ public final class SnapCommandLineDriver {
             let oldStr = String(bytes: serialOutput, encoding: .utf8)
             serialOutput.append(UInt8(value & 0x00ff))
             let newStr = String(bytes: serialOutput, encoding: .utf8)
-            let delta: String
-            if let n = oldStr?.count {
-                if let newDelta = newStr?.dropFirst(n) {
-                    delta = String(newDelta)
+            let delta: String =
+                if let n = oldStr?.count {
+                    if let newDelta = newStr?.dropFirst(n) {
+                        String(newDelta)
+                    }
+                    else {
+                        oldStr!
+                    }
                 }
                 else {
-                    delta = oldStr!
+                    ""
                 }
-            }
-            else {
-                delta = ""
-            }
             if delta.count > 0 {
                 self.stdout.write(String(delta))
             }
@@ -218,7 +216,7 @@ public final class SnapCommandLineDriver {
 
     func doVerbRun() throws {
         let fileName = inputFileName!.relativePath
-        let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+        let maybeText = try String(data: Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
@@ -243,18 +241,18 @@ public final class SnapCommandLineDriver {
             let oldStr = String(bytes: serialOutput, encoding: .utf8)
             serialOutput.append(UInt8(value & 0x00ff))
             let newStr = String(bytes: serialOutput, encoding: .utf8)
-            let delta: String
-            if let n = oldStr?.count {
-                if let newDelta = newStr?.dropFirst(n) {
-                    delta = String(newDelta)
+            let delta: String =
+                if let n = oldStr?.count {
+                    if let newDelta = newStr?.dropFirst(n) {
+                        String(newDelta)
+                    }
+                    else {
+                        oldStr!
+                    }
                 }
                 else {
-                    delta = oldStr!
+                    ""
                 }
-            }
-            else {
-                delta = ""
-            }
             if delta.count > 0 {
                 self.stdout.write(String(delta))
             }
@@ -286,7 +284,7 @@ public final class SnapCommandLineDriver {
 
     func doVerbCompile() throws {
         let fileName = inputFileName!.relativePath
-        let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+        let maybeText = try String(data: Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
@@ -364,7 +362,7 @@ public final class SnapCommandLineDriver {
             switch error {
             case .unexpectedEndOfInput:
                 throw SnapCommandLineDriverError(makeUsageMessage())
-            case .unknownOption(let option):
+            case let .unknownOption(option):
                 throw SnapCommandLineDriverError(
                     "unknown option `\(option)'\n\n\(makeUsageMessage())"
                 )
@@ -380,12 +378,12 @@ public final class SnapCommandLineDriver {
         for option in options {
             switch option {
             case .printHelp:
-                break  // do nothing
+                break // do nothing
 
-            case .inputFileName(let fileName):
+            case let .inputFileName(fileName):
                 try parseInputFileName(fileName)
 
-            case .outputFileName(let fileName):
+            case let .outputFileName(fileName):
                 try parseOutputFileName(fileName)
 
             case .S:
@@ -406,7 +404,7 @@ public final class SnapCommandLineDriver {
             case .listTests:
                 shouldListTests = true
 
-            case .chooseSpecificTest(let testName):
+            case let .chooseSpecificTest(testName):
                 chooseSpecificTest = testName
 
             case .quiet:
@@ -417,7 +415,7 @@ public final class SnapCommandLineDriver {
             }
         }
 
-        if verb != .test && inputFileName == nil {
+        if verb != .test, inputFileName == nil {
             throw SnapCommandLineDriverError("expected input filename")
         }
 
@@ -442,7 +440,7 @@ public final class SnapCommandLineDriver {
 
         USAGE:
         \(arguments[0]) [test|run] [options] file...
-                    
+
         OPTIONS:
         \trun        Compile the program and run immediately in a VM.
         \ttest       Compile the program for testing and run immediately in a VM.

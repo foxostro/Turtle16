@@ -19,6 +19,7 @@ public final class AssemblerCommandLineArgumentParser {
         case outputFileName(String)
         case quiet
     }
+
     public private(set) var options: [Option] = []
 
     public init(args: [String]) {
@@ -26,7 +27,7 @@ public final class AssemblerCommandLineArgumentParser {
     }
 
     public func parse() throws {
-        try advance()  // strip off the program name
+        try advance() // strip off the program name
         try parseOptions()
         try parseInputFilenames()
         if options.isEmpty {

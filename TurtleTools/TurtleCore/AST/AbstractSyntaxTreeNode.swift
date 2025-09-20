@@ -37,16 +37,18 @@ open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible 
             objc_sync_exit(ID.self)
             return result
         }
+
         private let val: Int
 
         public init() {
-            self.val = CountingID.next()
+            val = CountingID.next()
         }
 
         public var description: String {
             "ID(\(val))"
         }
     }
+
     public typealias ID = CountingID
 
     /// Each AST node has a unique identifier, preserved across transformations
@@ -58,7 +60,7 @@ open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible 
         self.id = id
     }
 
-    open func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> AbstractSyntaxTreeNode {
+    open func withSourceAnchor(_: SourceAnchor?) -> AbstractSyntaxTreeNode {
         fatalError("unimplemented")
     }
 

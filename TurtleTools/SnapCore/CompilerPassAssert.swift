@@ -38,9 +38,9 @@ public final class CompilerPassAssert: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "assert" statements
-    public func assertPass() throws -> AbstractSyntaxTreeNode? {
+    func assertPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassAssert().run(self)
     }
 }

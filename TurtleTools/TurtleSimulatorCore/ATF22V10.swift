@@ -129,11 +129,12 @@ public struct ATF22V10 {
         _ fuseList: [UInt]
     ) -> [ProductTermFuseMap] {
         ATF22V10.makeProductTerms(
-            defs.map({ (begin) -> (Int, Int) in
+            defs.map { begin -> (Int, Int) in
                 (begin, 1)
-            }),
+            },
             fuseList
-        ).map { (maps: [ProductTermFuseMap]) -> ProductTermFuseMap in
+        )
+        .map { (maps: [ProductTermFuseMap]) -> ProductTermFuseMap in
             maps.first!
         }
     }
@@ -142,21 +143,23 @@ public struct ATF22V10 {
         _ defs: [(Int, Int)],
         _ fuseList: [UInt]
     ) -> [[ProductTermFuseMap]] {
-        defs.map({ (begin, n) -> Range<Int> in
+        defs.map { begin, n -> Range<Int> in
             let a = begin / ATF22V10.sizeOfProductTerm
             return a..<(a + n)
-        }).map({ (range) -> [ProductTermFuseMap] in
-            range.map({ (i: Int) -> ProductTermFuseMap in
+        }
+        .map { range -> [ProductTermFuseMap] in
+            range.map { (i: Int) -> ProductTermFuseMap in
                 ProductTermFuseMap(
                     fuseList: [UInt](
                         fuseList[
                             (i + 0)
-                                * ATF22V10.sizeOfProductTerm..<((i + 1) * ATF22V10.sizeOfProductTerm)
+                                * ATF22V10
+                                .sizeOfProductTerm..<((i + 1) * ATF22V10.sizeOfProductTerm)
                         ]
                     )
                 )
-            })
-        })
+            }
+        }
     }
 
     // An input which is nil represents a pin which is not being actively
@@ -168,11 +171,11 @@ public struct ATF22V10 {
         return results
     }
 
-    fileprivate func stepOneIteration(inputs: [UInt?]) -> [UInt?] {
-        let feedback = outputLogicMacroCells.map({ (olmc) -> UInt in olmc.feedback })
-        let results = outputLogicMacroCells.map({ (olmc) -> UInt? in
+    private func stepOneIteration(inputs: [UInt?]) -> [UInt?] {
+        let feedback = outputLogicMacroCells.map { olmc -> UInt in olmc.feedback }
+        let results = outputLogicMacroCells.map { olmc -> UInt? in
             olmc.step(OutputLogicMacroCell.Input(inputs: inputs, feedback: feedback))
-        })
+        }
         return results
     }
 }

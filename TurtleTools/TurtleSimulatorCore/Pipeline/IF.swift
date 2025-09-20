@@ -29,8 +29,8 @@ public class IF_Output: NSObject, NSSecureCoding {
 
     public required init?(coder: NSCoder) {
         guard let ins = coder.decodeObject(forKey: "ins") as? UInt16,
-            let pc = coder.decodeObject(forKey: "pc") as? UInt16,
-            let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
+              let pc = coder.decodeObject(forKey: "pc") as? UInt16,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
         else {
             return nil
         }
@@ -57,8 +57,8 @@ public class IF_Output: NSObject, NSSecureCoding {
             return false
         }
         guard ins == rhs.ins,
-            pc == rhs.pc,
-            associatedPC == rhs.associatedPC
+              pc == rhs.pc,
+              associatedPC == rhs.associatedPC
         else {
             return false
         }
@@ -100,11 +100,11 @@ public class IF: NSObject, NSSecureCoding {
     public var alu = IDT7381()
     public var prevPC: UInt16 = 0
     public var prevIns: UInt16 = 0
-    public var prevAssociatedPC: UInt16? = nil
-    public var associatedPC: UInt16? = nil
+    public var prevAssociatedPC: UInt16?
+    public var associatedPC: UInt16?
 
-    public var load: (UInt16) -> UInt16 = { (addr: UInt16) in
-        return 0xffff  // bogus
+    public var load: (UInt16) -> UInt16 = { (_: UInt16) in
+        0xffff // bogus
     }
 
     public func step(input: Input) -> IF_Output {
@@ -151,15 +151,14 @@ public class IF: NSObject, NSSecureCoding {
         return aluInput
     }
 
-    public required override init() {
-    }
+    public override required init() {}
 
     public required init?(coder: NSCoder) {
         guard let alu = coder.decodeObject(of: IDT7381.self, forKey: "alu"),
-            let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
-            let prevIns = coder.decodeObject(forKey: "prevIns") as? UInt16,
-            let prevAssociatedPC = coder.decodeObject(forKey: "prevAssociatedPC") as? UInt16?,
-            let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
+              let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
+              let prevIns = coder.decodeObject(forKey: "prevIns") as? UInt16,
+              let prevAssociatedPC = coder.decodeObject(forKey: "prevAssociatedPC") as? UInt16?,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
         else {
             return nil
         }
@@ -206,10 +205,10 @@ public class IF: NSObject, NSSecureCoding {
             return false
         }
         guard alu == rhs.alu,
-            prevPC == rhs.prevPC,
-            prevIns == rhs.prevIns,
-            prevAssociatedPC == rhs.prevAssociatedPC,
-            associatedPC == rhs.associatedPC
+              prevPC == rhs.prevPC,
+              prevIns == rhs.prevIns,
+              prevAssociatedPC == rhs.prevAssociatedPC,
+              associatedPC == rhs.associatedPC
         else {
             return false
         }

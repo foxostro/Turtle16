@@ -51,7 +51,7 @@ open class DebugConsole: NSObject, NSSecureCoding {
     public let computer: TurtleComputer
     public let interpreter: DebugConsoleCommandLineInterpreter
     public let compiler: DebugConsoleCommandLineCompiler
-    public var undoManager: UndoManager? = nil
+    public var undoManager: UndoManager?
 
     public required init(computer: TurtleComputer) {
         self.computer = computer
@@ -109,10 +109,10 @@ open class DebugConsole: NSObject, NSSecureCoding {
     }
 
     fileprivate func registerUndo(_ actionName: String?) {
-        guard let undoManager = undoManager else {
+        guard let undoManager else {
             return
         }
-        if let actionName = actionName {
+        if let actionName {
             undoManager.setActionName(actionName)
         }
         let snapshotForUndo = computer.snapshot()
@@ -135,7 +135,7 @@ open class DebugConsole: NSObject, NSSecureCoding {
 
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard let rhs = rhs as? DebugConsole,
-            computer == rhs.computer
+              computer == rhs.computer
         else {
             return false
         }

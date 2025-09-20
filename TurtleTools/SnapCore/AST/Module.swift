@@ -56,7 +56,7 @@ public final class Module: AbstractSyntaxTreeNode {
         )
     }
 
-    public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Module {
+    public func inserting(children toInsert: [AbstractSyntaxTreeNode], at _: Int) -> Module {
         withBlock(block.inserting(children: toInsert, at: 0))
     }
 

@@ -20,8 +20,8 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
 
     public override func visit(get node0: Get) throws -> Expression? {
         guard !isTypeName(expr: node0.expr),
-            let structTyp = try maybeUnwrapStructType(node0),
-            (try typeChecker.check(expression: node0).maybeUnwrapFunctionType()) != nil
+              let structTyp = try maybeUnwrapStructType(node0),
+              try (typeChecker.check(expression: node0).maybeUnwrapFunctionType()) != nil
         else {
             return node0
         }
@@ -44,15 +44,14 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
             return node0
         }
         guard !isTypeName(expr: getExpr.expr),
-            let structTyp = try maybeUnwrapStructType(getExpr),
-            !structTyp.isModule,
-            let fnTyp = try typeChecker.check(expression: getExpr).maybeUnwrapFunctionType()
+              let structTyp = try maybeUnwrapStructType(getExpr),
+              !structTyp.isModule,
+              let fnTyp = try typeChecker.check(expression: getExpr).maybeUnwrapFunctionType()
         else {
             return node0
         }
 
-        let node1 =
-            node0
+        let node1 = node0
             .withCallee(
                 Get(
                     expr: Identifier(
@@ -70,11 +69,11 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         // converted to the type of the first function paramter.
         // TODO: While these requirements match those in StructMemberFunctionCallMatcher and rewriteStructMemberFunctionCallIfPossible, I'm not sure right now if that's the right approach to take. Maybe remove these conditions. Also, remove StructMemberFunctionCallMatcher and rewriteStructMemberFunctionCallIfPossible in favor of having this compiler pass do all struct method call erasure.
         guard fnTyp.arguments.count == (node0.arguments.count + 1),
-            typeChecker.areTypesAreConvertible(
-                ltype: fnTyp.arguments[0],
-                rtype: try typeChecker.check(expression: getExpr.expr),
-                isExplicitCast: false
-            )
+              try typeChecker.areTypesAreConvertible(
+                  ltype: fnTyp.arguments[0],
+                  rtype: typeChecker.check(expression: getExpr.expr),
+                  isExplicitCast: false
+              )
         else {
             return node1
         }
@@ -85,9 +84,8 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
 
     func isTypeName(expr: Expression) -> Bool {
         if let ident = expr as? Identifier,
-            let symbols = symbols,
-            symbols.maybeResolveType(identifier: ident.identifier) != nil
-        {
+           let symbols,
+           symbols.maybeResolveType(identifier: ident.identifier) != nil {
             true
         }
         else {
@@ -97,9 +95,12 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
 
     func maybeUnwrapStructType(_ getExpr: Get) throws -> StructTypeInfo? {
         switch try typeChecker.check(expression: getExpr.expr) {
-        case .constStructType(let typ), .structType(let typ),
-            .constPointer(.constStructType(let typ)), .constPointer(.structType(let typ)),
-            .pointer(.constStructType(let typ)), .pointer(.structType(let typ)):
+        case let .constStructType(typ),
+             let .structType(typ),
+             let .constPointer(.constStructType(typ)),
+             let .constPointer(.structType(typ)),
+             let .pointer(.constStructType(typ)),
+             let .pointer(.structType(typ)):
             typ
 
         default:
@@ -108,9 +109,9 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Method calls written in the dot syntax are rewritten to plain function calls
-    public func eraseMethodCalls() throws -> AbstractSyntaxTreeNode? {
+    func eraseMethodCalls() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassEraseMethodCalls().run(self)
     }
 }

@@ -31,10 +31,10 @@ public class MEM_Output: NSObject, NSSecureCoding {
 
     public required init?(coder: NSCoder) {
         guard let y = coder.decodeObject(forKey: "y") as? UInt16,
-            let storeOp = coder.decodeObject(forKey: "storeOp") as? UInt16,
-            let selC = coder.decodeObject(forKey: "selC") as? UInt,
-            let ctl = coder.decodeObject(forKey: "ctl") as? UInt,
-            let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
+              let storeOp = coder.decodeObject(forKey: "storeOp") as? UInt16,
+              let selC = coder.decodeObject(forKey: "selC") as? UInt,
+              let ctl = coder.decodeObject(forKey: "ctl") as? UInt,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
         else {
             return nil
         }
@@ -65,10 +65,10 @@ public class MEM_Output: NSObject, NSSecureCoding {
             return false
         }
         guard y == rhs.y,
-            storeOp == rhs.storeOp,
-            selC == rhs.selC,
-            ctl == rhs.ctl,
-            associatedPC == rhs.associatedPC
+              storeOp == rhs.storeOp,
+              selC == rhs.selC,
+              ctl == rhs.ctl,
+              associatedPC == rhs.associatedPC
         else {
             return false
         }
@@ -93,7 +93,7 @@ public class MEM_Output: NSObject, NSSecureCoding {
 public class MEM: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
 
-    public var associatedPC: UInt16? = nil
+    public var associatedPC: UInt16?
 
     public struct Input: Hashable {
         public let rdy: UInt
@@ -120,11 +120,11 @@ public class MEM: NSObject, NSSecureCoding {
         }
     }
 
-    public var load: (MemoryAddress) -> UInt16 = { (addr: MemoryAddress) in
-        return 0  // do nothing
+    public var load: (MemoryAddress) -> UInt16 = { (_: MemoryAddress) in
+        0 // do nothing
     }
 
-    public var store: (UInt16, MemoryAddress) -> Void = { (value: UInt16, addr: MemoryAddress) in
+    public var store: (UInt16, MemoryAddress) -> Void = { (_: UInt16, _: MemoryAddress) in
         // do nothing
     }
 
@@ -155,8 +155,7 @@ public class MEM: NSObject, NSSecureCoding {
         )
     }
 
-    public required override init() {
-    }
+    public override required init() {}
 
     public required init?(coder: NSCoder) {
         guard let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {

@@ -16,7 +16,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
 
     func testInit() {
-        let _ = CompilerPassWithDeclScan()
+        _ = CompilerPassWithDeclScan()
     }
 
     func testPassesProgramThroughUnmodified() throws {
@@ -45,8 +45,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         )
         .reconnect(parent: nil)
 
-        let expectedRewrittenFunctionDeclaration =
-            originalFunctionDeclaration
+        let expectedRewrittenFunctionDeclaration = originalFunctionDeclaration
             .withBody(
                 Block(children: [
                     Return()
@@ -161,7 +160,6 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
 
     func testCompileImplForTrait() throws {
-
         let symbols = Env()
 
         func compileSerialTrait() throws {
@@ -350,19 +348,17 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         _ = try CompilerPassWithDeclScan().run(input)
 
         guard
-            let Foo =
-                try input
-                .symbols
-                .resolveType(identifier: "Foo")
-                .maybeUnwrapStructType(),
-            let bar =
-                try Foo
-                .symbols
-                .resolveTypeOfIdentifier(
-                    sourceAnchor: nil,
-                    identifier: "bar"
-                )
-                .maybeUnwrapFunctionType()
+            let Foo = try input
+            .symbols
+            .resolveType(identifier: "Foo")
+            .maybeUnwrapStructType(),
+            let bar = try Foo
+            .symbols
+            .resolveTypeOfIdentifier(
+                sourceAnchor: nil,
+                identifier: "bar"
+            )
+            .maybeUnwrapFunctionType()
         else {
             XCTFail()
             return
@@ -372,8 +368,8 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
 }
 
-extension AbstractSyntaxTreeNode {
-    fileprivate func inserting(module: Module) -> Block {
+private extension AbstractSyntaxTreeNode {
+    func inserting(module: Module) -> Block {
         (self as! Block)
             .inserting(children: [module], at: 0)
             .reconnect(parent: nil)

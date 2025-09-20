@@ -15,7 +15,8 @@ final class SnapToCoreCompilerTests: XCTestCase {
         let input = TopLevel(
             children: [
                 CommentNode(string: "")
-            ])
+            ]
+        )
         let expected = Block(
             symbols: Env(),
             children: [

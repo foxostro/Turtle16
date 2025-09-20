@@ -19,10 +19,10 @@ public final class CompilerPassIf: CompilerPassWithDeclScan {
                 message: "cannot convert value of type `\(conditionType)' to type `bool'"
             )
         }
-        let node1 = node0
+        let node1 = try node0
             .withCondition(condition)
-            .withThenBranch(try visit(node0.thenBranch)!)
-            .withElseBranch(try visit(node0.elseBranch))
+            .withThenBranch(visit(node0.thenBranch)!)
+            .withElseBranch(visit(node0.elseBranch))
         let node2 = try SnapSubcompilerIf().compile(
             if: node1,
             symbols: symbols!
@@ -31,9 +31,9 @@ public final class CompilerPassIf: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "if" statements
-    public func ifPass() throws -> AbstractSyntaxTreeNode? {
+    func ifPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassIf().run(self)
     }
 }

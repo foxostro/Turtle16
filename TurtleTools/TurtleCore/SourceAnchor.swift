@@ -52,12 +52,12 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
 
     public var lineNumberPrefix: String? {
         var result: String? = nil
-        if let lineNumbers = lineNumbers {
+        if let lineNumbers {
             if lineNumbers.count == 1 {
-                result = "\(lineNumbers.lowerBound+1):"
+                result = "\(lineNumbers.lowerBound + 1):"
             }
             else {
-                result = "\(lineNumbers.lowerBound+1)..\(lineNumbers.upperBound):"
+                result = "\(lineNumbers.lowerBound + 1)..\(lineNumbers.upperBound):"
             }
         }
         return result
@@ -94,7 +94,7 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
     }
 
     public func union(_ sourceAnchor: SourceAnchor?) -> SourceAnchor {
-        guard let sourceAnchor = sourceAnchor else {
+        guard let sourceAnchor else {
             return self
         }
         let lowerBound = min(range.lowerBound, sourceAnchor.range.lowerBound)
@@ -108,9 +108,9 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         var index = range.lowerBound
         while index != range.upperBound {
             if text[index] == "\n" {
-                let lowerRange = (range.lowerBound)..<(index)
+                let lowerRange = (range.lowerBound)..<index
                 text.formIndex(after: &index)
-                let upperRange = (index)..<(range.upperBound)
+                let upperRange = index..<(range.upperBound)
                 return SourceAnchor(range: lowerRange, lineMapper: lineMapper).split()
                     + SourceAnchor(range: upperRange, lineMapper: lineMapper).split()
             }

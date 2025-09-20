@@ -132,7 +132,7 @@ public final class Disassembler {
     }
 
     public func disassembleOne(pc maybeProgramCounter: Int?, ins: UInt16) -> String? {
-        let opcode: Int = Int((ins & 0b11111000_00000000) >> 11)
+        let opcode = Int((ins & 0b11111000_00000000) >> 11)
         let c = Int((ins & 0b00000111_00000000) >> 8)
         let regC = registerName(c)
         let a = Int((ins & 0b00000000_11100000) >> 5)
@@ -226,16 +226,18 @@ public final class Disassembler {
     }
 
     public func disassembleToText(_ program: [UInt16]) -> String {
-        disassemble(program).map { entry in
-            var str = ""
-            if let label = entry.label {
-                str += label + ": "
+        disassemble(program)
+            .map { entry in
+                var str = ""
+                if let label = entry.label {
+                    str += label + ": "
+                }
+                if let mnemonic = entry.mnemonic {
+                    str += mnemonic
+                }
+                return str
             }
-            if let mnemonic = entry.mnemonic {
-                str += mnemonic
-            }
-            return str
-        }.joined(separator: "\n")
+            .joined(separator: "\n")
     }
 
     public init() {}

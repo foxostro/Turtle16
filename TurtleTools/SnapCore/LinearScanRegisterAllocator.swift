@@ -34,7 +34,7 @@ public struct LinearScanRegisterAllocator {
 
     private init(_ numRegisters: Int, _ liveIntervals: [LiveInterval]) {
         assert(numRegisters >= 0)
-        self.registerPool = [Bool](repeating: true, count: numRegisters)
+        registerPool = [Bool](repeating: true, count: numRegisters)
         self.liveIntervals = liveIntervals
         increasingStartPoint = liveIntervals.sorted { leftRange, rightRange in
             leftRange.range.startIndex < rightRange.range.startIndex
@@ -70,8 +70,7 @@ public struct LinearScanRegisterAllocator {
 
     private mutating func spillAtInterval(_ i: Int) {
         if let spill = active.last,
-            liveIntervals[spill].range.endIndex > liveIntervals[i].range.endIndex
-        {
+           liveIntervals[spill].range.endIndex > liveIntervals[i].range.endIndex {
             registers[i] = registers[spill]
             registers[spill] = nil
             removeFromActive(spill)
@@ -108,7 +107,7 @@ public struct LinearScanRegisterAllocator {
                 return i
             }
         }
-        return nil  // unreachable?
+        return nil // unreachable?
     }
 
     private mutating func freePhysicalRegister(_ j: Int) {
@@ -121,16 +120,16 @@ public struct LinearScanRegisterAllocator {
         var result: [LiveInterval] = []
         for i in 0..<liveIntervals.count {
             let liveInterval = liveIntervals[i]
-            let physicalRegisterName: String?
-            if let name = liveInterval.physicalRegisterName {
-                physicalRegisterName = name
-            }
-            else if let index = (registers[i] ?? nil) {
-                physicalRegisterName = "r\(index)"
-            }
-            else {
-                physicalRegisterName = nil
-            }
+            let physicalRegisterName: String? =
+                if let name = liveInterval.physicalRegisterName {
+                    name
+                }
+                else if let index = (registers[i] ?? nil) {
+                    "r\(index)"
+                }
+                else {
+                    nil
+                }
             result.append(
                 LiveInterval(
                     range: liveInterval.range,

@@ -65,13 +65,13 @@ public final class Block: AbstractSyntaxTreeNode {
         )
     }
 
-    /// Returns a new block, which is a copy of this one, assigning new IDs to the block, and to each descendant block.
+    /// Returns a new block, which is a copy of this one, assigning new IDs to the block, and to
+    /// each descendant block.
     public func clone() -> Block {
         final class BlockCloner: CompilerPass {
             public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
                 let block1 = try super.visit(block: block0) as! Block
-                let block2 =
-                    block1
+                let block2 = block1
                     .withSymbols(block1.symbols.clone())
                     .withNewId()
                 return block2
@@ -93,7 +93,8 @@ public final class Block: AbstractSyntaxTreeNode {
         return withChildren(children1)
     }
 
-    /// Returns a new block which inserts the given Seq at the specified index, provided it is not empty.
+    /// Returns a new block which inserts the given Seq at the specified index, provided it is not
+    /// empty.
     public func inserting(seq toInsert: Seq, at index: Int) -> Block {
         if toInsert.children.isEmpty {
             self
@@ -130,8 +131,7 @@ public final class Block: AbstractSyntaxTreeNode {
                 "nil"
             }
         let childDesc = makeChildDescriptions(depth: depth + 1)
-        let fullDesc =
-            "\(indent)\(selfDesc)(symbols=\(symbols); parent=\(parentStr); id=\(id))\(childDesc)"
+        let fullDesc = "\(indent)\(selfDesc)(symbols=\(symbols); parent=\(parentStr); id=\(id))\(childDesc)"
         return fullDesc
     }
 

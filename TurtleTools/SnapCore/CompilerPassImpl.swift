@@ -23,7 +23,7 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
         let node1 = try super.visit(impl: node0) as! Impl
         guard
             let typ = try typeChecker.check(expression: node1.structTypeExpr)
-                .maybeUnwrapStructType()
+            .maybeUnwrapStructType()
         else {
             throw CompilerError(
                 sourceAnchor: node1.sourceAnchor,
@@ -31,13 +31,14 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
             )
         }
         let children1 = node1.children
-        let children2 =
-            try children1
+        let children2 = try children1
             .map { child0 in
-                let mangledName = try typ.symbols.resolve(identifier: child0.identifier.identifier)
-                    .type.unwrapFunctionType().mangledName!
-                let child1 =
-                    child0
+                let mangledName = try typ.symbols
+                    .resolve(identifier: child0.identifier.identifier)
+                    .type
+                    .unwrapFunctionType()
+                    .mangledName!
+                let child1 = child0
                     .withIdentifier(mangledName)
                     .withFunctionType(child0.functionType.withName(mangledName))
                 return child1
@@ -60,14 +61,14 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
         // the struct's methods, then return a direct reference to the function
         // through the mangled function identifier.
         guard let objectIdent = node0.expr as? Identifier,
-            let objectType = symbols!.maybeResolveType(
-                identifier: objectIdent.identifier
-            ),
-            let structType = objectType.maybeUnwrapStructType(),
-            !structType.isModule,
-            node0.member is Identifier,
-            let functionType = try typeChecker.check(expression: node0).maybeUnwrapFunctionType(),
-            let mangledName = functionType.mangledName
+              let objectType = symbols!.maybeResolveType(
+                  identifier: objectIdent.identifier
+              ),
+              let structType = objectType.maybeUnwrapStructType(),
+              !structType.isModule,
+              node0.member is Identifier,
+              let functionType = try typeChecker.check(expression: node0).maybeUnwrapFunctionType(),
+              let mangledName = functionType.mangledName
         else {
             return node0
         }
@@ -78,9 +79,9 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Impl blocks
-    public func eraseImplPass() throws -> AbstractSyntaxTreeNode? {
+    func eraseImplPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassImpl().run(self)
     }
 }

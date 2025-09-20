@@ -68,17 +68,17 @@ public final class Seq: AbstractSyntaxTreeNode {
     }
 
     public func makeChildDescriptions(depth: Int = 0) -> String {
-        let result: String
-        if children.isEmpty {
-            result = " (empty)"
-        }
-        else {
-            result =
+        let result =
+            if children.isEmpty {
+                " (empty)"
+            }
+            else {
                 "\n"
-                + children.map {
-                    $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
-                }.joined(separator: "\n")
-        }
+                    + children.map {
+                        $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
+                    }
+                    .joined(separator: "\n")
+            }
         return result
     }
 }

@@ -504,8 +504,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted()
-        throws
-    {
+        throws {
         let symbols = Env(tuples: [
             (
                 "foo",
@@ -2723,7 +2722,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.sp(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 5)),
             TackInstructionNode(.sw(.w(2), .p(0), 1)),
-            TackInstructionNode(.alloca(.p(3), 2)),  // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
+            TackInstructionNode(.alloca(.p(3), 2)),
+            // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
             TackInstructionNode(.memcpy(.p(3), .p(0), 2)),
             TackInstructionNode(.call("panic")),
             TackInstructionNode(.free(2))

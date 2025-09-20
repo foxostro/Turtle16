@@ -14,21 +14,21 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
     private let a = Identifier("a")
     private let u16 = PrimitiveType(.u16)
     private let bool = PrimitiveType(.bool)
-    
+
     func testTypeTestExpression() throws {
         let input = Block(
             children: [
                 Is(expr: LiteralBool(false), testType: u16)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(false)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -46,14 +46,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 PrimitiveType(.u8)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -66,7 +66,7 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 SizeOf(a)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
@@ -74,7 +74,7 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 As(expr: LiteralInt(1), targetType: u16)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions(
             MemoryLayoutStrategyTurtle16()
@@ -88,54 +88,54 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 SizeOf(u16)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 As(expr: LiteralInt(1), targetType: u16)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions(
             MemoryLayoutStrategyTurtle16()
         )
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCompileTimeIntegerArithmeticExpression() throws {
         let input = Block(
             children: [
                 Binary(op: .plus, left: LiteralInt(1), right: LiteralInt(2))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(3)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCompileTimeBooleanExpression() throws {
         let input = Block(
             children: [
                 Binary(op: .eq, left: LiteralBool(true), right: LiteralBool(true))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -147,14 +147,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .eq, left: LiteralBool(true), right: LiteralBool(true))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -166,14 +166,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .ne, left: LiteralBool(true), right: LiteralBool(true))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(false)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -185,14 +185,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .doubleAmpersand, left: LiteralBool(false), right: LiteralBool(true))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(false)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -204,33 +204,33 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .doublePipe, left: LiteralBool(false), right: LiteralBool(true))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testBinary_comptime_eq() throws {
         let input = Block(
             children: [
                 Binary(op: .eq, left: LiteralInt(1), right: LiteralInt(1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -242,14 +242,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .ne, left: LiteralInt(1), right: LiteralInt(1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(false)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -261,14 +261,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .lt, left: LiteralInt(1), right: LiteralInt(2))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -280,14 +280,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .gt, left: LiteralInt(2), right: LiteralInt(1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -299,14 +299,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .le, left: LiteralInt(1), right: LiteralInt(1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -318,14 +318,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .ge, left: LiteralInt(1), right: LiteralInt(1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralBool(true)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
@@ -337,15 +337,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .plus, left: LiteralInt(-1000), right: LiteralInt(-1000))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(-2000)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -356,15 +356,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .minus, left: LiteralInt(1), right: LiteralInt(1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(0)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -375,15 +375,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .star, left: LiteralInt(1), right: LiteralInt(-1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(-1)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -394,15 +394,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .divide, left: LiteralInt(-1), right: LiteralInt(-1))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(1)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -413,15 +413,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .modulus, left: LiteralInt(3), right: LiteralInt(2))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(1)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -432,15 +432,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .ampersand, left: LiteralInt(0xab), right: LiteralInt(0x0f))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(0xb)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -451,15 +451,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .pipe, left: LiteralInt(0xab), right: LiteralInt(0x0f))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(0xaf)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -470,15 +470,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .caret, left: LiteralInt(0xab), right: LiteralInt(0xab))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(0)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -489,15 +489,15 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .leftDoubleAngle, left: LiteralInt(2), right: LiteralInt(2))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(8)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -508,19 +508,19 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Binary(op: .rightDoubleAngle, left: LiteralInt(8), right: LiteralInt(2))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
                 LiteralInt(2)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testGetCountOfArray() throws {
         let shared = [
             VarDeclaration(
@@ -536,14 +536,14 @@ final class CompilerPassEraseCompileTimeExpressionsTests: XCTestCase {
                 Get(expr: a, member: Identifier("count"))
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: shared + [
                 As(expr: LiteralInt(10), targetType: u16)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.eraseCompileTimeExpressions()
         XCTAssertEqual(actual, expected)

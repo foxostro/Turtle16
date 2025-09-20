@@ -19,8 +19,7 @@ public struct RegisterLiveIntervalCalculator {
             let child = nodes[i]
             for name in RegisterUtils.getReferencedRegisters(child) {
                 if let existing = nameToRange[name] {
-                    let physicalRegisterName =
-                        getPhysicalRegisterName(existing.virtualRegisterName)
+                    let physicalRegisterName = getPhysicalRegisterName(existing.virtualRegisterName)
                         ?? existing.physicalRegisterName
                     nameToRange[name] = LiveInterval(
                         range: existing.range.startIndex..<(i + 1),
@@ -51,16 +50,16 @@ public struct RegisterLiveIntervalCalculator {
     private func getSortName(_ virtualRegisterName: String) -> String {
         switch virtualRegisterName {
         case "ra":
-            return "r5"
+            "r5"
 
         case "sp":
-            return "r6"
+            "r6"
 
         case "fp":
-            return "r7"
+            "r7"
 
         default:
-            return virtualRegisterName
+            virtualRegisterName
         }
     }
 

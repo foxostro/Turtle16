@@ -26,7 +26,7 @@ final class Turtle16ComputerTests: XCTestCase {
         let computer = TurtleComputer(cpu)
 
         computer.instructions = [
-            0b10100111_11111110  // JMP -2
+            0b10100111_11111110 // JMP -2
         ]
         XCTAssertEqual(
             computer.disassembly.entries,
@@ -41,7 +41,7 @@ final class Turtle16ComputerTests: XCTestCase {
         )
 
         computer.instructions = [
-            0x0000  // NOP
+            0x0000 // NOP
         ]
         XCTAssertEqual(
             computer.disassembly.entries,

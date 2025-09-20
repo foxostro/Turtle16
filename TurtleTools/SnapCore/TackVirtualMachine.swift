@@ -61,12 +61,11 @@ public final class TackVirtualMachine {
     public var symbols: Env? {
         var result: Env? = nil
         var i = Int(pc)
-        while i >= 0 && result == nil {
+        while i >= 0, result == nil {
             if i < program.symbols.count {
                 result = program.symbols[i]
             }
             i = i - 1
-
         }
         return result
     }
@@ -74,12 +73,11 @@ public final class TackVirtualMachine {
     public func findSourceAnchor(pc pc_: UInt) -> SourceAnchor? {
         var result: SourceAnchor? = nil
         var i = Int(pc_)
-        while i >= 0 && result == nil {
+        while i >= 0, result == nil {
             if i < program.sourceAnchor.count {
                 result = program.sourceAnchor[i]
             }
             i = i - 1
-
         }
         return result
     }
@@ -102,48 +100,48 @@ public final class TackVirtualMachine {
     }
 
     public func wordToInt(_ word: Word) -> Int {
-        let result: Int
-        if word > (Word.max >> 1) {
-            result = -Int(~word + 1)
-        }
-        else {
-            result = Int(word)
-        }
+        let result: Int =
+            if word > (Word.max >> 1) {
+                -Int(~word + 1)
+            }
+            else {
+                Int(word)
+            }
         return result
     }
 
     public func intToWord(_ value: Int) -> Word {
         assert(value >= Int16.min && value <= Int16.max)
-        let result: Word
-        if value < 0 {
-            result = Word(0) &- Word(-value)
-        }
-        else {
-            result = Word(value)
-        }
+        let result =
+            if value < 0 {
+                Word(0) &- Word(-value)
+            }
+            else {
+                Word(value)
+            }
         return result
     }
 
     public func uint8ToInt(_ u8: UInt8) -> Int {
-        let result: Int
-        if u8 > (UInt8.max >> 1) {
-            result = -Int(~u8 + 1)
-        }
-        else {
-            result = Int(u8)
-        }
+        let result: Int =
+            if u8 > (UInt8.max >> 1) {
+                -Int(~u8 + 1)
+            }
+            else {
+                Int(u8)
+            }
         return result
     }
 
     public func intToUInt8(_ value: Int) -> UInt8 {
         assert(value >= Int8.min && value <= Int8.max)
-        let result: UInt8
-        if value < 0 {
-            result = UInt8(0) &- UInt8(-value)
-        }
-        else {
-            result = UInt8(value)
-        }
+        let result =
+            if value < 0 {
+                UInt8(0) &- UInt8(-value)
+            }
+            else {
+                UInt8(value)
+            }
         return result
     }
 
@@ -185,11 +183,16 @@ public final class TackVirtualMachine {
 
     public func getRegister(_ reg: Register) throws -> UInt {
         switch reg {
-        case .sp, .fp:
+        case .sp,
+             .fp:
             // We should have set fp and sp in init() so this ought never fail.
             return globalRegisters[reg]!
 
-        case .ra, .p(_), .w(_), .b(_), .o(_):
+        case .ra,
+             .p(_),
+             .w(_),
+             .b(_),
+             .o:
             guard let value = registers[registers.count - 1][reg] else {
                 throw TackVirtualMachineError.undefinedRegister(reg)
             }
@@ -215,10 +218,15 @@ public final class TackVirtualMachine {
 
     public func setRegister(_ reg: Register, _ value: UInt) {
         switch reg {
-        case .sp, .fp:
+        case .sp,
+             .fp:
             globalRegisters[reg] = value
 
-        case .ra, .p(_), .w(_), .b(_), .o(_):
+        case .ra,
+             .p(_),
+             .w(_),
+             .b(_),
+             .o:
             registers[registers.count - 1][reg] = value
         }
     }
@@ -255,13 +263,13 @@ public final class TackVirtualMachine {
     }
 
     public func load(address base: UInt, signedOffset: Int = 0) -> UInt {
-        let address: UInt
-        if signedOffset >= 0 {
-            address = base &+ UInt(signedOffset)
-        }
-        else {
-            address = base &- UInt(-signedOffset)
-        }
+        let address: UInt =
+            if signedOffset >= 0 {
+                base &+ UInt(signedOffset)
+            }
+            else {
+                base &- UInt(-signedOffset)
+            }
         let pageMask: UInt = kPageSize - 1
         let pageIndex: UInt = address & ~pageMask
         let pageOffset: UInt = address & pageMask
@@ -289,13 +297,13 @@ public final class TackVirtualMachine {
     }
 
     public func store(value: UInt, address base: UInt, signedOffset: Int = 0) {
-        let address: UInt
-        if signedOffset >= 0 {
-            address = base &+ UInt(signedOffset)
-        }
-        else {
-            address = base &- UInt(-signedOffset)
-        }
+        let address: UInt =
+            if signedOffset >= 0 {
+                base &+ UInt(signedOffset)
+            }
+            else {
+                base &- UInt(-signedOffset)
+            }
         if address == kMemoryMappedSerialOutputPort {
             let octet = UInt8(value & 0xff)
             onSerialOutput(octet)
@@ -314,7 +322,7 @@ public final class TackVirtualMachine {
     public func run() throws {
         var shouldStepOver = true
         while !isHalted {
-            if pc < program.instructions.count && breakPoints[Int(pc)] && !shouldStepOver {
+            if pc < program.instructions.count, breakPoints[Int(pc)], !shouldStepOver {
                 return
             }
 
@@ -337,200 +345,195 @@ public final class TackVirtualMachine {
             nop()
         case .hlt:
             hlt()
-        case .call(let target):
+        case let .call(target):
             try call(target)
-        case .callptr(let target):
+        case let .callptr(target):
             try callptr(target)
-        case .enter(let numberOfWords):
+        case let .enter(numberOfWords):
             try enter(numberOfWords)
         case .leave:
             try leave()
         case .ret:
             try ret()
-        case .jmp(let target):
+        case let .jmp(target):
             try jmp(target)
-        case .la(let dst, let label):
+        case let .la(dst, label):
             try la(dst, label)
-        case .ststr(let address, let str):
+        case let .ststr(address, str):
             try ststr(address, str)
-        case .memcpy(let dst, let src, let count):
+        case let .memcpy(dst, src, count):
             try memcpy(dst, src, count)
-        case .alloca(let dst, let count):
+        case let .alloca(dst, count):
             try alloca(dst, count)
-        case .free(let count):
+        case let .free(count):
             try free(count)
-        case .inlineAssembly(let asm):
+        case let .inlineAssembly(asm):
             try inlineAssembly(asm)
-        case .syscall(let n, let ptr):
+        case let .syscall(n, ptr):
             try syscall(n, ptr)
-
-        case .bz(let test, let target):
+        case let .bz(test, target):
             try bz(test, target)
-        case .bnz(let test, let target):
+        case let .bnz(test, target):
             try bnz(test, target)
-        case .eqo(let dst, let left, let right):
+        case let .eqo(dst, left, right):
             try eqo(dst, left, right)
-        case .neo(let dst, let left, let right):
+        case let .neo(dst, left, right):
             try neo(dst, left, right)
-        case .not(let dst, let src):
+        case let .not(dst, src):
             try not(dst, src)
-        case .lio(let dst, let imm):
+        case let .lio(dst, imm):
             try lio(dst, imm)
-        case .lo(let dst, let address, let offset):
+        case let .lo(dst, address, offset):
             try lo(dst, address, offset)
-        case .so(let src, let address, let offset):
+        case let .so(src, address, offset):
             try so(src, address, offset)
-
-        case .eqp(let dst, let left, let right):
+        case let .eqp(dst, left, right):
             try eqp(dst, left, right)
-        case .nep(let dst, let left, let right):
+        case let .nep(dst, left, right):
             try nep(dst, left, right)
-        case .lip(let dst, let imm):
+        case let .lip(dst, imm):
             try lip(dst, imm)
-        case .addip(let dst, let left, let right):
+        case let .addip(dst, left, right):
             try addip(dst, left, right)
-        case .subip(let dst, let left, let right):
+        case let .subip(dst, left, right):
             try subip(dst, left, right)
-        case .addpw(let dst, let left, let right):
+        case let .addpw(dst, left, right):
             try addpw(dst, left, right)
-        case .lp(let dst, let address, let offset):
+        case let .lp(dst, address, offset):
             try lp(dst, address, offset)
-        case .sp(let src, let address, let offset):
+        case let .sp(src, address, offset):
             try sp(src, address, offset)
-
-        case .lw(let dst, let address, let offset):
+        case let .lw(dst, address, offset):
             try lw(dst, address, offset)
-        case .sw(let src, let address, let offset):
+        case let .sw(src, address, offset):
             try sw(src, address, offset)
-        case .bzw(let test, let target):
+        case let .bzw(test, target):
             try bzw(test, target)
-        case .andiw(let dst, let left, let right):
+        case let .andiw(dst, left, right):
             try andiw(dst, left, right)
-        case .addiw(let dst, let left, let right):
+        case let .addiw(dst, left, right):
             try addiw(dst, left, right)
-        case .subiw(let dst, let left, let right):
+        case let .subiw(dst, left, right):
             try subiw(dst, left, right)
-        case .muliw(let dst, let left, let right):
+        case let .muliw(dst, left, right):
             try muliw(dst, left, right)
-        case .liw(let dst, let imm):
+        case let .liw(dst, imm):
             try liw(dst, imm)
-        case .liuw(let dst, let imm):
+        case let .liuw(dst, imm):
             try liuw(dst, imm)
-        case .andw(let dst, let left, let right):
+        case let .andw(dst, left, right):
             try andw(dst, left, right)
-        case .orw(let dst, let left, let right):
+        case let .orw(dst, left, right):
             try orw(dst, left, right)
-        case .xorw(let dst, let left, let right):
+        case let .xorw(dst, left, right):
             try xorw(dst, left, right)
-        case .negw(let dst, let src):
+        case let .negw(dst, src):
             try negw(dst, src)
-        case .addw(let dst, let left, let right):
+        case let .addw(dst, left, right):
             try addw(dst, left, right)
-        case .subw(let dst, let left, let right):
+        case let .subw(dst, left, right):
             try subw(dst, left, right)
-        case .mulw(let dst, let left, let right):
+        case let .mulw(dst, left, right):
             try mulw(dst, left, right)
-        case .divw(let dst, let left, let right):
+        case let .divw(dst, left, right):
             try divw(dst, left, right)
-        case .divuw(let dst, let left, let right):
+        case let .divuw(dst, left, right):
             try divuw(dst, left, right)
-        case .modw(let dst, let left, let right):
+        case let .modw(dst, left, right):
             try mod16(dst, left, right)
-        case .lslw(let dst, let left, let right):
+        case let .lslw(dst, left, right):
             try lslw(dst, left, right)
-        case .lsrw(let dst, let left, let right):
+        case let .lsrw(dst, left, right):
             try lsrw(dst, left, right)
-        case .eqw(let dst, let left, let right):
+        case let .eqw(dst, left, right):
             try eqw(dst, left, right)
-        case .new(let dst, let left, let right):
+        case let .new(dst, left, right):
             try new(dst, left, right)
-        case .ltw(let dst, let left, let right):
+        case let .ltw(dst, left, right):
             try ltw(dst, left, right)
-        case .gew(let dst, let left, let right):
+        case let .gew(dst, left, right):
             try gew(dst, left, right)
-        case .lew(let dst, let left, let right):
+        case let .lew(dst, left, right):
             try lew(dst, left, right)
-        case .gtw(let dst, let left, let right):
+        case let .gtw(dst, left, right):
             try gtw(dst, left, right)
-        case .ltuw(let dst, let left, let right):
+        case let .ltuw(dst, left, right):
             try ltuw(dst, left, right)
-        case .geuw(let dst, let left, let right):
+        case let .geuw(dst, left, right):
             try geuw(dst, left, right)
-        case .leuw(let dst, let left, let right):
+        case let .leuw(dst, left, right):
             try leuw(dst, left, right)
-        case .gtuw(let dst, let left, let right):
+        case let .gtuw(dst, left, right):
             try gtuw(dst, left, right)
-
-        case .lb(let dst, let address, let offset):
+        case let .lb(dst, address, offset):
             try lb(dst, address, offset)
-        case .sb(let src, let address, let offset):
+        case let .sb(src, address, offset):
             try sb(src, address, offset)
-        case .lib(let dst, let imm):
+        case let .lib(dst, imm):
             try li8(dst, imm)
-        case .liub(let dst, let imm):
+        case let .liub(dst, imm):
             try liu8(dst, imm)
-        case .andb(let dst, let left, let right):
+        case let .andb(dst, left, right):
             try and8(dst, left, right)
-        case .orb(let dst, let left, let right):
+        case let .orb(dst, left, right):
             try or8(dst, left, right)
-        case .xorb(let dst, let left, let right):
+        case let .xorb(dst, left, right):
             try xor8(dst, left, right)
-        case .negb(let dst, let src):
+        case let .negb(dst, src):
             try neg8(dst, src)
-        case .addb(let dst, let left, let right):
+        case let .addb(dst, left, right):
             try add8(dst, left, right)
-        case .subb(let dst, let left, let right):
+        case let .subb(dst, left, right):
             try sub8(dst, left, right)
-        case .mulb(let dst, let left, let right):
+        case let .mulb(dst, left, right):
             try mul8(dst, left, right)
-        case .divb(let dst, let left, let right):
+        case let .divb(dst, left, right):
             try divb(dst, left, right)
-        case .divub(let dst, let left, let right):
+        case let .divub(dst, left, right):
             try divub(dst, left, right)
-        case .modb(let dst, let left, let right):
+        case let .modb(dst, left, right):
             try mod8(dst, left, right)
-        case .lslb(let dst, let left, let right):
+        case let .lslb(dst, left, right):
             try lsl8(dst, left, right)
-        case .lsrb(let dst, let left, let right):
+        case let .lsrb(dst, left, right):
             try lsr8(dst, left, right)
-        case .eqb(let dst, let left, let right):
+        case let .eqb(dst, left, right):
             try eq8(dst, left, right)
-        case .neb(let dst, let left, let right):
+        case let .neb(dst, left, right):
             try ne8(dst, left, right)
-        case .ltb(let dst, let left, let right):
+        case let .ltb(dst, left, right):
             try lt8(dst, left, right)
-        case .geb(let dst, let left, let right):
+        case let .geb(dst, left, right):
             try ge8(dst, left, right)
-        case .leb(let dst, let left, let right):
+        case let .leb(dst, left, right):
             try le8(dst, left, right)
-        case .gtb(let dst, let left, let right):
+        case let .gtb(dst, left, right):
             try gt8(dst, left, right)
-        case .ltub(let dst, let left, let right):
+        case let .ltub(dst, left, right):
             try ltu8(dst, left, right)
-        case .geub(let dst, let left, let right):
+        case let .geub(dst, left, right):
             try geu8(dst, left, right)
-        case .leub(let dst, let left, let right):
+        case let .leub(dst, left, right):
             try leu8(dst, left, right)
-        case .gtub(let dst, let left, let right):
+        case let .gtub(dst, left, right):
             try gtu8(dst, left, right)
-
-        case .movsbw(let dst, let src):
+        case let .movsbw(dst, src):
             try movsbw(dst, src)
-        case .movswb(let dst, let src):
+        case let .movswb(dst, src):
             try movswb(dst, src)
-        case .movzwb(let dst, let src):
+        case let .movzwb(dst, src):
             try movzwb(dst, src)
-        case .movzbw(let dst, let src):
+        case let .movzbw(dst, src):
             try movzbw(dst, src)
-        case .movp(let dst, let src):
+        case let .movp(dst, src):
             try bitcast(.p(dst), .p(src))
-        case .movw(let dst, let src):
+        case let .movw(dst, src):
             try bitcast(.w(dst), .w(src))
-        case .movb(let dst, let src):
+        case let .movb(dst, src):
             try bitcast(.b(dst), .b(src))
-        case .movo(let dst, let src):
+        case let .movo(dst, src):
             try bitcast(.o(dst), .o(src))
-        case .bitcast(let dst, let src):
+        case let .bitcast(dst, src):
             try bitcast(dst, src)
         }
 
@@ -565,7 +568,8 @@ public final class TackVirtualMachine {
         nextPc = destination
     }
 
-    let kSizeOfSavedRegisters: UInt = 7  // TODO: The size of this register save-area needs to be machine-specific. Different targets will need different sizes.
+    let kSizeOfSavedRegisters: UInt =
+        7 // TODO: The size of this register save-area needs to be machine-specific. Different targets will need different sizes.
 
     private func enter(_ numberOfWords: Int) throws {
         guard numberOfWords >= 0 else {
@@ -777,7 +781,7 @@ public final class TackVirtualMachine {
     }
 
     private func liw(_ dst: Register16, _ imm_: Int) throws {
-        guard imm_ >= Int16.min && imm_ <= Int16.max else {
+        guard imm_ >= Int16.min, imm_ <= Int16.max else {
             throw TackVirtualMachineError.invalidArgument
         }
         let imm = intToWord(imm_)
@@ -785,14 +789,14 @@ public final class TackVirtualMachine {
     }
 
     private func lip(_ dst: RegisterPointer, _ imm: Int) throws {
-        guard imm >= 0 && imm <= UInt16.max else {
+        guard imm >= 0, imm <= UInt16.max else {
             throw TackVirtualMachineError.invalidArgument
         }
         setRegister(dst, p: UInt(imm))
     }
 
     private func liuw(_ dst: Register16, _ imm: Int) throws {
-        guard imm >= 0 && imm <= UInt16.max else {
+        guard imm >= 0, imm <= UInt16.max else {
             throw TackVirtualMachineError.invalidArgument
         }
         setRegister(dst, w: UInt16(imm))
@@ -843,7 +847,7 @@ public final class TackVirtualMachine {
         _ rightRegister: Register16
     ) throws {
         let left = try getRegister(p: leftRegister)
-        let right = UInt(try getRegister(w: rightRegister))
+        let right = try UInt(getRegister(w: rightRegister))
         let result = left &+ right
         setRegister(dst, p: result)
     }
@@ -886,8 +890,8 @@ public final class TackVirtualMachine {
         _ numerator_: Register16,
         _ denominator_: Register16
     ) throws {
-        let numerator = wordToInt(try getRegister(w: numerator_))
-        let denominator = wordToInt(try getRegister(w: denominator_))
+        let numerator = try wordToInt(getRegister(w: numerator_))
+        let denominator = try wordToInt(getRegister(w: denominator_))
         guard denominator != 0 else {
             throw TackVirtualMachineError.divideByZero
         }
@@ -1016,8 +1020,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register16,
         _ rightRegister: Register16
     ) throws {
-        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
-        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let left = try wordToInt(signExtend16(getRegister(w: leftRegister)))
+        let right = try wordToInt(signExtend16(getRegister(w: rightRegister)))
         let result = (left < right)
         setRegister(dst, o: result)
     }
@@ -1027,8 +1031,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register16,
         _ rightRegister: Register16
     ) throws {
-        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
-        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let left = try wordToInt(signExtend16(getRegister(w: leftRegister)))
+        let right = try wordToInt(signExtend16(getRegister(w: rightRegister)))
         let result = (left >= right)
         setRegister(dst, o: result)
     }
@@ -1038,8 +1042,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register16,
         _ rightRegister: Register16
     ) throws {
-        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
-        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let left = try wordToInt(signExtend16(getRegister(w: leftRegister)))
+        let right = try wordToInt(signExtend16(getRegister(w: rightRegister)))
         let result = (left <= right)
         setRegister(dst, o: result)
     }
@@ -1049,8 +1053,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register16,
         _ rightRegister: Register16
     ) throws {
-        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
-        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let left = try wordToInt(signExtend16(getRegister(w: leftRegister)))
+        let right = try wordToInt(signExtend16(getRegister(w: rightRegister)))
         let result = (left > right)
         setRegister(dst, o: result)
     }
@@ -1100,7 +1104,7 @@ public final class TackVirtualMachine {
     }
 
     private func li8(_ dst: Register8, _ imm_: Int) throws {
-        guard imm_ >= Int8.min && imm_ <= Int8.max else {
+        guard imm_ >= Int8.min, imm_ <= Int8.max else {
             throw TackVirtualMachineError.invalidArgument
         }
         let imm = intToUInt8(imm_)
@@ -1108,7 +1112,7 @@ public final class TackVirtualMachine {
     }
 
     private func liu8(_ dst: Register8, _ imm: Int) throws {
-        guard imm >= 0 && imm <= UInt8.max else {
+        guard imm >= 0, imm <= UInt8.max else {
             throw TackVirtualMachineError.invalidArgument
         }
         setRegister(dst, b: UInt8(imm))
@@ -1188,8 +1192,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register8,
         _ rightRegister: Register8
     ) throws {
-        let numerator = uint8ToInt(try getRegister(b: leftRegister))
-        let denominator = uint8ToInt(try getRegister(b: rightRegister))
+        let numerator = try uint8ToInt(getRegister(b: leftRegister))
+        let denominator = try uint8ToInt(getRegister(b: rightRegister))
         guard denominator != 0 else {
             throw TackVirtualMachineError.divideByZero
         }
@@ -1274,8 +1278,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register8,
         _ rightRegister: Register8
     ) throws {
-        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
-        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let left = try wordToInt(signExtend8(Word(getRegister(b: leftRegister))))
+        let right = try wordToInt(signExtend8(Word(getRegister(b: rightRegister))))
         let result = (left < right)
         setRegister(dst, o: result)
     }
@@ -1285,8 +1289,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register8,
         _ rightRegister: Register8
     ) throws {
-        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
-        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let left = try wordToInt(signExtend8(Word(getRegister(b: leftRegister))))
+        let right = try wordToInt(signExtend8(Word(getRegister(b: rightRegister))))
         let result = (left >= right)
         setRegister(dst, o: result)
     }
@@ -1296,8 +1300,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register8,
         _ rightRegister: Register8
     ) throws {
-        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
-        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let left = try wordToInt(signExtend8(Word(getRegister(b: leftRegister))))
+        let right = try wordToInt(signExtend8(Word(getRegister(b: rightRegister))))
         let result = (left <= right)
         setRegister(dst, o: result)
     }
@@ -1307,8 +1311,8 @@ public final class TackVirtualMachine {
         _ leftRegister: Register8,
         _ rightRegister: Register8
     ) throws {
-        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
-        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let left = try wordToInt(signExtend8(Word(getRegister(b: leftRegister))))
+        let right = try wordToInt(signExtend8(Word(getRegister(b: rightRegister))))
         let result = (left > right)
         setRegister(dst, o: result)
     }
@@ -1382,7 +1386,7 @@ public final class TackVirtualMachine {
     }
 
     private func bitcast(_ dst: Register, _ src: Register) throws {
-        setRegister(dst, try getRegister(src))
+        try setRegister(dst, getRegister(src))
     }
 
     private func inlineAssembly(_ asm: String) throws {
@@ -1391,8 +1395,8 @@ public final class TackVirtualMachine {
             hlt()
 
         case "SYSCALL":
-            try addip(.p(0), .fp, 8)  // syscall number
-            try addip(.p(1), .fp, 7)  // pointer to argument struct
+            try addip(.p(0), .fp, 8) // syscall number
+            try addip(.p(1), .fp, 7) // pointer to argument struct
             try syscall(.p(0), .p(1))
 
         case "BREAK":
@@ -1406,11 +1410,12 @@ public final class TackVirtualMachine {
     }
 
     private func syscall(_ n_: RegisterPointer, _ ptr_: RegisterPointer) throws {
-        let n = loadp(address: try getRegister(p: n_))
-        let ptr = loadp(address: try getRegister(p: ptr_))
+        let n = try loadp(address: getRegister(p: n_))
+        let ptr = try loadp(address: getRegister(p: ptr_))
 
         switch Syscall(rawValue: Int(n)) {
-        case .invalid, .none:
+        case .invalid,
+             .none:
             try breakPoint()
 
         case .getc:
@@ -1437,25 +1442,25 @@ public final class TackVirtualMachine {
 
     private func addip(_ dst: RegisterPointer, _ left_: RegisterPointer, _ right: Int) throws {
         let left = try getRegister(p: left_)
-        let result: UInt
-        if right >= 0 {
-            result = left &+ UInt(right)
-        }
-        else {
-            result = left &- UInt(-right)
-        }
+        let result: UInt =
+            if right >= 0 {
+                left &+ UInt(right)
+            }
+            else {
+                left &- UInt(-right)
+            }
         setRegister(dst, p: result)
     }
 
     private func subip(_ dst: RegisterPointer, _ left_: RegisterPointer, _ right: Int) throws {
         let left = try getRegister(p: left_)
-        let result: UInt
-        if right >= 0 {
-            result = left &- UInt(right)
-        }
-        else {
-            result = left &+ UInt(-right)
-        }
+        let result: UInt =
+            if right >= 0 {
+                left &- UInt(right)
+            }
+            else {
+                left &+ UInt(-right)
+            }
         setRegister(dst, p: result)
     }
 }

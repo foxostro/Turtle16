@@ -8,6 +8,6 @@
 
 public struct MemoryLayoutStrategyNull: MemoryLayoutStrategy {
     public init() {}
-    public func sizeof(type: SymbolType) -> Int { 0 }
+    public func sizeof(type _: SymbolType) -> Int { 0 }
     public var sizeOfSaveArea: Int { 0 }
 }

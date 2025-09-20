@@ -13,8 +13,28 @@ public final class RegisterAllocatorNaive: CompilerPass {
     public override func visit(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode?
     {
         switch node.instruction {
-        case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI,
-            kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
+        case kLOAD,
+             kSTORE,
+             kLI,
+             kLUI,
+             kCMP,
+             kADD,
+             kSUB,
+             kAND,
+             kOR,
+             kXOR,
+             kNOT,
+             kCMPI,
+             kADDI,
+             kSUBI,
+             kANDI,
+             kORI,
+             kXORI,
+             kJR,
+             kJALR,
+             kADC,
+             kSBC,
+             kCALLPTR:
             try rewriteInstructionWithRegisterIdentifiers(node)
 
         case kLA:
@@ -32,9 +52,12 @@ public final class RegisterAllocatorNaive: CompilerPass {
         case "vr2": "r2"
         case "vr3": "r3"
         case "vr4": "r4"
-        case "vr5", "ra": "r5"
-        case "vr6", "sp": "r6"
-        case "vr7", "fp": "r7"
+        case "vr5",
+             "ra": "r5"
+        case "vr6",
+             "sp": "r6"
+        case "vr7",
+             "fp": "r7"
         default: nil
         }
     }
@@ -59,10 +82,10 @@ public final class RegisterAllocatorNaive: CompilerPass {
     func rewriteInstructionWithRegisterIdentifiers(
         _ node: InstructionNode
     ) throws -> AbstractSyntaxTreeNode? {
-        InstructionNode(
+        try InstructionNode(
             sourceAnchor: node.sourceAnchor,
             instruction: node.instruction,
-            parameters: try node.parameters.map(rewriteRegisterIdentifier),
+            parameters: node.parameters.map(rewriteRegisterIdentifier),
             id: node.id
         )
     }

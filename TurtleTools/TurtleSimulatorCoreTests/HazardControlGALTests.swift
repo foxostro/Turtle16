@@ -10,7 +10,7 @@ import TurtleSimulatorCore
 import XCTest
 
 final class HazardControlGALTests: HazardControlMockupTests {
-    public override func makeHazardControl() -> HazardControl {
+    override func makeHazardControl() -> HazardControl {
         HazardControlGAL()
     }
 }

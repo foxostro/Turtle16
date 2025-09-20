@@ -10,7 +10,7 @@ import TurtleCore
 
 /// An expression in the program which evaluates to a typed value
 public class Expression: AbstractSyntaxTreeNode {
-    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Expression {
+    public override func withSourceAnchor(_: SourceAnchor?) -> Expression {
         fatalError("withSourceAnchor() is unimplemented for \(self)")
     }
 }
@@ -179,7 +179,7 @@ public final class Unary: Expression {
         id: ID = ID()
     ) {
         self.op = op
-        self.child = expression
+        child = expression
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
 
@@ -302,7 +302,7 @@ public final class Eseq: Expression {
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
 
-    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Eseq {
+    public override func withSourceAnchor(_: SourceAnchor?) -> Eseq {
         Eseq(
             seq: seq,
             expr: expr,
@@ -474,7 +474,7 @@ public class Assignment: Expression {
             id: id
         )
     }
-    
+
     public func withNewId() -> Assignment {
         Assignment(
             sourceAnchor: sourceAnchor,
@@ -555,7 +555,7 @@ public final class Call: Expression {
     }
 
     public func inserting(arguments toInsert: [Expression], at index: Int) -> Call {
-        var arguments = self.arguments
+        var arguments = arguments
         arguments.insert(contentsOf: toInsert, at: index)
         return withArguments(arguments)
     }
@@ -588,7 +588,7 @@ public final class Call: Expression {
     }
 
     private func makeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if arguments.isEmpty {
             result = "none"
         }
@@ -654,8 +654,8 @@ public final class As: Expression {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent1)convertingTo: \(targetType.makeIndentedDescription(depth: depth+1))
-            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
+            \(indent1)convertingTo: \(targetType.makeIndentedDescription(depth: depth + 1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
             """
     }
 }
@@ -709,8 +709,8 @@ public final class Bitcast: Expression {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent1)convertingTo: \(targetType.makeIndentedDescription(depth: depth+1))
-            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
+            \(indent1)convertingTo: \(targetType.makeIndentedDescription(depth: depth + 1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
             """
     }
 }
@@ -764,8 +764,8 @@ public final class Is: Expression {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent1)comparingWith: \(testType.makeIndentedDescription(depth: depth+1))
-            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
+            \(indent1)comparingWith: \(testType.makeIndentedDescription(depth: depth + 1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
             """
     }
 }
@@ -828,8 +828,8 @@ public final class Subscript: Expression {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent1)subscriptable: \(subscriptable.makeIndentedDescription(depth: depth+1))
-            \(indent1)argument: \(argument.makeIndentedDescription(depth: depth+1))
+            \(indent1)subscriptable: \(subscriptable.makeIndentedDescription(depth: depth + 1))
+            \(indent1)argument: \(argument.makeIndentedDescription(depth: depth + 1))
             """
     }
 }
@@ -891,13 +891,13 @@ public final class LiteralArray: Expression {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent1)arrayType: \(arrayType.makeIndentedDescription(depth: depth+1))
-            \(indent1)elements: \(makeElementsDescription(depth: depth+1))
+            \(indent1)arrayType: \(arrayType.makeIndentedDescription(depth: depth + 1))
+            \(indent1)elements: \(makeElementsDescription(depth: depth + 1))
             """
     }
 
     private func makeElementsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if elements.isEmpty {
             result = "none"
         }
@@ -978,8 +978,8 @@ public final class Get: Expression {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
-            \(indent1)member: \(member.makeIndentedDescription(depth: depth+1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
+            \(indent1)member: \(member.makeIndentedDescription(depth: depth + 1))
             """
     }
 }
@@ -1007,7 +1007,7 @@ public final class PrimitiveType: Expression {
             id: id
         )
     }
-    
+
     public func withType(_ typ: SymbolType) -> PrimitiveType {
         PrimitiveType(
             sourceAnchor: sourceAnchor,
@@ -1248,7 +1248,7 @@ public final class FunctionType: Expression {
     }
 
     private func makeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if arguments.isEmpty {
             result = "none"
         }
@@ -1334,8 +1334,10 @@ public final class GenericFunctionType: Expression {
     ) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let typeArgumentsDescription = typeArguments.map(\.description).joined(separator: ", ")
-        let argumentsDescription = zip(template.argumentNames, arguments).map({ "\($0.0): \($0.1)" }
-        ).joined(separator: ", ")
+        let argumentsDescription = zip(template.argumentNames, arguments)
+            .map({ "\($0.0): \($0.1)" }
+            )
+            .joined(separator: ", ")
         return
             "\(indent)func \(name)[\(typeArgumentsDescription)](\(argumentsDescription)) -> \(returnType)"
     }
@@ -1402,13 +1404,13 @@ public final class GenericTypeApplication: Expression {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent0)identifier: \(identifier.makeIndentedDescription(depth: depth+1))
-            \(indent1)arguments: \(makeTypeArgumentsDescription(depth: depth+1))
+            \(indent0)identifier: \(identifier.makeIndentedDescription(depth: depth + 1))
+            \(indent1)arguments: \(makeTypeArgumentsDescription(depth: depth + 1))
             """
     }
 
     private func makeTypeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if arguments.isEmpty {
             result = "none"
         }
@@ -1703,7 +1705,7 @@ public final class UnionType: Expression {
     }
 
     private func makeMembersDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if members.isEmpty {
             result = "none"
         }
@@ -1809,7 +1811,7 @@ public final class StructInitializer: Expression {
     }
 
     private func makeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if arguments.isEmpty {
             result = "none"
         }

@@ -40,11 +40,11 @@ public class ID_Output: NSObject, NSSecureCoding {
 
     public required init?(coder: NSCoder) {
         guard let stall = coder.decodeObject(forKey: "stall") as? UInt,
-            let ctl_EX = coder.decodeObject(forKey: "ctl_EX") as? UInt,
-            let a = coder.decodeObject(forKey: "a") as? UInt16,
-            let b = coder.decodeObject(forKey: "b") as? UInt16,
-            let ins = coder.decodeObject(forKey: "ins") as? UInt,
-            let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
+              let ctl_EX = coder.decodeObject(forKey: "ctl_EX") as? UInt,
+              let a = coder.decodeObject(forKey: "a") as? UInt16,
+              let b = coder.decodeObject(forKey: "b") as? UInt16,
+              let ins = coder.decodeObject(forKey: "ins") as? UInt,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
         else {
             return nil
         }
@@ -77,11 +77,11 @@ public class ID_Output: NSObject, NSSecureCoding {
             return false
         }
         guard stall == rhs.stall,
-            ctl_EX == rhs.ctl_EX,
-            a == rhs.a,
-            b == rhs.b,
-            ins == rhs.ins,
-            associatedPC == rhs.associatedPC
+              ctl_EX == rhs.ctl_EX,
+              a == rhs.a,
+              b == rhs.b,
+              ins == rhs.ins,
+              associatedPC == rhs.associatedPC
         else {
             return false
         }
@@ -107,8 +107,12 @@ public class ID_Output: NSObject, NSSecureCoding {
 public class ID: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
 
-    public static let nopControlWord: UInt = 0b11111_11111111_11111111  // The signals output to ctl_EX on a NOP instruction. This is different than the signals on ctl_ID for the same.
-    public static let nopControlWord_ID: UInt = 0b1111111_11111111_11111111  // The signals on ctl_ID when executing a NOP instruction. This is differnet than ctl_EX.
+    public static let nopControlWord: UInt =
+        0b11111_11111111_11111111 // The signals output to ctl_EX on a NOP instruction. This is
+    // different than the signals on ctl_ID for the same.
+    public static let nopControlWord_ID: UInt =
+        0b1111111_11111111_11111111 // The signals on ctl_ID when executing a NOP instruction. This
+    // is differnet than ctl_EX.
 
     public struct WriteBackInput: Hashable {
         public let c: UInt16
@@ -160,98 +164,98 @@ public class ID: NSObject, NSSecureCoding {
 
         public init(ins: UInt16) {
             self.ins = ins
-            self.y_EX = 0
-            self.y_MEM = 0
-            self.ins_EX = 0
-            self.ctl_EX = ID.nopControlWord
-            self.selC_MEM = 0
-            self.ctl_MEM = ID.nopControlWord
-            self.j = 1
-            self.n = 0
-            self.c = 0
-            self.z = 0
-            self.v = 0
-            self.associatedPC = nil
+            y_EX = 0
+            y_MEM = 0
+            ins_EX = 0
+            ctl_EX = ID.nopControlWord
+            selC_MEM = 0
+            ctl_MEM = ID.nopControlWord
+            j = 1
+            n = 0
+            c = 0
+            z = 0
+            v = 0
+            associatedPC = nil
         }
 
-        public init(ins: UInt16, rst: UInt) {
+        public init(ins: UInt16, rst _: UInt) {
             self.ins = ins
-            self.y_EX = 0
-            self.y_MEM = 0
-            self.ins_EX = 0
-            self.ctl_EX = ID.nopControlWord
-            self.selC_MEM = 0
-            self.ctl_MEM = ID.nopControlWord
-            self.j = 1
-            self.n = 0
-            self.c = 0
-            self.z = 0
-            self.v = 0
-            self.associatedPC = nil
+            y_EX = 0
+            y_MEM = 0
+            ins_EX = 0
+            ctl_EX = ID.nopControlWord
+            selC_MEM = 0
+            ctl_MEM = ID.nopControlWord
+            j = 1
+            n = 0
+            c = 0
+            z = 0
+            v = 0
+            associatedPC = nil
         }
 
         public init(ins: UInt16, j: UInt) {
             self.ins = ins
-            self.y_EX = 0
-            self.y_MEM = 0
-            self.ins_EX = 0
-            self.ctl_EX = ID.nopControlWord
-            self.selC_MEM = 0
-            self.ctl_MEM = ID.nopControlWord
+            y_EX = 0
+            y_MEM = 0
+            ins_EX = 0
+            ctl_EX = ID.nopControlWord
+            selC_MEM = 0
+            ctl_MEM = ID.nopControlWord
             self.j = j
-            self.n = 0
-            self.c = 0
-            self.z = 0
-            self.v = 0
-            self.associatedPC = nil
+            n = 0
+            c = 0
+            z = 0
+            v = 0
+            associatedPC = nil
         }
 
         public init(ins: UInt16, ctl_EX: UInt) {
             self.ins = ins
-            self.y_EX = 0
-            self.y_MEM = 0
-            self.ins_EX = 0
+            y_EX = 0
+            y_MEM = 0
+            ins_EX = 0
             self.ctl_EX = ctl_EX
-            self.selC_MEM = 0
-            self.ctl_MEM = ID.nopControlWord
-            self.j = 1
-            self.n = 0
-            self.c = 0
-            self.z = 0
-            self.v = 0
-            self.associatedPC = nil
+            selC_MEM = 0
+            ctl_MEM = ID.nopControlWord
+            j = 1
+            n = 0
+            c = 0
+            z = 0
+            v = 0
+            associatedPC = nil
         }
 
         public init(ins: UInt16, ins_EX: UInt, ctl_EX: UInt, y_EX: UInt16) {
             self.ins = ins
             self.y_EX = y_EX
-            self.y_MEM = 0
+            y_MEM = 0
             self.ins_EX = ins_EX
             self.ctl_EX = ctl_EX
-            self.selC_MEM = 0
-            self.ctl_MEM = ID.nopControlWord
-            self.j = 1
-            self.n = 0
-            self.c = 0
-            self.z = 0
-            self.v = 0
-            self.associatedPC = nil
+            selC_MEM = 0
+            ctl_MEM = ID.nopControlWord
+            j = 1
+            n = 0
+            c = 0
+            z = 0
+            v = 0
+            associatedPC = nil
         }
 
         public init(ins: UInt16, selC_MEM: UInt, ctl_MEM: UInt, y_MEM: UInt16) {
             self.ins = ins
-            self.y_EX = 0
+            y_EX = 0
             self.y_MEM = y_MEM
-            self.ins_EX = 0
-            self.ctl_EX = ID.nopControlWord
+            ins_EX = 0
+            ctl_EX = ID.nopControlWord
             self.selC_MEM = selC_MEM
             self.ctl_MEM = ctl_MEM
-            self.j = 1
-            self.n = 0
-            self.c = 0
-            self.z = 0
-            self.v = 0
-            self.associatedPC = nil
+            j = 1
+            n = 0
+            c = 0
+            z = 0
+            v = 0
+            associatedPC = nil
         }
 
         public init(
@@ -290,7 +294,7 @@ public class ID: NSObject, NSSecureCoding {
     public var associatedPC: UInt16?
     let hazardControlUnit: HazardControl = HazardControlMockup()
 
-    public required override init() {
+    public override required init() {
         registerFile = [UInt16](repeating: 0, count: 8)
         decoder = OpcodeDecoderROM()
         associatedPC = nil
@@ -298,8 +302,8 @@ public class ID: NSObject, NSSecureCoding {
 
     public required init?(coder: NSCoder) {
         guard let registerFile = coder.decodeObject(forKey: "registerFile") as? [UInt16],
-            let decoder = coder.decodeObject(forKey: "decoder") as? InstructionDecoder,
-            let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
+              let decoder = coder.decodeObject(forKey: "decoder") as? InstructionDecoder,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16?
         else {
             return nil
         }
@@ -342,8 +346,8 @@ public class ID: NSObject, NSSecureCoding {
             return false
         }
         guard registerFile == rhs.registerFile,
-            decoder == rhs.decoder,
-            associatedPC == rhs.associatedPC
+              decoder == rhs.decoder,
+              associatedPC == rhs.associatedPC
         else {
             return false
         }
@@ -365,9 +369,11 @@ public class ID: NSObject, NSSecureCoding {
             left_operand_is_unused: (ctl_ID >> 21) & 1,
             right_operand_is_unused: (ctl_ID >> 22) & 1
         )
-        let flush = (hazardControlSignals.flush & 1) == 0  // FLUSH is an active-low signal
+        let flush = (hazardControlSignals.flush & 1) == 0 // FLUSH is an active-low signal
         associatedPC = flush ? nil : input.associatedPC
-        let ctl_EX: UInt = flush ? ID.nopControlWord : (ctl_ID & UInt((1 << 21) - 1))  // only the lower 21 bits are present on real hardware
+        let ctl_EX: UInt = flush ? ID
+            .nopControlWord :
+            (ctl_ID & UInt((1 << 21) - 1)) // only the lower 21 bits are present on real hardware
         let a = forwardA(input, hazardControlSignals)
         let b = forwardB(input, hazardControlSignals)
         let ins = UInt(input.ins & 0x07ff)
@@ -388,26 +394,26 @@ public class ID: NSObject, NSSecureCoding {
     }
 
     fileprivate func forwardA(_ input: ID.Input, _ hzd: HazardControl.Output) -> UInt16 {
-        if hzd.fwd_a == 0 && hzd.fwd_ex_to_a != 0 && hzd.fwd_mem_to_a != 0 {
+        if hzd.fwd_a == 0, hzd.fwd_ex_to_a != 0, hzd.fwd_mem_to_a != 0 {
             return readRegisterA(input: input)
         }
-        if hzd.fwd_a != 0 && hzd.fwd_ex_to_a == 0 && hzd.fwd_mem_to_a != 0 {
+        if hzd.fwd_a != 0, hzd.fwd_ex_to_a == 0, hzd.fwd_mem_to_a != 0 {
             return input.y_EX
         }
-        if hzd.fwd_a != 0 && hzd.fwd_ex_to_a != 0 && hzd.fwd_mem_to_a == 0 {
+        if hzd.fwd_a != 0, hzd.fwd_ex_to_a != 0, hzd.fwd_mem_to_a == 0 {
             return input.y_MEM
         }
         fatalError("illegal hazard resolution")
     }
 
     fileprivate func forwardB(_ input: ID.Input, _ hzd: HazardControl.Output) -> UInt16 {
-        if hzd.fwd_b == 0 && hzd.fwd_ex_to_b != 0 && hzd.fwd_mem_to_b != 0 {
+        if hzd.fwd_b == 0, hzd.fwd_ex_to_b != 0, hzd.fwd_mem_to_b != 0 {
             return readRegisterB(input: input)
         }
-        if hzd.fwd_b != 0 && hzd.fwd_ex_to_b == 0 && hzd.fwd_mem_to_b != 0 {
+        if hzd.fwd_b != 0, hzd.fwd_ex_to_b == 0, hzd.fwd_mem_to_b != 0 {
             return input.y_EX
         }
-        if hzd.fwd_b != 0 && hzd.fwd_ex_to_b != 0 && hzd.fwd_mem_to_b == 0 {
+        if hzd.fwd_b != 0, hzd.fwd_ex_to_b != 0, hzd.fwd_mem_to_b == 0 {
             return input.y_MEM
         }
         fatalError("illegal hazard resolution")

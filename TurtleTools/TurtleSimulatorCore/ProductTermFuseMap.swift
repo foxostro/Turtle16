@@ -20,8 +20,8 @@ public struct ProductTermFuseMap {
         assert(fuseListBitmap <= 0b1111_11111111_11111111_11111111_11111111_11111111)
         var fuseList: [UInt] = []
         for i in 0..<ProductTermFuseMap.numberOfTerms {
-            let val: UInt =
-                ((fuseListBitmap >> (ProductTermFuseMap.numberOfTerms - i - 1)) & 1) == 0 ? 0 : 1
+            let val: UInt = ((fuseListBitmap >> (ProductTermFuseMap.numberOfTerms - i - 1)) & 1) ==
+                0 ? 0 : 1
             fuseList.append(val)
         }
         self.init(fuseList: fuseList)

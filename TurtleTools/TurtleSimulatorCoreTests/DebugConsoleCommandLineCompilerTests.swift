@@ -775,7 +775,8 @@ final class DebugConsoleCommandLineCompilerTests: XCTestCase {
     //        let compiler = DebugConsoleCommandLineCompiler()
     //        compiler.compile("load program")
     //        XCTAssertEqual(compiler.errors.count, 1)
-    //        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the destination and one parameter for the file path: `load'")
+    //        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the
+    //        destination and one parameter for the file path: `load'")
     //        XCTAssertEqual(compiler.errors.first?.context, "\tload program\n\t     ^~~~~~~")
     //    }
 
@@ -858,7 +859,8 @@ final class DebugConsoleCommandLineCompilerTests: XCTestCase {
     //        let compiler = DebugConsoleCommandLineCompiler()
     //        compiler.compile("save program")
     //        XCTAssertEqual(compiler.errors.count, 1)
-    //        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the source and one parameter for the file path: `save'")
+    //        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the source
+    //        and one parameter for the file path: `save'")
     //        XCTAssertEqual(compiler.errors.first?.context, "\tsave program\n\t     ^~~~~~~")
     //    }
 

@@ -28,7 +28,8 @@ final class CompilerPassGenericsTests: XCTestCase {
             }
             """
         )
-        .children.last!
+        .children
+        .last!
         .reconnect(parent: parentSymbols) as! FunctionDeclaration
     }
 
@@ -65,7 +66,7 @@ final class CompilerPassGenericsTests: XCTestCase {
 
         let sym = try symbols.resolve(identifier: "foo[const u16]")
         switch sym.type {
-        case .function(let funTyp):
+        case let .function(funTyp):
             XCTAssertEqual(funTyp.mangledName, "foo[const u16]")
             XCTAssertEqual(funTyp.name, "foo[const u16]")
             XCTAssertEqual(funTyp.arguments, [.constU16])
@@ -380,10 +381,10 @@ final class CompilerPassGenericsTests: XCTestCase {
             ]
         )
 
-        let _ = try CompilerPassGenerics(symbols: symbols).run(ast0)
+        _ = try CompilerPassGenerics(symbols: symbols).run(ast0)
 
         switch try symbols.resolveType(identifier: "foo[u16]") {
-        case .structType(let typ):
+        case let .structType(typ):
             XCTAssertEqual(typ.name, "foo[u16]")
             XCTAssertEqual(typ.symbols.maybeResolve(identifier: "bar")?.type, .u16)
 
@@ -765,8 +766,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                     ),
                     arguments: []
                 )
-            ])
-            .reconnect(parent: nil)
+            ]
+        )
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: [
@@ -879,8 +881,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                     ),
                     arguments: []
                 )
-            ])
-            .reconnect(parent: nil)
+            ]
+        )
+        .reconnect(parent: nil)
 
         XCTAssertNoThrow(try CompilerPassGenerics().run(ast))
     }
@@ -950,7 +953,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         _ = try CompilerPassGenerics(symbols: symbols).run(ast0)
 
         switch try symbols.resolveType(identifier: "MyTrait[u16]") {
-        case .traitType(let typ):
+        case let .traitType(typ):
             XCTAssertEqual(typ.name, "MyTrait[u16]")
 
         default:
@@ -1210,24 +1213,26 @@ final class CompilerPassGenericsTests: XCTestCase {
                                     right: LiteralInt(1)
                                 )
                             )
-                        ]),
+                        ]
+                    ),
                     visibility: .privateVisibility
                 ),
                 Identifier("foo[const u16]")
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
-        let ast0 = try parse("""
+        let ast0 = try parse(
+            """
             func foo[T](a: T) -> T {
                 return a + 1
             }
             foo@[const u16]
             """
         )
-            .eraseSourceAnchors()?
-            .replaceTopLevelWithBlock()
-            .reconnect(parent: nil)
+        .eraseSourceAnchors()?
+        .replaceTopLevelWithBlock()
+        .reconnect(parent: nil)
         let ast1 = try CompilerPassGenerics().run(ast0)
         XCTAssertEqual(ast1, expected)
     }
@@ -1250,7 +1255,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     argumentNames: ["arg1"],
                     typeArguments: [
                         GenericTypeArgument(
-                            identifier: Identifier("T"),  // Shadows the variable, "T"
+                            identifier: Identifier("T"), // Shadows the variable, "T"
                             constraints: []
                         )
                     ],
@@ -1262,8 +1267,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                         u16
                     ]
                 )
-            ])
-            .reconnect(parent: nil)
+            ]
+        )
+        .reconnect(parent: nil)
 
         XCTAssertNoThrow(try CompilerPassGenerics().run(ast))
     }
@@ -1287,7 +1293,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     ],
                     body: Block(children: [
                         VarDeclaration(
-                            identifier: Identifier("T"),  // Shadows the generic type parameter, "T"
+                            identifier: Identifier("T"), // Shadows the generic type parameter, "T"
                             explicitType: PrimitiveType(.bool),
                             expression: LiteralBool(true),
                             storage: .automaticStorage(offset: nil),
@@ -1301,8 +1307,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                         u16
                     ]
                 )
-            ])
-            .reconnect(parent: nil)
+            ]
+        )
+        .reconnect(parent: nil)
 
         XCTAssertNoThrow(try CompilerPassGenerics().run(ast))
     }

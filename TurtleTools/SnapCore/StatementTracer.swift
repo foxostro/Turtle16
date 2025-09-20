@@ -22,6 +22,7 @@ public struct StatementTracer {
         case matchElseClause
         case Return
     }
+
     public typealias Trace = [TraceElement]
     private let symbols: Env
 
@@ -39,23 +40,23 @@ public struct StatementTracer {
         case is TopLevel:
             fatalError("unimplemented")
         case let node as Seq:
-            return try trace(currentTrace: currentTrace, seq: node)
+            try trace(currentTrace: currentTrace, seq: node)
         case let node as Block:
-            return try trace(currentTrace: currentTrace, block: node)
+            try trace(currentTrace: currentTrace, block: node)
         case let node as If:
-            return try trace(currentTrace: currentTrace, if: node)
+            try trace(currentTrace: currentTrace, if: node)
         case let node as While:
-            return try trace(currentTrace: currentTrace, while: node)
+            try trace(currentTrace: currentTrace, while: node)
         case let node as Match:
-            return try trace(currentTrace: currentTrace, match: node)
+            try trace(currentTrace: currentTrace, match: node)
         case let node as Return:
-            return try trace(currentTrace: currentTrace, return: node)
+            try trace(currentTrace: currentTrace, return: node)
         default:
-            return trace(currentTrace: currentTrace, stmt: genericNode)
+            trace(currentTrace: currentTrace, stmt: genericNode)
         }
     }
 
-    fileprivate func trace(
+    private func trace(
         _ stmts_: [AbstractSyntaxTreeNode],
         _ currentTrace: StatementTracer.Trace
     ) throws -> [StatementTracer.Trace] {
@@ -102,16 +103,16 @@ public struct StatementTracer {
                 currentTrace: currentTrace + [.IfThen],
                 genericNode: node.thenBranch
             )
-            let elseTraces: [Trace]
-            if let elseBranch = node.elseBranch {
-                elseTraces = try trace(
-                    currentTrace: currentTrace + [.IfElse],
-                    genericNode: elseBranch
-                )
-            }
-            else {
-                elseTraces = [currentTrace + [.IfSkipped]]
-            }
+            let elseTraces: [Trace] =
+                if let elseBranch = node.elseBranch {
+                    try trace(
+                        currentTrace: currentTrace + [.IfElse],
+                        genericNode: elseBranch
+                    )
+                }
+                else {
+                    [currentTrace + [.IfSkipped]]
+                }
             return thenTraces + elseTraces
         }
     }
@@ -158,18 +159,18 @@ public struct StatementTracer {
     private func trace(currentTrace: Trace, stmt: AbstractSyntaxTreeNode) -> [Trace] {
         switch currentTrace.last {
         case .Return:
-            return [currentTrace]
+            [currentTrace]
         default:
-            return [currentTrace + [.Statement(String(describing: type(of: stmt)))]]
+            [currentTrace + [.Statement(String(describing: type(of: stmt)))]]
         }
     }
 
-    private func trace(currentTrace: Trace, return node: Return) throws -> [Trace] {
+    private func trace(currentTrace: Trace, return _: Return) throws -> [Trace] {
         switch currentTrace.last {
         case .Return:
-            return [currentTrace]
+            [currentTrace]
         default:
-            return [currentTrace + [.Return]]
+            [currentTrace + [.Return]]
         }
     }
 }

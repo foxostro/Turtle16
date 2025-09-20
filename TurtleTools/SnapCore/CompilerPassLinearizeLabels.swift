@@ -21,7 +21,7 @@ private final class LabelCollector: CompilerPass {
 
     public override func visit(label node: LabelDeclaration) -> LabelDeclaration {
         if node.identifier.hasPrefix(prefix) {
-            if nil == labels.first(where: { $0 == node.identifier }) {
+            if labels.first(where: { $0 == node.identifier }) == nil {
                 labels.append(node.identifier)
             }
         }
@@ -36,7 +36,7 @@ private final class CompilerPassRewriteLabel: CompilerPass {
     public init(
         from targets: [String],
         to replacements: [String],
-        symbols: Env? = nil
+        symbols _: Env? = nil
     ) {
         self.targets = targets
         self.replacements = replacements
@@ -57,12 +57,12 @@ private final class CompilerPassRewriteLabel: CompilerPass {
     public override func visit(tack node: TackInstructionNode) throws -> TackInstructionNode {
         let nextInstruction: TackInstruction =
             switch node.instruction {
-            case .call(let label): .call(rewrite(label))
-            case .jmp(let label): .jmp(rewrite(label))
-            case .la(let a, let label): .la(a, rewrite(label))
-            case .bz(let a, let label): .bz(a, rewrite(label))
-            case .bnz(let a, let label): .bnz(a, rewrite(label))
-            case .bzw(let a, let label): .bzw(a, rewrite(label))
+            case let .call(label): .call(rewrite(label))
+            case let .jmp(label): .jmp(rewrite(label))
+            case let .la(a, label): .la(a, rewrite(label))
+            case let .bz(a, label): .bz(a, rewrite(label))
+            case let .bnz(a, label): .bnz(a, rewrite(label))
+            case let .bzw(a, label): .bzw(a, rewrite(label))
             default: node.instruction
             }
         return node.withInstruction(nextInstruction)
@@ -78,13 +78,13 @@ private final class CompilerPassRewriteLabel: CompilerPass {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+private extension AbstractSyntaxTreeNode {
     /// Rewrite references to the specified label
-    fileprivate func rewriteLabels(
+    func rewriteLabels(
         from targets: [String],
         to replacements: [String],
-        staticStorageFrame: Frame,
-        memoryLayoutStrategy: MemoryLayoutStrategy
+        staticStorageFrame _: Frame,
+        memoryLayoutStrategy _: MemoryLayoutStrategy
     ) throws -> AbstractSyntaxTreeNode? {
         guard targets != replacements else { return self }
         let result = try CompilerPassRewriteLabel(
@@ -96,9 +96,9 @@ extension AbstractSyntaxTreeNode {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Rewrite labels to avoid collisions with names in the specified symbol table
-    public func linearizeLabels(
+    func linearizeLabels(
         relativeTo symbols: Env,
         staticStorageFrame: Frame,
         memoryLayoutStrategy: MemoryLayoutStrategy
@@ -126,12 +126,11 @@ extension Block {
         staticStorageFrame: Frame = Frame(),
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> Seq {
-        let block1 =
-            try linearizeLabels(
-                relativeTo: symbols,
-                staticStorageFrame: staticStorageFrame,
-                memoryLayoutStrategy: memoryLayoutStrategy
-            ) as! Block
+        let block1 = try linearizeLabels(
+            relativeTo: symbols,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy
+        ) as! Block
         let seq = Seq(
             sourceAnchor: block1.sourceAnchor,
             children: block1.children

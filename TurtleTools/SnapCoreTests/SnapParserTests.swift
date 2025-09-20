@@ -821,12 +821,12 @@ final class SnapParserTests: XCTestCase {
             left: Group(
                 sourceAnchor: parser.lineMapper.anchor(0, 5),
                 expression:
-                    Binary(
-                        sourceAnchor: parser.lineMapper.anchor(1, 4),
-                        op: .minus,
-                        left: LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 2),
-                        right: LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1)
-                    )
+                Binary(
+                    sourceAnchor: parser.lineMapper.anchor(1, 4),
+                    op: .minus,
+                    left: LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 2),
+                    right: LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 1)
+                )
             ),
             right: LiteralInt(sourceAnchor: parser.lineMapper.anchor(6, 7), value: 4)
         )
@@ -1649,7 +1649,6 @@ final class SnapParserTests: XCTestCase {
                         ]
                     )
                 )
-
             ]
         )
     }

@@ -399,7 +399,7 @@ final class IDT7381Tests: XCTestCase {
             ftf: 1,
             oe: 1
         )
-        let _ = alu.step(input: input)
+        _ = alu.step(input: input)
         XCTAssertEqual(alu.a, 0xaaaa)
         XCTAssertEqual(alu.b, 0xbbbb)
         XCTAssertEqual(alu.f, 0xffff)
@@ -542,7 +542,7 @@ final class IDT7381Tests: XCTestCase {
     func testSubtractionResultingInTwosComplementArithmeticOverflow() {
         let alu = IDT7381()
         let input = IDT7381.Input(
-            a: 0x8000,  // -32768
+            a: 0x8000, // -32768
             b: 1,
             c0: 1,
             i0: 0,
@@ -558,7 +558,7 @@ final class IDT7381Tests: XCTestCase {
             oe: 0
         )
         let output = alu.step(input: input)
-        XCTAssertEqual(output.f, 0x7FFF)
+        XCTAssertEqual(output.f, 0x7fff)
         XCTAssertEqual(output.ovf, 1)
     }
 

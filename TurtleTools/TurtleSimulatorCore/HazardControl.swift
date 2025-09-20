@@ -69,11 +69,11 @@ public class HazardControl {
 
     public init() {}
 
-    public func generatedHazardControlSignalsStageOne(input: StageOneInput) -> StageOneOutput {
+    public func generatedHazardControlSignalsStageOne(input _: StageOneInput) -> StageOneOutput {
         fatalError("implement in a subclass")
     }
 
-    public func generatedHazardControlSignalsStageTwo(input: StageTwoInput) -> StageTwoOutput {
+    public func generatedHazardControlSignalsStageTwo(input _: StageTwoInput) -> StageTwoOutput {
         fatalError("implement in a subclass")
     }
 
@@ -84,8 +84,8 @@ public class HazardControl {
     ) -> Output {
         // The hardware has an array of identity comparators to generate these
         // signals.
-        let selA: UInt = UInt(input.ins >> 5) & 0b111
-        let selB: UInt = UInt(input.ins >> 2) & 0b111
+        let selA = UInt(input.ins >> 5) & 0b111
+        let selB = UInt(input.ins >> 2) & 0b111
         let selC_EX: UInt = (input.ins_EX >> 8) & 0b111
         let selC_MEM: UInt = input.selC_MEM
         let sel_a_matches_sel_c_ex: UInt = (selA == selC_EX) ? 0 : 1

@@ -75,7 +75,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedLabel(let target) = error {
+            if case let .undefinedLabel(target) = error {
                 XCTAssertEqual(target, "foo")
             }
             else {
@@ -97,7 +97,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedLabel(let target) = error {
+            if case let .undefinedLabel(target) = error {
                 XCTAssertEqual(target, "foo")
             }
             else {
@@ -131,7 +131,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedLabel(let target) = error {
+            if case let .undefinedLabel(target) = error {
                 XCTAssertEqual(target, "foo")
             }
             else {
@@ -185,7 +185,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedLabel(let target) = error {
+            if case let .undefinedLabel(target) = error {
                 XCTAssertEqual(target, "foo")
             }
             else {
@@ -239,7 +239,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedLabel(let target) = error {
+            if case let .undefinedLabel(target) = error {
                 XCTAssertEqual(target, "foo")
             }
             else {
@@ -276,7 +276,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedRegister(let reg) = error {
+            if case let .undefinedRegister(reg) = error {
                 XCTAssertEqual(reg, .ra)
             }
             else {
@@ -367,7 +367,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedRegister(let reg) = error {
+            if case let .undefinedRegister(reg) = error {
                 XCTAssertEqual(reg, .w(.w(0)))
             }
             else {
@@ -391,7 +391,7 @@ final class TackVirtualMachineTests: XCTestCase {
                 XCTFail()
                 return
             }
-            if case .undefinedRegister(let reg) = error {
+            if case let .undefinedRegister(reg) = error {
                 XCTAssertEqual(reg, .ra)
             }
             else {
@@ -765,7 +765,7 @@ final class TackVirtualMachineTests: XCTestCase {
     }
 
     func testFREE() throws {
-        let count: Int = 10
+        let count = 10
         let program = TackProgram(
             instructions: [
                 .free(count)
@@ -2417,9 +2417,9 @@ final class TackVirtualMachineTests: XCTestCase {
 
                 // Call the virtual machine
                 .syscall(
-                    .p(0),  // syscall number
+                    .p(0), // syscall number
                     .p(1)
-                ),  // pointer to argument structure
+                ), // pointer to argument structure
 
                 .hlt
             ],
@@ -2453,9 +2453,9 @@ final class TackVirtualMachineTests: XCTestCase {
 
                 // Call the virtual machine
                 .syscall(
-                    .p(0),  // syscall number
+                    .p(0), // syscall number
                     .p(1)
-                )  // pointer to argument structure
+                ) // pointer to argument structure
             ],
             labels: [:]
         )
@@ -2490,9 +2490,9 @@ final class TackVirtualMachineTests: XCTestCase {
 
                 // Call the virtual machine
                 .syscall(
-                    .p(0),  // syscall number
+                    .p(0), // syscall number
                     .p(1)
-                )  // pointer to argument structure
+                ) // pointer to argument structure
             ],
             labels: [:]
         )

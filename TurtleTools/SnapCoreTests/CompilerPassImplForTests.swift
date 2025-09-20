@@ -236,8 +236,9 @@ final class CompilerPassImplForTests: XCTestCase {
                     structTypeExpr: Identifier("SerialFake"),
                     children: []
                 )
-            ])
-            .reconnect(parent: nil)
+            ]
+        )
+        .reconnect(parent: nil)
 
         XCTAssertThrowsError(try ast.implForPass()) {
             let compilerError = $0 as? CompilerError

@@ -17,14 +17,14 @@ public final class CompilerPassEraseEseq: CompilerPass {
             self.rawValue = rawValue
         }
     }
-    
+
     public let options: Options
-    
+
     public init(options: Options = [], symbols: Env? = nil) {
         self.options = options
         super.init(symbols)
     }
-    
+
     public override func visit(eseq node0: Eseq) throws -> Expression? {
         let node1 = try super.visit(eseq: node0)
         guard let node1 = node1 as? Eseq else {
@@ -519,9 +519,9 @@ public final class CompilerPassEraseEseq: CompilerPass {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Bubble Eseq nodes up the AST, toward the root, until they can be erased.
-    public func eraseEseq(
+    func eraseEseq(
         options opts: CompilerPassEraseEseq.Options = []
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassEraseEseq(options: opts).visit(self)

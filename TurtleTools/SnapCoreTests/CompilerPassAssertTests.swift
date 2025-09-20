@@ -24,7 +24,8 @@ final class CompilerPassAssertTests: XCTestCase {
                         callee: Identifier("__panic"),
                         arguments: [LiteralString("false")]
                     )
-                ])
+                ]
+            )
         )
         let input = Assert(condition: LiteralBool(false), message: "false")
         let actual = try input.assertPass()

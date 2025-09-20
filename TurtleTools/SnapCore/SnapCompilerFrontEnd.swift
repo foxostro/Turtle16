@@ -36,10 +36,10 @@ public final class SnapCompilerFrontEnd {
     let memoryLayoutStrategy: MemoryLayoutStrategy
 
     public private(set) var testNames: [String] = []
-    public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil
-    public private(set) var symbolsOfTopLevelScope: Env! = nil
+    public private(set) var syntaxTree: AbstractSyntaxTreeNode!
+    public private(set) var symbolsOfTopLevelScope: Env!
 
-    public var sandboxAccessManager: SandboxAccessManager? = nil
+    public var sandboxAccessManager: SandboxAccessManager?
 
     public init(
         options: Options = Options(),
@@ -67,7 +67,7 @@ public final class SnapCompilerFrontEnd {
 
     public func compile(
         program text: String,
-        base: Int = 0,
+        base _: Int = 0,
         url: URL? = nil
     ) throws -> TackProgram {
         let tokens = try lex(text, url)
@@ -85,8 +85,8 @@ public final class SnapCompilerFrontEnd {
             options: options
         )
 
-        self.syntaxTree = ast0
-        self.symbolsOfTopLevelScope = ast1.symbols
+        syntaxTree = ast0
+        symbolsOfTopLevelScope = ast1.symbols
         self.testNames = testNames
 
         return tackProgram
@@ -107,7 +107,7 @@ public final class SnapCompilerFrontEnd {
         if let error = parser.errors.first {
             throw error
         }
-        self.syntaxTree = parser.syntaxTree
+        syntaxTree = parser.syntaxTree
         return parser.syntaxTree!
     }
 }

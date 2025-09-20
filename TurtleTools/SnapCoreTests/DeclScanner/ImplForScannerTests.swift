@@ -12,7 +12,6 @@ import XCTest
 
 final class ImplForScannerTests: XCTestCase {
     fileprivate func scanSerialTrait(_ symbols: Env) throws {
-
         let traitDecl = TraitDeclaration(
             identifier: Identifier("Serial"),
             members: [
@@ -38,7 +37,6 @@ final class ImplForScannerTests: XCTestCase {
     }
 
     fileprivate func scanSerialFake(_ symbols: Env) throws {
-
         let fake = StructDeclaration(
             identifier: Identifier("SerialFake"),
             members: []

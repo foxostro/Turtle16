@@ -89,7 +89,7 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-                self.objectWillChange.send()
+                objectWillChange.send()
             }
             .store(in: &subscriptions)
 
@@ -103,7 +103,7 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
             .store(in: &subscriptions)
     }
 
-    func snapshot(contentType: UTType) throws -> Snapshot {
+    func snapshot(contentType _: UTType) throws -> Snapshot {
         try debugger.withLock { debugConsole in
             let encodedDebugger = try NSKeyedArchiver.archivedData(
                 withRootObject: debugConsole,
@@ -120,7 +120,10 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
         }
     }
 
-    func fileWrapper(snapshot: Snapshot, configuration: WriteConfiguration) throws -> FileWrapper {
+    func fileWrapper(
+        snapshot: Snapshot,
+        configuration _: WriteConfiguration
+    ) throws -> FileWrapper {
         let data = try JSONEncoder().encode(snapshot)
         let fileWrapper = FileWrapper(regularFileWithContents: data)
         return fileWrapper

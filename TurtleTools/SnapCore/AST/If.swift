@@ -47,7 +47,7 @@ public final class If: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withThenBranch(_ thenBranch: AbstractSyntaxTreeNode) -> If {
         If(
             sourceAnchor: sourceAnchor,
@@ -57,7 +57,7 @@ public final class If: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withElseBranch(_ elseBranch: AbstractSyntaxTreeNode?) -> If {
         If(
             sourceAnchor: sourceAnchor,

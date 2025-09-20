@@ -10,11 +10,11 @@ import Foundation
 import TurtleCore
 
 public class DebugConsoleCommandLineParser: Parser {
-    public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
-        if nil != accept(TokenEOF.self) {
+    public override final func consumeStatement() throws -> [AbstractSyntaxTreeNode] {
+        if accept(TokenEOF.self) != nil {
             return []
         }
-        else if nil != accept(TokenNewline.self) {
+        else if accept(TokenNewline.self) != nil {
             return []
         }
         else if let token = accept(TokenIdentifier.self) {
@@ -49,20 +49,20 @@ public class DebugConsoleCommandLineParser: Parser {
     }
 
     func consumeOneParameterOrTheEnd(
-        instruction: Token,
+        instruction _: Token,
         parameters sofar: [Parameter] = []
     ) throws -> [Parameter] {
         var parameters = sofar
         let nextToken = peek()
         switch nextToken {
         case is TokenForwardSlash:
-            parameters += [try consumeParameterSlashed()]
+            try parameters += [consumeParameterSlashed()]
         case is TokenLiteralString:
-            parameters += [try consumeParameterString()]
+            try parameters += [consumeParameterString()]
         case is TokenNumber:
-            parameters += [try consumeParameterNumber()]
+            try parameters += [consumeParameterNumber()]
         case is TokenIdentifier:
-            parameters += [try consumeParameterIdentifier()]
+            try parameters += [consumeParameterIdentifier()]
         case is TokenNewline:
             advance()
         case is TokenEOF:
@@ -81,27 +81,27 @@ public class DebugConsoleCommandLineParser: Parser {
         parameters sofar: [Parameter] = []
     ) throws -> [Parameter] {
         var parameters = sofar
-        if nil == accept(TokenEOF.self) {
+        if accept(TokenEOF.self) == nil {
             parameters = try consumeOneParameter(instruction: instruction, parameters: parameters)
         }
         return parameters
     }
 
     func consumeOneParameter(
-        instruction: Token,
+        instruction _: Token,
         parameters sofar: [Parameter] = []
     ) throws -> [Parameter] {
         var parameters = sofar
         let nextToken = peek()
         switch nextToken {
         case is TokenForwardSlash:
-            parameters += [try consumeParameterSlashed()]
+            try parameters += [consumeParameterSlashed()]
         case is TokenLiteralString:
-            parameters += [try consumeParameterString()]
+            try parameters += [consumeParameterString()]
         case is TokenNumber:
-            parameters += [try consumeParameterNumber()]
+            try parameters += [consumeParameterNumber()]
         case is TokenIdentifier:
-            parameters += [try consumeParameterIdentifier()]
+            try parameters += [consumeParameterIdentifier()]
         default:
             throw operandTypeMismatchError(
                 sourceAnchor: previous?.sourceAnchor,

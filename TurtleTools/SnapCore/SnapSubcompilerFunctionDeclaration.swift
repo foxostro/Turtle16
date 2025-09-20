@@ -198,7 +198,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
 
     private func makeErrorForMissingReturn(
-        _ symbols: Env,
+        _: Env,
         _ functionType: FunctionTypeInfo,
         _ node: FunctionDeclaration
     ) -> CompilerError {

@@ -34,16 +34,15 @@ struct MemoryView: View {
                 self.viewModel = viewModel
             }
 
-            func numberOfRows(in tableView: NSTableView) -> Int {
+            func numberOfRows(in _: NSTableView) -> Int {
                 viewModel.numberOfRows
             }
 
             func tableView(
-                _ tableView: NSTableView,
+                _: NSTableView,
                 objectValueFor tableColumn: NSTableColumn?,
                 row: Int
             ) -> Any? {
-
                 switch tableColumn?.identifier {
                 case Constant.addressColumnIdentifier:
                     UInt16(row * 16).hexadecimalString
@@ -146,7 +145,7 @@ struct MemoryView: View {
             return scrollView
         }
 
-        func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        func updateNSView(_ scrollView: NSScrollView, context _: Context) {
             guard let tableView = scrollView.documentView as? NSTableView else { return }
             tableView.reloadData()
         }
@@ -161,6 +160,7 @@ struct MemoryView: View {
             static let wordColumnIdentifier = hexDigits.map {
                 NSUserInterfaceItemIdentifier("Word \($0)")
             }
+
             static let wordColumnWidth = 40.0
 
             static let textColumnIdentifier = NSUserInterfaceItemIdentifier("Text")
@@ -201,7 +201,7 @@ struct MemoryView: View {
                         panel.isExtensionHidden = false
                         panel.begin { (response: NSApplication.ModalResponse) in
                             guard response == NSApplication.ModalResponse.OK,
-                                let url = panel.url
+                                  let url = panel.url
                             else {
                                 return
                             }
@@ -221,9 +221,8 @@ struct MemoryView: View {
             isPresented: $isLoadPanelPresented,
             allowedContentTypes: [UTType.bin],
             onCompletion: { result in
-
                 switch result {
-                case .success(let url):
+                case let .success(url):
                     viewModel.loadMemory(url: url)
 
                 case .failure:
@@ -263,7 +262,8 @@ extension MemoryView {
 
         init(document: TurtleSimulatorDocument) {
             self.document = document
-            self.document.objectWillChange
+            self.document
+                .objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
                     self?.objectWillChange.send()
@@ -313,7 +313,8 @@ extension MemoryView {
             }
             let text = bytes.map { (byte: UInt8) -> String in
                 (byte >= 32 && byte < 126) ? String(UnicodeScalar(byte)) : "."
-            }.joined(separator: "")
+            }
+            .joined(separator: "")
             return text
         }
     }

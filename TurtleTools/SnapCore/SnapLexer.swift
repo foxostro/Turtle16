@@ -11,7 +11,7 @@ import TurtleCore
 public class SnapLexer: Lexer {
     public required init(_ string: String, _ url: URL? = nil) {
         super.init(string, url)
-        self.rules = [
+        rules = [
             Rule(pattern: "\\\\\n") { _ in
                 nil
             },
@@ -250,7 +250,7 @@ public class SnapLexer: Lexer {
             },
             Rule(pattern: "[0-9]+\\b") {
                 let scanner = Scanner(string: String($0.text))
-                var number: Int = 0
+                var number = 0
                 let result = scanner.scanInt(&number)
                 assert(result)
                 return TokenNumber(sourceAnchor: $0, literal: number)
@@ -330,12 +330,14 @@ public class SnapLexer: Lexer {
             leadingWhitespace = ""
         }
 
-        let str0 = lines[1..<lines.count - 1].map { line in
-            guard line.hasPrefix(leadingWhitespace) else {
-                return line
+        let str0 = lines[1..<lines.count - 1]
+            .map { line in
+                guard line.hasPrefix(leadingWhitespace) else {
+                    return line
+                }
+                return line.dropFirst(leadingWhitespace.count)
             }
-            return line.dropFirst(leadingWhitespace.count)
-        }.joined(separator: "\n")
+            .joined(separator: "\n")
 
         let str1 = mapEntities(str0)
         return str1

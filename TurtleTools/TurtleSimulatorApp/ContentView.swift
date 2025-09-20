@@ -42,8 +42,7 @@ struct ContentView: View {
 
     @ViewBuilder var upperDeckView: some View {
         if document.isShowingRegisters || document.isShowingPipeline
-            || document.isShowingDisassembly || document.isShowingMemory
-        {
+            || document.isShowingDisassembly || document.isShowingMemory {
             HSplitView {
                 if document.isShowingRegisters {
                     RegistersView(viewModel: RegistersView.ViewModel(document: document))

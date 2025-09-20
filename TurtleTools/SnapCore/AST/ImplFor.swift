@@ -42,7 +42,7 @@ public final class ImplFor: AbstractSyntaxTreeNode {
             structTypeExpr: structTypeExpr,
             children: children.map { $0.clone() },
             id: ID()
-        )  // The clone has it's own separate identity from the original.
+        ) // The clone has it's own separate identity from the original.
     }
 
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ImplFor {
@@ -128,7 +128,7 @@ public final class ImplFor: AbstractSyntaxTreeNode {
     }
 
     private func makeTypeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if typeArguments.isEmpty {
             result = "none"
         }

@@ -75,7 +75,7 @@ public struct TraitScanner {
         )
 
         if let genericTraitType {
-            genericTraitType.instantiations[evaluatedTypeArguments] = traitType  // memoize
+            genericTraitType.instantiations[evaluatedTypeArguments] = traitType // memoize
         }
 
         let typeChecker = typeChecker(symbols: members)
@@ -95,25 +95,23 @@ public struct TraitScanner {
             // first parameter is of an appropriate type for a "self" parameter.
             guard
                 let firstParam = memberType.maybeUnwrapPointerType()?
-                    .maybeUnwrapFunctionType()?
-                    .arguments
-                    .first
+                .maybeUnwrapFunctionType()?
+                .arguments
+                .first
             else {
                 throw CompilerError(
                     sourceAnchor: memberDeclaration.memberType.sourceAnchor,
-                    message:
-                        "every method on a trait must have, as its first parameter, an appropriate `self' parameter"
+                    message: "every method on a trait must have, as its first parameter, an appropriate `self' parameter"
                 )
             }
             guard
                 traitTypeInfo
-                    == firstParam.maybeUnwrapPointerType()?
-                    .maybeUnwrapTraitType()
+                == firstParam.maybeUnwrapPointerType()?
+                .maybeUnwrapTraitType()
             else {
                 throw CompilerError(
                     sourceAnchor: memberDeclaration.memberType.sourceAnchor,
-                    message:
-                        "every method on a trait must have, as its first parameter, an appropriate `self' parameter: the `self' parameter must have a type that is a pointer to the trait type"
+                    message: "every method on a trait must have, as its first parameter, an appropriate `self' parameter: the `self' parameter must have a type that is a pointer to the trait type"
                 )
             }
 
@@ -149,7 +147,7 @@ public struct TraitScanner {
 
         // Put types into the environment for the vtable and trait-object
         try scan(
-            decls: try TraitObjectDeclarationsBuilder().declarations(
+            decls: TraitObjectDeclarationsBuilder().declarations(
                 for: node0,
                 symbols: symbols
             )
@@ -175,8 +173,7 @@ public struct TraitScanner {
 
         if nil
             == symbols.maybeResolveType(identifier: decls.traitObjectDecl.name)?
-            .maybeUnwrapStructType()
-        {
+            .maybeUnwrapStructType() {
             try StructScanner(
                 symbols: symbols,
                 memoryLayoutStrategy: memoryLayoutStrategy
@@ -192,7 +189,8 @@ public struct TraitScanner {
         }
     }
 
-    /// Mangle the name of a concrete instance of a generic trait, given its evaluated type arguments
+    /// Mangle the name of a concrete instance of a generic trait, given its evaluated type
+    /// arguments
     private func mangleTraitName(
         name: String?,
         evaluatedTypeArguments: [SymbolType] = []

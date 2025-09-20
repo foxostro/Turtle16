@@ -14,10 +14,10 @@ import XCTest
 final class RegisterSpillerTests: XCTestCase {
     func testNoSpills1() throws {
         switch RegisterSpiller.spill(spilledIntervals: [], temporaries: [], nodes: []) {
-        case .success(let r):
+        case let .success(r):
             XCTAssertTrue(r.isEmpty)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -34,10 +34,10 @@ final class RegisterSpillerTests: XCTestCase {
             InstructionNode(instruction: kRET)
         ]
         switch RegisterSpiller.spill(spilledIntervals: [], temporaries: [0], nodes: input) {
-        case .success(let r):
+        case let .success(r):
             XCTAssertEqual(r, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -65,7 +65,7 @@ final class RegisterSpillerTests: XCTestCase {
         case .success:
             XCTFail("expected a failure")
 
-        case .failure(let error):
+        case let .failure(error):
             XCTAssertEqual(error, .missingLeadingEnter)
         }
     }
@@ -94,7 +94,7 @@ final class RegisterSpillerTests: XCTestCase {
         case .success:
             XCTFail("expected a failure")
 
-        case .failure(let error):
+        case let .failure(error):
             XCTAssertEqual(error, .missingSpillSlot)
         }
     }
@@ -133,10 +133,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -175,10 +175,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -231,10 +231,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -293,10 +293,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -340,10 +340,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -393,10 +393,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -448,7 +448,8 @@ final class RegisterSpillerTests: XCTestCase {
                     ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)
                 ]
             ),
-            // Storing and then immediately loading again is inefficient. Rely on the optimizer to clean this up later.
+            // Storing and then immediately loading again is inefficient. Rely on the optimizer to
+            // clean this up later.
             InstructionNode(
                 instruction: kLOAD,
                 parameters: [
@@ -473,10 +474,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -516,7 +517,7 @@ final class RegisterSpillerTests: XCTestCase {
         case .success:
             XCTFail("expected a failure")
 
-        case .failure(let error):
+        case let .failure(error):
             XCTAssertEqual(error, .outOfTemporaries)
         }
     }
@@ -573,10 +574,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [3, 4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -606,7 +607,7 @@ final class RegisterSpillerTests: XCTestCase {
         case .success:
             XCTFail("expected a failure")
 
-        case .failure(let error):
+        case let .failure(error):
             XCTAssertEqual(error, .outOfTemporaries)
         }
     }
@@ -663,10 +664,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }
@@ -723,10 +724,10 @@ final class RegisterSpillerTests: XCTestCase {
             temporaries: [4],
             nodes: nodes
         ) {
-        case .success(let result):
+        case let .success(result):
             XCTAssertEqual(result, expected)
 
-        case .failure(let error):
+        case let .failure(error):
             XCTFail("error: \(error)")
         }
     }

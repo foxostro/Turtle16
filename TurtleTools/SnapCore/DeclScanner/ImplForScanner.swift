@@ -42,28 +42,29 @@ public struct ImplForScanner {
         // because the arugment is an unbound generic type variables. If so then
         // we need to ensure the expression resolves to a generic struct type
         // and deal with it later.
-        let structType: SymbolType
-        switch node.structTypeExpr {
-        case let app as GenericTypeApplication:
-            if let s = try? typeChecker.check(expression: node.structTypeExpr) {
-                structType = s
-            }
-            else {
-                structType = try symbols.resolveTypeOfIdentifier(
-                    sourceAnchor: app.identifier.sourceAnchor,
-                    identifier: app.identifier.identifier
-                )
-            }
+        let structType: SymbolType =
+            switch node.structTypeExpr {
+            case let app as GenericTypeApplication:
+                if let s = try? typeChecker.check(expression: node.structTypeExpr) {
+                    s
+                }
+                else {
+                    try symbols.resolveTypeOfIdentifier(
+                        sourceAnchor: app.identifier.sourceAnchor,
+                        identifier: app.identifier.identifier
+                    )
+                }
 
-        default:
-            structType = try typeChecker.check(expression: node.structTypeExpr)
-        }
+            default:
+                try typeChecker.check(expression: node.structTypeExpr)
+            }
 
         switch structType {
-        case .constStructType(let typ), .structType(let typ):
+        case let .constStructType(typ),
+             let .structType(typ):
             try scan(implFor: node, structType: typ)
 
-        case .genericStructType(let typ):
+        case let .genericStructType(typ):
             typ.implForNodes.append(node)
 
         default:
@@ -91,18 +92,17 @@ public struct ImplForScanner {
             guard let actualMethodSymbol = maybeActualMethodSymbol else {
                 throw CompilerError(
                     sourceAnchor: node.sourceAnchor,
-                    message:
-                        "`\(structType.name)' does not implement all trait methods; missing `\(requiredMethodName)'."
+                    message: "`\(structType.name)' does not implement all trait methods; missing `\(requiredMethodName)'."
                 )
             }
             let actualMethodType = actualMethodSymbol.type.unwrapFunctionType()
-            let expectedMethodType = requiredMethodSymbol.type.unwrapPointerType()
+            let expectedMethodType = requiredMethodSymbol.type
+                .unwrapPointerType()
                 .unwrapFunctionType()
             guard actualMethodType.arguments.count == expectedMethodType.arguments.count else {
                 throw CompilerError(
                     sourceAnchor: node.sourceAnchor,
-                    message:
-                        "`\(structType.name)' method `\(requiredMethodName)' has \(actualMethodType.arguments.count) parameter but the declaration in the `\(traitType.name)' trait has \(expectedMethodType.arguments.count)."
+                    message: "`\(structType.name)' method `\(requiredMethodName)' has \(actualMethodType.arguments.count) parameter but the declaration in the `\(traitType.name)' trait has \(expectedMethodType.arguments.count)."
                 )
             }
             if actualMethodType.arguments.count > 0 {
@@ -123,15 +123,13 @@ public struct ImplForScanner {
                     guard expectedArgumentType == genericMutableSelfPointerType else {
                         throw CompilerError(
                             sourceAnchor: node.sourceAnchor,
-                            message:
-                                "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedArgumentType)' argument, got `\(actualArgumentType)' instead"
+                            message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedArgumentType)' argument, got `\(actualArgumentType)' instead"
                         )
                     }
                     guard actualArgumentType == concreteMutableSelfPointerType else {
                         throw CompilerError(
                             sourceAnchor: node.sourceAnchor,
-                            message:
-                                "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(concreteMutableSelfPointerType)' argument, got `\(actualArgumentType)' instead"
+                            message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(concreteMutableSelfPointerType)' argument, got `\(actualArgumentType)' instead"
                         )
                     }
                 }
@@ -143,8 +141,7 @@ public struct ImplForScanner {
                     guard actualArgumentType == expectedArgumentType else {
                         throw CompilerError(
                             sourceAnchor: node.sourceAnchor,
-                            message:
-                                "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedArgumentType)' argument, got `\(actualArgumentType)' instead"
+                            message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedArgumentType)' argument, got `\(actualArgumentType)' instead"
                         )
                     }
                 }
@@ -152,8 +149,7 @@ public struct ImplForScanner {
             guard actualMethodType.returnType == expectedMethodType.returnType else {
                 throw CompilerError(
                     sourceAnchor: node.sourceAnchor,
-                    message:
-                        "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedMethodType.returnType)' return value, got `\(actualMethodType.returnType)' instead"
+                    message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedMethodType.returnType)' return value, got `\(actualMethodType.returnType)' instead"
                 )
             }
         }
@@ -227,8 +223,7 @@ public struct ImplForScanner {
 
 // TODO: where should the `nameOfVtableInstance(traitName:,structName:)` function live?
 func nameOfVtableInstance(traitName: String, structName structName0: String) -> String {
-    let structName1 =
-        structName0.hasPrefix("__")
+    let structName1 = structName0.hasPrefix("__")
         ? String(structName0.dropFirst(2))
         : structName0
     let nameOfVtableInstance = "__\(traitName)_\(structName1)_vtable_instance"

@@ -12,6 +12,7 @@ open class Lexer {
     public var isAtEnd: Bool {
         position == string.endIndex
     }
+
     public let lineMapper: SourceLineRangeMapper
     public private(set) var tokens: [Token] = []
 
@@ -23,10 +24,11 @@ open class Lexer {
             options: NSRegularExpression.Options = [],
             emit: @escaping (SourceAnchor) -> Token?
         ) {
-            self.regex = try? NSRegularExpression(pattern: "^\(pattern)", options: options)
+            regex = try? NSRegularExpression(pattern: "^\(pattern)", options: options)
             self.emit = emit
         }
     }
+
     public var rules: [Rule] = []
 
     public private(set) var errors: [CompilerError] = []
@@ -112,7 +114,7 @@ open class Lexer {
             }
             catch let error as CompilerError {
                 errors.append(error)
-                advanceToNewline()  // recover by skipping to the next line
+                advanceToNewline() // recover by skipping to the next line
             }
             catch {
                 // This catch block should be unreachable because scanToken()
@@ -195,7 +197,7 @@ open class Lexer {
         }
     }
 
-    fileprivate func interpretQuotedString(lexeme: String) -> String {
+    private func interpretQuotedString(lexeme: String) -> String {
         var result = String(lexeme.dropFirst().dropLast())
         let map = [
             "\0": "\\0",
@@ -221,7 +223,7 @@ open class Lexer {
     public func makeDecimalNumberRule() -> Lexer.Rule {
         Rule(pattern: "[-]{0,1}[0-9]+\\b") {
             let scanner = Scanner(string: String($0.text))
-            var number: Int = 0
+            var number = 0
             let result = scanner.scanInt(&number)
             assert(result)
             return TokenNumber(sourceAnchor: $0, literal: number)

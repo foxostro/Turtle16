@@ -56,13 +56,13 @@ public final class AssemblerCommandLineDriver {
 
     func tryRun() throws {
         try parseArguments()
-        try writeToFile(instructions: try compile())
+        try writeToFile(instructions: compile())
         status = 0
     }
 
     func compile() throws -> [UInt16] {
         let fileName = inputFileName!.relativePath
-        let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
+        let maybeText = try String(data: Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
             throw AssemblerCommandLineDriverError(
                 "Failed to read input file as UTF-8 text: \(fileName)"
@@ -95,7 +95,7 @@ public final class AssemblerCommandLineDriver {
             switch error {
             case .unexpectedEndOfInput:
                 throw AssemblerCommandLineDriverError(makeUsageMessage())
-            case .unknownOption(let option):
+            case let .unknownOption(option):
                 throw AssemblerCommandLineDriverError(
                     "unknown option `\(option)'\n\n\(makeUsageMessage())"
                 )
@@ -111,12 +111,12 @@ public final class AssemblerCommandLineDriver {
         for option in options {
             switch option {
             case .printHelp:
-                break  // do nothing
+                break // do nothing
 
-            case .inputFileName(let fileName):
+            case let .inputFileName(fileName):
                 try parseInputFileName(fileName)
 
-            case .outputFileName(let fileName):
+            case let .outputFileName(fileName):
                 try parseOutputFileName(fileName)
 
             case .quiet:
@@ -141,7 +141,7 @@ public final class AssemblerCommandLineDriver {
 
         USAGE:
         \(arguments[0]) [options] file...
-                    
+
         OPTIONS:
         \t-h         Display available options
         \t-o <file>  Specify the output filename

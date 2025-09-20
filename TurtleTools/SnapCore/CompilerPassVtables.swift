@@ -1,5 +1,5 @@
 //
-//  CompilerPassTraits.swift
+//  CompilerPassVtables.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 9/9/24.
@@ -30,9 +30,9 @@ public final class CompilerPassVtables: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Compiler pass to emit vtable and such for traits
-    public func vtablesPass() throws -> AbstractSyntaxTreeNode? {
+    func vtablesPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassVtables().run(self)
     }
 }

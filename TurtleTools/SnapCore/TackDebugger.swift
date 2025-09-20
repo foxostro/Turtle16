@@ -14,7 +14,7 @@ public final class TackDebugger {
 
     public let vm: TackVirtualMachine
     public let memoryLayoutStrategy: MemoryLayoutStrategy
-    public var symbolsOfTopLevelScope: Env? = nil
+    public var symbolsOfTopLevelScope: Env?
 
     public var symbols: Env? {
         vm.symbols ?? symbolsOfTopLevelScope
@@ -36,7 +36,7 @@ public final class TackDebugger {
 
     public func showSourceList(pc: UInt, count: Int) -> String? {
         guard let sourceAnchor = vm.findSourceAnchor(pc: pc),
-            let lineNumbers = sourceAnchor.lineNumbers
+              let lineNumbers = sourceAnchor.lineNumbers
         else {
             return nil
         }
@@ -49,7 +49,7 @@ public final class TackDebugger {
 
         var result = ""
         for i in lineRange {
-            guard i >= 0 && i < lines.count else {
+            guard i >= 0, i < lines.count else {
                 break
             }
             let line = lines[i]
@@ -59,13 +59,13 @@ public final class TackDebugger {
             let pad = String(repeating: " ", count: kLineNumberColWidth - lineNumberStr.count)
             let lineNumberCol = pad + lineNumberStr
 
-            let indicator: String
-            if let currentlyExecutingLineNumber, i == currentlyExecutingLineNumber {
-                indicator = "->"
-            }
-            else {
-                indicator = ""
-            }
+            let indicator =
+                if let currentlyExecutingLineNumber, i == currentlyExecutingLineNumber {
+                    "->"
+                }
+                else {
+                    ""
+                }
 
             result += "\(lineNumberCol)\t\(indicator)\t\(line)\n"
         }
@@ -104,7 +104,7 @@ public final class TackDebugger {
     public func addressOfSymbol(_ symbol: Symbol) -> UInt? {
         let addr: UInt?
         switch symbol.storage {
-        case .automaticStorage(let offset):
+        case let .automaticStorage(offset):
             guard let offset else { return nil }
             let fp = try! vm.getRegister(p: .fp)
             if offset < 0 {
@@ -114,7 +114,7 @@ public final class TackDebugger {
                 addr = fp &- UInt(offset)
             }
 
-        case .staticStorage(let offset):
+        case let .staticStorage(offset):
             guard let offset else { return nil }
             addr = UInt(offset)
 
@@ -187,8 +187,8 @@ public final class TackDebugger {
         }
         guard
             symbol.type == .array(count: count, elementType: .u8)
-                || symbol.type
-                    == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8)))
+            || symbol.type
+            == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8)))
         else {
             return nil
         }
@@ -208,8 +208,8 @@ public final class TackDebugger {
         }
         guard
             symbol.type == .array(count: count, elementType: .u16)
-                || symbol.type
-                    == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16)))
+            || symbol.type
+            == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16)))
         else {
             return nil
         }
@@ -231,9 +231,8 @@ public final class TackDebugger {
         let count: Int
         switch symbol.type {
         case .array(count: let n, elementType: .u8),
-            .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
+             .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
             count = n!
-            break
 
         default:
             return nil
@@ -258,9 +257,9 @@ public final class TackDebugger {
 
         switch symbol.type {
         case .dynamicArray(elementType: .u8),
-            .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
-            .constDynamicArray(elementType: .u8),
-            .constDynamicArray(elementType: .arithmeticType(.immutableInt(.u8))):
+             .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
+             .constDynamicArray(elementType: .u8),
+             .constDynamicArray(elementType: .arithmeticType(.immutableInt(.u8))):
             break
 
         default:

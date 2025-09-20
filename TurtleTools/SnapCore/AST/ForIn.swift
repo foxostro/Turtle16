@@ -71,7 +71,7 @@ public final class ForIn: AbstractSyntaxTreeNode {
         let indent1 = makeIndent(depth: depth + 1)
         return """
             \(indent0)\(selfDesc)
-            \(indent0)identifier: \(identifier.makeIndentedDescription(depth: depth+1))
+            \(indent0)identifier: \(identifier.makeIndentedDescription(depth: depth + 1))
             \(indent1)sequenceExpr: \(sequenceExpr.makeIndentedDescription(depth: depth + 1))
             \(indent1)body: \(body.makeIndentedDescription(depth: depth + 1))
             """

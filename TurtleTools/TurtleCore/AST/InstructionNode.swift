@@ -63,8 +63,7 @@ public final class InstructionNode: AbstractSyntaxTreeNode {
         wantsLeadingWhitespace: Bool = false
     ) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let param =
-            parameters
+        let param = parameters
             .map {
                 $0.makeIndentedDescription(
                     depth: depth + 1,

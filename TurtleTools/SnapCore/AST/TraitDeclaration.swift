@@ -16,7 +16,7 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
 
         public init(name: String, type: Expression) {
             self.name = name
-            self.memberType = type
+            memberType = type
         }
 
         public var description: String {
@@ -37,6 +37,7 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
         }
         return result
     }
+
     public var nameOfTraitObjectType: String {
         var result = "\(mangledName)_object"
         if !result.hasPrefix("__") {
@@ -154,7 +155,7 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
 
     public override func makeIndentedDescription(
         depth: Int,
-        wantsLeadingWhitespace: Bool = false
+        wantsLeadingWhitespace _: Bool = false
     ) -> String {
         let unindented = """
             \(visibilityDescription) trait \(name)\(typeArgumentsDescription) {\(membersDescription)
@@ -186,7 +187,8 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
 
         let str = typeArguments.map { arg in
             arg.shortDescription
-        }.joined(separator: ", ")
+        }
+        .joined(separator: ", ")
 
         return "[\(str)]"
     }

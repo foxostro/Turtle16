@@ -37,7 +37,7 @@ final class IFTests: XCTestCase {
         ifetch.alu.b = 0xffff
         ifetch.alu.f = 0xffff
         let input = IF.Input(stall: 0, y: 0, jabs: 1, j: 1, rst: 0)
-        let _ = ifetch.step(input: input)
+        _ = ifetch.step(input: input)
         let output = ifetch.step(input: input)
         XCTAssertEqual(output.pc, 0)
         XCTAssertEqual(output.ins, 0xabcd)
@@ -84,7 +84,10 @@ final class IFTests: XCTestCase {
         ifetch.prevIns = 0xffff
         let output = ifetch.step(input: IF.Input(stall: 1, y: 0, jabs: 1, j: 1, rst: 1))
         XCTAssertEqual(output.pc, 0x1000)
-        XCTAssertEqual(output.ins, 0xffff)  // Fetch the next instruction. In this case, it returns a bogus value of 0xffff.
+        XCTAssertEqual(
+            output.ins,
+            0xffff
+        ) // Fetch the next instruction. In this case, it returns a bogus value of 0xffff.
     }
 
     func testFetchTheNextInstructionFromMemory() {

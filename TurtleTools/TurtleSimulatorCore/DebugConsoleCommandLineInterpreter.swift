@@ -13,7 +13,7 @@ public final class DebugConsoleCommandLineInterpreter {
     public let computer: TurtleComputer
     public var shouldQuit = false
     public var logger: Logger = StringLogger()
-    public var sandboxAccessManager: SandboxAccessManager? = nil
+    public var sandboxAccessManager: SandboxAccessManager?
 
     public init(_ computer: TurtleComputer) {
         self.computer = computer
@@ -42,58 +42,58 @@ public final class DebugConsoleCommandLineInterpreter {
 
     public func internalRunOne(instruction: DebugConsoleInstruction) {
         switch instruction {
-        case .help(let topic):
+        case let .help(topic):
             printHelp(topic)
 
         case .quit:
             shouldQuit = true
 
-        case .reset(let type):
+        case let .reset(type):
             computer.reset(type)
 
         case .run:
             run()
 
-        case .step(let count):
+        case let .step(count):
             step(count: count)
 
         case .reg:
             printRegisters()
 
-        case .info(let device):
+        case let .info(device):
             printInfo(device: device)
 
-        case .readMemory(let base, let count):
+        case let .readMemory(base, count):
             printMemoryContents(base: base, count: count)
 
-        case .writeMemory(let base, let words):
+        case let .writeMemory(base, words):
             writeDataMemory(base: base, words: words)
 
-        case .readInstructions(let base, let count):
+        case let .readInstructions(base, count):
             printInstructionMemoryContents(base: base, count: count)
 
-        case .writeInstructions(let base, let words):
+        case let .writeInstructions(base, words):
             writeInstructionMemory(base: base, words: words)
 
-        case .load(let what, let url):
+        case let .load(what, url):
             load(what, url)
 
-        case .save(let what, let url):
+        case let .save(what, url):
             save(what, url)
 
-        case .disassemble(let target):
+        case let .disassemble(target):
             disassemble(target)
         }
     }
 
-    fileprivate func printHelp(_ topic: DebugConsoleHelpTopic?) {
-        if let topic = topic {
+    private func printHelp(_ topic: DebugConsoleHelpTopic?) {
+        if let topic {
             logger.append(topic.longHelp)
         }
         else {
             logger.append("Debugger commands:\n")
             let topics = DebugConsoleHelpTopic.allCases
-            let maxLength = topics.map({ $0.name.count }).reduce(0, { max($0, $1) })
+            let maxLength = topics.map(\.name.count).reduce(0) { max($0, $1) }
             for topic in topics {
                 let left = topic.name + String(repeating: " ", count: maxLength - topic.name.count)
                 logger.append("\t\(left) -- \(topic.shortHelp)\n")
@@ -111,8 +111,8 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate var shouldPauseFlag = false
-    fileprivate var shouldPauseLock = NSLock()
+    private var shouldPauseFlag = false
+    private var shouldPauseLock = NSLock()
 
     public func pause() {
         shouldPauseLock.withLock {
@@ -120,13 +120,13 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate func unpause() {
+    private func unpause() {
         shouldPauseLock.withLock {
             shouldPauseFlag = false
         }
     }
 
-    fileprivate func testAndSetPause() -> Bool {
+    private func testAndSetPause() -> Bool {
         shouldPauseLock.withLock {
             guard shouldPauseFlag else {
                 return false
@@ -136,7 +136,7 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate func run() {
+    private func run() {
         let timeout: TimeInterval = 1.0
 
         isFreeRunning = true
@@ -154,7 +154,7 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate func step(count: Int) {
+    private func step(count: Int) {
         for _ in 0..<count {
             computer.step()
             if computer.isHalted {
@@ -164,7 +164,7 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate func printPipelineStatus() {
+    private func printPipelineStatus() {
         for i in 0..<computer.cpu.numberOfPipelineStages {
             let info = computer.cpu.getPipelineStageInfo(i)
             let pc = String(format: "%04x", info.pc ?? 0)
@@ -172,7 +172,7 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate func printRegisters() {
+    private func printRegisters() {
         let r0 = String(format: "$%04x", computer.getRegister(0))
         let r1 = String(format: "$%04x", computer.getRegister(1))
         let r2 = String(format: "$%04x", computer.getRegister(2))
@@ -194,8 +194,8 @@ public final class DebugConsoleCommandLineInterpreter {
         )
     }
 
-    fileprivate func printInfo(device: String?) {
-        guard let device = device else {
+    private func printInfo(device: String?) {
+        guard let device else {
             printHelp(.info)
             return
         }
@@ -220,42 +220,44 @@ public final class DebugConsoleCommandLineInterpreter {
         logger.append("\n")
     }
 
-    fileprivate func printMemoryContents(array: [UInt16], base: UInt16, count: UInt) {
+    private func printMemoryContents(array: [UInt16], base: UInt16, count: UInt) {
         let baseStr = String(format: "$%04x", base)
-        let hexDump = (0..<count).map({ idx in
-            String(format: "$%04x", Int(array[Int(base) + Int(idx)]))
-        }).joined(separator: " ")
+        let hexDump = (0..<count)
+            .map { idx in
+                String(format: "$%04x", Int(array[Int(base) + Int(idx)]))
+            }
+            .joined(separator: " ")
         logger.append("\(baseStr): \(hexDump)\n")
     }
 
-    fileprivate func printMemoryContents(base: UInt16, count: UInt) {
+    private func printMemoryContents(base: UInt16, count: UInt) {
         printMemoryContents(array: computer.ram, base: base, count: count)
     }
 
-    fileprivate func printInstructionMemoryContents(base: UInt16, count: UInt) {
+    private func printInstructionMemoryContents(base: UInt16, count: UInt) {
         printMemoryContents(array: computer.instructions, base: base, count: count)
     }
 
-    fileprivate func writeMemory(array: inout [UInt16], base: UInt16, words: [UInt16]) {
+    private func writeMemory(array: inout [UInt16], base: UInt16, words: [UInt16]) {
         for idx in 0..<min(words.count, Int(UInt16.max) + 1) {
             array[Int(base) + idx] = words[idx]
         }
     }
 
-    fileprivate func writeDataMemory(base: UInt16, words: [UInt16]) {
+    private func writeDataMemory(base: UInt16, words: [UInt16]) {
         writeMemory(array: &computer.ram, base: base, words: words)
     }
 
-    fileprivate func writeInstructionMemory(base: UInt16, words: [UInt16]) {
+    private func writeInstructionMemory(base: UInt16, words: [UInt16]) {
         writeMemory(array: &computer.instructions, base: base, words: words)
     }
 
-    fileprivate func loadDataFile(_ url: URL) -> Data? {
+    private func loadDataFile(_ url: URL) -> Data? {
         do {
             return try Data(contentsOf: url)
         }
         catch let error as NSError {
-            if error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoPermissionError {
+            if error.domain == NSCocoaErrorDomain, error.code == NSFileReadNoPermissionError {
                 sandboxAccessManager?.requestAccess(url: url)
                 if let data: Data = try? Data(contentsOf: url) {
                     return data
@@ -270,7 +272,7 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate func load(_ what: String, _ url: URL) {
+    private func load(_ what: String, _ url: URL) {
         let validDestinations: Set<String> = [
             "program", "program_hi", "program_lo", "data", "OpcodeDecodeROM1", "OpcodeDecodeROM2",
             "OpcodeDecodeROM3"
@@ -328,8 +330,9 @@ public final class DebugConsoleCommandLineInterpreter {
                     decoder.opcodeDecodeROM[i] = 0
                 }
                 else {
-                    decoder.opcodeDecodeROM[i] =
-                        (decoder.opcodeDecodeROM[i] & ~0x0000ff) | UInt(words[i])
+                    decoder
+                        .opcodeDecodeROM[i] = (decoder.opcodeDecodeROM[i] & ~0x0000ff) |
+                        UInt(words[i])
                 }
             }
             computer.decoder = decoder
@@ -346,8 +349,9 @@ public final class DebugConsoleCommandLineInterpreter {
                     decoder.opcodeDecodeROM[i] = 0
                 }
                 else {
-                    decoder.opcodeDecodeROM[i] =
-                        (decoder.opcodeDecodeROM[i] & ~0x00ff00) | (UInt(words[i]) << 8)
+                    decoder
+                        .opcodeDecodeROM[i] = (decoder.opcodeDecodeROM[i] & ~0x00ff00) |
+                        (UInt(words[i]) << 8)
                 }
             }
             computer.decoder = decoder
@@ -364,8 +368,9 @@ public final class DebugConsoleCommandLineInterpreter {
                     decoder.opcodeDecodeROM[i] = 0
                 }
                 else {
-                    decoder.opcodeDecodeROM[i] =
-                        (decoder.opcodeDecodeROM[i] & ~0xff0000) | (UInt(words[i]) << 16)
+                    decoder
+                        .opcodeDecodeROM[i] = (decoder.opcodeDecodeROM[i] & ~0xff0000) |
+                        (UInt(words[i]) << 16)
                 }
             }
             computer.decoder = decoder
@@ -378,7 +383,7 @@ public final class DebugConsoleCommandLineInterpreter {
 
     let kEEPROMSize = 1 << 17
 
-    fileprivate func save(_ what: String, _ url: URL) {
+    private func save(_ what: String, _ url: URL) {
         var data: Data
         switch what {
         case "program":
@@ -444,32 +449,27 @@ public final class DebugConsoleCommandLineInterpreter {
         try! data.write(to: url)
     }
 
-    fileprivate func disassemble(_ target: DebugConsoleInstruction.DisassembleMode) {
+    private func disassemble(_ target: DebugConsoleInstruction.DisassembleMode) {
         let kDefaultCount: UInt = 16
         switch target {
         case .unspecified:
             disassemble(base: computer.pc, count: kDefaultCount)
-            break
 
-        case .base(let base):
+        case let .base(base):
             disassemble(base: base, count: kDefaultCount)
-            break
 
-        case .baseCount(let base, let count):
+        case let .baseCount(base, count):
             disassemble(base: base, count: count)
-            break
 
-        case .identifier(let identifier):
+        case let .identifier(identifier):
             disassemble(identifier: identifier, count: kDefaultCount)
-            break
 
-        case .identifierCount(let identifier, let count):
+        case let .identifierCount(identifier, count):
             disassemble(identifier: identifier, count: count)
-            break
         }
     }
 
-    fileprivate func disassemble(base: UInt16, count: UInt) {
+    private func disassemble(base: UInt16, count: UInt) {
         let disassembler = Disassembler()
         let disassembly = disassembler.disassemble(computer.instructions)
         var remaining = count
@@ -477,13 +477,13 @@ public final class DebugConsoleCommandLineInterpreter {
             if entry.address >= base {
                 let strAddress = String(format: "%04x", entry.address)
                 let strWord = String(format: "%04x", entry.word)
-                let strLabel: String
-                if let label = entry.label {
-                    strLabel = label + ": "
-                }
-                else {
-                    strLabel = ""
-                }
+                let strLabel: String =
+                    if let label = entry.label {
+                        label + ": "
+                    }
+                    else {
+                        ""
+                    }
                 let strMnemonic = entry.mnemonic ?? ""
                 logger.append("\(strAddress)\t\(strWord)\t\(strLabel)\(strMnemonic)\n")
                 remaining = remaining - 1
@@ -494,9 +494,9 @@ public final class DebugConsoleCommandLineInterpreter {
         }
     }
 
-    fileprivate func disassemble(identifier: String, count: UInt) {
+    private func disassemble(identifier: String, count: UInt) {
         let disassembler = Disassembler()
-        let _ = disassembler.disassemble(computer.instructions)
+        _ = disassembler.disassemble(computer.instructions)
         if let base = disassembler.labels.first(where: { $1 == identifier })?.key {
             disassemble(base: UInt16(base), count: count)
         }

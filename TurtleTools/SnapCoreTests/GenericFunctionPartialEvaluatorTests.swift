@@ -10,9 +10,7 @@ import SnapCore
 import XCTest
 
 final class GenericFunctionPartialEvaluatorTests: XCTestCase {
-
     func testExample() throws {
         _ = GenericsPartialEvaluator(symbols: nil, map: [:])
     }
-
 }

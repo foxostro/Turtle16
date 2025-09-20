@@ -73,7 +73,6 @@ struct TraitObjectDeclarationsBuilder {
         for traitDecl: TraitDeclaration,
         _ symbols: Env
     ) throws -> Impl? {
-
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
             let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
@@ -88,10 +87,9 @@ struct TraitObjectDeclarationsBuilder {
                 ),
                 member: Identifier(method.name)
             )
-            let arguments =
-                [
-                    Get(expr: Identifier("self"), member: Identifier("object"))
-                ] + argumentNames[1...].map { Identifier($0) }
+            let arguments = [
+                Get(expr: Identifier("self"), member: Identifier("object"))
+            ] + argumentNames[1...].map { Identifier($0) }
             let outer = Env(
                 parent: symbols,
                 frameLookupMode: .set(Frame(growthDirection: .down))
@@ -102,8 +100,7 @@ struct TraitObjectDeclarationsBuilder {
                 callee: callee,
                 arguments: arguments
             )
-            let callExpr1 =
-                (returnType == .void)
+            let callExpr1 = (returnType == .void)
                 ? callExpr0
                 : Return(callExpr0)
             let fnBody = Block(
@@ -129,18 +126,17 @@ struct TraitObjectDeclarationsBuilder {
         return impl
     }
 
-    func rewriteTraitMemberTypeForVtable(  // TODO: The `rewriteTraitMemberTypeForVtable` method should be fileprivate
+    func rewriteTraitMemberTypeForVtable( // TODO: The `rewriteTraitMemberTypeForVtable` method should be fileprivate
         _ traitName: String,
         _ expr0: Expression
     ) -> Expression {
-        let expr: Expression
-
-        if let primitiveType = expr0 as? PrimitiveType {
-            expr = primitiveType.typ.lift
-        }
-        else {
-            expr = expr0
-        }
+        let expr: Expression =
+            if let primitiveType = expr0 as? PrimitiveType {
+                primitiveType.typ.lift
+            }
+            else {
+                expr0
+            }
 
         if let functionType = (expr as? PointerType)?.typ as? FunctionType {
             if let arg0 = functionType.arguments.first {
@@ -155,8 +151,7 @@ struct TraitObjectDeclarationsBuilder {
                 }
 
                 if (((arg0 as? PointerType)?.typ as? ConstType)?.typ as? Identifier)?.identifier
-                    == traitName
-                {
+                    == traitName {
                     var arguments: [Expression] = functionType.arguments
                     arguments[0] = PointerType(PrimitiveType(.void))
                     let modifiedFunctionType = FunctionType(
@@ -167,9 +162,8 @@ struct TraitObjectDeclarationsBuilder {
                 }
 
                 if let pointerType = arg0 as? PointerType,
-                    let app = pointerType.typ as? GenericTypeApplication,
-                    app.identifier.identifier == traitName
-                {
+                   let app = pointerType.typ as? GenericTypeApplication,
+                   app.identifier.identifier == traitName {
                     var arguments: [Expression] = functionType.arguments
                     arguments[0] = PointerType(PrimitiveType(.void))
                     let modifiedFunctionType = FunctionType(
@@ -184,11 +178,10 @@ struct TraitObjectDeclarationsBuilder {
         return expr
     }
 
-    func rewriteTraitMemberTypeForThunk(  // TODO: The `rewriteTraitMemberTypeForThunk` method should be fileprivate
+    func rewriteTraitMemberTypeForThunk( // TODO: The `rewriteTraitMemberTypeForThunk` method should be fileprivate
         _ traitDecl: TraitDeclaration,
         _ method: TraitDeclaration.Member
     ) -> FunctionType {
-
         rewriteTraitMemberTypeForThunk(
             traitName: traitDecl.identifier.identifier,
             traitObjectName: traitDecl.nameOfTraitObjectType,
@@ -197,13 +190,12 @@ struct TraitObjectDeclarationsBuilder {
         )
     }
 
-    fileprivate func rewriteTraitMemberTypeForThunk(
+    private func rewriteTraitMemberTypeForThunk(
         traitName: String,
         traitObjectName: String,
         methodName: String,
         methodType: Expression
     ) -> FunctionType {
-
         let functionType = (methodType as! PointerType).typ as! FunctionType
 
         if let arg0 = functionType.arguments.first {
@@ -219,8 +211,7 @@ struct TraitObjectDeclarationsBuilder {
             }
 
             if (((arg0 as? PointerType)?.typ as? ConstType)?.typ as? Identifier)?.identifier
-                == traitName
-            {
+                == traitName {
                 var arguments: [Expression] = functionType.arguments
                 arguments[0] = PointerType(ConstType(Identifier(traitObjectName)))
                 let modifiedFunctionType = FunctionType(
@@ -232,9 +223,8 @@ struct TraitObjectDeclarationsBuilder {
             }
 
             if let pointerType = arg0 as? PointerType,
-                let app = pointerType.typ as? GenericTypeApplication,
-                app.identifier.identifier == traitName
-            {
+               let app = pointerType.typ as? GenericTypeApplication,
+               app.identifier.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
                 arguments[0] = PointerType(Identifier(traitObjectName))
                 let modifiedFunctionType = FunctionType(

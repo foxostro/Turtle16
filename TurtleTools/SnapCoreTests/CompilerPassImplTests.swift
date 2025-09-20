@@ -224,7 +224,7 @@ final class CompilerPassImplTests: XCTestCase {
         .synthesizeTerminalReturnStatements()?
         .eraseImplPass()?
         .flatten()?
-        .eraseSourceAnchors()  // aids in comparing against `expected`
+        .eraseSourceAnchors() // aids in comparing against `expected`
 
         let expected = Block(children: [
             FunctionDeclaration(

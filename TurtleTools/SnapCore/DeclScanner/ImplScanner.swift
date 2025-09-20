@@ -46,8 +46,7 @@ public struct ImplScanner {
             )
         }
 
-        let structType =
-            try parent
+        let structType = try parent
             .resolveTypeOfIdentifier(
                 sourceAnchor: app.sourceAnchor,
                 identifier: app.identifier.identifier
@@ -62,7 +61,7 @@ public struct ImplScanner {
 
         guard
             let structType = try typeChecker.check(expression: node.structTypeExpr)
-                .maybeUnwrapStructType()
+            .maybeUnwrapStructType()
         else {
             fatalError("unsupported expression: \(node)")
         }

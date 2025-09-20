@@ -35,8 +35,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     var staticStorageFrame: Frame!
     var memoryLayoutStrategy: (any MemoryLayoutStrategy)!
     var typeContext: TypeContextTypeChecker!
-    
-    public override func setUp() {
+
+    override func setUp() {
         symbols = Env()
         staticStorageFrame = Frame()
         memoryLayoutStrategy = MemoryLayoutStrategyNull()
@@ -46,7 +46,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             memoryLayoutStrategy: memoryLayoutStrategy
         )
     }
-    
+
     private func AddressOf(_ expr: Expression) -> Unary {
         Unary(op: .ampersand, expression: expr)
     }
@@ -73,7 +73,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
 
     private func Temp(
         i: Int,
-        seq: [AbstractSyntaxTreeNode] = [],
+        seq _: [AbstractSyntaxTreeNode] = [],
         expr: Expression?,
         explicitType: Expression?
     ) -> Eseq {
@@ -83,17 +83,19 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             expression: expr,
             isMutable: false
         )
-            .inferExplicitType(typeContext)
-            .breakOutInitialAssignment()
+        .inferExplicitType(typeContext)
+        .breakOutInitialAssignment()
         guard let tempDecl else {
-            fatalError("""
-            ** Malformed Unit Test! **
-            
-            We expect the call to `inferExplicitType()` to throw in cases where
-            it would be necessary to consult the environment to determine the
-            type of the expression. In this case, the unit test should make sure
-            to specify `explicitType`.
-            """)
+            fatalError(
+                """
+                ** Malformed Unit Test! **
+
+                We expect the call to `inferExplicitType()` to throw in cases where
+                it would be necessary to consult the environment to determine the
+                type of the expression. In this case, the unit test should make sure
+                to specify `explicitType`.
+                """
+            )
         }
         return Eseq(seq: tempDecl, expr: TempRef(i))
     }
@@ -283,7 +285,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, input)
     }
-    
+
     func testLiteralArrayExpression_MoreThanZeroElements() throws {
         let arrTyp = ArrayType(
             count: LiteralInt(1),
@@ -311,52 +313,54 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
-        let expected = Block(children: shared + [
-            Eseq(
-                seq: Seq(children: [
-                    VarDeclaration(
-                        identifier: TempRef(0),
-                        explicitType: ConstType(
-                            PointerType(
-                                ArrayType(
-                                    count: LiteralInt(1),
-                                    elementType: ConstType(u16)
-                                )
-                            )
-                        ),
-                        expression: nil,
-                        storage: .automaticStorage(offset: nil),
-                        isMutable: false
-                    ),
-                    Assignment(
-                        lexpr: TempRef(0),
-                        rexpr: AddressOf(foo)
-                    ),
-                    Assignment(
-                        lexpr: Get(
-                            expr: Temp(
-                                i: 2,
-                                expr: AddressOf(
-                                    Subscript(
-                                        subscriptable: TempRef(0),
-                                        argument: Temp(i: 1, expr: LiteralInt(0))
+        .reconnect(parent: nil)
+
+        let expected = Block(
+            children: shared + [
+                Eseq(
+                    seq: Seq(children: [
+                        VarDeclaration(
+                            identifier: TempRef(0),
+                            explicitType: ConstType(
+                                PointerType(
+                                    ArrayType(
+                                        count: LiteralInt(1),
+                                        elementType: ConstType(u16)
                                     )
-                                ),
-                                explicitType: ConstType(PointerType(ConstType(u16)))
+                                )
                             ),
-                            member: pointee
+                            expression: nil,
+                            storage: .automaticStorage(offset: nil),
+                            isMutable: false
                         ),
-                        rexpr: Temp(i: 3, expr: LiteralInt(10))
+                        Assignment(
+                            lexpr: TempRef(0),
+                            rexpr: AddressOf(foo)
+                        ),
+                        Assignment(
+                            lexpr: Get(
+                                expr: Temp(
+                                    i: 2,
+                                    expr: AddressOf(
+                                        Subscript(
+                                            subscriptable: TempRef(0),
+                                            argument: Temp(i: 1, expr: LiteralInt(0))
+                                        )
+                                    ),
+                                    explicitType: ConstType(PointerType(ConstType(u16)))
+                                ),
+                                member: pointee
+                            ),
+                            rexpr: Temp(i: 3, expr: LiteralInt(10))
+                        )
+                    ]),
+                    expr: Get(
+                        expr: TempRef(0),
+                        member: pointee
                     )
-                ]),
-                expr: Get(
-                    expr: TempRef(0),
-                    member: pointee
                 )
-            )
-        ])
+            ]
+        )
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -405,7 +409,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             VarDeclaration(identifier: a, explicitType: bool)
         ]
         let input = Block(children: shared + [a]).reconnect(parent: nil)
-        
+
         let expected = Block(children: shared + [a]).reconnect(parent: nil)
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -431,7 +435,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 Unary(op: .minus, expression: temp0)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -450,7 +454,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, input)
     }
-    
+
     // Applying a unary operator to most other expressions causes the object of
     // the expression to be extracted to a temporary value.
     func testUnaryExpression_NegateAnExpression() throws {
@@ -467,8 +471,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 Unary(op: .minus, expression: temp0)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -496,9 +500,11 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             ),
             VarDeclaration(identifier: a, explicitType: PointerType(Foo))
         ]
-        let input = Block(children: shared + [
-            AddressOf(Get(expr: a, member: bar))
-        ])
+        let input = Block(
+            children: shared + [
+                AddressOf(Get(expr: a, member: bar))
+            ]
+        )
         .reconnect(parent: nil)
 
         let expected = Block(
@@ -515,12 +521,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // In expressions of the form `Get(object, member)`, where the object is a
     // bare identifier then the expression is irreducible.
     func testGetFromBareIdentifier() throws {
@@ -555,7 +561,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -599,7 +605,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             ]
         )
         .reconnect(parent: nil)
-        
+
         let temp0 = Temp(i: 0, expr: foo, explicitType: ConstType(PointerType(MyStruct2)))
         let temp1 = Temp(
             i: 1,
@@ -611,7 +617,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 Get(expr: temp1, member: baz)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -633,18 +639,22 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 body: Block()
             )
         ]
-        let input = Block(children: shared + [
-            Call(
-                callee: foo,
-                arguments: [LiteralInt(1000)]
-            )
-        ])
+        let input = Block(
+            children: shared + [
+                Call(
+                    callee: foo,
+                    arguments: [LiteralInt(1000)]
+                )
+            ]
+        )
         .reconnect(parent: nil)
 
         let temp0 = Temp(i: 0, expr: LiteralInt(1000))
-        let expected = Block(children: shared + [
-            Call(callee: foo, arguments: [temp0])
-        ])
+        let expected = Block(
+            children: shared + [
+                Call(callee: foo, arguments: [temp0])
+            ]
+        )
         .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
@@ -706,16 +716,20 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             VarDeclaration(identifier: a, explicitType: u16),
             VarDeclaration(identifier: b, explicitType: u16)
         ]
-        let input = Block(children: shared + [
-            Binary(op: .plus, left: LiteralInt(1000), right: LiteralInt(2000))
-        ])
+        let input = Block(
+            children: shared + [
+                Binary(op: .plus, left: LiteralInt(1000), right: LiteralInt(2000))
+            ]
+        )
         .reconnect(parent: nil)
 
         let temp0 = Temp(i: 0, expr: LiteralInt(1000))
         let temp1 = Temp(i: 1, expr: LiteralInt(2000))
-        let expected = Block(children: shared + [
-            Binary(op: .plus, left: temp0, right: temp1)
-        ])
+        let expected = Block(
+            children: shared + [
+                Binary(op: .plus, left: temp0, right: temp1)
+            ]
+        )
         .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
@@ -744,8 +758,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 Assignment(lexpr: foo, rexpr: temp0)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
@@ -782,7 +796,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // For the case where the left-hand side is an identifier of a non-primitive
     // object, we know the object must be materialized in memory. Extract a
     // pointer to the object and dereference it at the site of the assignment
@@ -824,7 +838,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -946,7 +960,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -982,7 +996,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: shared + [
@@ -1051,7 +1065,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -1152,7 +1166,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -1261,7 +1275,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let temp0 = Temp(i: 0, expr: LiteralInt(0))
         let temp1 = Temp(
@@ -1287,7 +1301,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
@@ -1377,7 +1391,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let temp0 = Temp(i: 0, expr: LiteralInt(0))
         let temp1 = Temp(
@@ -1405,12 +1419,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 Assignment(lexpr: foo, rexpr: temp2)
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testAssignmentExpression_RightHandSideIsStructInitializer_ZeroMembers() throws {
         let shared = [
             StructDeclaration(
@@ -1430,7 +1444,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: shared + [
@@ -1451,12 +1465,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testAssignmentExpression_RightHandSideIsStructInitializer() throws {
         let shared = [
             StructDeclaration(
@@ -1486,7 +1500,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let expected = Block(
             children: shared + [
@@ -1518,12 +1532,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testAssignmentExpression_RightHandSideIsLiteralString() throws {
         let str = "Hello, World!"
         let arrType = ArrayType(
@@ -1550,8 +1564,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let temp0 = Temp(
             i: 0,
             expr: AddressOf(a),
@@ -1570,12 +1584,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSubscriptArgumentOfLiteralRangeMustBePreserved() throws {
         let shared = [
             StructDeclaration(
@@ -1621,8 +1635,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let expected = Block(
             children: shared + [
                 Subscript(
@@ -1657,12 +1671,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testExtractArrayConversionByValueBecauseItHasNoLvalue() throws {
         let arrType = ArrayType(
             count: LiteralInt(0),
@@ -1692,8 +1706,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let temp0 = Temp(
             i: 0,
             expr: AddressOf(foo),
@@ -1728,12 +1742,12 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 )
             ]
         )
-            .reconnect(parent: nil)
+        .reconnect(parent: nil)
 
         let actual = try input.decomposeExpressions()
         XCTAssertEqual(actual, expected)
     }
-    
+
     // Ignore Get expressions where the object has a dynamic array type.
     // This is a special case escape hatch which will be removed after we add a
     // new compiler pass to erase dynamic arrays.
@@ -1746,8 +1760,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
                 Get(expr: foo, member: count)
             ]
         )
-            .reconnect(parent: nil)
-        
+        .reconnect(parent: nil)
+
         let actual = try input.decomposeExpressions()
         let expected = input
         XCTAssertEqual(actual, expected)

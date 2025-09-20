@@ -11,7 +11,6 @@ import TurtleCore
 import XCTest
 
 final class TraitScannerTests: XCTestCase {
-
     func testCompileTraitAddsToTypeTable_Empty() throws {
         let ast = TraitDeclaration(identifier: Identifier("Foo"), members: [])
 
@@ -447,5 +446,4 @@ final class TraitScannerTests: XCTestCase {
             )
         }
     }
-
 }

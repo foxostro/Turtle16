@@ -9,7 +9,7 @@
 import TurtleSimulatorCore
 
 public class SnapDebugConsole: DebugConsole {
-    public var symbols: Env? = nil
+    public var symbols: Env?
     public let memoryLayoutStrategy = MemoryLayoutStrategyNull()
 
     public func loadSymbolU8(_ identifier: String) -> UInt8? {
@@ -92,8 +92,8 @@ public class SnapDebugConsole: DebugConsole {
         }
         guard
             symbol.type == .array(count: count, elementType: .u8)
-                || symbol.type
-                    == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8)))
+            || symbol.type
+            == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8)))
         else {
             return nil
         }
@@ -113,8 +113,8 @@ public class SnapDebugConsole: DebugConsole {
         }
         guard
             symbol.type == .array(count: count, elementType: .u16)
-                || symbol.type
-                    == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16)))
+            || symbol.type
+            == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16)))
         else {
             return nil
         }
@@ -135,9 +135,8 @@ public class SnapDebugConsole: DebugConsole {
         let count: Int
         switch symbol.type {
         case .array(count: let n, elementType: .u8),
-            .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
+             .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
             count = n!
-            break
 
         default:
             return nil
@@ -161,9 +160,9 @@ public class SnapDebugConsole: DebugConsole {
 
         switch symbol.type {
         case .dynamicArray(elementType: .u8),
-            .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
-            .constDynamicArray(elementType: .u8),
-            .constDynamicArray(elementType: .arithmeticType(.immutableInt(.u8))):
+             .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
+             .constDynamicArray(elementType: .u8),
+             .constDynamicArray(elementType: .arithmeticType(.immutableInt(.u8))):
             break
 
         default:

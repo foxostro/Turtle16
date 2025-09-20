@@ -26,24 +26,24 @@ public struct SnapSubcompilerMatch {
         )
 
         // Get the list of types this match statement is expected to contain.
-        let expectedTypes: NSOrderedSet
-        switch matchExprType {
-        case .unionType(let typ):
-            expectedTypes = NSOrderedSet(array: typ.members.map({ $0.correspondingMutableType }))
-        default:
-            expectedTypes = NSOrderedSet(array: [matchExprType.correspondingMutableType])
-        }
+        let expectedTypes =
+            switch matchExprType {
+            case let .unionType(typ):
+                NSOrderedSet(array: typ.members.map(\.correspondingMutableType))
+            default:
+                NSOrderedSet(array: [matchExprType.correspondingMutableType])
+            }
 
         // Check that the expected and provided types match.
-        let valueTypes = NSOrderedSet(
-            array: try match.clauses.map({
-                (
+        let valueTypes = try NSOrderedSet(
+            array: match.clauses.map {
+                try (
                     $0,
-                    try RvalueExpressionTypeChecker(symbols: symbols).check(
+                    RvalueExpressionTypeChecker(symbols: symbols).check(
                         expression: $0.valueType
                     )
                 )
-            })
+            }
         )
         let extraneousTypes = valueTypes.filter { (element_: Any) -> Bool in
             let element = element_ as! (Match.Clause, SymbolType)
@@ -51,7 +51,7 @@ public struct SnapSubcompilerMatch {
             return isIncluded
         }
         guard extraneousTypes.count == 0 else {
-            let what = extraneousTypes.map({ "\(($0 as! (Match.Clause, SymbolType)).1)" }).joined(
+            let what = extraneousTypes.map { "\(($0 as! (Match.Clause, SymbolType)).1)" }.joined(
                 separator: ", "
             )
             let clauseStr = extraneousTypes.count == 1 ? "clause" : "clauses"
@@ -73,8 +73,7 @@ public struct SnapSubcompilerMatch {
             )
         )
         guard missingTypes.count == 0 || match.elseClause != nil else {
-            let what =
-                missingTypes
+            let what = missingTypes
                 .map { "\($0)" }
                 .joined(separator: ", ")
             let clauseStr = missingTypes.count == 1 ? "clause" : "clauses"
@@ -148,17 +147,17 @@ public struct SnapSubcompilerMatch {
                 else: compileMatchClause(match, clauses.dropLast(), symbols)
             )
         }
-        let clauseElseBlock: Block?
-        if match.elseClause == nil {
-            clauseElseBlock = nil
-        }
-        else {
-            clauseElseBlock = Block(
-                sourceAnchor: match.elseClause!.sourceAnchor,
-                symbols: Env(parent: symbols),
-                children: match.elseClause!.children
-            )
-        }
+        let clauseElseBlock: Block? =
+            if match.elseClause == nil {
+                nil
+            }
+            else {
+                Block(
+                    sourceAnchor: match.elseClause!.sourceAnchor,
+                    symbols: Env(parent: symbols),
+                    children: match.elseClause!.children
+                )
+            }
 
         let outerSymbols = Env(parent: symbols)
 

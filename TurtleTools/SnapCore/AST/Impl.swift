@@ -38,7 +38,7 @@ public final class Impl: AbstractSyntaxTreeNode {
             structTypeExpr: structTypeExpr,
             children: children.map { $0.clone() },
             id: ID()
-        )  // The clone has it's own separate identity from the original.
+        ) // The clone has it's own separate identity from the original.
     }
 
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Impl {
@@ -82,7 +82,7 @@ public final class Impl: AbstractSyntaxTreeNode {
     }
 
     public func inserting(children toInsert: [FunctionDeclaration], at index: Int) -> Impl {
-        var children = self.children
+        var children = children
         children.insert(contentsOf: toInsert, at: index)
         return withChildren(children)
     }
@@ -124,7 +124,7 @@ public final class Impl: AbstractSyntaxTreeNode {
     }
 
     private func makeTypeArgumentsDescription(depth: Int) -> String {
-        var result: String = ""
+        var result = ""
         if typeArguments.isEmpty {
             result = "none"
         }

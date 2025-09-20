@@ -28,18 +28,18 @@ import TurtleCore
 /// its declaration site.
 public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDeclScan {
     private let tempPrefix = "__temp"
-    
+
     /// Set of VarDeclaration nodes, by ID, for variables known to be escaping
     private var escapes = Set<AbstractSyntaxTreeNode.ID>()
-    
+
     /// Rewrites VarDeclaration nodes
     private final class VarDeclRewriter: CompilerPass {
         let escapes: Set<AbstractSyntaxTreeNode.ID>
-        
+
         init(_ escapes: Set<AbstractSyntaxTreeNode.ID>) {
             self.escapes = escapes
         }
-        
+
         override func visit(
             varDecl node0: VarDeclaration
         ) throws -> AbstractSyntaxTreeNode? {
@@ -49,29 +49,28 @@ public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDe
             return node1.withStorage(.registerStorage(nil))
         }
     }
-    
+
     public override func postProcess(
         _ node0: AbstractSyntaxTreeNode?
     ) throws -> AbstractSyntaxTreeNode? {
         try VarDeclRewriter(escapes).run(node0)
     }
-    
+
     public override func visit(unary node: Unary) throws -> Expression? {
         // If we take the address of a variable then that variable is Escaping.
         if node.op == .ampersand,
            let ident = (node.child as? Identifier)?.identifier,
            let decl = symbols?.maybeResolve(identifier: ident)?.decl {
-            
             escapes.insert(decl)
         }
         return try super.visit(unary: node)
     }
-    
+
     public override func visit(
         varDecl node0: VarDeclaration
     ) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(varDecl: node0)
-        
+
         // If we declare a variable of a non-eligible type then consider it to
         // be Escaping too.
         if let node1 = node1 as? VarDeclaration {
@@ -81,14 +80,14 @@ public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDe
                 escapes.insert(node0.id)
             }
         }
-        
+
         return node1
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Mark eligible variables with the "register" storage class
-    public func escapeAnalysis() throws -> AbstractSyntaxTreeNode? {
+    func escapeAnalysis() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassMaterializationEscapeAnalysis().run(self)
     }
 }

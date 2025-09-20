@@ -22,10 +22,10 @@ class SnapBenchmarkDriver: NSObject {
         let result = fib(13)
         """
 
-    public struct SnapBenchmarkDriverError: Error {
-        public let message: String
+    struct SnapBenchmarkDriverError: Error {
+        let message: String
 
-        public init(format: String, _ args: CVarArg...) {
+        init(format: String, _ args: CVarArg...) {
             message = String(format: format, arguments: args)
         }
     }
@@ -44,16 +44,16 @@ class SnapBenchmarkDriver: NSObject {
     }
 
     let isVerboseLogging = false
-    public var status: Int32 = 1
-    public var stdout: TextOutputStream = String()
-    public var stderr: TextOutputStream = String()
+    var status: Int32 = 1
+    var stdout: TextOutputStream = String()
+    var stderr: TextOutputStream = String()
     let arguments: [String]
 
-    public required init(arguments: [String]) {
+    required init(arguments: [String]) {
         self.arguments = arguments
     }
 
-    public func run() {
+    func run() {
         do {
             try tryRun()
         }
@@ -81,8 +81,7 @@ class SnapBenchmarkDriver: NSObject {
     func parseArguments() throws {
         if arguments.count != 1 {
             throw SnapBenchmarkDriverError(
-                format:
-                    "usage: SnapBenchmark\nUnexpectedly got \(arguments.count-1) arguments: \(arguments.debugDescription)"
+                format: "usage: SnapBenchmark\nUnexpectedly got \(arguments.count - 1) arguments: \(arguments.debugDescription)"
             )
         }
     }
@@ -97,19 +96,19 @@ class SnapBenchmarkDriver: NSObject {
         }
 
         if isVerboseLogging {
-            logger?.append(AssemblerListingMaker().makeListing(try compiler.assembly.get()))
-            logger?.append(try compiler.tack.get().listing)
+            try logger?.append(AssemblerListingMaker().makeListing(compiler.assembly.get()))
+            try logger?.append(compiler.tack.get().listing)
         }
 
         let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
-            if let logger = logger {
+            if let logger {
                 logger.append("store ram[\(addr.value)] <- \(value)")
             }
             computer.ram[addr.value] = value
         }
         computer.cpu.load = { (addr: MemoryAddress) in
-            if let logger = logger {
+            if let logger {
                 logger.append("load ram[\(addr.value)] -> \(computer.ram[addr.value])")
             }
             return computer.ram[addr.value]
@@ -120,7 +119,7 @@ class SnapBenchmarkDriver: NSObject {
 
         let debugger = SnapDebugConsole(computer: computer)
         debugger.symbols = compiler.symbolsOfTopLevelScope
-        if let logger = logger {
+        if let logger {
             debugger.logger = logger
         }
 
@@ -131,13 +130,13 @@ class SnapBenchmarkDriver: NSObject {
         let expectedResult: UInt8 = 233
         let actualResult = debugger.loadSymbolU8("result")
         if actualResult != expectedResult {
-            let str: String
-            if let actualResult = actualResult {
-                str = "\(actualResult)"
-            }
-            else {
-                str = "nil"
-            }
+            let str =
+                if let actualResult {
+                    "\(actualResult)"
+                }
+                else {
+                    "nil"
+                }
             throw SnapBenchmarkDriverError(
                 format: "Program runtime benchmark finished with an incorrect result: \(str)"
             )

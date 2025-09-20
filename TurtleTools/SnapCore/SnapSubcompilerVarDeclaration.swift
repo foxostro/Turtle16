@@ -47,18 +47,18 @@ public struct SnapSubcompilerVarDeclaration {
 
         // If the variable declaration provided an explicit type expression then
         // the type checker can determine what type it evaluates to.
-        let explicitType: SymbolType?
-        if let explicitTypeExpr = node.explicitType {
-            explicitType = try TypeContextTypeChecker(
-                symbols: symbols,
-                staticStorageFrame: staticStorageFrame,
-                memoryLayoutStrategy: memoryLayoutStrategy
-            )
-            .check(expression: explicitTypeExpr)
-        }
-        else {
-            explicitType = nil
-        }
+        let explicitType: SymbolType? =
+            if let explicitTypeExpr = node.explicitType {
+                try TypeContextTypeChecker(
+                    symbols: symbols,
+                    staticStorageFrame: staticStorageFrame,
+                    memoryLayoutStrategy: memoryLayoutStrategy
+                )
+                .check(expression: explicitTypeExpr)
+            }
+            else {
+                nil
+            }
 
         if let varDeclExpr = node.expression {
             // The type of the initial value expression may be used to infer the
@@ -88,7 +88,7 @@ public struct SnapSubcompilerVarDeclaration {
                     // Some expression types cannot be made concrete.
                     // Convert these appropriate convertible types.
                     switch expressionResultType {
-                    case .arithmeticType(.compTimeInt(let constantValue)):
+                    case let .arithmeticType(.compTimeInt(constantValue)):
                         let intClass = IntClass.smallestClassContaining(value: constantValue)
                         symbolType = .arithmeticType(.mutableInt(intClass!))
                     case .booleanType(.compTimeBool):
@@ -151,7 +151,6 @@ public struct SnapSubcompilerVarDeclaration {
         visibility: SymbolVisibility,
         decl: AbstractSyntaxTreeNode.ID
     ) throws -> Symbol {
-
         guard try explicitType.hasModule(symbols) == false else {
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
@@ -172,10 +171,9 @@ public struct SnapSubcompilerVarDeclaration {
         _ explicitType: SymbolType,
         _ storage0: SymbolStorage
     ) -> SymbolStorage {
-
         switch storage0 {
-        case .staticStorage(let offset) where offset == nil,
-            .automaticStorage(let offset) where offset == nil:
+        case let .staticStorage(offset) where offset == nil,
+             .automaticStorage(let offset) where offset == nil:
             // If the symbol has not been assigned a memory address then
             // allocate an address for it now in the appropriate frame.
 
@@ -196,7 +194,7 @@ public struct SnapSubcompilerVarDeclaration {
             let offset = bumpStoragePointer(explicitType, frame)
 
             let storage1: SymbolStorage =
-                if storage0.isAutomaticStorage && symbols.frame == nil {
+                if storage0.isAutomaticStorage, symbols.frame == nil {
                     .staticStorage(offset: offset)
                 }
                 else {

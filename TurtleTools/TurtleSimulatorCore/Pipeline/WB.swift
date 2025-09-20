@@ -29,9 +29,9 @@ public class WB_Output: NSObject, NSSecureCoding {
 
     public required init?(coder: NSCoder) {
         guard let c = coder.decodeObject(forKey: "c") as? UInt16,
-            let wrl = coder.decodeObject(forKey: "wrl") as? UInt,
-            let wrh = coder.decodeObject(forKey: "wrh") as? UInt,
-            let wben = coder.decodeObject(forKey: "wben") as? UInt
+              let wrl = coder.decodeObject(forKey: "wrl") as? UInt,
+              let wrh = coder.decodeObject(forKey: "wrh") as? UInt,
+              let wben = coder.decodeObject(forKey: "wben") as? UInt
         else {
             return nil
         }
@@ -60,9 +60,9 @@ public class WB_Output: NSObject, NSSecureCoding {
             return false
         }
         guard c == rhs.c,
-            wrl == rhs.wrl,
-            wrh == rhs.wrh,
-            wben == rhs.wben
+              wrl == rhs.wrl,
+              wrh == rhs.wrh,
+              wben == rhs.wben
         else {
             return false
         }
@@ -86,7 +86,7 @@ public class WB_Output: NSObject, NSSecureCoding {
 public class WB: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
 
-    public var associatedPC: UInt16? = nil
+    public var associatedPC: UInt16?
 
     public struct Input: Hashable {
         public let y: UInt16
@@ -95,10 +95,10 @@ public class WB: NSObject, NSSecureCoding {
         public let associatedPC: UInt16?
 
         public init(ctl: UInt) {
-            self.y = 0
-            self.storeOp = 0
+            y = 0
+            storeOp = 0
             self.ctl = ctl
-            self.associatedPC = nil
+            associatedPC = nil
         }
 
         public init(y: UInt16, storeOp: UInt16, ctl: UInt, associatedPC: UInt16? = nil) {
@@ -112,15 +112,14 @@ public class WB: NSObject, NSSecureCoding {
     public func step(input: Input) -> WB_Output {
         let writeBackSrc = UInt((input.ctl >> 17) & 1)
         let c = (writeBackSrc == 0) ? input.y : input.storeOp
-        let wrl: UInt = UInt((input.ctl >> 18) & 1)
-        let wrh: UInt = UInt((input.ctl >> 19) & 1)
-        let wben: UInt = UInt((input.ctl >> 20) & 1)
+        let wrl = UInt((input.ctl >> 18) & 1)
+        let wrh = UInt((input.ctl >> 19) & 1)
+        let wben = UInt((input.ctl >> 20) & 1)
         associatedPC = input.associatedPC
         return WB_Output(c: c, wrl: wrl, wrh: wrh, wben: wben)
     }
 
-    public required override init() {
-    }
+    public override required init() {}
 
     public required init?(coder: NSCoder) {
         guard let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {

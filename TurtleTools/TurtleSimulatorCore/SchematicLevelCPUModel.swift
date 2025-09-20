@@ -13,7 +13,7 @@ import Foundation
 // following naming conventions and organization that matches the schematics.
 public class SchematicLevelCPUModel: NSObject, CPU {
     public static var supportsSecureCoding = true
-    public static let kNumberOfResetCycles: UInt = 100  // fake, but whatever
+    public static let kNumberOfResetCycles: UInt = 100 // fake, but whatever
 
     public var timeStamp: UInt = 0
     public var resetCounter: UInt = kNumberOfResetCycles
@@ -33,7 +33,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     public var pc: UInt16 = 0
     var prevPC: UInt16 = 0
 
-    public var instructions: [UInt16] = [UInt16](repeating: 0, count: 65535)
+    public var instructions: [UInt16] = .init(repeating: 0, count: 65535)
 
     public var decoder: InstructionDecoder {
         set(value) {
@@ -172,24 +172,24 @@ public class SchematicLevelCPUModel: NSObject, CPU {
 
     public required init?(coder: NSCoder) {
         guard let timeStamp = coder.decodeObject(forKey: "timeStamp") as? UInt,
-            let resetCounter = coder.decodeObject(forKey: "resetCounter") as? UInt,
-            let pc = coder.decodeObject(forKey: "pc") as? UInt16,
-            let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
-            let instructions = coder.decodeObject(forKey: "instructions") as? [UInt16],
-            let n = coder.decodeObject(forKey: "n") as? UInt,
-            let c = coder.decodeObject(forKey: "c") as? UInt,
-            let v = coder.decodeObject(forKey: "v") as? UInt,
-            let z = coder.decodeObject(forKey: "z") as? UInt,
-            let stageIF = coder.decodeObject(of: IF.self, forKey: "stageIF"),
-            let stageID = coder.decodeObject(of: ID.self, forKey: "stageID"),
-            let stageEX = coder.decodeObject(of: EX.self, forKey: "stageEX"),
-            let stageMEM = coder.decodeObject(of: MEM.self, forKey: "stageMEM"),
-            let stageWB = coder.decodeObject(of: WB.self, forKey: "stageWB"),
-            let outputIF = coder.decodeObject(of: IF_Output.self, forKey: "outputIF"),
-            let outputID = coder.decodeObject(of: ID_Output.self, forKey: "outputID"),
-            let outputEX = coder.decodeObject(of: EX_Output.self, forKey: "outputEX"),
-            let outputMEM = coder.decodeObject(of: MEM_Output.self, forKey: "outputMEM"),
-            let outputWB = coder.decodeObject(of: WB_Output.self, forKey: "outputWB")
+              let resetCounter = coder.decodeObject(forKey: "resetCounter") as? UInt,
+              let pc = coder.decodeObject(forKey: "pc") as? UInt16,
+              let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
+              let instructions = coder.decodeObject(forKey: "instructions") as? [UInt16],
+              let n = coder.decodeObject(forKey: "n") as? UInt,
+              let c = coder.decodeObject(forKey: "c") as? UInt,
+              let v = coder.decodeObject(forKey: "v") as? UInt,
+              let z = coder.decodeObject(forKey: "z") as? UInt,
+              let stageIF = coder.decodeObject(of: IF.self, forKey: "stageIF"),
+              let stageID = coder.decodeObject(of: ID.self, forKey: "stageID"),
+              let stageEX = coder.decodeObject(of: EX.self, forKey: "stageEX"),
+              let stageMEM = coder.decodeObject(of: MEM.self, forKey: "stageMEM"),
+              let stageWB = coder.decodeObject(of: WB.self, forKey: "stageWB"),
+              let outputIF = coder.decodeObject(of: IF_Output.self, forKey: "outputIF"),
+              let outputID = coder.decodeObject(of: ID_Output.self, forKey: "outputID"),
+              let outputEX = coder.decodeObject(of: EX_Output.self, forKey: "outputEX"),
+              let outputMEM = coder.decodeObject(of: MEM_Output.self, forKey: "outputMEM"),
+              let outputWB = coder.decodeObject(of: WB_Output.self, forKey: "outputWB")
         else {
             return nil
         }
@@ -273,26 +273,26 @@ public class SchematicLevelCPUModel: NSObject, CPU {
             return false
         }
         guard timeStamp == rhs.timeStamp,
-            resetCounter == rhs.resetCounter,
-            pc == rhs.pc,
-            prevPC == rhs.prevPC,
-            instructions == rhs.instructions,
-            n == rhs.n,
-            c == rhs.c,
-            v == rhs.v,
-            z == rhs.z,
-            numberOfRegisters == rhs.numberOfRegisters,
-            numberOfPipelineStages == rhs.numberOfPipelineStages,
-            stageIF == rhs.stageIF,
-            stageID == rhs.stageID,
-            stageEX == rhs.stageEX,
-            stageMEM == rhs.stageMEM,
-            stageWB == rhs.stageWB,
-            outputIF == rhs.outputIF,
-            outputID == rhs.outputID,
-            outputEX == rhs.outputEX,
-            outputMEM == rhs.outputMEM,
-            outputWB == rhs.outputWB
+              resetCounter == rhs.resetCounter,
+              pc == rhs.pc,
+              prevPC == rhs.prevPC,
+              instructions == rhs.instructions,
+              n == rhs.n,
+              c == rhs.c,
+              v == rhs.v,
+              z == rhs.z,
+              numberOfRegisters == rhs.numberOfRegisters,
+              numberOfPipelineStages == rhs.numberOfPipelineStages,
+              stageIF == rhs.stageIF,
+              stageID == rhs.stageID,
+              stageEX == rhs.stageEX,
+              stageMEM == rhs.stageMEM,
+              stageWB == rhs.stageWB,
+              outputIF == rhs.outputIF,
+              outputID == rhs.outputID,
+              outputEX == rhs.outputEX,
+              outputMEM == rhs.outputMEM,
+              outputWB == rhs.outputWB
         else {
             return false
         }

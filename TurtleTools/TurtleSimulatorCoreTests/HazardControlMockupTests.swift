@@ -10,27 +10,28 @@ import TurtleSimulatorCore
 import XCTest
 
 class HazardControlMockupTests: XCTestCase {
-    public func makeHazardControl() -> HazardControl {
+    func makeHazardControl() -> HazardControl {
         HazardControlMockup()
     }
 
     func testFlushOnJump() throws {
         let hltOpcode: UInt = 1
-        let ins: UInt16 = UInt16(hltOpcode << 11)
+        let ins = UInt16(hltOpcode << 11)
         let unit = makeHazardControl()
         let output = unit.step(
             input: ID.Input(ins: ins, j: 0),
             left_operand_is_unused: 0,
             right_operand_is_unused: 0
         )
-        XCTAssertEqual(output.flush, 0)  // FLUSH is an active-low signal
+        XCTAssertEqual(output.flush, 0) // FLUSH is an active-low signal
     }
 
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA() throws {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -44,15 +45,19 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_ex_to_a, 0)  // The A operand comes from Y_EX instead of register file port A.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_ex_to_a,
+            0
+        ) // The A operand comes from Y_EX instead of register file port A.
     }
 
     func testStallOnRAWHazard_A_and_EX_In_StoreOp_Case() throws {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in EX wants to write storeOP_EX back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in EX wants to write storeOP_EX back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -64,14 +69,15 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
 
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rA() throws {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -85,15 +91,19 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_mem_to_a, 0)  // The A operand comes from Y_MEM instead of register file port A.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_mem_to_a,
+            0
+        ) // The A operand comes from Y_MEM instead of register file port A.
     }
 
     func testStallOnRAWHazard_A_and_MEM_In_StoreOp_Case() throws {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -105,14 +115,15 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
 
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rB() throws {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -126,15 +137,19 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_ex_to_b, 0)  // The A operand comes from Y_EX instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_ex_to_b,
+            0
+        ) // The A operand comes from Y_EX instead of register file port B.
     }
 
     func testStallOnRAWHazard_B_and_EX_In_StoreOp_Case() throws {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in EX wants to write storeOP_EX back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in EX wants to write storeOP_EX back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -146,14 +161,15 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
 
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rB() throws {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -167,15 +183,19 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_mem_to_b, 0)  // The A operand comes from Y_MEM instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_mem_to_b,
+            0
+        ) // The A operand comes from Y_MEM instead of register file port B.
     }
 
     func testStallOnRAWHazard_B_and_MEM_In_StoreOp_Case() throws {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -187,14 +207,15 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
 
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA_and_rB() throws {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -208,16 +229,23 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_ex_to_a, 0)  // The A operand comes from Y_EX instead of register file port A.
-        XCTAssertEqual(output.fwd_ex_to_b, 0)  // The A operand comes from Y_EX instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_ex_to_a,
+            0
+        ) // The A operand comes from Y_EX instead of register file port A.
+        XCTAssertEqual(
+            output.fwd_ex_to_b,
+            0
+        ) // The A operand comes from Y_EX instead of register file port B.
     }
 
     func testStallOnRAWHazard_A_and_B_and_EX_In_StoreOp_Case() throws {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in EX wants to write storeOP_EX back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in EX wants to write storeOP_EX back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -229,14 +257,15 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
 
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rA_and_rB() throws {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -250,16 +279,23 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_mem_to_a, 0)  // The A operand comes from Y_MEM instead of register file port A.
-        XCTAssertEqual(output.fwd_mem_to_b, 0)  // The A operand comes from Y_MEM instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_mem_to_a,
+            0
+        ) // The A operand comes from Y_MEM instead of register file port A.
+        XCTAssertEqual(
+            output.fwd_mem_to_b,
+            0
+        ) // The A operand comes from Y_MEM instead of register file port B.
     }
 
     func testStallOnRAWHazard_A_and_B_and_MEM_In_StoreOp_Case() throws {
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b00001000_11111100
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -271,7 +307,7 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 1)  // The CPU must stall.
+        XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
 
     func testStallOnFlagsHazard() throws {
@@ -295,13 +331,15 @@ class HazardControlMockupTests: XCTestCase {
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
         )
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -329,8 +367,11 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_ex_to_a, 0)  // The A operand comes from Y_EX instead of register file port A.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_ex_to_a,
+            0
+        ) // The A operand comes from Y_EX instead of register file port A.
     }
 
     func testOperandForwarding_MustNotForwardBoth_YMEM_and_YEX_to_B() throws {
@@ -342,13 +383,15 @@ class HazardControlMockupTests: XCTestCase {
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in EX wants to write Y_EX back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in EX wants to write Y_EX back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let ins_EX: UInt = 0b111_00000000
         let ctl_EX: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
         )
 
-        // The instruction in MEM wants to write Y_MEM back to the register file in r7. (WriteBackSrcFlag=0)
+        // The instruction in MEM wants to write Y_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=0)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(
             (1 << DecoderGenerator.WBEN) | (1 << DecoderGenerator.WriteBackSrcFlag)
@@ -376,15 +419,19 @@ class HazardControlMockupTests: XCTestCase {
             right_operand_is_unused: 0
         )
 
-        XCTAssertEqual(output.stall, 0)  // No need to stall on this RAW hazard.
-        XCTAssertEqual(output.fwd_ex_to_b, 0)  // The A operand comes from Y_EX instead of register file port B.
+        XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
+        XCTAssertEqual(
+            output.fwd_ex_to_b,
+            0
+        ) // The A operand comes from Y_EX instead of register file port B.
     }
 
     func testAvoidFalseStoreHazardOnLeftOperand() throws {
         // The instruction in ID want to read r7 on port A (left)
         let ins_ID: UInt16 = 0b00001000_11100000
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 
@@ -406,7 +453,8 @@ class HazardControlMockupTests: XCTestCase {
         // The instruction in ID want to read r7 on port B (right)
         let ins_ID: UInt16 = 0b00001000_00011100
 
-        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7.
+        // (WriteBackSrcFlag=1)
         let selC_MEM: UInt = 0b111
         let ctl_MEM: UInt = ~UInt(1 << DecoderGenerator.WBEN)
 

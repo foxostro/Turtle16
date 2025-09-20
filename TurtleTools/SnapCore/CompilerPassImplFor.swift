@@ -62,7 +62,8 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
                 try symbols!.resolveTypeRecord(
                     sourceAnchor: node.sourceAnchor,
                     identifier: identifier.identifier
-                ).visibility
+                )
+                .visibility
             }
             else {
                 SymbolVisibility.privateVisibility
@@ -77,16 +78,16 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
             visibility: visibility
         )
 
-        let result = Seq(
+        let result = try Seq(
             sourceAnchor: node.sourceAnchor,
             children: [
                 Impl(
                     sourceAnchor: node.sourceAnchor,
-                    typeArguments: try node.typeArguments.compactMap {
+                    typeArguments: node.typeArguments.compactMap {
                         try visit(genericTypeArgument: $0) as! GenericTypeArgument?
                     },
-                    structTypeExpr: try visit(expr: node.structTypeExpr)!,
-                    children: try node.children.compactMap {
+                    structTypeExpr: visit(expr: node.structTypeExpr)!,
+                    children: node.children.compactMap {
                         try visit($0) as? FunctionDeclaration
                     },
                     id: node.id
@@ -99,14 +100,14 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     }
 
     /// All trait declarations are erased
-    public override func visit(trait: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(trait _: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
         nil
     }
 
     /// All references to trait types are rewritten to direct manipulation of trait objects
     public override func visit(identifier node0: Identifier) throws -> Expression? {
         guard let typ = symbols?.maybeResolveType(identifier: node0.identifier),
-            let traitType = typ.maybeUnwrapTraitType()
+              let traitType = typ.maybeUnwrapTraitType()
         else {
             return node0
         }
@@ -118,14 +119,13 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(varDecl: node0) as! VarDeclaration
         guard let expr1 = node1.expression,
-            let explicitType = node1.explicitType,
-            let traitType = try maybeLookupCorrespondingTraitType(expr: explicitType),
-            let expr2 = try convertToTraitObject(traitType, expr: expr1)
+              let explicitType = node1.explicitType,
+              let traitType = try maybeLookupCorrespondingTraitType(expr: explicitType),
+              let expr2 = try convertToTraitObject(traitType, expr: expr1)
         else {
             return node1
         }
-        let node2 =
-            node1
+        let node2 = node1
             .withExplicitType(
                 Identifier(
                     sourceAnchor: expr1.sourceAnchor,
@@ -139,7 +139,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     /// Assignment is rewritten to populate a trait-object
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         guard let traitType = try maybeLookupCorrespondingTraitType(expr: node0.lexpr),
-            let rexpr1 = try convertToTraitObject(traitType, expr: node0.rexpr)
+              let rexpr1 = try convertToTraitObject(traitType, expr: node0.rexpr)
         else {
             return try super.visit(assignment: node0)
         }
@@ -151,10 +151,10 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     /// return the name of the associated trait, else return nil.
     private func maybeLookupCorrespondingTraitType(expr: Expression) throws -> TraitTypeInfo? {
         guard let traitObjectType = try typeChecker.check(expression: expr).maybeUnwrapStructType(),
-            let traitName = traitObjectType.associatedTraitType,
-            let traitType = symbols?
-                .maybeResolveType(identifier: traitName)?
-                .maybeUnwrapTraitType()
+              let traitName = traitObjectType.associatedTraitType,
+              let traitType = symbols?
+              .maybeResolveType(identifier: traitName)?
+              .maybeUnwrapTraitType()
         else {
             return nil
         }
@@ -167,10 +167,10 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
         _ traitType: TraitTypeInfo,
         expr expr0: Expression
     ) throws -> StructInitializer? {
-
         let exprTyp0 = try typeChecker.check(expression: expr0)
         return switch exprTyp0 {
-        case .constStructType(let typ), .structType(let typ):
+        case let .constStructType(typ),
+             let .structType(typ):
             makeTraitObject(
                 traitType,
                 typ,
@@ -181,10 +181,10 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
                 )
             )
 
-        case .constPointer(.constStructType(let typ)),
-            .constPointer(.structType(let typ)),
-            .pointer(.constStructType(let typ)),
-            .pointer(.structType(let typ)):
+        case let .constPointer(.constStructType(typ)),
+             let .constPointer(.structType(typ)),
+             let .pointer(.constStructType(typ)),
+             let .pointer(.structType(typ)):
             makeTraitObject(traitType, typ, expr: expr0)
 
         default:
@@ -198,7 +198,6 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
         _ structType: StructTypeInfo,
         expr: Expression
     ) -> StructInitializer {
-
         StructInitializer(
             sourceAnchor: expr.sourceAnchor,
             expr: Identifier(
@@ -229,9 +228,9 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Erase impl-for declarations, rewriting in terms of lower-level concepts
-    public func implForPass() throws -> AbstractSyntaxTreeNode? {
+    func implForPass() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassImplFor().run(self)
     }
 }

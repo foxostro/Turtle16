@@ -12,7 +12,7 @@ import TurtleCore
 public class AssemblerLexer: Lexer {
     public required init(_ string: String, _ url: URL? = nil) {
         super.init(string, url)
-        self.rules = [
+        rules = [
             makeBackslashNewlineRule(),
             makeNewlineRule(),
             makeCommentRule(),

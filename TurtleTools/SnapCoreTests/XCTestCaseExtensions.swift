@@ -8,8 +8,8 @@
 
 import XCTest
 
-extension XCTestCase {
-    public var testName: String {
+public extension XCTestCase {
+    var testName: String {
         let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
         if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
             let nsRange = match.range(withName: "testName")

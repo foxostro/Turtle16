@@ -11,15 +11,15 @@ import TurtleCore
 /// Synthesize an explicit terminal return statement on functions with an implicit return
 public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDeclScan {
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        FunctionDeclaration(
+        try FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Identifier,
-            functionType: try visit(expr: node.functionType) as! FunctionType,
+            identifier: visit(identifier: node.identifier) as! Identifier,
+            functionType: visit(expr: node.functionType) as! FunctionType,
             argumentNames: node.argumentNames,
-            typeArguments: try node.typeArguments.compactMap {
+            typeArguments: node.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
-            body: try visitFunctionBody(func: node),
+            body: visitFunctionBody(func: node),
             visibility: node.visibility,
             symbols: node.symbols,
             id: node.id
@@ -46,8 +46,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     }
 
     private func expectFunctionReturnExpressionIsCorrectType(_ node: FunctionDeclaration) throws {
-        let functionType =
-            try typeContext
+        let functionType = try typeContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType != .void else { return }
@@ -55,8 +54,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
             if trace.last != .Return {
                 throw CompilerError(
                     sourceAnchor: node.identifier.sourceAnchor,
-                    message:
-                        "missing return in a function expected to return `\(functionType.returnType)'"
+                    message: "missing return in a function expected to return `\(functionType.returnType)'"
                 )
             }
         }
@@ -68,8 +66,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
 
     private func shouldSynthesizeTerminalReturnStatement(_ node: FunctionDeclaration) throws -> Bool
     {
-        let functionType =
-            try typeContext
+        let functionType = try typeContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType == .void else { return false }
@@ -93,9 +90,9 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     }
 }
 
-extension AbstractSyntaxTreeNode {
+public extension AbstractSyntaxTreeNode {
     /// Synthesize an explicit terminal return statement on functions with an implicit return
-    public func synthesizeTerminalReturnStatements() throws -> AbstractSyntaxTreeNode? {
+    func synthesizeTerminalReturnStatements() throws -> AbstractSyntaxTreeNode? {
         try CompilerPassSynthesizeTerminalReturnStatements().run(self)
     }
 }

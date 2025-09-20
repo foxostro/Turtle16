@@ -21,6 +21,7 @@ public final class AssemblerCodeGenerator {
             gen.sourceAnchor
         }
     }
+
     let gen = AssemblerSingleInstructionCodeGenerator()
     public private(set) var isAssembling = false
 
@@ -34,6 +35,7 @@ public final class AssemblerCodeGenerator {
         public let shift: Int
         public let offset: Int
     }
+
     public private(set) var patcherActions: [PatcherAction] = []
 
     public init() {}
@@ -65,7 +67,7 @@ public final class AssemblerCodeGenerator {
                     message: "offset exceeds negative limit of \(action.lowerLimit): `\(offset)'"
                 )
             }
-            let twosComplementOffset: UInt16 = UInt16(UInt(bitPattern: offset) & 0xffff)
+            let twosComplementOffset = UInt16(UInt(bitPattern: offset) & 0xffff)
             let finalOffset = UInt16((twosComplementOffset & action.mask) >> action.shift)
             let ins = UInt16(instructions[action.index]) | finalOffset
             instructions[action.index] = ins
@@ -84,142 +86,142 @@ public final class AssemblerCodeGenerator {
 
     public func load(_ destination: Register, _ source: Register, _ offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.load(destination, source, offset))
+        try instructions.append(gen.load(destination, source, offset))
     }
 
     public func store(_ val: Register, _ addr: Register, _ offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.store(val, addr, offset))
+        try instructions.append(gen.store(val, addr, offset))
     }
 
     public func li(_ destination: Register, _ value: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.li(destination, value))
+        try instructions.append(gen.li(destination, value))
     }
 
     public func lui(_ destination: Register, _ value: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.lui(destination, value))
+        try instructions.append(gen.lui(destination, value))
     }
 
     public func cmp(_ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.cmp(left, right))
+        try instructions.append(gen.cmp(left, right))
     }
 
     public func add(_ dst: Register, _ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.add(dst, left, right))
+        try instructions.append(gen.add(dst, left, right))
     }
 
     public func sub(_ dst: Register, _ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.sub(dst, left, right))
+        try instructions.append(gen.sub(dst, left, right))
     }
 
     public func and(_ dst: Register, _ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.and(dst, left, right))
+        try instructions.append(gen.and(dst, left, right))
     }
 
     public func or(_ dst: Register, _ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.or(dst, left, right))
+        try instructions.append(gen.or(dst, left, right))
     }
 
     public func xor(_ dst: Register, _ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.xor(dst, left, right))
+        try instructions.append(gen.xor(dst, left, right))
     }
 
     public func cmpi(_ left: Register, _ right: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.cmpi(left, right))
+        try instructions.append(gen.cmpi(left, right))
     }
 
     public func addi(_ dst: Register, _ left: Register, _ right: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.addi(dst, left, right))
+        try instructions.append(gen.addi(dst, left, right))
     }
 
     public func subi(_ dst: Register, _ left: Register, _ right: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.subi(dst, left, right))
+        try instructions.append(gen.subi(dst, left, right))
     }
 
     public func andi(_ dst: Register, _ left: Register, _ right: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.andi(dst, left, right))
+        try instructions.append(gen.andi(dst, left, right))
     }
 
     public func ori(_ dst: Register, _ left: Register, _ right: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.ori(dst, left, right))
+        try instructions.append(gen.ori(dst, left, right))
     }
 
     public func xori(_ dst: Register, _ left: Register, _ right: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.xori(dst, left, right))
+        try instructions.append(gen.xori(dst, left, right))
     }
 
     public func not(_ dst: Register, _ left: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.not(dst, left))
+        try instructions.append(gen.not(dst, left))
     }
 
     public func jmp(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.jmp(offset))
+        try instructions.append(gen.jmp(offset))
     }
 
     public func jr(_ destination: Register, _ offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.jr(destination, offset))
+        try instructions.append(gen.jr(destination, offset))
     }
 
     public func jalr(_ link: Register, _ destination: Register, _ offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.jalr(link, destination, offset))
+        try instructions.append(gen.jalr(link, destination, offset))
     }
 
     public func beq(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.beq(offset))
+        try instructions.append(gen.beq(offset))
     }
 
     public func bne(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.bne(offset))
+        try instructions.append(gen.bne(offset))
     }
 
     public func blt(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.blt(offset))
+        try instructions.append(gen.blt(offset))
     }
 
     public func bgt(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.bgt(offset))
+        try instructions.append(gen.bgt(offset))
     }
 
     public func bltu(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.bltu(offset))
+        try instructions.append(gen.bltu(offset))
     }
 
     public func bgtu(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.bgtu(offset))
+        try instructions.append(gen.bgtu(offset))
     }
 
     public func adc(_ dst: Register, _ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.adc(dst, left, right))
+        try instructions.append(gen.adc(dst, left, right))
     }
 
     public func sbc(_ dst: Register, _ left: Register, _ right: Register) throws {
         assert(isAssembling)
-        instructions.append(try gen.sbc(dst, left, right))
+        try instructions.append(gen.sbc(dst, left, right))
     }
 
     public func label(_ name: String) throws {
@@ -232,7 +234,7 @@ public final class AssemblerCodeGenerator {
         symbols[name] = instructions.count
     }
 
-    fileprivate func branch(_ name: String, _ doBranch: (Int) throws -> UInt16) throws {
+    private func branch(_ name: String, _ doBranch: (Int) throws -> UInt16) throws {
         assert(isAssembling)
         let kBranchPipelineOffset = -2
         let offset: Int
@@ -253,35 +255,35 @@ public final class AssemblerCodeGenerator {
             )
             patcherActions.append(action)
         }
-        instructions.append(try doBranch(offset))
+        try instructions.append(doBranch(offset))
     }
 
     public func jmp(_ name: String) throws {
-        try branch(name, { try self.gen.jmp($0) })
+        try branch(name) { try self.gen.jmp($0) }
     }
 
     public func beq(_ name: String) throws {
-        try branch(name, { try self.gen.beq($0) })
+        try branch(name) { try self.gen.beq($0) }
     }
 
     public func bne(_ name: String) throws {
-        try branch(name, { try self.gen.bne($0) })
+        try branch(name) { try self.gen.bne($0) }
     }
 
     public func blt(_ name: String) throws {
-        try branch(name, { try self.gen.blt($0) })
+        try branch(name) { try self.gen.blt($0) }
     }
 
     public func bgt(_ name: String) throws {
-        try branch(name, { try self.gen.bgt($0) })
+        try branch(name) { try self.gen.bgt($0) }
     }
 
     public func bltu(_ name: String) throws {
-        try branch(name, { try self.gen.bltu($0) })
+        try branch(name) { try self.gen.bltu($0) }
     }
 
     public func bgtu(_ name: String) throws {
-        try branch(name, { try self.gen.bgtu($0) })
+        try branch(name) { try self.gen.bgtu($0) }
     }
 
     public func la(_ destination: Register, _ name: String) throws {
@@ -318,7 +320,7 @@ public final class AssemblerCodeGenerator {
                 )
             ]
         }
-        instructions.append(try gen.li(destination, lo))
-        instructions.append(try gen.lui(destination, hi))
+        try instructions.append(gen.li(destination, lo))
+        try instructions.append(gen.lui(destination, hi))
     }
 }

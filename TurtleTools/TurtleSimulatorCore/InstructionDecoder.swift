@@ -20,7 +20,7 @@ public class OpcodeDecoderROM: NSObject, InstructionDecoder {
 
     public required init(_ original: InstructionDecoder? = nil) {
         opcodeDecodeROM = [UInt](repeating: 0, count: count)
-        if let original = original {
+        if let original {
             for i in 0..<count {
                 opcodeDecodeROM[i] = original.decode(i)
             }
@@ -67,8 +67,7 @@ public class OpcodeDecoderROM: NSObject, InstructionDecoder {
         assert(z <= 1)
         assert(v <= 1)
         assert(opcode <= 31)
-        let address =
-            (n << 8)
+        let address = (n << 8)
             | (v << 7)
             | (z << 6)
             | (c << 5)
@@ -92,18 +91,17 @@ public class ProgrammableLogicDecoder: NSObject, InstructionDecoder {
     let gal2: ATF22V10
     let gal3: ATF22V10
 
-    public required override init() {
+    public override required init() {
         gal1 = ProgrammableLogicDecoder.makeGAL("InstructionDecoder1")
         gal2 = ProgrammableLogicDecoder.makeGAL("InstructionDecoder2")
         gal3 = ProgrammableLogicDecoder.makeGAL("InstructionDecoder3")
     }
 
-    public required convenience init?(coder: NSCoder) {
+    public required convenience init?(coder _: NSCoder) {
         self.init()
     }
 
-    public func encode(with coder: NSCoder) {
-    }
+    public func encode(with _: NSCoder) {}
 
     public static func == (lhs: ProgrammableLogicDecoder, rhs: ProgrammableLogicDecoder) -> Bool {
         lhs.isEqual(rhs)
@@ -144,8 +142,7 @@ public class ProgrammableLogicDecoder: NSObject, InstructionDecoder {
         assert(z <= 1)
         assert(v <= 1)
         assert(opcode <= 31)
-        let address =
-            (n << 8)
+        let address = (n << 8)
             | (v << 7)
             | (z << 6)
             | (c << 5)
@@ -159,16 +156,16 @@ public class ProgrammableLogicDecoder: NSObject, InstructionDecoder {
         let address = UInt(address_)
 
         let inputs = [
-            0,  // ignored
-            ((address >> 8) & 1),  // pin 1
-            ((address >> 7) & 1),  // pin 2
-            ((address >> 6) & 1),  // pin 3
-            ((address >> 5) & 1),  // pin 4
-            ((address >> 4) & 1),  // pin 5
-            ((address >> 3) & 1),  // pin 6
-            ((address >> 2) & 1),  // pin 7
-            ((address >> 1) & 1),  // pin 8
-            ((address >> 0) & 1),  // pin 9
+            0, // ignored
+            (address >> 8) & 1, // pin 1
+            (address >> 7) & 1, // pin 2
+            (address >> 6) & 1, // pin 3
+            (address >> 5) & 1, // pin 4
+            (address >> 4) & 1, // pin 5
+            (address >> 3) & 1, // pin 6
+            (address >> 2) & 1, // pin 7
+            (address >> 1) & 1, // pin 8
+            (address >> 0) & 1, // pin 9
             0,
             0,
             0,

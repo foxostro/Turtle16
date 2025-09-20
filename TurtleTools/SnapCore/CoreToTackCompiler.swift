@@ -93,7 +93,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode {
-
         var children: [AbstractSyntaxTreeNode] = []
 
         if let compiledNode = try super.run(node0) {
@@ -157,7 +156,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
             .type
             .unwrapFunctionType()
-            .mangledName!  // TODO: Should a function's mangled name also be stored in the AST in the FunctionDeclaration node itself?
+            .mangledName! // TODO: Should a function's mangled name also be stored in the AST in the FunctionDeclaration node itself?
         let stackFrame = symbols.frame!
         assert(symbols.frameLookupMode == .set(stackFrame))
         let subroutineBody = try visit(node.body) ?? Seq()
@@ -195,8 +194,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     public override func visit(gotoIfFalse node: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
-        var children: [AbstractSyntaxTreeNode] = [
-            try rvalue(expr: node.condition)
+        var children: [AbstractSyntaxTreeNode] = try [
+            rvalue(expr: node.condition)
         ]
 
         children += [
@@ -244,14 +243,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             case let node as GenericTypeApplication:
                 throw CompilerError(
                     sourceAnchor: node.sourceAnchor,
-                    message:
-                        "internal compiler error: expected generics to have been erased by this point: `\(node)'"
+                    message: "internal compiler error: expected generics to have been erased by this point: `\(node)'"
                 )
             default:
                 throw CompilerError(
                     sourceAnchor: expr0.sourceAnchor,
-                    message:
-                        "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'"
+                    message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'"
                 )
             }
         let expr2 = try expr1.flatten() ?? Seq(sourceAnchor: expr1.sourceAnchor, children: [])
@@ -261,12 +258,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     func lvalue(identifier node: Identifier) throws -> AbstractSyntaxTreeNode {
         let lvalueType = try typeCheck(lexpr: node)
         switch lvalueType {
-        case .function(let typ):
+        case let .function(typ):
             guard let mangledName = typ.mangledName else {
                 throw CompilerError(
                     sourceAnchor: node.sourceAnchor,
-                    message:
-                        "internal compiler error: function has no mangled name: `\(lvalueType!)'"
+                    message: "internal compiler error: function has no mangled name: `\(lvalueType!)'"
                 )
             }
 
@@ -282,8 +278,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         case .genericFunction:
             throw CompilerError(
                 sourceAnchor: node.sourceAnchor,
-                message:
-                    "internal compiler error: expected generics to have been erased by this point: `\(node)'"
+                message: "internal compiler error: expected generics to have been erased by this point: `\(node)'"
             )
 
         default:
@@ -294,14 +289,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let symbol = resolution.0
             let depth = resolution.1
             assert(depth >= 0)
-            
+
             guard !symbol.storage.isRegisterStorage else {
                 throw CompilerError(
                     sourceAnchor: node.sourceAnchor,
                     message: "internal compiler error: symbol with register storage has no memory address: \(symbol)"
                 )
             }
-            
+
             let result = computeAddressOfSymbol(
                 sourceAnchor: node.sourceAnchor,
                 symbol: symbol,
@@ -313,7 +308,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
     func lvalue(subscript expr: Subscript) throws -> AbstractSyntaxTreeNode {
         let argumentType = try typeCheck(rexpr: expr.argument)
-        
+
         guard !argumentType.isStructType else {
             return try lvalue(slice: expr)
         }
@@ -323,22 +318,26 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
 
         // Can we determine the index at compile time?
-        let maybeStaticIndex: Int?
-        if case .arithmeticType(.compTimeInt(let index)) = argumentType {
-            maybeStaticIndex = index
-        }
-        else {
-            maybeStaticIndex = nil
-        }
+        let maybeStaticIndex: Int? =
+            if case let .arithmeticType(.compTimeInt(index)) =
+            argumentType {
+                index
+            }
+            else {
+                nil
+            }
 
         // Can we determine the upper bound at compile time?
-        let maybeUpperBound: Int?
-        if case .array(count: let n, elementType: _) = subscriptableType {
-            maybeUpperBound = n
-        }
-        else {
-            maybeUpperBound = nil
-        }
+        let maybeUpperBound: Int? =
+            if case .array(
+                count: let n,
+                elementType: _
+            ) = subscriptableType {
+                n
+            }
+            else {
+                nil
+            }
 
         // We can catch some out of bounds errors at compile time
         if let index = maybeStaticIndex {
@@ -365,7 +364,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             switch subscriptableType {
             case .pointer(.array(count: _, elementType: _)),
                  .pointer(.dynamicArray(elementType: _)):
-
                 try rvalue(expr: expr.subscriptable)
 
             default:
@@ -401,8 +399,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         if elementSize > 0 {
             let baseAddr = popRegister()
-            children += [
-                try compileAndConvertExpression(
+            try children += [
+                compileAndConvertExpression(
                     rexpr: expr.argument,
                     ltype: .arithmeticType(.immutableInt(.u16)),
                     isExplicitCast: false
@@ -411,7 +409,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let index = popRegister()
 
             // We may need to insert a run time bounds checks.
-            if options.isBoundsCheckEnabled && maybeStaticIndex == nil {
+            if options.isBoundsCheckEnabled, maybeStaticIndex == nil {
                 // Lower bound
                 let lowerBound = 0
                 let tempLowerBound = nextRegister(type: .w)
@@ -565,7 +563,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         guard isAcceptableArraySliceArgument(expr.argument) else {
             throw CompilerError(
                 sourceAnchor: expr.argument.sourceAnchor,
-                message: "internal compiler error: expression is not an acceptable argument to an array slice")
+                message: "internal compiler error: expression is not an acceptable argument to an array slice"
+            )
         }
 
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
@@ -575,37 +574,35 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         var children: [AbstractSyntaxTreeNode] = []
 
         // Can we determine the range's bounds at compile time?
-        let maybeBegin: Int?
-        switch try? typeCheck(rexpr: beginExpr) {
-        case .arithmeticType(.compTimeInt(let n)):
-            maybeBegin = n
+        let maybeBegin: Int? =
+            switch try? typeCheck(rexpr: beginExpr) {
+            case let .arithmeticType(.compTimeInt(n)):
+                n
 
-        default:
-            maybeBegin = nil
-        }
+            default:
+                nil
+            }
 
-        let maybeLimit: Int?
-        switch try? typeCheck(rexpr: limitExpr) {
-        case .arithmeticType(.compTimeInt(let n)):
-            maybeLimit = n
+        let maybeLimit: Int? =
+            switch try? typeCheck(rexpr: limitExpr) {
+            case let .arithmeticType(.compTimeInt(n)):
+                n
 
-        default:
-            maybeLimit = nil
-        }
+            default:
+                nil
+            }
 
         if let begin = maybeBegin, begin < 0 || begin >= upperBound {
             throw CompilerError(
                 sourceAnchor: expr.argument.sourceAnchor,
-                message:
-                    "Array index is always out of bounds: `\(begin)' is not in 0..\(upperBound)"
+                message: "Array index is always out of bounds: `\(begin)' is not in 0..\(upperBound)"
             )
         }
 
         if let limit = maybeLimit, limit < 0 || limit > upperBound {
             throw CompilerError(
                 sourceAnchor: expr.argument.sourceAnchor,
-                message:
-                    "Array index is always out of bounds: `\(limit)' is not in 0..\(upperBound)"
+                message: "Array index is always out of bounds: `\(limit)' is not in 0..\(upperBound)"
             )
         }
 
@@ -672,7 +669,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     children.append(boundsCheck2)
                 }
             }
-        }  // if options.isBoundsCheckEnabled
+        } // if options.isBoundsCheckEnabled
 
         // Compile an expression to initialize a Slice struct with populated
         // base and count fields. This involves some unsafe, platform-specific
@@ -693,65 +690,65 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         )
 
-        let baseExpr: Expression
-        if let begin = maybeBegin {
-            if begin == 0 {
-                baseExpr = arrayBeginExpr
+        let baseExpr: Expression =
+            if let begin = maybeBegin {
+                if begin == 0 {
+                    arrayBeginExpr
+                }
+                else {
+                    Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .plus,
+                        left: arrayBeginExpr,
+                        right: LiteralInt(
+                            sourceAnchor: expr.sourceAnchor,
+                            value: begin * elementSize
+                        )
+                    )
+                }
             }
             else {
-                baseExpr = Binary(
-                    sourceAnchor: expr.sourceAnchor,
-                    op: .plus,
-                    left: arrayBeginExpr,
-                    right: LiteralInt(
+                if elementSize == 1 {
+                    Binary(
                         sourceAnchor: expr.sourceAnchor,
-                        value: begin * elementSize
+                        op: .plus,
+                        left: arrayBeginExpr,
+                        right: beginExpr
                     )
+                }
+                else {
+                    Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .plus,
+                        left: arrayBeginExpr,
+                        right: Binary(
+                            sourceAnchor: expr.sourceAnchor,
+                            op: .star,
+                            left: beginExpr,
+                            right: LiteralInt(
+                                sourceAnchor: expr.sourceAnchor,
+                                value: elementSize
+                            )
+                        )
+                    )
+                }
+            }
+
+        let countExpr: Expression =
+            if let begin = maybeBegin, let limit = maybeLimit {
+                LiteralInt(
+                    sourceAnchor: expr.sourceAnchor,
+                    value: limit - begin
                 )
             }
-        }
-        else {
-            if elementSize == 1 {
-                baseExpr = Binary(
+            else {
+                Binary(
                     sourceAnchor: expr.sourceAnchor,
-                    op: .plus,
-                    left: arrayBeginExpr,
+                    op: .minus,
+                    left: limitExpr,
                     right: beginExpr
                 )
             }
-            else {
-                baseExpr = Binary(
-                    sourceAnchor: expr.sourceAnchor,
-                    op: .plus,
-                    left: arrayBeginExpr,
-                    right: Binary(
-                        sourceAnchor: expr.sourceAnchor,
-                        op: .star,
-                        left: beginExpr,
-                        right: LiteralInt(
-                            sourceAnchor: expr.sourceAnchor,
-                            value: elementSize
-                        )
-                    )
-                )
-            }
-        }
-
-        let countExpr: Expression
-        if let begin = maybeBegin, let limit = maybeLimit {
-            countExpr = LiteralInt(
-                sourceAnchor: expr.sourceAnchor,
-                value: limit - begin
-            )
-        }
-        else {
-            countExpr = Binary(
-                sourceAnchor: expr.sourceAnchor,
-                op: .minus,
-                left: limitExpr,
-                right: beginExpr
-            )
-        }
 
         let sliceExpr = StructInitializer(
             sourceAnchor: expr.sourceAnchor,
@@ -782,11 +779,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let result: Bool
         let argumentType = try? typeCheck(rexpr: argument)
         switch argumentType {
-        case .structType(let typ):
+        case let .structType(typ):
             if typ.name == kRangeName,
-                typ.symbols.maybeResolve(identifier: kRangeBegin) != nil,
-                typ.symbols.maybeResolve(identifier: kRangeLimit) != nil
-            {
+               typ.symbols.maybeResolve(identifier: kRangeBegin) != nil,
+               typ.symbols.maybeResolve(identifier: kRangeLimit) != nil {
                 result = true
             }
             else {
@@ -801,7 +797,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
     func lvalue(dynamicArraySlice expr: Subscript) throws -> AbstractSyntaxTreeNode {
         guard let range = expr.argument as? StructInitializer, range.arguments.count == 2,
-            range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit
+              range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit
         else {
             fatalError(
                 "Array slice requires the argument to be range. Semantic analysis should have caught this error at an earlier step."
@@ -809,23 +805,23 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
 
         // Can we determine the range's bounds at compile time?
-        let maybeBegin: Int?
-        switch try? typeCheck(rexpr: range.arguments[0].expr) {
-        case .arithmeticType(.compTimeInt(let n)):
-            maybeBegin = n
+        let maybeBegin: Int? =
+            switch try? typeCheck(rexpr: range.arguments[0].expr) {
+            case let .arithmeticType(.compTimeInt(n)):
+                n
 
-        default:
-            maybeBegin = nil
-        }
+            default:
+                nil
+            }
 
-        let maybeLimit: Int?
-        switch try? typeCheck(rexpr: range.arguments[1].expr) {
-        case .arithmeticType(.compTimeInt(let n)):
-            maybeLimit = n
+        let maybeLimit: Int? =
+            switch try? typeCheck(rexpr: range.arguments[1].expr) {
+            case let .arithmeticType(.compTimeInt(n)):
+                n
 
-        default:
-            maybeLimit = nil
-        }
+            default:
+                nil
+            }
 
         var children: [AbstractSyntaxTreeNode] = []
         let beginExpr = range.arguments[0].expr
@@ -900,7 +896,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     children.append(boundsCheck2)
                 }
             }
-        }  // if options.isBoundsCheckEnabled
+        } // if options.isBoundsCheckEnabled
 
         // Compile an expression to initialize a Slice struct with populated
         // base and count fields. This involves some unsafe, platform-specific
@@ -923,65 +919,65 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let sliceType = try typeCheck(rexpr: expr)
         let elementSize = memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
 
-        let baseExpr: Expression
-        if let begin = maybeBegin {
-            if begin == 0 {
-                baseExpr = arrayBeginExpr
+        let baseExpr: Expression =
+            if let begin = maybeBegin {
+                if begin == 0 {
+                    arrayBeginExpr
+                }
+                else {
+                    Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .plus,
+                        left: arrayBeginExpr,
+                        right: LiteralInt(
+                            sourceAnchor: expr.sourceAnchor,
+                            value: begin * elementSize
+                        )
+                    )
+                }
             }
             else {
-                baseExpr = Binary(
-                    sourceAnchor: expr.sourceAnchor,
-                    op: .plus,
-                    left: arrayBeginExpr,
-                    right: LiteralInt(
+                if elementSize == 1 {
+                    Binary(
                         sourceAnchor: expr.sourceAnchor,
-                        value: begin * elementSize
+                        op: .plus,
+                        left: arrayBeginExpr,
+                        right: beginExpr
                     )
+                }
+                else {
+                    Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .plus,
+                        left: arrayBeginExpr,
+                        right: Binary(
+                            sourceAnchor: expr.sourceAnchor,
+                            op: .star,
+                            left: beginExpr,
+                            right: LiteralInt(
+                                sourceAnchor: expr.sourceAnchor,
+                                value: elementSize
+                            )
+                        )
+                    )
+                }
+            }
+
+        let countExpr: Expression =
+            if let begin = maybeBegin, let limit = maybeLimit {
+                LiteralInt(
+                    sourceAnchor: expr.sourceAnchor,
+                    value: limit - begin
                 )
             }
-        }
-        else {
-            if elementSize == 1 {
-                baseExpr = Binary(
+            else {
+                Binary(
                     sourceAnchor: expr.sourceAnchor,
-                    op: .plus,
-                    left: arrayBeginExpr,
+                    op: .minus,
+                    left: limitExpr,
                     right: beginExpr
                 )
             }
-            else {
-                baseExpr = Binary(
-                    sourceAnchor: expr.sourceAnchor,
-                    op: .plus,
-                    left: arrayBeginExpr,
-                    right: Binary(
-                        sourceAnchor: expr.sourceAnchor,
-                        op: .star,
-                        left: beginExpr,
-                        right: LiteralInt(
-                            sourceAnchor: expr.sourceAnchor,
-                            value: elementSize
-                        )
-                    )
-                )
-            }
-        }
-
-        let countExpr: Expression
-        if let begin = maybeBegin, let limit = maybeLimit {
-            countExpr = LiteralInt(
-                sourceAnchor: expr.sourceAnchor,
-                value: limit - begin
-            )
-        }
-        else {
-            countExpr = Binary(
-                sourceAnchor: expr.sourceAnchor,
-                op: .minus,
-                left: limitExpr,
-                right: beginExpr
-            )
-        }
 
         let sliceExpr = StructInitializer(
             sourceAnchor: expr.sourceAnchor,
@@ -1002,7 +998,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 typ: sliceType
             )
         )
-        children.append(try rvalue(expr: bitcastExpr))
+        try children.append(rvalue(expr: bitcastExpr))
 
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
@@ -1011,7 +1007,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         assert(depth >= 0)
         var children: [AbstractSyntaxTreeNode] = []
         switch symbol.storage {
-        case .staticStorage(let offset):
+        case let .staticStorage(offset):
             guard let offset else {
                 fatalError("symbol is missing an expected offset: \(symbol)")
             }
@@ -1024,7 +1020,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     symbols: symbols
                 )
             ]
-        case .automaticStorage(let offset):
+        case let .automaticStorage(offset):
             guard let offset else {
                 fatalError("symbol is missing an expected offset: \(symbol)")
             }
@@ -1036,7 +1032,9 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
         case .registerStorage:
-            fatalError("internal compiler error: symbol with register storage has no memory address: \(symbol)")
+            fatalError(
+                "internal compiler error: symbol with register storage has no memory address: \(symbol)"
+            )
         }
         return Seq(sourceAnchor: sourceAnchor, children: children)
     }
@@ -1121,11 +1119,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         var children: [AbstractSyntaxTreeNode] = []
 
         switch resultType {
-        case .structType(let typ):
+        case let .structType(typ):
             let symbol = try typ.symbols.resolve(identifier: name)
             let offset = symbol.storage.offset!
-            children += [
-                try lvalue(expr: expr.expr)
+            try children += [
+                lvalue(expr: expr.expr)
             ]
             let tempStructAddress = popRegister().unwrapPointer!
             let dst = nextRegister(type: .p)
@@ -1138,20 +1136,20 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
 
-        case .pointer(let typ):
+        case let .pointer(typ):
             if name == "pointee" {
-                children += [
-                    try rvalue(expr: expr.expr)
+                try children += [
+                    rvalue(expr: expr.expr)
                 ]
             }
             else {
                 switch typ {
-                case .structType(let b):
+                case let .structType(b):
                     let symbol = try b.symbols.resolve(identifier: name)
                     let offset = symbol.storage.offset!
 
-                    children += [
-                        try rvalue(expr: expr.expr)
+                    try children += [
+                        rvalue(expr: expr.expr)
                     ]
                     let tempStructAddress = popRegister().unwrapPointer!
                     let dst = nextRegister(type: .p)
@@ -1219,14 +1217,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             case let node as GenericTypeApplication:
                 throw CompilerError(
                     sourceAnchor: node.sourceAnchor,
-                    message:
-                        "internal compiler error: expected generics to have been erased by this point: `\(node)'"
+                    message: "internal compiler error: expected generics to have been erased by this point: `\(node)'"
                 )
             default:
                 throw CompilerError(
                     sourceAnchor: expr0.sourceAnchor,
-                    message:
-                        "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'"
+                    message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'"
                 )
             }
         let expr2 = try expr1.flatten() ?? Seq(sourceAnchor: expr1.sourceAnchor, children: [])
@@ -1318,8 +1314,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 children.append(child)
             }
             registerStack = savedRegisterStack
-            children += [
-                try lvalue(identifier: tempArrayId)
+            try children += [
+                lvalue(identifier: tempArrayId)
             ]
             return Seq(sourceAnchor: expr.sourceAnchor, children: children)
         }
@@ -1330,13 +1326,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 typ: arrayType
             )
         )
-        var children: [AbstractSyntaxTreeNode] = [
-            try lvalue(identifier: tempArrayId)
+        var children: [AbstractSyntaxTreeNode] = try [
+            lvalue(identifier: tempArrayId)
         ]
         let tempArrayAddr = popRegister()
         for i in 0..<expr.elements.count {
-            children += [
-                try rvalue(
+            try children += [
+                rvalue(
                     as: As(
                         expr: expr.elements[i],
                         targetType: PrimitiveType(arrayElementType)
@@ -1347,10 +1343,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let resultRegister = popRegister()
             let ins: TackInstruction =
                 switch resultRegister {
-                case .p(let src): .sp(src, tempArrayAddr.unwrapPointer!, i)
-                case .w(let src): .sw(src, tempArrayAddr.unwrapPointer!, i)
-                case .b(let src): .sb(src, tempArrayAddr.unwrapPointer!, i)
-                case .o(let src): .so(src, tempArrayAddr.unwrapPointer!, i)
+                case let .p(src): .sp(src, tempArrayAddr.unwrapPointer!, i)
+                case let .w(src): .sw(src, tempArrayAddr.unwrapPointer!, i)
+                case let .b(src): .sb(src, tempArrayAddr.unwrapPointer!, i)
+                case let .o(src): .so(src, tempArrayAddr.unwrapPointer!, i)
                 }
 
             children += [
@@ -1404,10 +1400,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             )
         )
         let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, arrayType)
-        return Seq(
+        return try Seq(
             sourceAnchor: expr.sourceAnchor,
             children: [
-                try lvalue(identifier: tempArrayId),
+                lvalue(identifier: tempArrayId),
                 TackInstructionNode(
                     instruction: .ststr(peekRegister().unwrapPointer!, expr.value),
                     sourceAnchor: expr.sourceAnchor,
@@ -1433,22 +1429,21 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             return Seq()
         }
 
-        var children: [AbstractSyntaxTreeNode] = [
-            try lvalue(expr: node)
+        var children: [AbstractSyntaxTreeNode] = try [
+            lvalue(expr: node)
         ]
 
         if let primitiveType = symbol.type.primitiveType {
             let addr = popRegister().unwrapPointer!
             let dest = nextRegister(type: primitiveType)
 
-            let ins: TackInstruction = {
+            let ins: TackInstruction =
                 switch primitiveType {
-                case .p: return .lp(dest.unwrapPointer!, addr, 0)
-                case .w: return .lw(dest.unwrap16!, addr, 0)
-                case .b: return .lb(dest.unwrap8!, addr, 0)
-                case .o: return .lo(dest.unwrapBool!, addr, 0)
+                case .p: .lp(dest.unwrapPointer!, addr, 0)
+                case .w: .lw(dest.unwrap16!, addr, 0)
+                case .b: .lb(dest.unwrap8!, addr, 0)
+                case .o: .lo(dest.unwrapBool!, addr, 0)
                 }
-            }()
 
             pushRegister(dest)
             children += [
@@ -1492,8 +1487,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     func rvalue(bitcast expr: Bitcast) throws -> AbstractSyntaxTreeNode {
-        var children: [AbstractSyntaxTreeNode] = [
-            try rvalue(expr: expr.expr)
+        var children: [AbstractSyntaxTreeNode] = try [
+            rvalue(expr: expr.expr)
         ]
         let targetType = try typeCheck(rexpr: expr)
         let registerType = targetType.primitiveType ?? .p
@@ -1520,9 +1515,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         destination desiredDst: Register? = nil
     ) throws -> AbstractSyntaxTreeNode {
         if let getExpr = rexpr as? Get,
-            let member = getExpr.member as? Identifier,
-            let structInitializer = getExpr.expr as? StructInitializer
-        {
+           let member = getExpr.member as? Identifier,
+           let structInitializer = getExpr.expr as? StructInitializer {
             let argument = structInitializer.arguments.first {
                 $0.name == member.identifier
             }
@@ -1537,15 +1531,15 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
 
         let rtype = try typeCheck(rexpr: rexpr)
-        
-        guard !rtype.isUnionType && !ltype.isUnionType else {
+
+        guard !rtype.isUnionType, !ltype.isUnionType else {
             throw CompilerError(
                 sourceAnchor: rexpr.sourceAnchor,
                 message: "internal compiler error: unions should have been erased in a previous compiler pass"
             )
         }
-        
-        guard !rtype.isTraitType && !ltype.isTraitType else {
+
+        guard !rtype.isTraitType, !ltype.isTraitType else {
             throw CompilerError(
                 sourceAnchor: rexpr.sourceAnchor,
                 message: "internal compiler error: traits should have been erased in a previous compiler pass"
@@ -1561,7 +1555,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let result: AbstractSyntaxTreeNode
 
         switch (rtype, ltype) {
-        case (.booleanType(.compTimeBool(let a)), .bool):
+        case let (.booleanType(.compTimeBool(a)), .bool):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister(type: .o, hint: desiredDst)
@@ -1572,8 +1566,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 symbols: symbols
             )
 
-        case (.arithmeticType(.compTimeInt(let a)), .u8),
-            (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u8))):
+        case let (.arithmeticType(.compTimeInt(a)), .u8),
+             let (.arithmeticType(.compTimeInt(a)), .arithmeticType(.immutableInt(.u8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister(type: .b, hint: desiredDst)
@@ -1584,8 +1578,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 symbols: symbols
             )
 
-        case (.arithmeticType(.compTimeInt(let a)), .i8),
-            (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i8))):
+        case let (.arithmeticType(.compTimeInt(a)), .i8),
+             let (.arithmeticType(.compTimeInt(a)), .arithmeticType(.immutableInt(.i8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister(type: .b, hint: desiredDst)
@@ -1596,8 +1590,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 symbols: symbols
             )
 
-        case (.arithmeticType(.compTimeInt(let a)), .i16),
-            (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i16))):
+        case let (.arithmeticType(.compTimeInt(a)), .i16),
+             let (.arithmeticType(.compTimeInt(a)), .arithmeticType(.immutableInt(.i16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister(type: .w, hint: desiredDst)
@@ -1608,8 +1602,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 symbols: symbols
             )
 
-        case (.arithmeticType(.compTimeInt(let a)), .u16),
-            (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
+        case let (.arithmeticType(.compTimeInt(a)), .u16),
+             let (.arithmeticType(.compTimeInt(a)), .arithmeticType(.immutableInt(.u16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister(type: .w, hint: desiredDst)
@@ -1620,13 +1614,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 symbols: symbols
             )
 
-        case (.arithmeticType(let src), .arithmeticType(let dst)):
+        case let (.arithmeticType(src), .arithmeticType(dst)):
             switch (src.intClass, dst.intClass) {
             case (.i8, .i16),
-                (.i8, .u16):
+                 (.i8, .u16):
                 var children: [AbstractSyntaxTreeNode] = []
-                children += [
-                    try rvalue(expr: rexpr)
+                try children += [
+                    rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
                 let dst = nextRegister(type: .w, hint: desiredDst)
@@ -1641,10 +1635,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
             case (.u8, .i16),
-                (.u8, .u16):
+                 (.u8, .u16):
                 var children: [AbstractSyntaxTreeNode] = []
-                children += [
-                    try rvalue(expr: rexpr)
+                try children += [
+                    rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
                 let dst = nextRegister(type: .w, hint: desiredDst)
@@ -1659,12 +1653,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
             case (.u16, .u8),
-                (.u16, .i8):
+                 (.u16, .i8):
                 // Convert from u16 to u8 by masking off the upper byte.
                 assert(isExplicitCast)
                 var children: [AbstractSyntaxTreeNode] = []
-                children += [
-                    try rvalue(expr: rexpr)
+                try children += [
+                    rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
                 let dst = nextRegister(type: .b, hint: desiredDst)
@@ -1679,14 +1673,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
             case (.i16, .u8),
-                (.i16, .i8):
+                 (.i16, .i8):
                 // The upper byte of the result will contain a sign-extension of
                 // the lower byte instead of the original upper byte, which has
                 // been discarded.
                 assert(isExplicitCast)
                 var children: [AbstractSyntaxTreeNode] = []
-                children += [
-                    try rvalue(expr: rexpr)
+                try children += [
+                    rvalue(expr: rexpr)
                 ]
                 let src = popRegister()
                 let dst = nextRegister(type: .b, hint: desiredDst)
@@ -1701,9 +1695,9 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
             case (.i16, .u16),
-                (.u16, .i16),
-                (.u8, .i8),
-                (.i8, .u8):
+                 (.u16, .i16),
+                 (.u8, .i8),
+                 (.i8, .u8):
                 result = try rvalue(expr: rexpr)
 
             default:
@@ -1712,8 +1706,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             }
 
-        case (.array(let n, _), .array(let m, let b)):
-            guard n == m || m == nil, let n = n else {
+        case let (.array(n, _), .array(m, b)):
+            guard n == m || m == nil, let n else {
                 fatalError(
                     "Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)"
                 )
@@ -1722,8 +1716,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, PrimitiveType(ltype))
             var children: [AbstractSyntaxTreeNode] = []
             for i in 0..<n {
-                children += [
-                    try rvalue(
+                try children += [
+                    rvalue(
                         expr: Assignment(
                             sourceAnchor: rexpr.sourceAnchor,
                             lexpr: Subscript(
@@ -1754,28 +1748,28 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 ]
             }
             registerStack = savedRegisterStack
-            children += [
-                try lvalue(identifier: tempArrayId)
+            try children += [
+                lvalue(identifier: tempArrayId)
             ]
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
-        case (.array(let n?, let a), .dynamicArray(let b)):
+        case let (.array(n?, a), .dynamicArray(b)):
             assert(canValueBeTriviallyReinterpreted(b, a))
             let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, PrimitiveType(ltype))
-            var children: [AbstractSyntaxTreeNode] = [
-                try lvalue(expr: tempArrayId)
+            var children: [AbstractSyntaxTreeNode] = try [
+                lvalue(expr: tempArrayId)
             ]
             let savedRegisterStack = registerStack
             let dst = popRegister()
-            children += [
-                try rvalue(expr: rexpr),
+            try children += [
+                rvalue(expr: rexpr),
                 TackInstructionNode(
                     instruction: { resultRegister in
                         switch resultRegister {
-                        case .p(let p): return .sp(p, dst.unwrapPointer!, kSliceBaseAddressOffset)
-                        case .w(let w): return .sw(w, dst.unwrapPointer!, kSliceBaseAddressOffset)
-                        case .b(let b): return .sb(b, dst.unwrapPointer!, kSliceBaseAddressOffset)
-                        case .o(let o): return .so(o, dst.unwrapPointer!, kSliceBaseAddressOffset)
+                        case let .p(p): .sp(p, dst.unwrapPointer!, kSliceBaseAddressOffset)
+                        case let .w(w): .sw(w, dst.unwrapPointer!, kSliceBaseAddressOffset)
+                        case let .b(b): .sb(b, dst.unwrapPointer!, kSliceBaseAddressOffset)
+                        case let .o(o): .so(o, dst.unwrapPointer!, kSliceBaseAddressOffset)
                         }
                     }(popRegister()),
                     sourceAnchor: rexpr.sourceAnchor,
@@ -1798,15 +1792,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
 
-        case (_, .pointer(let b)):
-            
+        case let (_, .pointer(b)):
             guard !rtype.isTraitType else {
                 throw CompilerError(
                     sourceAnchor: rexpr.sourceAnchor,
                     message: "internal compiler error: traits should have been erased in a previous compiler pass"
                 )
             }
-            
+
             if rtype == b {
                 result = try lvalue(expr: rexpr)
             }
@@ -1838,28 +1831,28 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             return true
         }
 
-        let result: Bool
+        let result: Bool =
+            switch (rtype, ltype) {
+            case let (.booleanType(a), .booleanType(b)):
+                a.canValueBeTriviallyReinterpretedAs(type: b)
 
-        switch (rtype, ltype) {
-        case (.booleanType(let a), .booleanType(let b)):
-            result = a.canValueBeTriviallyReinterpretedAs(type: b)
+            case let (.arithmeticType(a), .arithmeticType(b)):
+                a.canValueBeTriviallyReinterpretedAs(type: b)
 
-        case (.arithmeticType(let a), .arithmeticType(let b)):
-            result = a.canValueBeTriviallyReinterpretedAs(type: b)
+            case (.pointer, .pointer),
+                 (.dynamicArray, .dynamicArray):
+                true
 
-        case (.pointer, .pointer), (.dynamicArray, .dynamicArray):
-            result = true
+            case let (.array(_, a), .array(_, b)):
+                // When implmenting a conversion between array types, it might be
+                // possible to trivially reinterpret the bits in the new type.
+                // It might also be the case that we need to emit code to convert
+                // each element.
+                canValueBeTriviallyReinterpreted(b, a)
 
-        case (.array(_, let a), .array(_, let b)):
-            // When implmenting a conversion between array types, it might be
-            // possible to trivially reinterpret the bits in the new type.
-            // It might also be the case that we need to emit code to convert
-            // each element.
-            result = canValueBeTriviallyReinterpreted(b, a)
-
-        default:
-            result = false
-        }
+            default:
+                false
+            }
 
         return result
     }
@@ -1871,7 +1864,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         if expr.op == .ampersand {
             switch childType {
-            case .function(let typ):
+            case let .function(typ):
                 let label = typ.mangledName ?? typ.name!
                 let dst = nextRegister(type: .p)
                 result = TackInstructionNode(
@@ -1903,7 +1896,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 ]
 
             case (.u8, .minus),
-                (.i8, .minus):
+                 (.i8, .minus):
                 let a = nextRegister(type: .b)
                 let c = nextRegister(type: .b)
                 pushRegister(c)
@@ -1921,7 +1914,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 ]
 
             case (.u16, .minus),
-                (.i16, .minus):
+                 (.i16, .minus):
                 let a = nextRegister(type: .w)
                 let c = nextRegister(type: .w)
                 pushRegister(c)
@@ -1939,7 +1932,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 ]
 
             case (.u8, .tilde),
-                (.i8, .tilde):
+                 (.i8, .tilde):
                 let c = nextRegister(type: .b)
                 pushRegister(c)
                 instructions += [
@@ -1951,7 +1944,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 ]
 
             case (.u16, .tilde),
-                (.i16, .tilde):
+                 (.i16, .tilde):
                 let c = nextRegister(type: .w)
                 pushRegister(c)
                 instructions += [
@@ -1978,11 +1971,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let rightType = try typeCheck(rexpr: binary.right)
         let leftType = try typeCheck(rexpr: binary.left)
 
-        if leftType.isArithmeticType && rightType.isArithmeticType {
+        if leftType.isArithmeticType, rightType.isArithmeticType {
             return try compileArithmeticBinaryExpression(binary)
         }
 
-        if leftType.isBooleanType && rightType.isBooleanType {
+        if leftType.isBooleanType, rightType.isBooleanType {
             return try compileBooleanBinaryExpression(binary, leftType, rightType)
         }
 
@@ -1992,14 +1985,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     func compileArithmeticBinaryExpression(_ binary: Binary) throws -> AbstractSyntaxTreeNode {
-
         let resultType = try typeCheck(rexpr: binary)
         let rightType = try typeCheck(rexpr: binary.right)
         let leftType = try typeCheck(rexpr: binary.left)
-        
-        guard !(leftType.isCompileTimeArithmeticType &&
-                rightType.isCompileTimeArithmeticType) else {
-            
+
+        guard !(leftType.isCompileTimeArithmeticType && rightType.isCompileTimeArithmeticType)
+        else {
             throw CompilerError(
                 sourceAnchor: binary.sourceAnchor,
                 message: "internal compiler error: compile time arithmetic expressions should have been erased in an earlier compiler pass"
@@ -2007,7 +1998,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
 
         switch (leftType, rightType) {
-        case (.arithmeticType(let leftArithmeticType), .arithmeticType(let rightArithmeticType)):
+        case let (.arithmeticType(leftArithmeticType), .arithmeticType(rightArithmeticType)):
             if let arithmeticTypeForArithmetic = ArithmeticTypeInfo.binaryResultType(
                 left: leftArithmeticType,
                 right: rightArithmeticType
@@ -2066,28 +2057,31 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
     func determineArithmeticInstruction(
         _ binary: Binary,
-        _ leftType: SymbolType,
-        _ rightType: SymbolType,
+        _: SymbolType,
+        _: SymbolType,
         _ intClass: IntClass,
         _ c: Register,
         _ a: Register,
         _ b: Register
     ) throws -> TackInstruction {
-
         let ins: TackInstruction
         switch binary.op {
         case .eq:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .eqb(c.unwrapBool!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .eqw(c.unwrapBool!, a.unwrap16!, b.unwrap16!)
             }
         case .ne:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .neb(c.unwrapBool!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .new(c.unwrapBool!, a.unwrap16!, b.unwrap16!)
             }
         case .lt:
@@ -2136,23 +2130,29 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             }
         case .plus:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .addb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .addw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .minus:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .subb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .subw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .star:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .mulb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .mulw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .divide:
@@ -2164,44 +2164,56 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             }
         case .modulus:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .modb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .modw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .ampersand:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .andb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .andw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .pipe:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .orb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .orw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .caret:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .xorb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .xorw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .leftDoubleAngle:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .lslb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .lslw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .rightDoubleAngle:
             switch intClass {
-            case .i8, .u8:
+            case .i8,
+                 .u8:
                 ins = .lsrb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
+            case .i16,
+                 .u16:
                 ins = .lsrw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         default:
@@ -2304,17 +2316,17 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelFalse = symbols!.nextLabel()
         let labelTail = symbols!.nextLabel()
-        instructions.append(
-            try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
+        try instructions.append(
+            compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
         )
         let a = popRegister()
-        instructions += [
+        try instructions += [
             TackInstructionNode(
                 instruction: .bz(a.unwrapBool!, labelFalse),
                 sourceAnchor: binary.sourceAnchor,
                 symbols: symbols
             ),
-            try compileAndConvertExpression(
+            compileAndConvertExpression(
                 rexpr: binary.right,
                 ltype: .bool,
                 isExplicitCast: false
@@ -2360,17 +2372,17 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelTrue = symbols!.nextLabel()
         let labelTail = symbols!.nextLabel()
-        instructions.append(
-            try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
+        try instructions.append(
+            compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
         )
         let a = popRegister()
-        instructions += [
+        try instructions += [
             TackInstructionNode(
                 instruction: .bnz(a.unwrapBool!, labelTrue),
                 sourceAnchor: binary.sourceAnchor,
                 symbols: symbols
             ),
-            try compileAndConvertExpression(
+            compileAndConvertExpression(
                 rexpr: binary.right,
                 ltype: .bool,
                 isExplicitCast: false
@@ -2433,11 +2445,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         // If the symbol has register storage but currently unbound then bind it
         // now to the next available Tack register.
         if let lexpr = expr.lexpr as? Identifier,
-            let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
-            let primitiveType = symbol.type.primitiveType,
-            symbol.storage.isRegisterStorage,
-            symbol.storage.register == nil
-        {
+           let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
+           let primitiveType = symbol.type.primitiveType,
+           symbol.storage.isRegisterStorage,
+           symbol.storage.register == nil {
             let nextReg = nextRegister(type: primitiveType)
             let nextSym = symbol.withStorage(.registerStorage(nextReg))
             symbols!.bind(identifier: lexpr.identifier, symbol: nextSym)
@@ -2445,9 +2456,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         if ltype.isPrimitive {
             if let lexpr = expr.lexpr as? Identifier,
-                let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
-                symbol.storage.isRegisterStorage
-            {
+               let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
+               symbol.storage.isRegisterStorage {
                 // In this case, the destination symbol is of a primitive type
                 // with storage in an explicitly defined register. Instead of
                 // trying fruitlessly to produce the address of the symbol, emit
@@ -2468,18 +2478,18 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     destination: dst
                 )
                 let src = popRegister()
-                
+
                 var children: [AbstractSyntaxTreeNode] = [
                     rvalueProc
                 ]
-                
+
                 if src != dst {
                     let mov: TackInstruction =
                         switch (dst, src) {
-                        case (.p(let p1), .p(let p0)): .movp(p1, p0)
-                        case (.w(let w1), .w(let w0)): .movw(w1, w0)
-                        case (.b(let b1), .b(let b0)): .movb(b1, b0)
-                        case (.o(let o1), .o(let o0)): .movo(o1, o0)
+                        case let (.p(p1), .p(p0)): .movp(p1, p0)
+                        case let (.w(w1), .w(w0)): .movw(w1, w0)
+                        case let (.b(b1), .b(b0)): .movb(b1, b0)
+                        case let (.o(o1), .o(o0)): .movo(o1, o0)
                         default:
                             throw CompilerError(
                                 sourceAnchor: expr.sourceAnchor,
@@ -2519,10 +2529,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
                 let storeIns: TackInstruction =
                     switch src {
-                    case .p(let p): .sp(p, dst.unwrapPointer!, 0)
-                    case .w(let w): .sw(w, dst.unwrapPointer!, 0)
-                    case .b(let b): .sb(b, dst.unwrapPointer!, 0)
-                    case .o(let o): .so(o, dst.unwrapPointer!, 0)
+                    case let .p(p): .sp(p, dst.unwrapPointer!, 0)
+                    case let .w(w): .sw(w, dst.unwrapPointer!, 0)
+                    case let .b(b): .sb(b, dst.unwrapPointer!, 0)
+                    case let .o(o): .so(o, dst.unwrapPointer!, 0)
                     }
 
                 result = Seq(
@@ -2540,25 +2550,25 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             }
         }
         else if size == 0 {
-            result = Seq(
+            result = try Seq(
                 sourceAnchor: expr.sourceAnchor,
                 children: [
-                    try lvalue(expr: expr.lexpr)
+                    lvalue(expr: expr.lexpr)
                 ]
             )
         }
         else if let structInitializer = expr.rexpr as? StructInitializer {
-
-            let children = try structInitializer.arguments.map {
-                expr
-                    .withLexpr(
-                        Get(
-                            sourceAnchor: expr.lexpr.sourceAnchor,
-                            expr: expr.lexpr,
-                            member: Identifier($0.name)
+            let children = try structInitializer.arguments
+                .map {
+                    expr
+                        .withLexpr(
+                            Get(
+                                sourceAnchor: expr.lexpr.sourceAnchor,
+                                expr: expr.lexpr,
+                                member: Identifier($0.name)
+                            )
                         )
-                    )
-                    .withRexpr($0.expr)
+                        .withRexpr($0.expr)
                 }
                 .map {
                     try rvalue(expr: $0)
@@ -2597,7 +2607,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
 
         switch subscriptableType {
-        case .structType(let typ):
+        case let .structType(typ):
             guard typ.name == "Range" else {
                 fatalError("Cannot subscript an expression of type `\(subscriptableType)'")
             }
@@ -2615,8 +2625,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             return result
 
         default:
-            var children: [AbstractSyntaxTreeNode] = [
-                try lvalue(subscript: expr)
+            var children: [AbstractSyntaxTreeNode] = try [
+                lvalue(subscript: expr)
             ]
 
             let elementType = try typeCheck(rexpr: expr)
@@ -2629,10 +2639,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     TackInstructionNode(
                         instruction: {
                             switch dest {
-                            case .p(let p): return .lp(p, addr, 0)
-                            case .w(let w): return .lw(w, addr, 0)
-                            case .b(let b): return .lb(b, addr, 0)
-                            case .o(let o): return .lo(o, addr, 0)
+                            case let .p(p): .lp(p, addr, 0)
+                            case let .w(w): .lw(w, addr, 0)
+                            case let .b(b): .lb(b, addr, 0)
+                            case let .o(o): .lo(o, addr, 0)
                             }
                         }(),
                         sourceAnchor: expr.sourceAnchor,
@@ -2679,8 +2689,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         case .dynamicArray:
             assert(name == "count")
-            children += [
-                try rvalue(expr: expr.expr)
+            try children += [
+                rvalue(expr: expr.expr)
             ]
             let sliceAddr = popRegister().unwrapPointer!
             let countReg = nextRegister(type: .w)
@@ -2693,14 +2703,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
 
-        case .structType(let typ):
+        case let .structType(typ):
             let symbol = try typ.symbols.resolve(identifier: name)
             let offset = symbol.storage.offset!
 
             if let primitiveType = symbol.type.primitiveType {
                 // Read the field in-place
-                children += [
-                    try lvalue(expr: expr.expr)
+                try children += [
+                    lvalue(expr: expr.expr)
                 ]
                 let tempStructAddress = popRegister().unwrapPointer!
                 let dst = nextRegister(type: primitiveType)
@@ -2709,10 +2719,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     TackInstructionNode(
                         instruction: {
                             switch dst {
-                            case .p(let p): return .lp(p, tempStructAddress, offset)
-                            case .w(let w): return .lw(w, tempStructAddress, offset)
-                            case .b(let b): return .lb(b, tempStructAddress, offset)
-                            case .o(let o): return .lo(o, tempStructAddress, offset)
+                            case let .p(p): .lp(p, tempStructAddress, offset)
+                            case let .w(w): .lw(w, tempStructAddress, offset)
+                            case let .b(b): .lb(b, tempStructAddress, offset)
+                            case let .o(o): .lo(o, tempStructAddress, offset)
                             }
                         }(),
                         sourceAnchor: expr.sourceAnchor,
@@ -2721,15 +2731,15 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 ]
             }
             else {
-                children += [
-                    try lvalue(expr: expr)
+                try children += [
+                    lvalue(expr: expr)
                 ]
             }
 
-        case .pointer(let typ):
+        case let .pointer(typ):
             if name == "pointee" {
-                children += [
-                    try rvalue(expr: expr.expr)
+                try children += [
+                    rvalue(expr: expr.expr)
                 ]
 
                 // If the pointee is a primitive then load it into a register.
@@ -2743,10 +2753,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         TackInstructionNode(
                             instruction: {
                                 switch pointeeValue {
-                                case .p(let p): return .lp(p, pointerValue, 0)
-                                case .w(let w): return .lw(w, pointerValue, 0)
-                                case .b(let b): return .lb(b, pointerValue, 0)
-                                case .o(let o): return .lo(o, pointerValue, 0)
+                                case let .p(p): .lp(p, pointerValue, 0)
+                                case let .w(w): .lw(w, pointerValue, 0)
+                                case let .b(b): .lb(b, pointerValue, 0)
+                                case let .o(o): .lo(o, pointerValue, 0)
                                 }
                             }(),
                             sourceAnchor: expr.sourceAnchor,
@@ -2771,8 +2781,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
                 case .dynamicArray:
                     assert(name == "count")
-                    children += [
-                        try rvalue(expr: expr.expr)
+                    try children += [
+                        rvalue(expr: expr.expr)
                     ]
                     let sliceAddr = popRegister().unwrapPointer!
                     let countReg = nextRegister(type: .w)
@@ -2785,14 +2795,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         )
                     ]
 
-                case .structType(let b):
+                case let .structType(b):
                     let symbol = try b.symbols.resolve(identifier: name)
                     let offset = symbol.storage.offset!
 
                     if let primitiveType = symbol.type.primitiveType {
                         // If the field is a primitive then load into a register
-                        children += [
-                            try rvalue(expr: expr.expr)
+                        try children += [
+                            rvalue(expr: expr.expr)
                         ]
                         let structAddr = popRegister().unwrapPointer!
                         let dst = nextRegister(type: primitiveType)
@@ -2801,10 +2811,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                             TackInstructionNode(
                                 instruction: {
                                     switch dst {
-                                    case .p(let p): return .lp(p, structAddr, offset)
-                                    case .w(let w): return .lw(w, structAddr, offset)
-                                    case .b(let b): return .lb(b, structAddr, offset)
-                                    case .o(let o): return .lo(o, structAddr, offset)
+                                    case let .p(p): .lp(p, structAddr, offset)
+                                    case let .w(w): .lw(w, structAddr, offset)
+                                    case let .b(b): .lb(b, structAddr, offset)
+                                    case let .o(o): .lo(o, structAddr, offset)
                                     }
                                 }(),
                                 sourceAnchor: expr.sourceAnchor,
@@ -2813,8 +2823,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         ]
                     }
                     else {
-                        children += [
-                            try lvalue(expr: expr)
+                        try children += [
+                            lvalue(expr: expr)
                         ]
                     }
 
@@ -2860,35 +2870,34 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             children.append(child)
         }
         registerStack = savedRegisterStack
-        children += [
-            try lvalue(identifier: tempArrayId)
+        try children += [
+            lvalue(identifier: tempArrayId)
         ]
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
 
     func rvalue(call expr: Call) throws -> AbstractSyntaxTreeNode {
-        let calleeType: SymbolType
-        if let symbols,
-            let identifier = expr.callee as? Identifier
-        {
-            calleeType = try symbols.resolveTypeOfIdentifier(
-                sourceAnchor: identifier.sourceAnchor,
-                identifier: identifier.identifier
-            )
-        }
-        else {
-            calleeType = try typeCheck(rexpr: expr.callee)
-        }
+        let calleeType: SymbolType =
+            if let symbols,
+            let identifier = expr.callee as? Identifier {
+                try symbols.resolveTypeOfIdentifier(
+                    sourceAnchor: identifier.sourceAnchor,
+                    identifier: identifier.identifier
+                )
+            }
+            else {
+                try typeCheck(rexpr: expr.callee)
+            }
 
         switch calleeType {
-        case .function(let typ), .pointer(.function(let typ)):
+        case let .function(typ),
+             let .pointer(.function(typ)):
             return try rvalue(call: expr, typ: typ)
 
-        case .genericFunction(let typ):
+        case let .genericFunction(typ):
             throw CompilerError(
                 sourceAnchor: expr.sourceAnchor,
-                message:
-                    "internal compiler error: expected generics to have been erased by this point: `\(expr)' of type `\(typ)'"
+                message: "internal compiler error: expected generics to have been erased by this point: `\(expr)' of type `\(typ)'"
             )
 
         default:
@@ -2900,7 +2909,6 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         call expr: Call,
         typ: FunctionTypeInfo
     ) throws -> AbstractSyntaxTreeNode {
-        
         _ = try RvalueExpressionTypeChecker(symbols: symbols!).checkInner(call: expr, typ: typ)
 
         let calleeType = try typeCheck(rexpr: expr.callee)
@@ -2930,8 +2938,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         for i in 0..<typ.arguments.count {
             let argType = typ.arguments[i]
             let argExpr = expr.arguments[i]
-            children += [
-                try rvalue(
+            try children += [
+                rvalue(
                     expr: As(
                         sourceAnchor: expr.sourceAnchor,
                         expr: argExpr,
@@ -2978,10 +2986,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         TackInstructionNode(
                             instruction: {
                                 switch tempArg {
-                                case .p(let p): return .sp(p, dst, 0)
-                                case .w(let w): return .sw(w, dst, 0)
-                                case .b(let b): return .sb(b, dst, 0)
-                                case .o(let o): return .so(o, dst, 0)
+                                case let .p(p): .sp(p, dst, 0)
+                                case let .w(w): .sw(w, dst, 0)
+                                case let .b(b): .sb(b, dst, 0)
+                                case let .o(o): .so(o, dst, 0)
                                 }
                             }(),
                             sourceAnchor: expr.sourceAnchor,
@@ -3013,8 +3021,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             ]
 
         case .pointer:
-            children += [
-                try rvalue(expr: expr.callee),
+            try children += [
+                rvalue(expr: expr.callee),
                 TackInstructionNode(
                     instruction: .callptr(popRegister().unwrapPointer!),
                     sourceAnchor: expr.sourceAnchor,
@@ -3029,8 +3037,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         // Copy the function call return value to the compiler temporary we
         // allocated earlier. Free stack storage allocated earlier.
         if returnTypeSize > 0 {
-            children += [
-                try lvalue(identifier: tempRetId!),
+            try children += [
+                lvalue(identifier: tempRetId!),
                 TackInstructionNode(
                     instruction: .memcpy(
                         popRegister().unwrapPointer!,
@@ -3044,7 +3052,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
 
         // Free up stack storage allocated for arguments and return value.
-        let argPackSize = typ.arguments.reduce(0) { (result, type) in
+        let argPackSize = typ.arguments.reduce(0) { result, type in
             result + memoryLayoutStrategy.sizeof(type: type)
         }
         if argPackSize + returnTypeSize > 0 {
@@ -3064,24 +3072,24 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         // If the function call evaluates to a non-void value then get the
         // rvalue of the compiler temporary so we can chain that value into the
         // next expression.
-        let outerSeq: Seq
-        if typ.returnType != .void {
-            outerSeq = Seq(
-                sourceAnchor: expr.sourceAnchor,
-                children: [
-                    innerSeq,
-                    try rvalue(identifier: tempRetId!)
-                ]
-            )
-        }
-        else {
-            outerSeq = Seq(
-                sourceAnchor: expr.sourceAnchor,
-                children: [
-                    innerSeq
-                ]
-            )
-        }
+        let outerSeq =
+            if typ.returnType != .void {
+                try Seq(
+                    sourceAnchor: expr.sourceAnchor,
+                    children: [
+                        innerSeq,
+                        rvalue(identifier: tempRetId!)
+                    ]
+                )
+            }
+            else {
+                Seq(
+                    sourceAnchor: expr.sourceAnchor,
+                    children: [
+                        innerSeq
+                    ]
+                )
+            }
         return outerSeq
     }
 
@@ -3103,8 +3111,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         guard node0.expression == nil else {
             throw CompilerError(
                 sourceAnchor: node0.sourceAnchor,
-                message:
-                    "internal compiler error: VarDeclaration's expression should have been erased already: `\(node0)'"
+                message: "internal compiler error: VarDeclaration's expression should have been erased already: `\(node0)'"
             )
         }
         _ = try super.visit(varDecl: node0)
@@ -3139,11 +3146,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 }
 
 extension AbstractSyntaxTreeNode {
-    fileprivate func flattenTackProgram() throws -> TackProgram {
+    private func flattenTackProgram() throws -> TackProgram {
         try TackFlattener.compile(self)
     }
 
-    /// Lower a Snap program, written in a minimal core subset of the language, to equivalent Tack code
+    /// Lower a Snap program, written in a minimal core subset of the language, to equivalent Tack
+    /// code
     public func coreToTack(
         memoryLayoutStrategy: MemoryLayoutStrategy,
         options: CoreToTackCompiler.Options

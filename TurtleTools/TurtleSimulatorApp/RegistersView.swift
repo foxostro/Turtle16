@@ -50,8 +50,7 @@ struct RegistersView: View {
             case .binary:
                 value.binaryString
 
-            case .unsignedDecimal:
-                "\(value)"
+            case .unsignedDecimal: "\(value)"
 
             case .signedDecimal:
                 value.signedDecimalString
@@ -97,7 +96,8 @@ extension RegistersView {
 
         init(document: TurtleSimulatorDocument) {
             self.document = document
-            self.document.objectWillChange
+            self.document
+                .objectWillChange
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] _ in
                     self?.reloadData()

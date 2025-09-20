@@ -38,10 +38,10 @@ public final class FuseListMaker {
     public func set(begin: Int, bitmap: String) {
         set(
             begin: begin,
-            array: bitmap.unicodeScalars.map({ (scalar) -> UInt in
+            array: bitmap.unicodeScalars.map { scalar -> UInt in
                 assert(scalar == "0" || scalar == "1")
                 return scalar == "0" ? 0 : 1
-            })
+            }
         )
     }
 

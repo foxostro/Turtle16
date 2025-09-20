@@ -141,7 +141,6 @@ final class ImplScannerTests: XCTestCase {
     // When execution exits the scope, the methods disappear in the same manner
     // as any other type or symbol defined within that scope.
     func testImplScoping() throws {
-
         let outerBlock = Block(children: [
             StructDeclaration(
                 identifier: Identifier("Foo"),

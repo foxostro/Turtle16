@@ -11,7 +11,7 @@ import TurtleSimulatorCore
 
 public final class TackToTurtle16Compiler: CompilerPass {
     public override func visit(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        flatten(try super.visit(node0))
+        try flatten(super.visit(node0))
     }
 
     fileprivate func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode {
@@ -42,7 +42,10 @@ public final class TackToTurtle16Compiler: CompilerPass {
         case .p(.ra):
             asmRegister = "ra"
 
-        case .p(.p(_)), .w(.w(_)), .b(.b(_)), .o(.o(_)):
+        case .p(.p(_)),
+             .w(.w(_)),
+             .b(.b(_)),
+             .o(.o(_)):
             if let r = registerMap[tackRegister] {
                 asmRegister = r
             }
@@ -59,106 +62,101 @@ public final class TackToTurtle16Compiler: CompilerPass {
         switch node.instruction {
         case .nop: return nop(node)
         case .hlt: return hlt(node)
-        case .call(let target): return call(anc, target)
-        case .callptr(let target): return callptr(anc, target)
-        case .enter(let count): return enter(anc, count)
+        case let .call(target): return call(anc, target)
+        case let .callptr(target): return callptr(anc, target)
+        case let .enter(count): return enter(anc, count)
         case .leave: return leave(anc)
         case .ret: return ret(anc)
-        case .jmp(let target): return jmp(anc, target)
-        case .la(let dst, let label): return la(anc, dst, label)
-        case .ststr(let dst, let str): return ststr(anc, dst, str)
-        case .memcpy(let dst, let src, let n): return memcpy(anc, dst, src, n)
-        case .alloca(let dst, let n): return alloca(anc, dst, n)
-        case .free(let numberOfWords): return free(anc, numberOfWords)
-        case .inlineAssembly(let asm): return try inlineAssembly(asm)
-        case .syscall(let n, let ptr): return syscall(anc, n, ptr)
-
-        case .bz(let test, let target): return bz(anc, test, target)
-        case .bnz(let test, let target): return bnz(anc, test, target)
-        case .not(let dst, let src): return not(anc, dst, src)
-        case .eqo(let c, let a, let b): return eqo(anc, c, a, b)
-        case .neo(let c, let a, let b): return neo(anc, c, a, b)
-        case .lio(let dst, let imm): return lio(anc, dst, imm)
-        case .lo(let dst, let addr, let offset): return lo(anc, dst, addr, offset)
-        case .so(let src, let addr, let offset): return so(anc, src, addr, offset)
-
-        case .eqp(let c, let a, let b): return eqp(anc, c, a, b)
-        case .nep(let c, let a, let b): return nep(anc, c, a, b)
-        case .lip(let dst, let imm): return lip(anc, dst, imm)
-        case .addip(let dst, let left, let imm): return addip(anc, dst, left, imm)
-        case .subip(let dst, let left, let imm): return subip(anc, dst, left, imm)
-        case .addpw(let c, let a, let b): return addpw(anc, c, a, b)
-        case .lp(let dst, let addr, let offset): return lp(anc, dst, addr, offset)
-        case .sp(let src, let addr, let offset): return sp(anc, src, addr, offset)
-
-        case .lw(let dst, let addr, let offset): return lw(anc, dst, addr, offset)
-        case .sw(let src, let addr, let offset): return sw(anc, src, addr, offset)
-        case .bzw(let test, let target): return bzw(anc, test, target)
-        case .andiw(let dst, let left, let imm): return andiw(anc, dst, left, imm)
-        case .addiw(let dst, let left, let imm): return addiw(anc, dst, left, imm)
-        case .subiw(let dst, let left, let imm): return subiw(anc, dst, left, imm)
-        case .muliw(let dst, let left, let imm): return muliw(anc, dst, left, imm)
-        case .liw(let dst, let imm): return liw(anc, dst, imm)
-        case .liuw(let dst, let imm): return liuw(anc, dst, imm)
-        case .andw(let c, let a, let b): return andw(anc, c, a, b)
-        case .orw(let c, let a, let b): return orw(anc, c, a, b)
-        case .xorw(let c, let a, let b): return xorw(anc, c, a, b)
-        case .negw(let dst, let src): return negw(anc, dst, src)
-        case .addw(let c, let a, let b): return addw(anc, c, a, b)
-        case .subw(let c, let a, let b): return subw(anc, c, a, b)
-        case .mulw(let c, let a, let b): return mulw(anc, c, a, b)
-        case .divw(let c, let a, let b): return divw(anc, c, a, b)
-        case .divuw(let c, let a, let b): return divuw(anc, c, a, b)
-        case .modw(let c, let a, let b): return mod16(anc, c, a, b)
-        case .lslw(let c, let a, let b): return lslw(anc, c, a, b)
-        case .lsrw(let c, let a, let b): return lsrw(anc, c, a, b)
-        case .eqw(let c, let a, let b): return eqw(anc, c, a, b)
-        case .new(let c, let a, let b): return new(anc, c, a, b)
-        case .ltw(let c, let a, let b): return ltw(anc, c, a, b)
-        case .gew(let c, let a, let b): return gew(anc, c, a, b)
-        case .lew(let c, let a, let b): return lew(anc, c, a, b)
-        case .gtw(let c, let a, let b): return gtw(anc, c, a, b)
-        case .ltuw(let c, let a, let b): return ltuw(anc, c, a, b)
-        case .geuw(let c, let a, let b): return geuw(anc, c, a, b)
-        case .leuw(let c, let a, let b): return leuw(anc, c, a, b)
-        case .gtuw(let c, let a, let b): return gtuw(anc, c, a, b)
-
-        case .lb(let dst, let addr, let offset): return lb(anc, dst, addr, offset)
-        case .sb(let src, let addr, let offset): return sb(anc, src, addr, offset)
-        case .lib(let dst, let imm): return li8(anc, dst, imm)
-        case .liub(let dst, let imm): return liu8(anc, dst, imm)
-        case .andb(let c, let a, let b): return and8(anc, c, a, b)
-        case .orb(let c, let a, let b): return or8(anc, c, a, b)
-        case .xorb(let c, let a, let b): return xor8(anc, c, a, b)
-        case .negb(let dst, let src): return neg8(anc, dst, src)
-        case .addb(let c, let a, let b): return add8(anc, c, a, b)
-        case .subb(let c, let a, let b): return sub8(anc, c, a, b)
-        case .mulb(let c, let a, let b): return mul8(anc, c, a, b)
-        case .divub(let c, let a, let b): return divub(anc, c, a, b)
-        case .divb(let c, let a, let b): return divb(anc, c, a, b)
-        case .modb(let c, let a, let b): return mod8(anc, c, a, b)
-        case .lslb(let c, let a, let b): return lsl8(anc, c, a, b)
-        case .lsrb(let c, let a, let b): return lsr8(anc, c, a, b)
-        case .eqb(let c, let a, let b): return eq8(anc, c, a, b)
-        case .neb(let c, let a, let b): return ne8(anc, c, a, b)
-        case .ltb(let c, let a, let b): return lt8(anc, c, a, b)
-        case .geb(let c, let a, let b): return ge8(anc, c, a, b)
-        case .leb(let c, let a, let b): return le8(anc, c, a, b)
-        case .gtb(let c, let a, let b): return gt8(anc, c, a, b)
-        case .ltub(let c, let a, let b): return ltu8(anc, c, a, b)
-        case .geub(let c, let a, let b): return geu8(anc, c, a, b)
-        case .leub(let c, let a, let b): return leu8(anc, c, a, b)
-        case .gtub(let c, let a, let b): return gtu8(anc, c, a, b)
-
-        case .movsbw(let dst, let src): return movsbw(anc, dst, src)
-        case .movswb(let dst, let src): return movswb(anc, dst, src)
-        case .movzwb(let dst, let src): return movzwb(anc, dst, src)
-        case .movzbw(let dst, let src): return movzbw(anc, dst, src)
-        case .movp(let dst, let src): return bitcast(anc, .p(dst), .p(src))
-        case .movw(let dst, let src): return bitcast(anc, .w(dst), .w(src))
-        case .movb(let dst, let src): return bitcast(anc, .b(dst), .b(src))
-        case .movo(let dst, let src): return bitcast(anc, .o(dst), .o(src))
-        case .bitcast(let dst, let src): return bitcast(anc, dst, src)
+        case let .jmp(target): return jmp(anc, target)
+        case let .la(dst, label): return la(anc, dst, label)
+        case let .ststr(dst, str): return ststr(anc, dst, str)
+        case let .memcpy(dst, src, n): return memcpy(anc, dst, src, n)
+        case let .alloca(dst, n): return alloca(anc, dst, n)
+        case let .free(numberOfWords): return free(anc, numberOfWords)
+        case let .inlineAssembly(asm): return try inlineAssembly(asm)
+        case let .syscall(n, ptr): return syscall(anc, n, ptr)
+        case let .bz(test, target): return bz(anc, test, target)
+        case let .bnz(test, target): return bnz(anc, test, target)
+        case let .not(dst, src): return not(anc, dst, src)
+        case let .eqo(c, a, b): return eqo(anc, c, a, b)
+        case let .neo(c, a, b): return neo(anc, c, a, b)
+        case let .lio(dst, imm): return lio(anc, dst, imm)
+        case let .lo(dst, addr, offset): return lo(anc, dst, addr, offset)
+        case let .so(src, addr, offset): return so(anc, src, addr, offset)
+        case let .eqp(c, a, b): return eqp(anc, c, a, b)
+        case let .nep(c, a, b): return nep(anc, c, a, b)
+        case let .lip(dst, imm): return lip(anc, dst, imm)
+        case let .addip(dst, left, imm): return addip(anc, dst, left, imm)
+        case let .subip(dst, left, imm): return subip(anc, dst, left, imm)
+        case let .addpw(c, a, b): return addpw(anc, c, a, b)
+        case let .lp(dst, addr, offset): return lp(anc, dst, addr, offset)
+        case let .sp(src, addr, offset): return sp(anc, src, addr, offset)
+        case let .lw(dst, addr, offset): return lw(anc, dst, addr, offset)
+        case let .sw(src, addr, offset): return sw(anc, src, addr, offset)
+        case let .bzw(test, target): return bzw(anc, test, target)
+        case let .andiw(dst, left, imm): return andiw(anc, dst, left, imm)
+        case let .addiw(dst, left, imm): return addiw(anc, dst, left, imm)
+        case let .subiw(dst, left, imm): return subiw(anc, dst, left, imm)
+        case let .muliw(dst, left, imm): return muliw(anc, dst, left, imm)
+        case let .liw(dst, imm): return liw(anc, dst, imm)
+        case let .liuw(dst, imm): return liuw(anc, dst, imm)
+        case let .andw(c, a, b): return andw(anc, c, a, b)
+        case let .orw(c, a, b): return orw(anc, c, a, b)
+        case let .xorw(c, a, b): return xorw(anc, c, a, b)
+        case let .negw(dst, src): return negw(anc, dst, src)
+        case let .addw(c, a, b): return addw(anc, c, a, b)
+        case let .subw(c, a, b): return subw(anc, c, a, b)
+        case let .mulw(c, a, b): return mulw(anc, c, a, b)
+        case let .divw(c, a, b): return divw(anc, c, a, b)
+        case let .divuw(c, a, b): return divuw(anc, c, a, b)
+        case let .modw(c, a, b): return mod16(anc, c, a, b)
+        case let .lslw(c, a, b): return lslw(anc, c, a, b)
+        case let .lsrw(c, a, b): return lsrw(anc, c, a, b)
+        case let .eqw(c, a, b): return eqw(anc, c, a, b)
+        case let .new(c, a, b): return new(anc, c, a, b)
+        case let .ltw(c, a, b): return ltw(anc, c, a, b)
+        case let .gew(c, a, b): return gew(anc, c, a, b)
+        case let .lew(c, a, b): return lew(anc, c, a, b)
+        case let .gtw(c, a, b): return gtw(anc, c, a, b)
+        case let .ltuw(c, a, b): return ltuw(anc, c, a, b)
+        case let .geuw(c, a, b): return geuw(anc, c, a, b)
+        case let .leuw(c, a, b): return leuw(anc, c, a, b)
+        case let .gtuw(c, a, b): return gtuw(anc, c, a, b)
+        case let .lb(dst, addr, offset): return lb(anc, dst, addr, offset)
+        case let .sb(src, addr, offset): return sb(anc, src, addr, offset)
+        case let .lib(dst, imm): return li8(anc, dst, imm)
+        case let .liub(dst, imm): return liu8(anc, dst, imm)
+        case let .andb(c, a, b): return and8(anc, c, a, b)
+        case let .orb(c, a, b): return or8(anc, c, a, b)
+        case let .xorb(c, a, b): return xor8(anc, c, a, b)
+        case let .negb(dst, src): return neg8(anc, dst, src)
+        case let .addb(c, a, b): return add8(anc, c, a, b)
+        case let .subb(c, a, b): return sub8(anc, c, a, b)
+        case let .mulb(c, a, b): return mul8(anc, c, a, b)
+        case let .divub(c, a, b): return divub(anc, c, a, b)
+        case let .divb(c, a, b): return divb(anc, c, a, b)
+        case let .modb(c, a, b): return mod8(anc, c, a, b)
+        case let .lslb(c, a, b): return lsl8(anc, c, a, b)
+        case let .lsrb(c, a, b): return lsr8(anc, c, a, b)
+        case let .eqb(c, a, b): return eq8(anc, c, a, b)
+        case let .neb(c, a, b): return ne8(anc, c, a, b)
+        case let .ltb(c, a, b): return lt8(anc, c, a, b)
+        case let .geb(c, a, b): return ge8(anc, c, a, b)
+        case let .leb(c, a, b): return le8(anc, c, a, b)
+        case let .gtb(c, a, b): return gt8(anc, c, a, b)
+        case let .ltub(c, a, b): return ltu8(anc, c, a, b)
+        case let .geub(c, a, b): return geu8(anc, c, a, b)
+        case let .leub(c, a, b): return leu8(anc, c, a, b)
+        case let .gtub(c, a, b): return gtu8(anc, c, a, b)
+        case let .movsbw(dst, src): return movsbw(anc, dst, src)
+        case let .movswb(dst, src): return movswb(anc, dst, src)
+        case let .movzwb(dst, src): return movzwb(anc, dst, src)
+        case let .movzbw(dst, src): return movzbw(anc, dst, src)
+        case let .movp(dst, src): return bitcast(anc, .p(dst), .p(src))
+        case let .movw(dst, src): return bitcast(anc, .w(dst), .w(src))
+        case let .movb(dst, src): return bitcast(anc, .b(dst), .b(src))
+        case let .movo(dst, src): return bitcast(anc, .o(dst), .o(src))
+        case let .bitcast(dst, src): return bitcast(anc, dst, src)
         }
     }
 
@@ -1197,7 +1195,6 @@ public final class TackToTurtle16Compiler: CompilerPass {
         _ left_: TackInstruction.Register16,
         _ imm: Int
     ) -> AbstractSyntaxTreeNode? {
-
         if imm == 0 {
             _ = corresponding(.w(left_))
             let dst = corresponding(.w(dst_))
@@ -1409,7 +1406,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
         _ dst_: TackInstruction.Register16,
         _ imm: Int
     ) -> AbstractSyntaxTreeNode? {
-        guard imm >= Int8.min && imm <= Int8.max else {
+        guard imm >= Int8.min, imm <= Int8.max else {
             let imm16: UInt16 = (imm < 0) ? (UInt16(0) &- UInt16(-imm)) : UInt16(imm)
             let dst = corresponding(.w(dst_))
             let lower = Int(imm16 & 0x00ff)
@@ -2184,7 +2181,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
         _ b_: TackInstruction.Register16
     ) -> AbstractSyntaxTreeNode? {
         let N = 16
-        let b = corresponding(.w(c_))  // TODO: Terrible naming conventions for the local vars here
+        let b = corresponding(.w(c_)) // TODO: Terrible naming conventions for the local vars here
         let a = corresponding(.w(a_))
         let n = corresponding(.w(b_))
         let temp = ParameterIdentifier(nextRegister())
@@ -2238,7 +2235,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
         _ b_: TackInstruction.Register16
     ) -> AbstractSyntaxTreeNode? {
         let N = 16
-        let b = corresponding(.w(c_))  // TODO: Terrible naming conventions for the local vars here
+        let b = corresponding(.w(c_)) // TODO: Terrible naming conventions for the local vars here
         let a = corresponding(.w(a_))
         let n = corresponding(.w(b_))
         let temp = ParameterIdentifier(nextRegister())
@@ -2977,7 +2974,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
     ) -> AbstractSyntaxTreeNode? {
         // TODO: Consolidate implementation with the very similar lslw()
         let N = 16
-        let b = corresponding(.b(c_))  // TODO: Terrible naming conventions for the local vars here
+        let b = corresponding(.b(c_)) // TODO: Terrible naming conventions for the local vars here
         let a = corresponding(.b(a_))
         let n = corresponding(.b(b_))
         let temp = ParameterIdentifier(nextRegister())
@@ -3040,7 +3037,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
     ) -> AbstractSyntaxTreeNode? {
         // TODO: Consolidate implementation with the very similar lsrw()
         let N = 16
-        let b = corresponding(.b(c_))  // TODO: Terrible naming conventions for the local vars here
+        let b = corresponding(.b(c_)) // TODO: Terrible naming conventions for the local vars here
         let a = corresponding(.b(a_))
         let n = corresponding(.b(b_))
         let temp = ParameterIdentifier(nextRegister())
@@ -3664,8 +3661,8 @@ public final class TackToTurtle16Compiler: CompilerPass {
 
     func syscall(
         _ sourceAnchor: SourceAnchor?,
-        _ n_: TackInstruction.RegisterPointer,
-        _ ptr_: TackInstruction.RegisterPointer
+        _: TackInstruction.RegisterPointer,
+        _: TackInstruction.RegisterPointer
     ) -> AbstractSyntaxTreeNode? {
         Seq(
             sourceAnchor: sourceAnchor,
@@ -3686,7 +3683,7 @@ private struct LabelMaker {
     }
 
     public mutating func next() -> String {
-        next(prefix: self.prefix)
+        next(prefix: prefix)
     }
 
     public mutating func next(prefix: String) -> String {

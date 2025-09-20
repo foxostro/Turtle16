@@ -12,7 +12,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     let staticStorageFrame: Frame
     let memoryLayoutStrategy: MemoryLayoutStrategy
     var modules: [String: Module] = [:]
-    
+
     var typeCheckerOptions: TypeCheckerOptions {
         []
     }
@@ -254,7 +254,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
         symbols.modulesAlreadyImported.insert(name)
     }
 
-    func scan(block: Block, clause: Match.Clause, in match: Match) throws {
+    func scan(block _: Block, clause: Match.Clause, in _: Match) throws {
         let symbols = clause.block.symbols
         let clauseType = try typeContext.check(expression: clause.valueType)
         symbols.bind(
@@ -307,20 +307,20 @@ public class CompilerPassWithDeclScan: CompilerPass {
             else {
                 .none
             }
-        let call = node
+        let call = try node
             .withCallee(
-                try with(context: calleeContext) {
+                with(context: calleeContext) {
                     try visit(expr: node.callee)!
                 }
             )
             .withArguments(
-                try node.arguments.compactMap {
+                node.arguments.compactMap {
                     try visit(expr: $0)
                 }
             )
         return call
     }
-    
+
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         let node1 = try super.visit(assignment: node0)
         if let node1 = node1 as? Assignment {
@@ -328,51 +328,48 @@ public class CompilerPassWithDeclScan: CompilerPass {
         }
         return node1
     }
-    
+
     private func markVariablesAsInitialized(in lexpr: Expression) throws {
         let symbols = symbols!
-        
+
         switch lexpr {
         case let lexpr as Identifier:
             try symbols.withFacts(lexpr) {
                 $0.initStatus = .initialized
             }
-            
+
         case let lexpr as Get where lexpr.member.isPointee:
             // If the Get expr is a pointer dereference then ignore it.
             // We do not attempt any kind of data flow analysis to figure out
             // what it's pointing to right now.
             // TODO: Consider making it a compile-time error to take the address of an uninitialized variable, or to take the value of such a variable in an expression.
             break
-            
+
         default:
             break
         }
     }
 }
 
-extension Env {
-    fileprivate func export(
+private extension Env {
+    func export(
         to dst: Env,
         moduleName: String,
         sourceAnchor: SourceAnchor?
     ) throws {
-
         for (identifier, symbol) in symbolTable {
             if symbol.visibility == .publicVisibility {
                 guard !dst.exists(identifier: identifier) else {
                     throw CompilerError(
                         sourceAnchor: sourceAnchor,
-                        message:
-                            "import of module `\(moduleName)' redefines existing symbol: `\(identifier)'"
+                        message: "import of module `\(moduleName)' redefines existing symbol: `\(identifier)'"
                     )
                 }
 
                 guard !dst.existsAsType(identifier: identifier) else {
                     throw CompilerError(
                         sourceAnchor: sourceAnchor,
-                        message:
-                            "import of module `\(moduleName)' redefines existing type: `\(identifier)'"
+                        message: "import of module `\(moduleName)' redefines existing type: `\(identifier)'"
                     )
                 }
 
@@ -392,8 +389,7 @@ extension Env {
                 guard !dst.existsAsType(identifier: identifier) else {
                     throw CompilerError(
                         sourceAnchor: sourceAnchor,
-                        message:
-                            "import of module `\(moduleName)' redefines existing type: `\(identifier)'"
+                        message: "import of module `\(moduleName)' redefines existing type: `\(identifier)'"
                     )
                 }
 
@@ -407,14 +403,14 @@ extension Env {
     }
 }
 
-fileprivate let pointee = "pointee"
+private let pointee = "pointee"
 
-extension Expression {
-    public var isPointee: Bool {
+public extension Expression {
+    var isPointee: Bool {
         switch self {
         case let self as Identifier:
             self.identifier == pointee
-            
+
         default:
             false
         }

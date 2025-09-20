@@ -16,7 +16,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
 
         public init(name: String, type: Expression) {
             self.name = name
-            self.memberType = type
+            memberType = type
         }
 
         public var description: String {
@@ -28,8 +28,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
             wantsLeadingWhitespace: Bool = false
         ) -> String {
             let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-            let result =
-                "\(indent0)\(name): \(memberType.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: false))"
+            let result = "\(indent0)\(name): \(memberType.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: false))"
             return result
         }
 
@@ -56,7 +55,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
     public convenience init(_ structType: StructTypeInfo) {
         self.init(
             identifier: Identifier(structType.name),
-            members: structType.fields.symbolTable.map {  // This specifically ignores methods.
+            members: structType.fields.symbolTable.map { // This specifically ignores methods.
                 StructDeclaration.Member(
                     name: $0.key,
                     type: PrimitiveType($0.value.type)
@@ -153,7 +152,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
             id: id
         )
     }
-    
+
     public func withConst(_ isConst: Bool) -> StructDeclaration {
         StructDeclaration(
             sourceAnchor: sourceAnchor,
@@ -207,17 +206,15 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         wantsLeadingWhitespace w: Bool = false
     ) -> String {
         let indent0 = w ? makeIndent(depth: depth) : ""
-        let result =
-            "\(indent0)\(selfDesc)(\(visibility) \(name)\(typeArgumentsDescription))\(makeMembersDescription(depth: depth + 1))"
+        let result = "\(indent0)\(selfDesc)(\(visibility) \(name)\(typeArgumentsDescription))\(makeMembersDescription(depth: depth + 1))"
         return result
     }
 
     public var typeArgumentsDescription: String {
         guard !typeArguments.isEmpty else { return "" }
 
-        let str =
-            typeArguments
-            .map { $0.shortDescription }
+        let str = typeArguments
+            .map(\.shortDescription)
             .joined(separator: ", ")
 
         return "[\(str)]"
@@ -225,8 +222,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
 
     private func makeMembersDescription(depth: Int) -> String {
         guard !members.isEmpty else { return "" }
-        let result =
-            "\n"
+        let result = "\n"
             + members
             .map {
                 $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)

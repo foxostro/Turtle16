@@ -14,9 +14,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     fileprivate typealias Word = TackVirtualMachine.Word
     fileprivate let kRuntime = "runtime_TackVM"
     fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
-    fileprivate lazy var kUnionPayloadOffset: Int = {
-        memoryLayoutStrategy.sizeof(type: .u16)
-    }()
+    fileprivate lazy var kUnionPayloadOffset: Int = memoryLayoutStrategy.sizeof(type: .u16)
 
     fileprivate func makeCompiler() -> SnapCompilerFrontEnd {
         SnapCompilerFrontEnd(memoryLayoutStrategy: memoryLayoutStrategy)
@@ -27,7 +25,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         do {
             return try compiler.compile(program: program)
         }
-        catch (let error as CompilerError) {
+        catch let error as CompilerError {
             let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
             print("compile error: \(omnibusError.message)")
             throw error
@@ -41,7 +39,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         _ block: (CompilerError) -> Void
     ) {
         switch result {
-        case .failure(let error as CompilerError):
+        case let .failure(error as CompilerError):
             block(error)
 
         default:
@@ -134,7 +132,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         do {
             tackProgram = try compiler.compile(program: program)
         }
-        catch (let error as CompilerError) {
+        catch let error as CompilerError {
             let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
             print("compile error: \(omnibusError.message)")
             throw error
@@ -650,7 +648,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             symbol?.storage,
             .staticStorage(offset: SnapCompilerMetrics.kStaticStorageStartAddress)
         )
-        XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa)  // var a
+        XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
         try debugger.vm.run()
     }
 
@@ -666,7 +664,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         )
         let symbol = try debugger.symbols?.resolve(identifier: "a")
         XCTAssertEqual(symbol?.storage, .automaticStorage(offset: 1))
-        XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa)  // var a
+        XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
         try debugger.vm.run()
     }
 
@@ -753,9 +751,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func
-        test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes()
-        throws
-    {
+        test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes(
+        )
+        throws {
         let debugger = try run(
             program: """
                 func foo() -> u8 {
@@ -1124,7 +1122,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
-    
+
     func test_EndToEndIntegration_CanAssignToUninitializedConstant() throws {
         let debugger = try run(
             program: """
@@ -1135,7 +1133,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
         XCTAssertEqual(debugger.loadSymbolU16("foo"), 1000)
     }
-    
+
     func test_EndToEndIntegration_CannotAssignToInitializedConstant_1() {
         let compiler = makeCompiler()
         let result = Result {
@@ -1155,7 +1153,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
-    
+
     func test_EndToEndIntegration_CannotAssignToInitializedConstant_2() {
         let compiler = makeCompiler()
         let result = Result {
@@ -1176,7 +1174,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
-    
+
     func test_EndToEndIntegration_AssigningThroughPointerIsNotInitialization() {
         let compiler = makeCompiler()
         let result = Result {
@@ -1197,7 +1195,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
-    
+
     func test_EndToEndIntegration_ConstStructInitWithStructInitializer_1() {
         let compiler = makeCompiler()
         let result = Result {
@@ -1219,7 +1217,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
-    
+
     func test_EndToEndIntegration_ConstStructInitWithStructInitializer_2() {
         let compiler = makeCompiler()
         let result = Result {
@@ -1241,7 +1239,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
-    
+
     func test_EndToEndIntegration_ConstStructInitWithStructInitializer_3() {
         let compiler = makeCompiler()
         let result = Result {
@@ -1389,8 +1387,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_ArrayOfIntegerConstantsConvertedToArrayOfU16OnInitialAssignment()
-        throws
-    {
+        throws {
         let debugger = try run(
             program: """
                 let arr: [_]u16 = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
@@ -2530,10 +2527,10 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             onSerialOutput: onSerialOutput,
             injectModules: [
                 "MyModule": """
-                public func foo() {
-                    __puts("Hello, World!")
-                }
-                """
+                    public func foo() {
+                        __puts("Hello, World!")
+                    }
+                    """
             ]
         )
         _ = try run(
@@ -2551,7 +2548,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     func testCannotInstantiateVariableWithModuleType() throws {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
-                injectedModules: ["MyModule": ""]),
+                injectedModules: ["MyModule": ""]
+            ),
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         let result = Result {
@@ -2572,7 +2570,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     func testCannotHaveFunctionParameterWithModuleType() throws {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
-                injectedModules: ["MyModule": ""]),
+                injectedModules: ["MyModule": ""]
+            ),
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         let result = Result {
@@ -2594,7 +2593,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     func testCannotDeclareStructWithModuleType() throws {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
-                injectedModules: ["MyModule": ""]),
+                injectedModules: ["MyModule": ""]
+            ),
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         let result = Result {
@@ -2617,7 +2617,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     func testCannotDeclareTraitWithModuleType() throws {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
-                injectedModules: ["MyModule": ""]),
+                injectedModules: ["MyModule": ""]
+            ),
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         let result = Result {
@@ -2640,7 +2641,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     func testCannotDeclareUnionWithModuleType() throws {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
-                injectedModules: ["MyModule": ""]),
+                injectedModules: ["MyModule": ""]
+            ),
             memoryLayoutStrategy: memoryLayoutStrategy
         )
         let result = Result {
@@ -3172,7 +3174,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
         let serialType = try debugger.symbols?.resolve(identifier: "serial").type
         switch serialType {
-        case .structType(let typ):
+        case let .structType(typ):
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
@@ -3200,7 +3202,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
         let serialType = try debugger.symbols?.resolve(identifier: "serial").type
         switch serialType {
-        case .structType(let typ):
+        case let .structType(typ):
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
@@ -3229,7 +3231,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
         let serialType = try debugger.symbols?.resolve(identifier: "serial").type
         switch serialType {
-        case .structType(let typ):
+        case let .structType(typ):
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
@@ -3912,7 +3914,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                 a = 0
                 """
         )
-        let addr = debugger.addressOfSymbol(try debugger.symbols!.resolve(identifier: "a"))!
+        let addr = try debugger.addressOfSymbol(debugger.symbols!.resolve(identifier: "a"))!
         try debugger.vm.run()
         XCTAssertEqual(0xffff, debugger.vm.loadw(address: addr))
     }

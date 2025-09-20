@@ -14,7 +14,7 @@ import TurtleSimulatorCore
 public struct RegisterAllocatorDriver {
     private let kNumberOfFreelyAllocatableRegisters: Int
 
-    public init(numRegisters: Int = 5 /* a default value appropriate to Turtle16 */) {
+    public init(numRegisters: Int = 5 /* a default value appropriate to Turtle16 */ ) {
         kNumberOfFreelyAllocatableRegisters = numRegisters
     }
 
@@ -22,10 +22,10 @@ public struct RegisterAllocatorDriver {
         let children1 = try compile(children: topLevel0.children)
         let topLevel1 = TopLevel(sourceAnchor: topLevel0.sourceAnchor, children: children1)
         let children2 = try iterateSubroutineNodes(topLevel1.children) { subroutine in
-            Subroutine(
+            try Subroutine(
                 sourceAnchor: subroutine.sourceAnchor,
                 identifier: subroutine.identifier,
-                children: try compile(children: subroutine.children)
+                children: compile(children: subroutine.children)
             )
         }
         let topLevel2 = TopLevel(sourceAnchor: topLevel1.sourceAnchor, children: children2)
@@ -38,14 +38,13 @@ public struct RegisterAllocatorDriver {
     ) throws -> [AbstractSyntaxTreeNode] {
         var children: [AbstractSyntaxTreeNode] = []
         for child in nodes {
-            let result: AbstractSyntaxTreeNode
-
-            switch child {
-            case let subroutineNode as Subroutine:
-                result = try block(subroutineNode)
-            default:
-                result = child
-            }
+            let result: AbstractSyntaxTreeNode =
+                switch child {
+                case let subroutineNode as Subroutine:
+                    try block(subroutineNode)
+                default:
+                    child
+                }
 
             children.append(result)
         }
@@ -71,7 +70,7 @@ public struct RegisterAllocatorDriver {
                 nodes: children
             )
             switch spillResult {
-            case .success(let r):
+            case let .success(r):
                 children = r
                 allocations = allocateRegisters(numRegisters, determineLiveIntervals(children))
                 done = true
@@ -88,7 +87,7 @@ public struct RegisterAllocatorDriver {
             case .failure(.missingLeadingEnter):
                 children.insert(InstructionNode(instruction: kENTER), at: 0)
 
-            case .failure(let e):
+            case let .failure(e):
                 throw CompilerError(
                     sourceAnchor: children0.first?.sourceAnchor,
                     message: "Register allocation failed: \(e)"
@@ -119,7 +118,7 @@ public struct RegisterAllocatorDriver {
         liveIntervals: [LiveInterval]
     ) -> [AbstractSyntaxTreeNode] {
         let children = iterateInstructionNodes(children) { index, instructionNode in
-            return compile(index, instructionNode, liveIntervals)
+            compile(index, instructionNode, liveIntervals)
         }
         return children
     }
@@ -130,14 +129,13 @@ public struct RegisterAllocatorDriver {
     ) -> [AbstractSyntaxTreeNode] {
         var children: [AbstractSyntaxTreeNode] = []
         for child in nodes {
-            let result: AbstractSyntaxTreeNode
-
-            switch child {
-            case let instructionNode as InstructionNode:
-                result = block(children.count, instructionNode)
-            default:
-                result = child
-            }
+            let result: AbstractSyntaxTreeNode =
+                switch child {
+                case let instructionNode as InstructionNode:
+                    block(children.count, instructionNode)
+                default:
+                    child
+                }
 
             children.append(result)
         }
@@ -151,8 +149,28 @@ public struct RegisterAllocatorDriver {
     ) -> InstructionNode {
         // TODO: rewrite in terms of RegisterUtils.rewrite()
         switch node.instruction {
-        case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI,
-            kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
+        case kLOAD,
+             kSTORE,
+             kLI,
+             kLUI,
+             kCMP,
+             kADD,
+             kSUB,
+             kAND,
+             kOR,
+             kXOR,
+             kNOT,
+             kCMPI,
+             kADDI,
+             kSUBI,
+             kANDI,
+             kORI,
+             kXORI,
+             kJR,
+             kJALR,
+             kADC,
+             kSBC,
+             kCALLPTR:
             return InstructionNode(
                 sourceAnchor: node.sourceAnchor,
                 instruction: node.instruction,
@@ -181,7 +199,7 @@ public struct RegisterAllocatorDriver {
         _ liveIntervals: [LiveInterval]
     ) -> Parameter {
         guard let ident = param as? ParameterIdentifier,
-            let rewritten = lookup(ident.value, index, liveIntervals)
+              let rewritten = lookup(ident.value, index, liveIntervals)
         else {
             return param
         }

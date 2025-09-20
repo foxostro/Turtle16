@@ -11,7 +11,7 @@ import Foundation
 import TurtleCore
 
 public final class DebugConsoleCommandLineCompiler {
-    public var syntaxTree: TopLevel! = nil
+    public var syntaxTree: TopLevel!
     public var instructions: [DebugConsoleInstruction] = []
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { errors.count != 0 }
@@ -46,22 +46,29 @@ public final class DebugConsoleCommandLineCompiler {
         for child in syntaxTree.children {
             let node = child as! InstructionNode
             switch node.instruction {
-            case "h", "help":
+            case "h",
+                 "help":
                 acceptHelp(node)
 
-            case "q", "quit":
+            case "q",
+                 "quit":
                 acceptQuit(node)
 
             case "reset":
                 acceptReset(node)
 
-            case "c", "continue":
+            case "c",
+                 "continue":
                 acceptContinue(node)
 
-            case "s", "step":
+            case "s",
+                 "step":
                 acceptStep(node)
 
-            case "r", "reg", "regs", "registers":
+            case "r",
+                 "reg",
+                 "regs",
+                 "registers":
                 acceptReg(node)
 
             case "info":
@@ -111,19 +118,25 @@ public final class DebugConsoleCommandLineCompiler {
         }
 
         switch topic.value {
-        case "h", "help":
+        case "h",
+             "help":
             instructions.append(.help(.help))
 
-        case "q", "quit":
+        case "q",
+             "quit":
             instructions.append(.help(.quit))
 
         case "reset":
             instructions.append(.help(.reset))
 
-        case "s", "step":
+        case "s",
+             "step":
             instructions.append(.help(.step))
 
-        case "r", "reg", "regs", "registers":
+        case "r",
+             "reg",
+             "regs",
+             "registers":
             instructions.append(.help(.reg))
 
         case "info":
@@ -192,8 +205,7 @@ public final class DebugConsoleCommandLineCompiler {
                         errors.append(
                             CompilerError(
                                 sourceAnchor: parameterIdentifier.sourceAnchor,
-                                message:
-                                    "expected parameter to specify either a `soft' or `hard' reset: `\(parameterIdentifier.value)'"
+                                message: "expected parameter to specify either a `soft' or `hard' reset: `\(parameterIdentifier.value)'"
                             )
                         )
                     }
@@ -202,8 +214,7 @@ public final class DebugConsoleCommandLineCompiler {
                     errors.append(
                         CompilerError(
                             sourceAnchor: parameter.sourceAnchor,
-                            message:
-                                "expected parameter to specify either a `soft' or `hard' reset: `\(parameter)'"
+                            message: "expected parameter to specify either a `soft' or `hard' reset: `\(parameter)'"
                         )
                     )
                 }
@@ -249,8 +260,7 @@ public final class DebugConsoleCommandLineCompiler {
             errors.append(
                 CompilerError(
                     sourceAnchor: node.parameters[2].sourceAnchor,
-                    message:
-                        "instruction takes one optional parameter for the step count: `\(node.instruction)'"
+                    message: "instruction takes one optional parameter for the step count: `\(node.instruction)'"
                 )
             )
         }
@@ -349,8 +359,7 @@ public final class DebugConsoleCommandLineCompiler {
             errors.append(
                 CompilerError(
                     sourceAnchor: node.sourceAnchor,
-                    message:
-                        "expected at least one parameter for the memory address: `\(node.instruction)'"
+                    message: "expected at least one parameter for the memory address: `\(node.instruction)'"
                 )
             )
         }
@@ -362,7 +371,7 @@ public final class DebugConsoleCommandLineCompiler {
         _ node: InstructionNode,
         _ param: ParameterNumber
     ) -> UInt16? {
-        guard param.value <= UInt16.max && param.value >= Int16.min else {
+        guard param.value <= UInt16.max, param.value >= Int16.min else {
             errors.append(
                 CompilerError(
                     sourceAnchor: param.sourceAnchor,
@@ -371,13 +380,13 @@ public final class DebugConsoleCommandLineCompiler {
             )
             return nil
         }
-        let baseAddr: UInt16
-        if param.value < 0 {
-            baseAddr = UInt16(bitPattern: Int16(param.value))
-        }
-        else {
-            baseAddr = UInt16(param.value)
-        }
+        let baseAddr =
+            if param.value < 0 {
+                UInt16(bitPattern: Int16(param.value))
+            }
+            else {
+                UInt16(param.value)
+            }
         return baseAddr
     }
 
@@ -387,7 +396,7 @@ public final class DebugConsoleCommandLineCompiler {
         }
     }
 
-    fileprivate func acceptWriteMemoryParameters(_ node: InstructionNode) -> (UInt16, [UInt16])? {
+    private func acceptWriteMemoryParameters(_ node: InstructionNode) -> (UInt16, [UInt16])? {
         guard node.parameters.count >= 2 else {
             let sourceAnchor = (node.parameters.first?.sourceAnchor) ?? node.sourceAnchor
             errors.append(
@@ -437,8 +446,7 @@ public final class DebugConsoleCommandLineCompiler {
             errors.append(
                 CompilerError(
                     sourceAnchor: sourceAnchor,
-                    message:
-                        "expected one parameter for the destination and one parameter for the file path: `\(node.instruction)'"
+                    message: "expected one parameter for the destination and one parameter for the file path: `\(node.instruction)'"
                 )
             )
             return
@@ -484,8 +492,7 @@ public final class DebugConsoleCommandLineCompiler {
             errors.append(
                 CompilerError(
                     sourceAnchor: sourceAnchor,
-                    message:
-                        "expected one parameter for the source and one parameter for the file path: `\(node.instruction)'"
+                    message: "expected one parameter for the source and one parameter for the file path: `\(node.instruction)'"
                 )
             )
             return
@@ -560,8 +567,7 @@ public final class DebugConsoleCommandLineCompiler {
                 errors.append(
                     CompilerError(
                         sourceAnchor: node.parameters[0].sourceAnchor,
-                        message:
-                            "expected an identifier or number for the base address: `\(node.instruction)'"
+                        message: "expected an identifier or number for the base address: `\(node.instruction)'"
                     )
                 )
             }
@@ -582,8 +588,7 @@ public final class DebugConsoleCommandLineCompiler {
                     errors.append(
                         CompilerError(
                             sourceAnchor: parameterBase.sourceAnchor,
-                            message:
-                                "base address must be less than \(Int(UInt16.max)+1): `\(node.instruction)'"
+                            message: "base address must be less than \(Int(UInt16.max) + 1): `\(node.instruction)'"
                         )
                     )
                     return
@@ -610,8 +615,7 @@ public final class DebugConsoleCommandLineCompiler {
                     errors.append(
                         CompilerError(
                             sourceAnchor: parameterCount.sourceAnchor,
-                            message:
-                                "count must be less than \(Int(UInt16.max)+1): `\(node.instruction)'"
+                            message: "count must be less than \(Int(UInt16.max) + 1): `\(node.instruction)'"
                         )
                     )
                     return
@@ -645,8 +649,7 @@ public final class DebugConsoleCommandLineCompiler {
                     errors.append(
                         CompilerError(
                             sourceAnchor: parameterCount.sourceAnchor,
-                            message:
-                                "count must be less than \(Int(UInt16.max)+1): `\(node.instruction)'"
+                            message: "count must be less than \(Int(UInt16.max) + 1): `\(node.instruction)'"
                         )
                     )
                     return
@@ -661,8 +664,7 @@ public final class DebugConsoleCommandLineCompiler {
                 errors.append(
                     CompilerError(
                         sourceAnchor: node.parameters[0].sourceAnchor,
-                        message:
-                            "expected an identifier or number for the base address: `\(node.instruction)'"
+                        message: "expected an identifier or number for the base address: `\(node.instruction)'"
                     )
                 )
             }

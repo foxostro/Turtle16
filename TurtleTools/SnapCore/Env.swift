@@ -448,6 +448,29 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             fatalError("cannot lift a label")
         }
     }
+    
+    /// Return a type equivalent to this one, without any const-ness
+    /// This is not exactly the same as the type returned by
+    /// `correspondingMutableType` as that only removes const-ness from the
+    /// outermost type of a compound type with non-trivial structure.
+    public func eraseConst() -> SymbolType {
+        switch self {
+        case .booleanType, .arithmeticType, .array, .unionType:
+            correspondingMutableType
+        case .dynamicArray(elementType: let typ), .constDynamicArray(elementType: let typ):
+            .dynamicArray(elementType: typ.eraseConst())
+        case .structType(let typ), .constStructType(let typ):
+            .structType(typ.eraseConst())
+        case .pointer(let typ), .constPointer(let typ):
+            .pointer(typ.eraseConst())
+        case .traitType(let typ), .constTraitType(let typ):
+            .traitType(typ.eraseConst())
+        case .function(let typ):
+            .function(typ.eraseConst())
+        default:
+            self
+        }
+    }
 
     public static let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
     public static let u16: SymbolType = .arithmeticType(.mutableInt(.u16))
@@ -831,6 +854,16 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
             ast: ast
         )
     }
+    
+    public func eraseConst() -> FunctionTypeInfo {
+        FunctionTypeInfo(
+            name: name,
+            mangledName: mangledName,
+            returnType: returnType.eraseConst(),
+            arguments: arguments.map { $0.eraseConst() },
+            ast: ast
+        )
+    }
 }
 
 /// Describe a struct type in detail
@@ -876,6 +909,16 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
         StructTypeInfo(
             name: name,
             fields: fields.clone(),
+            associatedTraitType: associatedTraitType,
+            associatedModuleName: associatedModuleName
+        )
+    }
+    
+    /// Return info for a struct equivalent to this one, without any const-ness
+    public func eraseConst() -> StructTypeInfo {
+        StructTypeInfo(
+            name: name,
+            fields: fields.eraseConst(),
             associatedTraitType: associatedTraitType,
             associatedModuleName: associatedModuleName
         )
@@ -1082,6 +1125,16 @@ public final class TraitTypeInfo: Hashable, CustomStringConvertible {
         symbols.symbolTable.map { name, symbol in
             (name: name, type: symbol.type)
         }
+    }
+    
+    /// Return info for a trait equivalent to this one, without any const-ness
+    public func eraseConst() -> TraitTypeInfo {
+        TraitTypeInfo(
+            name: name,
+            nameOfTraitObjectType: nameOfTraitObjectType,
+            nameOfVtableType: nameOfVtableType,
+            symbols: symbols.eraseConst()
+        )
     }
 }
 

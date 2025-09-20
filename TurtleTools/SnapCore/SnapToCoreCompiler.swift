@@ -77,6 +77,7 @@ public final class SnapToCoreCompiler {
             .whilePass()?
             .ifPass()?
             .eraseEseq()?
+            .eraseConst()?
             .flatten()
         guard let block = core as? Block else {
             throw CompilerError(

@@ -3172,7 +3172,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
         let serialType = try debugger.symbols?.resolve(identifier: "serial").type
         switch serialType {
-        case .constStructType(let typ):
+        case .structType(let typ):
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
@@ -3200,7 +3200,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
         let serialType = try debugger.symbols?.resolve(identifier: "serial").type
         switch serialType {
-        case .constStructType(let typ):
+        case .structType(let typ):
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
@@ -3626,7 +3626,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a.count")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
-            XCTAssertEqual(error.message, "value of type `const u8' has no member `count'")
+            XCTAssertEqual(error.message, "value of type `u8' has no member `count'")
         }
     }
 

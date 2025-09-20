@@ -63,6 +63,7 @@ public final class SnapToCoreCompiler {
             .vtablesPass()?
             .implForPass()?
             .eraseMethodCalls()?
+            .typeCheck()? // more thoroughly check expressions in the program before continuing
             .synthesizeTerminalReturnStatements()?
             .eraseImplPass()?
             .eraseCompileTimeExpressions(memoryLayoutStrategy)?

@@ -71,14 +71,14 @@ public final class SnapToCoreCompiler {
             .exposeImplicitConversions()?
             .eraseUnions(memoryLayoutStrategy)?
             .decomposeExpressions()?
-            .eraseEseq(options: .ignoreLoopCondition)?
+            .eraseEseq(options: .ignoreLoopCondition)? // type checking Eseq is fraught with peril
+            .eraseConst()?
             .escapeAnalysis()?
             .assertPass()?
             .returnPass()?
             .whilePass()?
             .ifPass()?
-            .eraseEseq()?
-            .eraseConst()?
+            .eraseEseq()? // erase the rest of them now that loops have been erased
             .flatten()
         guard let block = core as? Block else {
             throw CompilerError(

@@ -70,11 +70,11 @@ public final class CompilerPassForIn: CompilerPass {
                 VarDeclaration(
                     sourceAnchor: node1.sourceAnchor,
                     identifier: node1.identifier,
-                    explicitType: TypeOf(
+                    explicitType: MutableType(
                         sourceAnchor: node1.sourceAnchor,
-                        expr: MutableType(
+                        typ: TypeOf(
                             sourceAnchor: node1.sourceAnchor,
-                            typ: Subscript(
+                            expr: Subscript(
                                 sourceAnchor: node1.sourceAnchor,
                                 subscriptable: sequence,
                                 argument: zero

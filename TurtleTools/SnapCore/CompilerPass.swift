@@ -683,7 +683,11 @@ public class CompilerPass {
     }
 
     public func visit(typeof node: TypeOf) throws -> Expression? {
-        try node.withExpr(visit(expr: node.expr)!)
+        try node.withExpr(
+            with(context: .value) {
+                try visit(expr: node.expr)
+            }!
+        )
     }
 
     public func visit(sizeof node: SizeOf) throws -> Expression? {

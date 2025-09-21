@@ -21,7 +21,7 @@ public final class CompilerPassEraseCompileTimeExpressions: CompilerPassWithDecl
         // when applied to a union type.
         guard !exprType.isUnionType else { return node }
 
-        let testType = try typeContext.check(expression: node.testType)
+        let testType = try rvalueContext.check(expression: node.testType)
         let result = LiteralBool(
             sourceAnchor: node.sourceAnchor,
             value: exprType == testType

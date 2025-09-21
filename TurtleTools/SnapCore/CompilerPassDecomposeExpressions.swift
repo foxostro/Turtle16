@@ -172,7 +172,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             isMutable: false,
             visibility: .privateVisibility
         )
-        .inferExplicitType(typeContext)
+        .inferExplicitType(rvalueContext)
 
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
@@ -254,7 +254,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             isMutable: false,
             visibility: .privateVisibility
         )
-        .inferExplicitType(typeContext)
+        .inferExplicitType(rvalueContext)
 
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
@@ -550,7 +550,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             isMutable: false,
             visibility: .privateVisibility
         )
-        .inferExplicitType(typeContext)
+        .inferExplicitType(rvalueContext)
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,

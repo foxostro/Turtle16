@@ -35,15 +35,6 @@ public class CompilerPassWithDeclScan: CompilerPass {
         )
     }
 
-    public var typeContext: TypeContextTypeChecker {
-        TypeContextTypeChecker(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy,
-            options: typeCheckerOptions
-        )
-    }
-
     public init(
         symbols: Env? = nil,
         staticStorageFrame: Frame = Frame(),
@@ -256,7 +247,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
 
     func scan(block _: Block, clause: Match.Clause, in _: Match) throws {
         let symbols = clause.block.symbols
-        let clauseType = try typeContext.check(expression: clause.valueType)
+        let clauseType = try rvalueContext.check(expression: clause.valueType)
         symbols.bind(
             identifier: clause.valueIdentifier.identifier,
             symbol: Symbol(type: clauseType)

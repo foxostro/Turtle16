@@ -132,7 +132,7 @@ public struct SnapSubcompilerFunctionDeclaration {
         _ symbols: Env,
         _ expr: Expression
     ) throws -> FunctionTypeInfo {
-        try TypeContextTypeChecker(
+        try RvalueExpressionTypeChecker(
             symbols: symbols,
             memoryLayoutStrategy: memoryLayoutStrategy
         )

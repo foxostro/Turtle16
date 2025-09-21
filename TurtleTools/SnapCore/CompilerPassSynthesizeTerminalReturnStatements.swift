@@ -46,7 +46,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     }
 
     private func expectFunctionReturnExpressionIsCorrectType(_ node: FunctionDeclaration) throws {
-        let functionType = try typeContext
+        let functionType = try rvalueContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType != .void else { return }
@@ -66,7 +66,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
 
     private func shouldSynthesizeTerminalReturnStatement(_ node: FunctionDeclaration) throws -> Bool
     {
-        let functionType = try typeContext
+        let functionType = try rvalueContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType == .void else { return false }

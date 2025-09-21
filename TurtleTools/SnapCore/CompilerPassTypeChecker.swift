@@ -155,7 +155,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
         if let visitedNode = visitedNode as? Match {
             _ = try rvalueContext.check(expression: visitedNode.expr)
             for clause in visitedNode.clauses {
-                _ = try typeContext.check(expression: clause.valueType)
+                _ = try rvalueContext.check(expression: clause.valueType)
             }
         }
         return visitedNode
@@ -208,7 +208,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
                 _ = try rvalueContext.check(expression: visitedNode)
 
             case .type:
-                _ = try typeContext.check(expression: visitedNode)
+                _ = try rvalueContext.check(expression: visitedNode)
 
             case .none:
                 break
@@ -220,7 +220,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
     public override func visit(primitiveType node: PrimitiveType) throws -> Expression? {
         let visitedNode = try super.visit(primitiveType: node)
         if let visitedNode {
-            _ = try typeContext.check(expression: visitedNode)
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }
@@ -228,7 +228,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
     public override func visit(pointerType node: PointerType) throws -> Expression? {
         let visitedNode = try super.visit(pointerType: node)
         if let visitedNode {
-            _ = try typeContext.check(expression: visitedNode)
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }
@@ -236,7 +236,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
     public override func visit(constType node: ConstType) throws -> Expression? {
         let visitedNode = try super.visit(constType: node)
         if let visitedNode {
-            _ = try typeContext.check(expression: visitedNode)
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }
@@ -244,7 +244,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
     public override func visit(dynamicArrayType node: DynamicArrayType) throws -> Expression? {
         let visitedNode = try super.visit(dynamicArrayType: node)
         if let visitedNode {
-            _ = try typeContext.check(expression: visitedNode)
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }
@@ -252,7 +252,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
     public override func visit(arrayType node: ArrayType) throws -> Expression? {
         let visitedNode = try super.visit(arrayType: node)
         if let visitedNode {
-            _ = try typeContext.check(expression: visitedNode)
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }
@@ -260,7 +260,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
     public override func visit(functionType node: FunctionType) throws -> Expression? {
         let visitedNode = try super.visit(functionType: node)
         if let visitedNode {
-            _ = try typeContext.check(expression: visitedNode)
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }
@@ -269,7 +269,7 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
         -> Expression? {
         let visitedNode = try super.visit(genericFunctionType: node)
         if let visitedNode {
-            _ = try typeContext.check(expression: visitedNode)
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }

@@ -14,13 +14,8 @@ public struct ImplForScanner {
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let symbols: Env
+    private let implScanner: ImplScanner
     private let typeChecker: RvalueExpressionTypeChecker
-    private var implScanner: ImplScanner {
-        ImplScanner(
-            memoryLayoutStrategy: memoryLayoutStrategy,
-            symbols: symbols
-        )
-    }
 
     public init(
         staticStorageFrame: Frame,
@@ -30,6 +25,12 @@ public struct ImplForScanner {
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols
+        
+        implScanner = ImplScanner(
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            symbols: symbols
+        )
+        
         typeChecker = RvalueExpressionTypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
@@ -109,11 +110,6 @@ public struct ImplForScanner {
                 let actualArgumentType = actualMethodType.arguments[0]
                 let expectedArgumentType = expectedMethodType.arguments[0]
                 if actualArgumentType != expectedArgumentType {
-                    let typeChecker = TypeContextTypeChecker(
-                        symbols: symbols,
-                        staticStorageFrame: staticStorageFrame,
-                        memoryLayoutStrategy: memoryLayoutStrategy
-                    )
                     let genericMutableSelfPointerType = try typeChecker.check(
                         expression: PointerType(Identifier(traitType.name))
                     )

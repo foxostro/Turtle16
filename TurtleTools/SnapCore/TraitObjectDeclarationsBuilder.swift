@@ -94,7 +94,7 @@ struct TraitObjectDeclarationsBuilder {
                 parent: symbols,
                 frameLookupMode: .set(Frame(growthDirection: .down))
             )
-            let typeChecker = TypeContextTypeChecker(symbols: symbols)
+            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
             let returnType = try typeChecker.check(expression: functionType.returnType)
             let callExpr0 = Call(
                 callee: callee,

@@ -74,7 +74,7 @@ public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDe
         // If we declare a variable of a non-eligible type then consider it to
         // be Escaping too.
         if let node1 = node1 as? VarDeclaration {
-            let type = try typeContext.check(expression: node1.explicitType!)
+            let type = try rvalueContext.check(expression: node1.explicitType!)
             let isTemp = node1.identifier.identifier.hasPrefix(tempPrefix)
             if !(type.isPrimitive && isTemp) {
                 escapes.insert(node0.id)

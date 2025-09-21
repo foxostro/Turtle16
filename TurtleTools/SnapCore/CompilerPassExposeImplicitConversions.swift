@@ -290,7 +290,7 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     }
 
     private func explicitTypeExpression(varDecl node: VarDeclaration) throws -> Expression {
-        try AssignmentTypeDeducer(typeContext).explicitTypeExpression(varDecl: node)
+        try AssignmentTypeDeducer(rvalueContext).explicitTypeExpression(varDecl: node)
     }
 }
 

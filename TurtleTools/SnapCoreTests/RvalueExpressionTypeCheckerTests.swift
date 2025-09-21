@@ -6411,7 +6411,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 .array(count: 5, elementType: .u8)
             ])
         )
-        let typeChecker = TypeContextTypeChecker()
+        let typeChecker = RvalueExpressionTypeChecker()
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
         XCTAssertEqual(actual, expected)
@@ -6442,7 +6442,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 .array(count: 5, elementType: .arithmeticType(.immutableInt(.u8)))
             ])
         )
-        let typeChecker = TypeContextTypeChecker()
+        let typeChecker = RvalueExpressionTypeChecker()
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
         XCTAssertEqual(actual, expected)

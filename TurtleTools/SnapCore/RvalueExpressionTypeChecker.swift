@@ -1628,16 +1628,15 @@ public class RvalueExpressionTypeChecker {
     ) throws -> SymbolType {
         let node0 = genericTraitType.template.eraseTypeArguments()
 
-        // TODO: We need an overhaul of name mangling in general. Name mangling functions should be moved to a new object such as a struct `NameMangler` or something like that. Also, the mangling scheme should be changed so there is no possibility of name collisions with identifiers written by the programmer.
-        let mangledName = TypeContextTypeChecker(
-            symbols: symbols,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .mangleTraitName(
+        guard let mangledName = mangleTraitName(
             node0.name,
             evaluatedTypeArguments: evaluatedTypeArguments
-        )!
+        ) else {
+            throw CompilerError(
+                sourceAnchor: node0.identifier.sourceAnchor,
+                message: "internal compiler error: could not generate mangled name for trait"
+            )
+        }
         let node1 = node0.withMangledName(mangledName)
 
         let result = try declareTraitType(
@@ -1661,7 +1660,7 @@ public class RvalueExpressionTypeChecker {
     ) throws -> SymbolType {
         let mangledName = traitDecl.mangledName
         let members = Env(parent: symbols)
-        let typeChecker = TypeContextTypeChecker(
+        let typeChecker = RvalueExpressionTypeChecker(
             symbols: members,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
@@ -1773,7 +1772,7 @@ public class RvalueExpressionTypeChecker {
             )
 
             let fnBody: Block
-            let returnType = try TypeContextTypeChecker(symbols: symbols).check(
+            let returnType = try RvalueExpressionTypeChecker(symbols: symbols).check(
                 expression: functionType.returnType
             )
             if returnType == .void {

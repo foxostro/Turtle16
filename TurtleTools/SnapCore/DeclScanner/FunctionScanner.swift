@@ -69,10 +69,13 @@ public struct FunctionScanner {
         )
         symbols.bind(identifier: name, symbol: symbol)
     }
+    
+    private var typeChecker: RvalueExpressionTypeChecker {
+        RvalueExpressionTypeChecker(symbols: symbols)
+    }
 
     private func doNonGeneric(node node0: FunctionDeclaration) throws {
-        let symbolType = try TypeContextTypeChecker(symbols: symbols)
-            .check(expression: node0.functionType)
+        let symbolType = try typeChecker.check(expression: node0.functionType)
         let functionType = symbolType.unwrapFunctionType()
 
         guard try symbolType.hasModule(symbols) == false else {

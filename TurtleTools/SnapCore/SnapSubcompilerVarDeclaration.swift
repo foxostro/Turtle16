@@ -49,7 +49,7 @@ public struct SnapSubcompilerVarDeclaration {
         // the type checker can determine what type it evaluates to.
         let explicitType: SymbolType? =
             if let explicitTypeExpr = node.explicitType {
-                try TypeContextTypeChecker(
+                try RvalueExpressionTypeChecker(
                     symbols: symbols,
                     staticStorageFrame: staticStorageFrame,
                     memoryLayoutStrategy: memoryLayoutStrategy

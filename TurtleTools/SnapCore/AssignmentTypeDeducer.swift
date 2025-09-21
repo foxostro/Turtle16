@@ -12,19 +12,17 @@ import TurtleCore
 /// If this expression were to be attached to a VarDeclaration then this would
 /// be the appropriate explicitType inferred for the variable.
 struct AssignmentTypeDeducer {
-    let typeContext: TypeContextTypeChecker
+    let typeChecker: RvalueExpressionTypeChecker
 
-    init(_ typeContext: TypeContextTypeChecker) {
-        self.typeContext = typeContext
+    init(_ typeChecker: RvalueExpressionTypeChecker) {
+        self.typeChecker = typeChecker
     }
 
     func explicitTypeExpression(
         varDecl node: VarDeclaration
     ) throws -> Expression {
-        let maybeExplicitType = try maybeExplicitTypeExpression(varDecl: node)
-        guard let explicitType = maybeExplicitType else {
-            throw unableToDeduceType(varDecl: node)
-        }
+        let explicitType = try maybeExplicitTypeExpression(varDecl: node)
+        guard let explicitType else { throw unableToDeduceType(varDecl: node) }
         return explicitType
     }
 
@@ -46,7 +44,7 @@ struct AssignmentTypeDeducer {
             return rtypeExpr
         }
 
-        let ltype0 = try typeContext.check(expression: ltypeExpr0)
+        let ltype0 = try typeChecker.check(expression: ltypeExpr0)
         let ltypeExpr1 =
             if ltype0.isArrayType, ltype0.arrayCount == nil {
                 rtypeExpr
@@ -74,7 +72,7 @@ struct AssignmentTypeDeducer {
             case let expr as As where !(expr.targetType is ArrayType):
                 expr.targetType
             default:
-                try typeContext.check(
+                try typeChecker.check(
                     expression: TypeOf(
                         sourceAnchor: expr.sourceAnchor,
                         expr: expr
@@ -111,13 +109,14 @@ private extension Expression {
 
 public extension VarDeclaration {
     func inferExplicitType(
-        _ typeContext: TypeContextTypeChecker
+        _ typeChecker: RvalueExpressionTypeChecker
     ) throws -> VarDeclaration {
         if explicitType == nil {
             try withExplicitType(
-                AssignmentTypeDeducer(typeContext).explicitTypeExpression(
-                    varDecl: self
-                )
+                AssignmentTypeDeducer(typeChecker)
+                    .explicitTypeExpression(
+                        varDecl: self
+                    )
             )
         }
         else {

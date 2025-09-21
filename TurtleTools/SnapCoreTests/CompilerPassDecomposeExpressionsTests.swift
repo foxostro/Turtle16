@@ -34,17 +34,18 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     var symbols: Env!
     var staticStorageFrame: Frame!
     var memoryLayoutStrategy: (any MemoryLayoutStrategy)!
-    var typeContext: TypeContextTypeChecker!
+    var typeChecker: RvalueExpressionTypeChecker {
+        RvalueExpressionTypeChecker(
+            symbols: symbols,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
+    }
 
     override func setUp() {
         symbols = Env()
         staticStorageFrame = Frame()
         memoryLayoutStrategy = MemoryLayoutStrategyNull()
-        typeContext = TypeContextTypeChecker(
-            symbols: symbols,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
     }
 
     private func AddressOf(_ expr: Expression) -> Unary {
@@ -83,7 +84,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
             expression: expr,
             isMutable: false
         )
-        .inferExplicitType(typeContext)
+        .inferExplicitType(typeChecker)
         .breakOutInitialAssignment()
         guard let tempDecl else {
             fatalError(

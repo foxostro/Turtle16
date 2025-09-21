@@ -215,8 +215,8 @@
 		6F8508E32D0FA61000B57518 /* CompilerPassImplForTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8508E22D0FA61000B57518 /* CompilerPassImplForTests.swift */; };
 		6F8508E52D10A09B00B57518 /* CompilerPassSynthesizeTerminalReturnStatements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8508E42D10A09B00B57518 /* CompilerPassSynthesizeTerminalReturnStatements.swift */; };
 		6F8508E72D10A0A900B57518 /* CompilerPassSynthesizeTerminalReturnStatementsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8508E62D10A0A900B57518 /* CompilerPassSynthesizeTerminalReturnStatementsTests.swift */; };
-		6F852D0A2E7226B900C34139 /* CompilerPassMaterializationEscapeAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F852D092E7226B900C34139 /* CompilerPassMaterializationEscapeAnalysis.swift */; };
-		6F852D0C2E7226C900C34139 /* CompilerPassMaterializationEscapeAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F852D0B2E7226C900C34139 /* CompilerPassMaterializationEscapeAnalysisTests.swift */; };
+		6F852D0A2E7226B900C34139 /* CompilerPassEscapeAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F852D092E7226B900C34139 /* CompilerPassEscapeAnalysis.swift */; };
+		6F852D0C2E7226C900C34139 /* CompilerPassEscapeAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F852D0B2E7226C900C34139 /* CompilerPassEscapeAnalysisTests.swift */; };
 		6F870FEB2505913900FE2B25 /* StructDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F870FEA2505913900FE2B25 /* StructDeclaration.swift */; };
 		6F870FED2505918400FE2B25 /* StructDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F870FEC2505918400FE2B25 /* StructDeclarationTests.swift */; };
 		6F87A546261E23A40093750D /* HazardControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F87A545261E23A40093750D /* HazardControl.swift */; };
@@ -777,8 +777,8 @@
 		6F8508E22D0FA61000B57518 /* CompilerPassImplForTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassImplForTests.swift; sourceTree = "<group>"; };
 		6F8508E42D10A09B00B57518 /* CompilerPassSynthesizeTerminalReturnStatements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassSynthesizeTerminalReturnStatements.swift; sourceTree = "<group>"; };
 		6F8508E62D10A0A900B57518 /* CompilerPassSynthesizeTerminalReturnStatementsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassSynthesizeTerminalReturnStatementsTests.swift; sourceTree = "<group>"; };
-		6F852D092E7226B900C34139 /* CompilerPassMaterializationEscapeAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassMaterializationEscapeAnalysis.swift; sourceTree = "<group>"; };
-		6F852D0B2E7226C900C34139 /* CompilerPassMaterializationEscapeAnalysisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassMaterializationEscapeAnalysisTests.swift; sourceTree = "<group>"; };
+		6F852D092E7226B900C34139 /* CompilerPassEscapeAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEscapeAnalysis.swift; sourceTree = "<group>"; };
+		6F852D0B2E7226C900C34139 /* CompilerPassEscapeAnalysisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEscapeAnalysisTests.swift; sourceTree = "<group>"; };
 		6F870FEA2505913900FE2B25 /* StructDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructDeclaration.swift; sourceTree = "<group>"; };
 		6F870FEC2505918400FE2B25 /* StructDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructDeclarationTests.swift; sourceTree = "<group>"; };
 		6F87A545261E23A40093750D /* HazardControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HazardControl.swift; sourceTree = "<group>"; };
@@ -1257,7 +1257,7 @@
 				6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */,
 				6F0EA1B62D33709700894EDC /* CompilerPassLinearizeLabels.swift */,
 				6FBC1F132C72BFDA00CAC35E /* CompilerPassMatch.swift */,
-				6F852D092E7226B900C34139 /* CompilerPassMaterializationEscapeAnalysis.swift */,
+				6F852D092E7226B900C34139 /* CompilerPassEscapeAnalysis.swift */,
 				6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */,
 				6F8508E42D10A09B00B57518 /* CompilerPassSynthesizeTerminalReturnStatements.swift */,
 				6F15422126B5EBA800BA9572 /* CompilerPassTestDeclaration.swift */,
@@ -1335,7 +1335,7 @@
 				6FA939C62D1B887300E611BE /* CompilerPassImplTests.swift */,
 				6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */,
 				6FBC1F152C72BFE200CAC35E /* CompilerPassMatchTests.swift */,
-				6F852D0B2E7226C900C34139 /* CompilerPassMaterializationEscapeAnalysisTests.swift */,
+				6F852D0B2E7226C900C34139 /* CompilerPassEscapeAnalysisTests.swift */,
 				6F8508E62D10A0A900B57518 /* CompilerPassSynthesizeTerminalReturnStatementsTests.swift */,
 				6F15422326B5EBC300BA9572 /* CompilerPassTestDeclarationTests.swift */,
 				6F51CD352E7DD50A00FA4102 /* CompilerPassTypeCheckerTests.swift */,
@@ -2135,7 +2135,7 @@
 				6FDFAA912C97BBF400F7A68D /* ImplScanner.swift in Sources */,
 				6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */,
 				6F5462F3253C0560005DDAB6 /* TraitDeclaration.swift in Sources */,
-				6F852D0A2E7226B900C34139 /* CompilerPassMaterializationEscapeAnalysis.swift in Sources */,
+				6F852D0A2E7226B900C34139 /* CompilerPassEscapeAnalysis.swift in Sources */,
 				6FDFAA952C97BEDF00F7A68D /* ImplForScanner.swift in Sources */,
 				6F870FEB2505913900FE2B25 /* StructDeclaration.swift in Sources */,
 				6F0EA1B72D33709700894EDC /* CompilerPassLinearizeLabels.swift in Sources */,
@@ -2197,7 +2197,7 @@
 				6F924E7E248B4CCA00F43741 /* ExprUtils.swift in Sources */,
 				6F15423826B92ADB00BA9572 /* StructScannerTests.swift in Sources */,
 				6F40730926B1D61F007D8382 /* CoreToTackCompilerTests.swift in Sources */,
-				6F852D0C2E7226C900C34139 /* CompilerPassMaterializationEscapeAnalysisTests.swift in Sources */,
+				6F852D0C2E7226C900C34139 /* CompilerPassEscapeAnalysisTests.swift in Sources */,
 				6F3E5AD5291AF84100C0F988 /* TackDebuggerTests.swift in Sources */,
 				6F13826126C0DA01002CF167 /* SnapSubcompilerMatchTests.swift in Sources */,
 				6F5337352474BE7D00CFD33C /* VarDeclarationTests.swift in Sources */,

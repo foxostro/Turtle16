@@ -1,5 +1,5 @@
 //
-//  CompilerPassMaterializationEscapeAnalysisTests.swift
+//  CompilerPassEscapeAnalysisTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 9/10/25.
@@ -10,7 +10,7 @@ import SnapCore
 import TurtleCore
 import XCTest
 
-final class CompilerPassMaterializationEscapeAnalysisTests: XCTestCase {
+final class CompilerPassEscapeAnalysisTests: XCTestCase {
     private let foo = Identifier("foo")
 
     private func AddressOf(_ expr: Expression) -> Unary {
@@ -21,7 +21,7 @@ final class CompilerPassMaterializationEscapeAnalysisTests: XCTestCase {
         Identifier("__temp\(i)")
     }
 
-    func testUserDeclaredVariablesAreAlwaysMaterialized() throws {
+    func testUserDeclaredVariablesAreMemoryResident() throws {
         let input = Block(
             children: [
                 VarDeclaration(

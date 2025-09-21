@@ -403,7 +403,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     // If the identifier is for a non-escaping variable of a primitive type then
     // the hope is that this allows it to be mapped directly to a Tack register
     // in a later compilation step. For other variables, which must be
-    // materialized in memory, the identifier will eventually be replaced with
+    // allocated in memory, the identifier will eventually be replaced with
     // code to compute the address and access memory.
     func testIdentifierExpression() throws {
         let shared = [
@@ -571,7 +571,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     // Expressions which chain or nest Get expressions may be decomposed by
     // extracting each object expression to a new temporary value via a pointer
     // to the object. In each case where the object is already known to be of a
-    // non-primitive type, (i.e., struct) the object must be materialized in
+    // non-primitive type, (i.e., struct) the object must be allocated in
     // memory so that it has a memory address. We can apply the AddressOf
     // operator to take the pointer without any problems.
     func testGetFromGetExpression() throws {
@@ -799,7 +799,7 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     }
 
     // For the case where the left-hand side is an identifier of a non-primitive
-    // object, we know the object must be materialized in memory. Extract a
+    // object, we know the object must be allocated memory storage. Extract a
     // pointer to the object and dereference it at the site of the assignment
     // expression. Ditto the right-hand side.
     //
@@ -846,8 +846,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     }
 
     // For the case of an assignment where the left-hand side is a Get
-    // expression then we know that Get expression's object must be materialized
-    // in memory. We can extract the object to a new temporary value via a
+    // expression then we know that Get expression's object must be memory-resident.
+    // We can extract the object to a new temporary value via a
     // pointer. We can extract the Get expression to a new temporary pointer as
     // well, and we refer to it on the left-hand side through a dereference.
     func testAssignmentExpression_LeftHandSideIsGetExpression() throws {

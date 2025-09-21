@@ -1,5 +1,5 @@
 //
-//  CompilerPassMaterializationEscapeAnalysis.swift
+//  CompilerPassEscapeAnalysis.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 9/10/25.
@@ -8,16 +8,16 @@
 
 import TurtleCore
 
-/// Mark eligible variables with the "register" storage class
+/// Performs escape analysis to determine which variables can be register-promoted
 ///
-/// Variables with the "regsister" storage class are mapped directly to a Tack
+/// Variables with the "register" storage class are mapped directly to a Tack
 /// register and are never directly stored or loaded from memory.
 ///
 /// Variables are eligible for register storage if they have a primitive type,
 /// and nothing takes their address at any point during their lifetime.
 /// As policy, only temporary values introduced by the compiler are eligible.
 /// All variables explicitly declared in the program being compiled are
-/// materialized in memory.
+/// allocated memory storage.
 ///
 /// This compiler pass must run after implicit conversions have been exposed.
 /// We rely on being able to clearly and easily see which variables have their
@@ -26,7 +26,7 @@ import TurtleCore
 /// This compiler pass must run after VarDeclaration nodes have been lowered.
 /// We rely on being able to cleary and easily see the type of each variable at
 /// its declaration site.
-public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDeclScan {
+public final class CompilerPassEscapeAnalysis: CompilerPassWithDeclScan {
     private let tempPrefix = "__temp"
 
     /// Set of VarDeclaration nodes, by ID, for variables known to be escaping
@@ -86,8 +86,8 @@ public final class CompilerPassMaterializationEscapeAnalysis: CompilerPassWithDe
 }
 
 public extension AbstractSyntaxTreeNode {
-    /// Mark eligible variables with the "register" storage class
+    /// Performs escape analysis to determine which variables can be register-promoted
     func escapeAnalysis() throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassMaterializationEscapeAnalysis().run(self)
+        try CompilerPassEscapeAnalysis().run(self)
     }
 }

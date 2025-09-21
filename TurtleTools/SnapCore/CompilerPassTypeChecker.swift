@@ -207,9 +207,6 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
             case .value:
                 _ = try rvalueContext.check(expression: visitedNode)
 
-            case .type:
-                _ = try rvalueContext.check(expression: visitedNode)
-
             case .none:
                 break
             }

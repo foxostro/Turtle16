@@ -244,10 +244,8 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
         let node1 = try VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: visit(identifier: node0.identifier) as! Identifier,
-            explicitType: with(context: .type) {
-                try node0.explicitType.flatMap {
-                    try visit(expr: $0)
-                }
+            explicitType: try node0.explicitType.flatMap {
+                try visit(expr: $0)
             },
             expression: node0.expression.flatMap {
                 try visit(expr: $0)

@@ -285,13 +285,11 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                 message: "expected an explicit type"
             )
         }
-        let decl = try VarDeclaration(
+        let decl = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
-            explicitType: with(context: .type) {
-                try node0.explicitType.flatMap {
-                    try visit(expr: $0)
-                }
+            explicitType: try node0.explicitType.flatMap {
+                try visit(expr: $0)
             },
             expression: nil,
             storage: node0.storage,

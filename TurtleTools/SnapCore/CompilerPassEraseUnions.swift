@@ -270,9 +270,7 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
             return node0
         }
 
-        let identifier = try with(context: .none) {
-            try visit(identifier: node0.identifier)
-        }
+        let identifier = try visit(identifier: node0.identifier)
         guard let identifier = identifier as? Identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,

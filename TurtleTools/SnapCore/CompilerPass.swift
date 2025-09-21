@@ -278,10 +278,10 @@ public class CompilerPass {
     }
 
     public func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let maybeIdentNode = try with(context: .none) {
+        let identifier = try with(context: .none) {
             try visit(identifier: node0.identifier)
-        }
-        guard let identifier = maybeIdentNode as? Identifier else {
+        } as? Identifier
+        guard let identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "expected identifier: `\(node0.identifier)'"
@@ -290,10 +290,10 @@ public class CompilerPass {
         let node1 = try StructDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
-            typeArguments: try node0.typeArguments.compactMap {
+            typeArguments: node0.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
-            members: try node0.members.map {
+            members: node0.members.map {
                 try StructDeclaration.Member(
                     name: $0.name,
                     type: visit(expr: $0.memberType)!

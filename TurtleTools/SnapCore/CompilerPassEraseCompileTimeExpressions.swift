@@ -54,26 +54,24 @@ public final class CompilerPassEraseCompileTimeExpressions: CompilerPassWithDecl
     }
 
     public override func visit(expr: Expression) throws -> Expression? {
-        if context == .value {
-            let resultType = try rvalueContext.check(expression: expr)
-            switch resultType {
-            case let .arithmeticType(typ):
-                if case let .compTimeInt(value) = typ {
-                    return LiteralInt(
-                        sourceAnchor: expr.sourceAnchor,
-                        value: value
-                    )
-                }
-            case let .booleanType(typ):
-                if case let .compTimeBool(value) = typ {
-                    return LiteralBool(
-                        sourceAnchor: expr.sourceAnchor,
-                        value: value
-                    )
-                }
-            default:
-                break
+        let resultType = try rvalueContext.check(expression: expr)
+        switch resultType {
+        case let .arithmeticType(typ):
+            if case let .compTimeInt(value) = typ {
+                return LiteralInt(
+                    sourceAnchor: expr.sourceAnchor,
+                    value: value
+                )
             }
+        case let .booleanType(typ):
+            if case let .compTimeBool(value) = typ {
+                return LiteralBool(
+                    sourceAnchor: expr.sourceAnchor,
+                    value: value
+                )
+            }
+        default:
+            break
         }
         return try super.visit(expr: expr)
     }

@@ -202,14 +202,8 @@ public final class CompilerPassTypeChecker: CompilerPassWithDeclScan {
 
     public override func visit(identifier node: Identifier) throws -> Expression? {
         let visitedNode = try super.visit(identifier: node)
-        if let visitedNode {
-            switch context {
-            case .value:
-                _ = try rvalueContext.check(expression: visitedNode)
-
-            case .none:
-                break
-            }
+        if let visitedNode, shouldTypeCheckIdentifiers {
+            _ = try rvalueContext.check(expression: visitedNode)
         }
         return visitedNode
     }

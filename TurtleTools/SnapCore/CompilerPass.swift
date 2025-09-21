@@ -9,19 +9,16 @@
 import TurtleCore
 
 public class CompilerPass {
-    public enum ExpressionEvaluationContext: Equatable {
-        case value, none
-    }
-
-    var context: ExpressionEvaluationContext = .value
-
-    public func with<T>(
-        context newContext: ExpressionEvaluationContext,
-        block: () throws -> T
-    ) rethrows -> T {
-        let oldContext = context
-        context = newContext
-        defer { context = oldContext }
+    var shouldTypeCheckIdentifiers = true
+    
+    /// There are a number of cases where an identifier should not be type checked while iterating
+    /// the AST because it is not meant to refer to a symbol or type in the environment.
+    /// For one concrete example, the identifier in a variable declaration will not refer to a
+    /// symbol until after the compiler has visited the node and accepted the declaration.
+    public func disableIdentifierTypeChecking<T>(block: () throws -> T) rethrows -> T {
+        let oldValue = shouldTypeCheckIdentifiers
+        shouldTypeCheckIdentifiers = false
+        defer { shouldTypeCheckIdentifiers = oldValue }
         return try block()
     }
 
@@ -139,7 +136,9 @@ public class CompilerPass {
     }
 
     public func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let identifier = try with(context: .none) {
+        // The identifier must be unchecked because it definitely should not refer to a symbol until
+        // after the compiler has visited and accepted the VarDeclaration node.
+        let identifier = try disableIdentifierTypeChecking {
             try visit(identifier: node0.identifier)
         } as? Identifier
         guard let identifier else {
@@ -187,9 +186,12 @@ public class CompilerPass {
     public func visit(forIn node: ForIn) throws -> AbstractSyntaxTreeNode? {
         try ForIn(
             sourceAnchor: node.sourceAnchor,
-            identifier: with(context: .none) {
-                try visit(identifier: node.identifier)
-            } as! Identifier,
+            identifier:
+                // The identifier must be unchecked because it definitely should not refer to a
+                // symbol until after the compiler has lowered the ForIn node.
+                disableIdentifierTypeChecking {
+                    try visit(identifier: node.identifier)
+                } as! Identifier,
             sequenceExpr: visit(expr: node.sequenceExpr)!,
             body: visit(node.body) as! Block,
             id: node.id
@@ -240,9 +242,13 @@ public class CompilerPass {
     public func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         try FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: with(context: .none) {
-                try visit(identifier: node.identifier)
-            } as! Identifier,
+            identifier:
+                // The identifier must be unchecked because it definitely should not refer to a
+                // symbol until after the compiler has visited and accepted the FunctionDeclaration
+                // node.
+                disableIdentifierTypeChecking {
+                    try visit(identifier: node.identifier)
+                } as! Identifier,
             functionType: {
                 let expr = try visit(expr: node.functionType)
                 guard let expr = expr as? FunctionType else {
@@ -278,7 +284,9 @@ public class CompilerPass {
     }
 
     public func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let identifier = try with(context: .none) {
+        // The identifier must be unchecked because it definitely should not refer to a type until
+        // after the compiler has visited and accepted the StructDeclaration node.
+        let identifier = try disableIdentifierTypeChecking {
             try visit(identifier: node0.identifier)
         } as? Identifier
         guard let identifier else {
@@ -343,9 +351,12 @@ public class CompilerPass {
             clauses: node.clauses.map { clause in
                 try Match.Clause(
                     sourceAnchor: clause.sourceAnchor,
-                    valueIdentifier: with(context: .none) {
-                        try visit(identifier: clause.valueIdentifier)
-                    } as! Identifier,
+                    valueIdentifier:
+                        // The identifier should be unchecked because it does not refer to a symbol
+                        // in the environment until after the compiler has lowered the Match node.
+                        disableIdentifierTypeChecking {
+                            try visit(identifier: clause.valueIdentifier)
+                        } as! Identifier,
                     valueType: try visit(expr: clause.valueType)!,
                     block: visit(clause: clause, in: node)
                 )
@@ -380,9 +391,13 @@ public class CompilerPass {
     public func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
         try TraitDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: with(context: .none) {
-                try visit(identifier: node.identifier) as! Identifier
-            },
+            identifier:
+                // The identifier must be unchecked because it definitely should not refer to a
+                // type until after the compiler has visited and accepted the TraitDeclaration
+                // node.
+                disableIdentifierTypeChecking {
+                    try visit(identifier: node.identifier) as! Identifier
+                },
             typeArguments: node.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
@@ -405,9 +420,12 @@ public class CompilerPass {
     public func visit(typealias node: Typealias) throws -> AbstractSyntaxTreeNode? {
         try Typealias(
             sourceAnchor: node.sourceAnchor,
-            lexpr: with(context: .none) {
-                try visit(identifier: node.lexpr) as! Identifier
-            },
+            lexpr:
+                // The identifier must be unchecked because it definitely should not refer to a
+                // type until after the compiler has visited and accepted the Typealias node.
+                disableIdentifierTypeChecking {
+                    try visit(identifier: node.lexpr) as! Identifier
+                },
             rexpr: try visit(expr: node.rexpr)!,
             visibility: node.visibility,
             id: node.id
@@ -598,9 +616,7 @@ public class CompilerPass {
     }
 
     public func visit(subscript node: Subscript) throws -> Expression? {
-        let argument = try with(context: .value) {
-            try visit(expr: node.argument)
-        }
+        let argument = try visit(expr: node.argument)
         let subscriptable = try visit(expr: node.subscriptable)
         return Subscript(
             sourceAnchor: node.sourceAnchor,
@@ -611,13 +627,23 @@ public class CompilerPass {
     }
 
     public func visit(get node: Get) throws -> Expression? {
-        try Get(
-            sourceAnchor: node.sourceAnchor,
-            expr: visit(expr: node.expr)!,
-            member: with(context: .none) {
-                try visit(expr: node.member)!
+        let expr = try visit(expr: node.expr)
+        let member =
+            switch node.member {
+            case let member as Identifier:
+                // The identifier is unchecked here because naively attempting to resolve the
+                // identifier in the symbol table is certain to fail as the identifier names a
+                // symbol in the object of the Get expression, not in the local lexical scope.
+                try disableIdentifierTypeChecking {
+                    try visit(identifier: member)
+                }
+                
+            default:
+                try visit(expr: node.member)
             }
-        )
+        return node
+            .withExpr(expr!)
+            .withMember(member!)
     }
 
     public func visit(structInitializer node: StructInitializer) throws -> Expression? {
@@ -635,17 +661,13 @@ public class CompilerPass {
     }
 
     public func visit(call node: Call) throws -> Expression? {
-        try Call(
-            sourceAnchor: node.sourceAnchor,
-            callee: with(context: .none) {
-                // TODO: `none` is a fishy context in which to evaluate the callee.
-                try visit(expr: node.callee)!
-            },
-            arguments: node.arguments.compactMap {
-                try visit(expr: $0)
-            },
-            id: node.id
-        )
+        try node
+            .withCallee(visit(expr: node.callee)!)
+            .withArguments(
+                node.arguments.compactMap {
+                    try visit(expr: $0)
+                }
+            )
     }
 
     public func visit(typeof node: TypeOf) throws -> Expression? {

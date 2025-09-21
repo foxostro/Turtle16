@@ -291,24 +291,21 @@ public class CompilerPassWithDeclScan: CompilerPass {
 
     public override func visit(call node: Call) throws -> Expression? {
         let calleeType = try rvalueContext.check(expression: node.callee)
-        let calleeContext: ExpressionEvaluationContext =
+        let callee =
             if calleeType.isPointerType {
-                .value
+                try visit(expr: node.callee)
             }
             else {
-                .none
+                try disableIdentifierTypeChecking {
+                    try visit(expr: node.callee)
+                }
             }
-        let call = try node
-            .withCallee(
-                with(context: calleeContext) {
-                    try visit(expr: node.callee)!
-                }
-            )
-            .withArguments(
-                node.arguments.compactMap {
-                    try visit(expr: $0)
-                }
-            )
+        let args = try node.arguments.compactMap {
+            try visit(expr: $0)
+        }
+        let call = node
+            .withCallee(callee!)
+            .withArguments(args)
         return call
     }
 

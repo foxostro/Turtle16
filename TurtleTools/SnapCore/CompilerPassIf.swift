@@ -23,7 +23,7 @@ public final class CompilerPassIf: CompilerPassWithDeclScan {
             .withCondition(condition)
             .withThenBranch(visit(node0.thenBranch)!)
             .withElseBranch(visit(node0.elseBranch))
-        let node2 = try SnapSubcompilerIf().compile(
+        let node2 = try IfLowerer().compile(
             if: node1,
             symbols: symbols!
         )

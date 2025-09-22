@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerIf.swift
+//  IfLowerer.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/15/21.
@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public struct SnapSubcompilerIf {
+public struct IfLowerer {
     public init() {}
 
     public func compile(if node: If, symbols: Env) throws -> Seq {

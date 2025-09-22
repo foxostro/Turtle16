@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerIfTests.swift
+//  IfLowererTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 8/15/21.
@@ -10,14 +10,14 @@ import SnapCore
 import TurtleCore
 import XCTest
 
-final class SnapSubcompilerIfTests: XCTestCase {
+final class IfLowererTests: XCTestCase {
     func testFailCompileIfStatementWithNonbooleanCondition() {
         let node = If(
             condition: LiteralInt(0),
             then: Block(children: []),
             else: nil
         )
-        XCTAssertThrowsError(try SnapSubcompilerIf().compile(if: node, symbols: Env())) {
+        XCTAssertThrowsError(try IfLowerer().compile(if: node, symbols: Env())) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(

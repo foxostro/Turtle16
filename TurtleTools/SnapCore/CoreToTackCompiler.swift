@@ -632,7 +632,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         callee: Identifier(kOOB)
                     )
                 )
-                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                let boundsCheck1 = try IfLowerer().compile(
                     if: boundsCheck0,
                     symbols: symbols!
                 )
@@ -661,7 +661,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         )
                     )
                 )
-                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                let boundsCheck1 = try IfLowerer().compile(
                     if: boundsCheck0,
                     symbols: symbols!
                 )
@@ -862,7 +862,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         )
                     )
                 )
-                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                let boundsCheck1 = try IfLowerer().compile(
                     if: boundsCheck0,
                     symbols: symbols!
                 )
@@ -888,7 +888,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         )
                     )
                 )
-                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                let boundsCheck1 = try IfLowerer().compile(
                     if: boundsCheck0,
                     symbols: symbols!
                 )

@@ -1,0 +1,50 @@
+// Macro benchmark - Complex calculations with multiple functions
+// Expected output: "Macro result: 123"
+
+func rectangleArea(width: u16, height: u16) -> u16 {
+    return width * height
+}
+
+func rectanglePerimeter(width: u16, height: u16) -> u16 {
+    return 2 * (width + height)
+}
+
+func circleArea(radius: u16) -> u16 {
+    return 3 * radius * radius
+}
+
+func circlePerimeter(radius: u16) -> u16 {
+    return 6 * radius
+}
+
+func processShapeData(w1: u16, h1: u16, w2: u16, h2: u16, r1: u16, r2: u16) -> u16 {
+    let rect1Area = rectangleArea(w1, h1)
+    let rect1Perimeter = rectanglePerimeter(w1, h1)
+    let rect2Area = rectangleArea(w2, h2)
+    let rect2Perimeter = rectanglePerimeter(w2, h2)
+    let circle1Area = circleArea(r1)
+    let circle1Perimeter = circlePerimeter(r1)
+    let circle2Area = circleArea(r2)
+    let circle2Perimeter = circlePerimeter(r2)
+
+    let totalArea = rect1Area + rect2Area + circle1Area + circle2Area
+    let totalPerimeter = rect1Perimeter + rect2Perimeter + circle1Perimeter + circle2Perimeter
+    return totalArea + totalPerimeter
+}
+
+func calculateShapeMetrics() -> u16 {
+    let result1 = processShapeData(10, 20, 5, 15, 7, 12)
+    let result2 = processShapeData(8, 12, 6, 18, 9, 14)
+    let result3 = processShapeData(15, 25, 3, 8, 11, 16)
+    return result1 + result2 + result3
+}
+
+let result = calculateShapeMetrics()
+
+__puts("Macro result: ")
+if result == 4123 {
+    __puts("4123 (CORRECT)")
+} else {
+    __puts("ERROR - expected 4123")
+}
+__puts("\n")

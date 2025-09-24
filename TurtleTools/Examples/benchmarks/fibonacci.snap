@@ -1,0 +1,19 @@
+// Fibonacci benchmark - Simple recursive function baseline
+// Expected result: fib(13) = 233
+
+func fib(n: u8) -> u8 {
+    if n <= 1 {
+        return n
+    } else {
+        return fib(n-1) + fib(n-2)
+    }
+}
+
+let result = fib(13)
+__puts("Fibonacci result: ")
+if result == 233 {
+    __puts("233 (CORRECT)")
+} else {
+    __puts("ERROR - expected 233")
+}
+__puts("\n")

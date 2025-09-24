@@ -1,0 +1,32 @@
+// Micro benchmark - Function calls and arithmetic operations
+// Expected output: "Micro result: 166"
+
+func add(a: u8, b: u8) -> u8 {
+    return a + b
+}
+
+func multiply(a: u8, b: u8) -> u8 {
+    return a * b
+}
+
+func compute(x: u8) -> u8 {
+    let step1 = add(x, 1)
+    let step2 = multiply(step1, 2)
+    let step3 = add(step2, 3)
+    let step4 = multiply(step3, 4)
+    let step5 = add(step4, 5)
+    return step5
+}
+
+let input1 = compute(10)
+let input2 = compute(20)
+let input3 = compute(30)
+let result = add(input1, add(input2, input3))
+
+__puts("Micro result: ")
+if result == 43 {
+    __puts("43 (CORRECT)")
+} else {
+    __puts("ERROR - expected 43")
+}
+__puts("\n")

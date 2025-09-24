@@ -46,8 +46,7 @@
 		6F0EA1B72D33709700894EDC /* CompilerPassLinearizeLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0EA1B62D33709700894EDC /* CompilerPassLinearizeLabels.swift */; };
 		6F0EA1B92D399D5100894EDC /* CompilerPassWhileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0EA1B82D399D5100894EDC /* CompilerPassWhileTests.swift */; };
 		6F0EA1BB2D3C87AD00894EDC /* MemoryLayoutStrategyNull.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0EA1BA2D3C87AD00894EDC /* MemoryLayoutStrategyNull.swift */; };
-		6F13826326C0E878002CF167 /* SnapSubcompilerReturn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13826226C0E878002CF167 /* SnapSubcompilerReturn.swift */; };
-		6F13826526C0E893002CF167 /* SnapSubcompilerReturnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13826426C0E893002CF167 /* SnapSubcompilerReturnTests.swift */; };
+		6F13826526C0E893002CF167 /* CompilerPassReturnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13826426C0E893002CF167 /* CompilerPassReturnTests.swift */; };
 		6F14DC4227EA3B9E0034A43C /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14DC4127EA3B9E0034A43C /* PrintLogger.swift */; };
 		6F14DC4427EA3FA20034A43C /* SnapDebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14DC4327EA3FA20034A43C /* SnapDebugConsole.swift */; };
 		6F15421E26B34E3300BA9572 /* SymbolTablesReconnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */; };
@@ -596,8 +595,7 @@
 		6F0EA1B62D33709700894EDC /* CompilerPassLinearizeLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassLinearizeLabels.swift; sourceTree = "<group>"; };
 		6F0EA1B82D399D5100894EDC /* CompilerPassWhileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassWhileTests.swift; sourceTree = "<group>"; };
 		6F0EA1BA2D3C87AD00894EDC /* MemoryLayoutStrategyNull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategyNull.swift; sourceTree = "<group>"; };
-		6F13826226C0E878002CF167 /* SnapSubcompilerReturn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerReturn.swift; sourceTree = "<group>"; };
-		6F13826426C0E893002CF167 /* SnapSubcompilerReturnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerReturnTests.swift; sourceTree = "<group>"; };
+		6F13826426C0E893002CF167 /* CompilerPassReturnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassReturnTests.swift; sourceTree = "<group>"; };
 		6F14DC4127EA3B9E0034A43C /* PrintLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		6F14DC4327EA3FA20034A43C /* SnapDebugConsole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapDebugConsole.swift; sourceTree = "<group>"; };
 		6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTablesReconnector.swift; sourceTree = "<group>"; };
@@ -1287,7 +1285,6 @@
 				6FCB681D2472063900798905 /* SnapParser.swift */,
 				6F15423126B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift */,
 				6FD2735726C9BAD400749CDA /* IfLowerer.swift */,
-				6F13826226C0E878002CF167 /* SnapSubcompilerReturn.swift */,
 				6F3F00F7274F736C00875339 /* SnapSubcompilerSubroutine.swift */,
 				6F15422D26B897BA00BA9572 /* SnapSubcompilerVarDeclaration.swift */,
 				6F40731626B281B7007D8382 /* SnapToCoreCompiler.swift */,
@@ -1358,7 +1355,7 @@
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
 				6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */,
 				6FD2735D26C9C73A00749CDA /* IfLowererTests.swift */,
-				6F13826426C0E893002CF167 /* SnapSubcompilerReturnTests.swift */,
+				6F13826426C0E893002CF167 /* CompilerPassReturnTests.swift */,
 				6F15422F26B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift */,
 				6F40731826B281C1007D8382 /* SnapToCoreCompilerTests.swift */,
 				6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */,
@@ -2172,7 +2169,6 @@
 				6F3F00FE275F45E900875339 /* LinearScanRegisterAllocator.swift in Sources */,
 				6F6A2EEE2C5C5C6C004A25F5 /* CompilerPassClearSymbols.swift in Sources */,
 				6FBC1F142C72BFDA00CAC35E /* CompilerPassMatch.swift in Sources */,
-				6F13826326C0E878002CF167 /* SnapSubcompilerReturn.swift in Sources */,
 				6F14DC4427EA3FA20034A43C /* SnapDebugConsole.swift in Sources */,
 				6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,
@@ -2200,7 +2196,7 @@
 				6FDFAA972C97BEEB00F7A68D /* ImplForScannerTests.swift in Sources */,
 				6F840516291808E100C9B957 /* TackFlattenerTests.swift in Sources */,
 				6F0943F12C8FDE9B00A24FAC /* CompilerPassVtablesTests.swift in Sources */,
-				6F13826526C0E893002CF167 /* SnapSubcompilerReturnTests.swift in Sources */,
+				6F13826526C0E893002CF167 /* CompilerPassReturnTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
 				6FDFAA8D2C97B67900F7A68D /* FunctionScannerTests.swift in Sources */,

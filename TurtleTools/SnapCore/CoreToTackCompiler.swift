@@ -223,7 +223,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
 
     @discardableResult func typeCheck(lexpr: Expression) throws -> SymbolType? {
-        try lvalueContext.check(expression: lexpr)
+        guard try rvalueContext.isAssignable(expression: lexpr) else { return nil }
+        return try rvalueContext.check(expression: lexpr)
     }
 
     public func lvalue(expr expr0: Expression) throws -> AbstractSyntaxTreeNode {

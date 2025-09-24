@@ -152,12 +152,13 @@ public class RvalueExpressionTypeChecker {
                 )
             }
         case .ampersand:
-            guard let lvalueType = try lvalueContext().check(expression: unary.child) else {
+            guard try isAssignable(expression: unary.child) else {
                 throw CompilerError(
                     sourceAnchor: unary.child.sourceAnchor,
                     message: "lvalue required as operand of unary operator `\(unary.op)'"
                 )
             }
+            let lvalueType = try check(expression: unary.child)
             guard case let .function(typ) = lvalueType else {
                 return .pointer(lvalueType)
             }
@@ -445,13 +446,13 @@ public class RvalueExpressionTypeChecker {
     }
 
     public func check(assignment: Assignment) throws -> SymbolType {
-        let ltype = try lvalueContext().check(expression: assignment.lexpr)
-        guard let ltype else {
+        guard try isAssignable(expression: assignment.lexpr) else {
             throw CompilerError(
                 sourceAnchor: assignment.lexpr.sourceAnchor,
                 message: "lvalue required in assignment"
             )
         }
+        let ltype = try check(expression: assignment.lexpr)
 
         // Guard against inappropriate assignment to an initialized const var
         guard isAssignmentToConstAcceptable(assignment, ltype) else {
@@ -2087,8 +2088,7 @@ public extension RvalueExpressionTypeChecker {
         case .array,
              .constDynamicArray,
              .dynamicArray:
-            // array.count is not assignable
-            return memberName != "count"
+            return memberName != "count" // array.count is not assignable
 
         case let .constStructType(typ),
              let .structType(typ):

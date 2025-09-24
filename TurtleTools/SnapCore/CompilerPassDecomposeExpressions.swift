@@ -463,7 +463,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
 
         guard !(expr is LiteralString),
               !(expr is LiteralArray),
-              try (lvalueContext.check(expression: expr)) != nil
+              try rvalueContext.isAssignable(expression: expr)
         else {
             return try extractByValue(expr)
         }
@@ -487,7 +487,13 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
 
     private func lextract(expr: Expression?) throws -> Expression? {
         guard let expr else { return nil }
-        let exprType = try lvalueContext.check(expression: expr)!
+        guard try rvalueContext.isAssignable(expression: expr) else {
+            throw CompilerError(
+                sourceAnchor: expr.sourceAnchor,
+                message: "expected assignable expression in lextract"
+            )
+        }
+        let exprType = try rvalueContext.check(expression: expr)
 
         switch expr {
         case let expr as Identifier where exprType.isPrimitive:

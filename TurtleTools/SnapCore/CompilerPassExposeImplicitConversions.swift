@@ -140,7 +140,13 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
 
     public override func visit(assignment node0: Assignment) throws -> Expression? {
         let lexpr = try visit(expr: node0.lexpr)!
-        let lvalueType = try lvalueContext.check(expression: lexpr)!
+        guard try rvalueContext.isAssignable(expression: lexpr) else {
+            throw CompilerError(
+                sourceAnchor: lexpr.sourceAnchor,
+                message: "expected assignable expression"
+            )
+        }
+        let lvalueType = try rvalueContext.check(expression: lexpr)
         guard !lvalueType.isUnionType else { return node0 }
         let node1 = try node0
             .withLexpr(lexpr)

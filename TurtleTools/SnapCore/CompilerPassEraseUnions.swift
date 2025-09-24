@@ -325,13 +325,13 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
                 message: "expected an assignment"
             )
         }
-        let ltype = try lvalueContext.check(expression: node1.lexpr)
-        guard let ltype else {
+        guard try rvalueContext.isAssignable(expression: node1.lexpr) else {
             throw CompilerError(
                 sourceAnchor: node1.lexpr.sourceAnchor,
                 message: "expected lvalue"
             )
         }
+        let ltype = try rvalueContext.check(expression: node1.lexpr)
         guard case let .unionType(unionTypeInfo) = ltype else { return node1 }
         let rtype = try rvalueContext.check(expression: node1.rexpr)
         guard rtype.correspondingConstType != ltype.correspondingConstType else { return node0 }

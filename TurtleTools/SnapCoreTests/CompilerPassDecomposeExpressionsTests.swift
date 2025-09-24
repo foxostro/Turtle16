@@ -34,8 +34,8 @@ final class CompilerPassDecomposeExpressionsTests: XCTestCase {
     var symbols: Env!
     var staticStorageFrame: Frame!
     var memoryLayoutStrategy: (any MemoryLayoutStrategy)!
-    var typeChecker: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    var typeChecker: TypeChecker {
+        TypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy

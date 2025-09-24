@@ -70,8 +70,8 @@ public struct FunctionScanner {
         symbols.bind(identifier: name, symbol: symbol)
     }
 
-    private var typeChecker: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(symbols: symbols)
+    private var typeChecker: TypeChecker {
+        TypeChecker(symbols: symbols)
     }
 
     private func doNonGeneric(node node0: FunctionDeclaration) throws {

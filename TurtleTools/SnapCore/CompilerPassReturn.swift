@@ -39,7 +39,7 @@ public final class CompilerPassReturn: CompilerPassWithDeclScan {
 
             // Synthesize an assignment to the special return value symbol.
             let kReturnValueIdentifier = "__returnValue"
-            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+            let typeChecker = TypeChecker(symbols: symbols)
             let returnExpressionType = try typeChecker.check(expression: expr)
             try typeChecker.checkTypesAreConvertibleInAssignment(
                 ltype: enclosingFunctionType.returnType,

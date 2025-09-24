@@ -15,7 +15,7 @@ public struct ImplForScanner {
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let symbols: Env
     private let implScanner: ImplScanner
-    private let typeChecker: RvalueExpressionTypeChecker
+    private let typeChecker: TypeChecker
 
     public init(
         staticStorageFrame: Frame,
@@ -31,7 +31,7 @@ public struct ImplForScanner {
             symbols: symbols
         )
 
-        typeChecker = RvalueExpressionTypeChecker(
+        typeChecker = TypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy

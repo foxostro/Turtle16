@@ -34,7 +34,7 @@ final class StructMemberFunctionCallMatcherTests: XCTestCase {
             callee: Get(expr: Identifier("foo"), member: Identifier("bar")),
             arguments: []
         )
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let typeChecker = TypeChecker(symbols: symbols)
         let matcher = StructMemberFunctionCallMatcher(call: expr, typeChecker: typeChecker)
         guard let match = try matcher.match() else {
             XCTFail("failed to find a match")

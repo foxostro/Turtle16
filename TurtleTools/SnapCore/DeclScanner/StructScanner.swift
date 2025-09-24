@@ -64,7 +64,7 @@ public struct StructScanner {
         assert(!node.isGeneric)
 
         let members = Env(parent: symbols)
-        let typeChecker = RvalueExpressionTypeChecker(
+        let typeChecker = TypeChecker(
             symbols: members,
             memoryLayoutStrategy: memoryLayoutStrategy
         )

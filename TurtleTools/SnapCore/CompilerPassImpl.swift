@@ -10,8 +10,8 @@ import TurtleCore
 
 /// Compiler pass to lower and erase Impl blocks
 public final class CompilerPassImpl: CompilerPassWithDeclScan {
-    var typeChecker: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    var typeChecker: TypeChecker {
+        TypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy

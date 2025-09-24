@@ -143,7 +143,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
 
     @discardableResult fileprivate func typeCheck(rexpr: Expression) throws -> SymbolType {
-        let typeChecker = RvalueExpressionTypeChecker(
+        let typeChecker = TypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
@@ -217,7 +217,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         genericTypeApplication expr: GenericTypeApplication,
         symbols: Env
     ) throws -> Expression? {
-        let typeChecker = RvalueExpressionTypeChecker(
+        let typeChecker = TypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
@@ -464,7 +464,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
 
         switch calleeType {
         case let .genericFunction(typ):
-            let typeChecker = RvalueExpressionTypeChecker(
+            let typeChecker = TypeChecker(
                 symbols: symbols!,
                 staticStorageFrame: staticStorageFrame,
                 memoryLayoutStrategy: memoryLayoutStrategy

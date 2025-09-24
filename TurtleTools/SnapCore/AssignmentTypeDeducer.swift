@@ -12,9 +12,9 @@ import TurtleCore
 /// If this expression were to be attached to a VarDeclaration then this would
 /// be the appropriate explicitType inferred for the variable.
 struct AssignmentTypeDeducer {
-    let typeChecker: RvalueExpressionTypeChecker
+    let typeChecker: TypeChecker
 
-    init(_ typeChecker: RvalueExpressionTypeChecker) {
+    init(_ typeChecker: TypeChecker) {
         self.typeChecker = typeChecker
     }
 
@@ -109,7 +109,7 @@ private extension Expression {
 
 public extension VarDeclaration {
     func inferExplicitType(
-        _ typeChecker: RvalueExpressionTypeChecker
+        _ typeChecker: TypeChecker
     ) throws -> VarDeclaration {
         if explicitType == nil {
             try withExplicitType(

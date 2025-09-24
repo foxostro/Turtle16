@@ -28,7 +28,7 @@ public struct TypealiasScanner {
                 message: "typealias redefines existing type: `\(node.lexpr.identifier)'"
             )
         }
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let typeChecker = TypeChecker(symbols: symbols)
         let symbolType = try typeChecker.check(expression: node.rexpr)
         guard try symbolType.hasModule(symbols) == false else {
             throw CompilerError(

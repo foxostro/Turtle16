@@ -14,8 +14,8 @@ import TurtleCore
 /// and an appropriate vtable declaration. Traits are erased and rewritten into
 /// direct manipulation of trait-objects.
 public final class CompilerPassImplFor: CompilerPassWithDeclScan {
-    private var typeChecker: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    private var typeChecker: TypeChecker {
+        TypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy

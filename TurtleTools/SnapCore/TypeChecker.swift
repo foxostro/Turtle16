@@ -1,5 +1,5 @@
 //
-//  RvalueExpressionTypeChecker.swift
+//  TypeChecker.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 6/5/20.
@@ -24,7 +24,7 @@ public struct TypeCheckerOptions: OptionSet {
 /// Given an expression, determines the result type.
 /// Throws a compiler error when the result type cannot be determined, e.g., due
 /// to a type error in the expression.
-public class RvalueExpressionTypeChecker {
+public class TypeChecker {
     let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
@@ -46,8 +46,8 @@ public class RvalueExpressionTypeChecker {
         self.options = options
     }
 
-    func rvalueContext() -> RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    func rvalueContext() -> TypeChecker {
+        TypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy,
@@ -1461,7 +1461,7 @@ public class RvalueExpressionTypeChecker {
             let key = Key(identifier: ident, scope: scope)
             replacementMap[key] = PrimitiveType(typeArgument)
         }
-        let inner = RvalueExpressionTypeChecker(
+        let inner = TypeChecker(
             symbols: symbolsWithTypeArguments,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy,
@@ -1642,7 +1642,7 @@ public class RvalueExpressionTypeChecker {
     ) throws -> SymbolType {
         let mangledName = traitDecl.mangledName
         let members = Env(parent: symbols)
-        let typeChecker = RvalueExpressionTypeChecker(
+        let typeChecker = TypeChecker(
             symbols: members,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
@@ -1754,7 +1754,7 @@ public class RvalueExpressionTypeChecker {
             )
 
             let fnBody: Block
-            let returnType = try RvalueExpressionTypeChecker(symbols: symbols).check(
+            let returnType = try TypeChecker(symbols: symbols).check(
                 expression: functionType.returnType
             )
             if returnType == .void {
@@ -2019,7 +2019,7 @@ public struct NameMangler {
 
 // MARK: - Assignability Checking
 
-public extension RvalueExpressionTypeChecker {
+public extension TypeChecker {
     /// Determines if an expression is assignable (can be used as lvalue)
     /// This method provides more sophisticated assignability checking than Expression.isAssignable
     /// by taking into account type information and symbol table context

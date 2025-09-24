@@ -37,7 +37,7 @@ public struct GenericFunctionTypeArgumentSolver {
             }
         }
 
-        let typeChecker = RvalueExpressionTypeChecker(symbols)
+        let typeChecker = TypeChecker(symbols)
 
         let result = try generic.typeArguments.map { typeArgument in
             guard let subst = substitutions[typeArgument] else {

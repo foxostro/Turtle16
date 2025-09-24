@@ -2905,7 +2905,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         call expr: Call,
         typ: FunctionTypeInfo
     ) throws -> AbstractSyntaxTreeNode {
-        _ = try RvalueExpressionTypeChecker(symbols: symbols!).checkInner(call: expr, typ: typ)
+        _ = try TypeChecker(symbols: symbols!).checkInner(call: expr, typ: typ)
 
         let calleeType = try typeCheck(rexpr: expr.callee)
 

@@ -49,7 +49,7 @@ public struct VarDeclarationScanner {
         // the type checker can determine what type it evaluates to.
         let explicitType: SymbolType? =
             if let explicitTypeExpr = node.explicitType {
-                try RvalueExpressionTypeChecker(
+                try TypeChecker(
                     symbols: symbols,
                     staticStorageFrame: staticStorageFrame,
                     memoryLayoutStrategy: memoryLayoutStrategy
@@ -63,7 +63,7 @@ public struct VarDeclarationScanner {
         if let varDeclExpr = node.expression {
             // The type of the initial value expression may be used to infer the
             // symbol type in cases where the explicit type is not specified.
-            let expressionResultType = try RvalueExpressionTypeChecker(
+            let expressionResultType = try TypeChecker(
                 symbols: symbols,
                 staticStorageFrame: staticStorageFrame,
                 memoryLayoutStrategy: memoryLayoutStrategy

@@ -198,8 +198,8 @@ public struct TraitScanner {
         typeChecker().mangleTraitName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
     }
 
-    private func typeChecker(symbols: Env? = nil) -> RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    private func typeChecker(symbols: Env? = nil) -> TypeChecker {
+        TypeChecker(
             symbols: symbols ?? self.symbols,
             memoryLayoutStrategy: memoryLayoutStrategy
         )

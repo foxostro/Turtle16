@@ -19,7 +19,7 @@ public struct IfLowerer {
             expr: node.condition,
             targetType: PrimitiveType(.bool)
         )
-        try RvalueExpressionTypeChecker(symbols: symbols).check(expression: condition)
+        try TypeChecker(symbols: symbols).check(expression: condition)
         if let elseBranch = node.elseBranch {
             let labelElse = symbols.nextLabel()
             let labelTail = symbols.nextLabel()

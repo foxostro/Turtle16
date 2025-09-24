@@ -17,9 +17,9 @@ public struct StructMemberFunctionCallMatcher {
     }
 
     public let expr: Call
-    public let typeChecker: RvalueExpressionTypeChecker
+    public let typeChecker: TypeChecker
 
-    public init(call expr: Call, typeChecker: RvalueExpressionTypeChecker) {
+    public init(call expr: Call, typeChecker: TypeChecker) {
         self.expr = expr
         self.typeChecker = typeChecker
     }

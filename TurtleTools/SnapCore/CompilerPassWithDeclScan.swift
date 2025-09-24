@@ -17,8 +17,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
         []
     }
 
-    public var rvalueContext: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    public var rvalueContext: TypeChecker {
+        TypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy,

@@ -173,8 +173,8 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
         )
     }
 
-    private var typeChecker: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    private var typeChecker: TypeChecker {
+        TypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy

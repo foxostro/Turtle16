@@ -13,7 +13,7 @@ import TurtleCore
 public struct ImplScanner {
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let parent: Env
-    private let typeChecker: RvalueExpressionTypeChecker
+    private let typeChecker: TypeChecker
 
     public init(
         memoryLayoutStrategy: MemoryLayoutStrategy,
@@ -21,7 +21,7 @@ public struct ImplScanner {
     ) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.parent = parent
-        typeChecker = RvalueExpressionTypeChecker(
+        typeChecker = TypeChecker(
             symbols: parent,
             memoryLayoutStrategy: memoryLayoutStrategy
         )

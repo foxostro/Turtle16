@@ -10,8 +10,8 @@ import TurtleCore
 
 /// Method calls written in the dot syntax are rewritten to plain function calls
 public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
-    var typeChecker: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
+    var typeChecker: TypeChecker {
+        TypeChecker(
             symbols: symbols!,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy

@@ -1956,7 +1956,7 @@ public extension SymbolType {
     ) throws -> Bool {
         guard !workingSet.contains(self) else { return false }
 
-        let typeChecker = RvalueExpressionTypeChecker(symbols: sym)
+        let typeChecker = TypeChecker(symbols: sym)
 
         let anyExprHasModule: ([Expression]) throws -> Bool = { exprs in
             let result = try exprs

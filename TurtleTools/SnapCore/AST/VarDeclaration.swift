@@ -49,7 +49,7 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
         )
     }
 
-    public func withExpression(_ expression: Expression?) -> VarDeclaration {
+    public func withIdentifier(_ identifier: Identifier) -> VarDeclaration {
         VarDeclaration(
             sourceAnchor: sourceAnchor,
             identifier: identifier,
@@ -63,6 +63,19 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
     }
 
     public func withExplicitType(_ explicitType: Expression?) -> VarDeclaration {
+        VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: visibility,
+            id: id
+        )
+    }
+
+    public func withExpression(_ expression: Expression?) -> VarDeclaration {
         VarDeclaration(
             sourceAnchor: sourceAnchor,
             identifier: identifier,

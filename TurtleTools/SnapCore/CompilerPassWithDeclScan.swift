@@ -274,14 +274,26 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
 
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try super.visit(varDecl: node0) as! VarDeclaration
-        _ = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
+        let node1 = try super.visit(varDecl: node0)
+        if let node1 = node1 as? VarDeclaration {
+            try scan(varDecl: node1)
+        }
+        return node1
+    }
+
+    func scan(varDecl node: VarDeclaration) throws {
+        guard let symbols else {
+            throw CompilerError(
+                sourceAnchor: node.sourceAnchor,
+                message: "internal compiler error: missing symbols"
+            )
+        }
+        try VarDeclarationScanner(
+            symbols: symbols,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
         )
-        .compile(node1)
-        return node1
+        .scan(node)
     }
 
     public override func willVisit(block: Block, clause: Match.Clause, in match: Match) throws {

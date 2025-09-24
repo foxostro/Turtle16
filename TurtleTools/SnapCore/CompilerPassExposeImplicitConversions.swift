@@ -241,50 +241,53 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     /// expression and simply updates the symbol table, and 2) an assignment if
     /// there was an expression.
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try VarDeclaration(
-            sourceAnchor: node0.sourceAnchor,
-            identifier: visit(identifier: node0.identifier) as! Identifier,
-            explicitType: node0.explicitType.flatMap {
-                try visit(expr: $0)
-            },
-            expression: node0.expression.flatMap {
-                try visit(expr: $0)
-            },
-            storage: node0.storage,
-            isMutable: node0.isMutable,
-            visibility: node0.visibility
-        )
-
-        let assignmentExpr0 = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .compile(node1)
-
-        if let assignmentExpr0 {
-            _ = try rvalueContext.check(assignment: assignmentExpr0)
-        }
-
-        let explicitType = try explicitTypeExpression(varDecl: node1)
-
-        let node2 = node1
-            .withExpression(nil)
-            .withExplicitType(explicitType)
-
-        if let assignmentExpr0 {
-            let assignmentExpr1 = try visit(assignment: assignmentExpr0)!
-            return Seq(
-                sourceAnchor: node2.sourceAnchor,
-                children: [
-                    node2,
-                    assignmentExpr1
-                ]
+        guard let identifier = try visit(identifier: node0.identifier) as? Identifier else {
+            throw CompilerError(
+                sourceAnchor: node0.identifier.sourceAnchor,
+                message: "internal compiler error: expected identifier"
             )
         }
-        else {
-            return node2
-        }
+
+        let node1 = try node0
+            .withIdentifier(identifier)
+            .withExplicitType(
+                node0.explicitType.flatMap {
+                    try visit(expr: $0)
+                }
+            )
+            .withExpression(
+                node0.expression.flatMap {
+                    try visit(expr: $0)
+                }
+            )
+
+        try scan(varDecl: node1)
+
+        let node2 = try node1
+            .withExpression(nil)
+            .withExplicitType(
+                explicitTypeExpression(varDecl: node1)
+            )
+
+        guard let expr = node1.expression else { return node2 }
+
+        let assignmentExpr0 = Assignment(
+            sourceAnchor: node1.sourceAnchor,
+            lexpr: node1.identifier,
+            rexpr: expr
+        )
+
+        _ = try rvalueContext.check(assignment: assignmentExpr0)
+
+        guard let assignmentExpr1 = try visit(assignment: assignmentExpr0) else { return node2 }
+
+        return Seq(
+            sourceAnchor: node2.sourceAnchor,
+            children: [
+                node2,
+                assignmentExpr1
+            ]
+        )
     }
 
     private func explicitTypeExpression(varDecl node: VarDeclaration) throws -> Expression {

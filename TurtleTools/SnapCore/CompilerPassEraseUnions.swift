@@ -259,12 +259,8 @@ public final class CompilerPassEraseUnions: CompilerPassWithDeclScan {
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         // Allow symbols with union types to be added to the environment.
         // This helps to identify them later in this compiler pass.
-        _ = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .compile(node0)
+        try scan(varDecl: node0)
+
         let actualType: SymbolType = try rvalueContext.check(identifier: node0.identifier)
         guard case .unionType = actualType else {
             return node0

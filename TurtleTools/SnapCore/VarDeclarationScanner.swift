@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerVarDeclaration.swift
+//  VarDeclarationScanner.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/2/21.
@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public struct SnapSubcompilerVarDeclaration {
+/// Scan the VarDeclaration and process only its affect on the environment, i.e., symbols.
+public struct VarDeclarationScanner {
     private let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
@@ -23,7 +24,8 @@ public struct SnapSubcompilerVarDeclaration {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
 
-    public func compile(_ node: VarDeclaration) throws -> Assignment? {
+    /// Scan the VarDeclaration and process only its affect on the environment, i.e., symbols.
+    public func scan(_ node: VarDeclaration) throws {
         let sourceAnchor = node.identifier.sourceAnchor
         let ident = node.identifier.identifier
 
@@ -42,8 +44,6 @@ public struct SnapSubcompilerVarDeclaration {
                 message: "\(variable) redefines existing type: `\(ident)'"
             )
         }
-
-        let result: Assignment?
 
         // If the variable declaration provided an explicit type expression then
         // the type checker can determine what type it evaluates to.
@@ -113,11 +113,6 @@ public struct SnapSubcompilerVarDeclaration {
             )
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
-            result = Assignment(
-                sourceAnchor: node.sourceAnchor,
-                lexpr: node.identifier,
-                rexpr: varDeclExpr
-            )
         }
         else if let explicitType {
             let symbolType = node.isMutable ? explicitType : explicitType.correspondingConstType
@@ -130,7 +125,6 @@ public struct SnapSubcompilerVarDeclaration {
             )
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
-            result = nil
         }
         else {
             throw CompilerError(
@@ -140,8 +134,6 @@ public struct SnapSubcompilerVarDeclaration {
                 node.identifier.identifier
             )
         }
-
-        return result
     }
 
     func makeSymbolWithExplicitType(

@@ -174,12 +174,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
         )
         .inferExplicitType(rvalueContext)
 
-        _ = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .compile(dstPtrDecl)
+        try scan(varDecl: dstPtrDecl)
 
         let elements = try arr.elements.enumerated().map { i, el in
             let arg = try extract(
@@ -256,12 +251,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
         )
         .inferExplicitType(rvalueContext)
 
-        _ = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .compile(dstPtrDecl)
+        try scan(varDecl: dstPtrDecl)
 
         let assignments = try object.arguments.compactMap { arg in
             try visit(
@@ -357,12 +347,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             isMutable: false,
             visibility: .privateVisibility
         )
-        _ = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .compile(backingStorageDecl)
+        try scan(varDecl: backingStorageDecl)
 
         var children: [AbstractSyntaxTreeNode] = [
             backingStorageDecl
@@ -393,12 +378,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
                 isMutable: false,
                 visibility: .privateVisibility
             )
-            _ = try SnapSubcompilerVarDeclaration(
-                symbols: symbols!,
-                staticStorageFrame: staticStorageFrame,
-                memoryLayoutStrategy: memoryLayoutStrategy
-            )
-            .compile(dstDecl)
+            try scan(varDecl: dstDecl)
 
             children += dstDecl.breakOutInitialAssignment().children
 
@@ -547,12 +527,7 @@ public final class CompilerPassDecomposeExpressions: CompilerPassWithDeclScan {
             visibility: .privateVisibility
         )
         .inferExplicitType(rvalueContext)
-        _ = try SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        .compile(tempDecl)
+        try scan(varDecl: tempDecl)
         let eseq = Eseq(
             sourceAnchor: expr.sourceAnchor,
             seq: tempDecl.breakOutInitialAssignment(),

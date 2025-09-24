@@ -1378,12 +1378,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             isMutable: true,
             visibility: .privateVisibility
         )
-        let varDeclCompiler = SnapSubcompilerVarDeclaration(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy
-        )
-        let _ = try varDeclCompiler.compile(tempDecl)
+        try scan(varDecl: tempDecl)
         return tempArrayId
     }
 

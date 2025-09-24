@@ -208,12 +208,16 @@ public struct ImplForScanner {
             visibility: visibility
         )
 
-        _ = try SnapSubcompilerVarDeclaration(
+        try scan(varDecl: vtableInstanceDecl)
+    }
+
+    private func scan(varDecl node: VarDeclaration) throws {
+        try VarDeclarationScanner(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy
         )
-        .compile(vtableInstanceDecl)!
+        .scan(node)
     }
 }
 

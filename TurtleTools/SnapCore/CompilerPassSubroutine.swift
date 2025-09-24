@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerSubroutine.swift
+//  CompilerPassSubroutine.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 11/24/21.
@@ -9,7 +9,7 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public final class SnapSubcompilerSubroutine: CompilerPass {
+public final class CompilerPassSubroutine: CompilerPass {
     var subroutines: [Subroutine] = []
 
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {

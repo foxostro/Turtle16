@@ -94,7 +94,7 @@ private extension TopLevel {
     }
 
     func lowerAssembly() throws -> TopLevel {
-        let topLevel0 = try SnapSubcompilerSubroutine().visit(self) as! TopLevel
+        let topLevel0 = try CompilerPassSubroutine().visit(self) as! TopLevel
 
         // The hardware requires us to place a NOP at the first instruction.
         let topLevel1: TopLevel =

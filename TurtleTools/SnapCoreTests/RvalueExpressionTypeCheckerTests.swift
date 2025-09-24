@@ -7579,4 +7579,219 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "lvalue required in assignment")
         }
     }
+
+    // MARK: - Assignability Tests
+
+    func testTypeCheckerIdentifierAssignability() throws {
+        let symbols = Env(tuples: [
+            ("variable", Symbol(type: .u16)),
+            (
+                "function",
+                Symbol(type: .function(FunctionTypeInfo(returnType: .void, arguments: [])))
+            )
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+
+        // Variables are assignable
+        XCTAssertTrue(try typeChecker.isAssignable(expression: Identifier("variable")))
+
+        // Functions are assignable in Phase 1 for compatibility with LvalueExpressionTypeChecker
+        // TODO: In Phase 2+, this should be false for correct behavior
+        XCTAssertTrue(try typeChecker.isAssignable(expression: Identifier("function")))
+    }
+
+    func testTypeCheckerGetAssignability() throws {
+        let structType = StructTypeInfo(
+            name: "TestStruct",
+            fields: Env(tuples: [
+                ("field1", Symbol(type: .u16)),
+                ("field2", Symbol(type: .u8))
+            ])
+        )
+
+        let symbols = Env(tuples: [
+            ("obj", Symbol(type: .structType(structType))),
+            ("arr", Symbol(type: .array(count: 10, elementType: .u8))),
+            ("ptr", Symbol(type: .pointer(.u16)))
+        ])
+
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+
+        // Struct field access is assignable
+        let structAccess = Get(expr: Identifier("obj"), member: Identifier("field1"))
+        XCTAssertTrue(try typeChecker.isAssignable(expression: structAccess))
+
+        // Array count is not assignable
+        let arrayCount = Get(expr: Identifier("arr"), member: Identifier("count"))
+        XCTAssertFalse(try typeChecker.isAssignable(expression: arrayCount))
+
+        // Pointer dereference is assignable
+        let pointerDeref = Get(expr: Identifier("ptr"), member: Identifier("pointee"))
+        XCTAssertTrue(try typeChecker.isAssignable(expression: pointerDeref))
+    }
+
+    func testTypeCheckerNonexistentStructMemberIsNotAssignable() throws {
+        let structType = StructTypeInfo(
+            name: "TestStruct",
+            fields: Env(
+                tuples: [
+                    ("field1", Symbol(type: .u16))
+                ]
+            )
+        )
+
+        let symbols = Env(
+            tuples: [
+                ("obj", Symbol(type: .structType(structType)))
+            ]
+        )
+
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+
+        // Non-existent struct field is not assignable
+        let nonExistentField = Get(expr: Identifier("obj"), member: Identifier("badField"))
+        XCTAssertFalse(try typeChecker.isAssignable(expression: nonExistentField))
+    }
+
+    func testTypeCheckerPointerToStructAssignability() throws {
+        let structType = StructTypeInfo(
+            name: "TestStruct",
+            fields: Env(
+                tuples: [
+                    ("field1", Symbol(type: .u16))
+                ]
+            )
+        )
+
+        let symbols = Env(
+            tuples: [
+                ("ptr", Symbol(type: .pointer(.structType(structType))))
+            ]
+        )
+
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+
+        // Pointer to struct field is assignable
+        let pointerStructAccess = Get(expr: Identifier("ptr"), member: Identifier("field1"))
+        XCTAssertTrue(try typeChecker.isAssignable(expression: pointerStructAccess))
+
+        // Pointer to nonexistent field is not assignable
+        let pointerBadAccess = Get(expr: Identifier("ptr"), member: Identifier("badField"))
+        XCTAssertFalse(try typeChecker.isAssignable(expression: pointerBadAccess))
+    }
+
+    func testTypeCheckerRecursiveAssignability() throws {
+        let symbols = Env(
+            tuples: [
+                ("variable", Symbol(type: .u16)),
+                ("array", Symbol(type: .array(count: 5, elementType: .u8)))
+            ]
+        )
+
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+
+        // Bitcast of assignable expression is assignable
+        let bitcastAssignable = Bitcast(
+            expr: Identifier("variable"),
+            targetType: PrimitiveType(.u8)
+        )
+        XCTAssertTrue(try typeChecker.isAssignable(expression: bitcastAssignable))
+
+        // Bitcast of non-assignable expression is not assignable
+        let bitcastNonAssignable = Bitcast(expr: LiteralInt(42), targetType: PrimitiveType(.u8))
+        XCTAssertFalse(try typeChecker.isAssignable(expression: bitcastNonAssignable))
+
+        // Eseq with assignable expression is assignable
+        let eseqAssignable = Eseq(
+            seq: Seq(children: [
+                Assignment(lexpr: Identifier("variable"), rexpr: LiteralInt(5))
+            ]),
+            expr: Identifier("variable")
+        )
+        XCTAssertTrue(try typeChecker.isAssignable(expression: eseqAssignable))
+    }
+
+    // MARK: - Compatibility with existing LvalueExpressionTypeChecker behavior
+
+    func testMatchesLvalueTypeCheckerBehavior() throws {
+        let structType = StructTypeInfo(
+            name: "TestStruct",
+            fields: Env(tuples: [("field", Symbol(type: .u8))])
+        )
+
+        let symbols = Env(tuples: [
+            ("variable", Symbol(type: .u16)),
+            ("array", Symbol(type: .array(count: 5, elementType: .u8))),
+            ("struct", Symbol(type: .structType(structType))),
+            (
+                "function",
+                Symbol(type: .function(FunctionTypeInfo(returnType: .void, arguments: [])))
+            )
+        ])
+
+        let lvalueChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let newTypeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+
+        let testCases: [Expression] = [
+            Identifier("variable"),
+            Identifier("function"),
+            Identifier("array"),
+            Subscript(subscriptable: Identifier("array"), argument: LiteralInt(0)),
+            Get(expr: Identifier("struct"), member: Identifier("field")),
+            Get(expr: Identifier("array"), member: Identifier("count")),
+            LiteralInt(42),
+            LiteralBool(true),
+            Binary(op: .plus, left: Identifier("variable"), right: LiteralInt(1)),
+            Call(callee: Identifier("function"), arguments: [])
+        ]
+
+        for expr in testCases {
+            let oldResult = (try? lvalueChecker.check(expression: expr)) != nil
+            let newResult = try newTypeChecker.isAssignable(expression: expr)
+
+            XCTAssertEqual(
+                oldResult,
+                newResult,
+                "Assignability mismatch for expression: \(expr)"
+            )
+        }
+    }
+
+    func testEdgeCasesMatchLvalueTypeChecker() throws {
+        let symbols = Env(
+            tuples: [
+                ("dynamicArray", Symbol(type: .dynamicArray(elementType: .u8))),
+                (
+                    "constArray",
+                    Symbol(type: .array(count: 3, elementType: .constU16))
+                )
+            ]
+        )
+
+        let lvalueChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let newTypeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+
+        let edgeCases: [Expression] = [
+            // Dynamic array count should not be assignable
+            Get(expr: Identifier("dynamicArray"), member: Identifier("count")),
+            // Const array elements should still be assignable (per existing tests)
+            Subscript(subscriptable: Identifier("constArray"), argument: LiteralInt(1)),
+            // Generic type applications
+            GenericTypeApplication(
+                identifier: Identifier("variable"),
+                arguments: [PrimitiveType(.u16)]
+            )
+        ]
+
+        for expr in edgeCases {
+            let oldResult = (try? lvalueChecker.check(expression: expr)) != nil
+            let newResult = try newTypeChecker.isAssignable(expression: expr)
+
+            XCTAssertEqual(
+                oldResult,
+                newResult,
+                "Edge case assignability mismatch for expression: \(expr)"
+            )
+        }
+    }
 }

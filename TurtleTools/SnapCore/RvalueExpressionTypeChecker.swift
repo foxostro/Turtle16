@@ -2023,3 +2023,98 @@ public struct NameMangler {
         )
     }
 }
+
+// MARK: - Assignability Checking
+
+public extension RvalueExpressionTypeChecker {
+    /// Determines if an expression is assignable (can be used as lvalue)
+    /// This method provides more sophisticated assignability checking than Expression.isAssignable
+    /// by taking into account type information and symbol table context
+    func isAssignable(expression: Expression) throws -> Bool {
+        switch expression {
+        case let identifier as Identifier:
+            try isAssignableIdentifier(identifier)
+
+        case is Subscript:
+            true // All subscript operations are assignable
+
+        case let get as Get:
+            try isAssignableGet(get)
+
+        case let bitcast as Bitcast:
+            try isAssignable(expression: bitcast.expr)
+
+        case let genericApp as GenericTypeApplication:
+            try isAssignableGenericTypeApplication(genericApp)
+
+        case let eseq as Eseq:
+            try isAssignable(expression: eseq.expr)
+
+        default:
+            false
+        }
+    }
+
+    private func isAssignableIdentifier(_ identifier: Identifier) throws -> Bool {
+        // For Phase 1 compatibility: match LvalueExpressionTypeChecker behavior
+        // LvalueExpressionTypeChecker accepts ALL identifiers as assignable (including functions)
+        // by delegating to rvalueContext().check(identifier:) which returns the type
+        do {
+            _ = try symbols.resolveTypeOfIdentifier(
+                sourceAnchor: identifier.sourceAnchor,
+                identifier: identifier.identifier
+            )
+            return true // If symbol exists, it's considered assignable for compatibility
+        } catch {
+            return false // If symbol doesn't exist, not assignable
+        }
+    }
+
+    private func isAssignableGenericTypeApplication(_ expr: GenericTypeApplication) throws -> Bool {
+        // For Phase 1 compatibility: match LvalueExpressionTypeChecker behavior
+        symbols.maybeResolve(identifier: expr.identifier.identifier) != nil
+    }
+
+    private func isAssignableGet(_ get: Get) throws -> Bool {
+        guard let member = get.member as? Identifier else {
+            return false // Non-identifier members are not assignable
+        }
+
+        let memberName = member.identifier
+        let objectType = try check(expression: get.expr)
+
+        switch objectType {
+        case .array,
+             .constDynamicArray,
+             .dynamicArray:
+            // array.count is not assignable
+            return memberName != "count"
+
+        case let .constStructType(typ),
+             let .structType(typ):
+            // Struct members are assignable if they exist
+            return typ.symbols.maybeResolve(identifier: memberName) != nil
+
+        case let .constPointer(typ),
+             let .pointer(typ):
+            if memberName == "pointee" {
+                return true // pointer.pointee is always assignable
+            }
+            // Check pointed-to type for array count or struct members
+            switch typ {
+            case .array,
+                 .constDynamicArray,
+                 .dynamicArray:
+                return memberName != "count"
+            case let .constStructType(structType),
+                 let .structType(structType):
+                return structType.symbols.maybeResolve(identifier: memberName) != nil
+            default:
+                return false
+            }
+
+        default:
+            return false
+        }
+    }
+}

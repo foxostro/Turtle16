@@ -13,6 +13,11 @@ public class Expression: AbstractSyntaxTreeNode {
     public override func withSourceAnchor(_: SourceAnchor?) -> Expression {
         fatalError("withSourceAnchor() is unimplemented for \(self)")
     }
+
+    /// Determines if this expression can be assigned to (is an lvalue)
+    public var isAssignable: Bool {
+        false // Most expressions are not assignable by default
+    }
 }
 
 // Useful for testing
@@ -165,6 +170,10 @@ public final class Identifier: Expression {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let result = "\(indent)\(identifier)"
         return result
+    }
+
+    public override var isAssignable: Bool {
+        true // Identifiers are assignable by default
     }
 }
 
@@ -351,6 +360,10 @@ public final class Eseq: Expression {
             \(indent1)seq: \(seq.makeIndentedDescription(depth: depth + 1))
             \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
             """
+    }
+
+    public override var isAssignable: Bool {
+        expr.isAssignable
     }
 }
 
@@ -713,6 +726,10 @@ public final class Bitcast: Expression {
             \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
             """
     }
+
+    public override var isAssignable: Bool {
+        expr.isAssignable
+    }
 }
 
 public final class Is: Expression {
@@ -831,6 +848,10 @@ public final class Subscript: Expression {
             \(indent1)subscriptable: \(subscriptable.makeIndentedDescription(depth: depth + 1))
             \(indent1)argument: \(argument.makeIndentedDescription(depth: depth + 1))
             """
+    }
+
+    public override var isAssignable: Bool {
+        true // Subscript operations are assignable
     }
 }
 
@@ -981,6 +1002,10 @@ public final class Get: Expression {
             \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
             \(indent1)member: \(member.makeIndentedDescription(depth: depth + 1))
             """
+    }
+
+    public override var isAssignable: Bool {
+        !((member as? Identifier)?.identifier == "count")
     }
 }
 
@@ -1438,6 +1463,10 @@ public final class GenericTypeApplication: Expression {
         super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(arguments)
+    }
+
+    public override var isAssignable: Bool {
+        true // Generic type applications that resolve to variables are assignable
     }
 }
 

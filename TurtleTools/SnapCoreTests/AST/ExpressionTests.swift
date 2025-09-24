@@ -526,4 +526,94 @@ final class ExpressionTests: XCTestCase {
             PrimitiveType(.u8).hashValue
         )
     }
+
+    func testLiteralsAreNotAssignable() {
+        XCTAssertFalse(LiteralInt(42).isAssignable)
+        XCTAssertFalse(LiteralBool(true).isAssignable)
+        XCTAssertFalse(LiteralString("hello").isAssignable)
+    }
+
+    func testIdentifiersAreAssignable() {
+        XCTAssertTrue(Identifier("foo").isAssignable)
+        XCTAssertTrue(Identifier("bar").isAssignable)
+    }
+
+    func testSubscriptsAreAssignable() {
+        let s = Subscript(
+            subscriptable: Identifier("arr"),
+            argument: LiteralInt(0)
+        )
+        XCTAssertTrue(s.isAssignable)
+    }
+
+    func testGetExpressionsAssignability() {
+        // Regular struct member should be assignable
+        let structMember = Get(expr: Identifier("obj"), member: Identifier("field"))
+        XCTAssertTrue(structMember.isAssignable)
+
+        // Array count should NOT be assignable
+        let arrayCount = Get(expr: Identifier("arr"), member: Identifier("count"))
+        XCTAssertFalse(arrayCount.isAssignable)
+
+        // Pointer pointee should be assignable
+        let pointerPointee = Get(expr: Identifier("ptr"), member: Identifier("pointee"))
+        XCTAssertTrue(pointerPointee.isAssignable)
+    }
+
+    func testBitcastAssignability() {
+        let assignableBitcast = Bitcast(
+            expr: Identifier("foo"),
+            targetType: PrimitiveType(.u16)
+        )
+        XCTAssertTrue(assignableBitcast.isAssignable)
+
+        let nonAssignableBitcast = Bitcast(
+            expr: LiteralInt(42),
+            targetType: PrimitiveType(.u16)
+        )
+        XCTAssertFalse(nonAssignableBitcast.isAssignable)
+    }
+
+    func testEseqAssignability() {
+        let assignableEseq = Eseq(
+            seq: Seq(children: [
+                Assignment(lexpr: Identifier("x"), rexpr: LiteralInt(5)),
+            ]),
+            expr: Identifier("y")
+        )
+        XCTAssertTrue(assignableEseq.isAssignable)
+
+        let nonAssignableEseq = Eseq(
+            seq: Seq(children: [
+                Assignment(lexpr: Identifier("x"), rexpr: LiteralInt(5)),
+            ]),
+            expr: LiteralInt(42)
+        )
+        XCTAssertFalse(nonAssignableEseq.isAssignable)
+    }
+
+    func testGenericTypeApplicationsAreAssignable() {
+        let genericApp = GenericTypeApplication(
+            identifier: Identifier("vec"),
+            arguments: [PrimitiveType(.u16)]
+        )
+        XCTAssertTrue(genericApp.isAssignable)
+    }
+
+    func testBinaryOperationsAreNotAssignable() {
+        let binary = Binary(
+            op: .plus,
+            left: Identifier("a"),
+            right: Identifier("b")
+        )
+        XCTAssertFalse(binary.isAssignable)
+    }
+
+    func testCallsAreNotAssignable() {
+        let call = Call(
+            callee: Identifier("func"),
+            arguments: [LiteralInt(42)]
+        )
+        XCTAssertFalse(call.isAssignable)
+    }
 }

@@ -1492,17 +1492,6 @@ public class RvalueExpressionTypeChecker {
             ast: template3
         )
 
-        try SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy)
-            .instantiate(
-                functionType: functionType,
-                functionDeclaration: template3
-            )
-
-        let ast0 = functionType.ast!
-        let ast1 = try GenericsPartialEvaluator(symbols: nil, map: replacementMap).visit(func: ast0)
-            as! FunctionDeclaration
-        functionType.ast = ast1
-
         return .function(functionType)
     }
 

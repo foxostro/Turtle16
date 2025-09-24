@@ -11,11 +11,11 @@ struct SerialReal {}
 
 impl Serial for SerialReal {
     func print(self: *SerialReal, s: []const u8) {
-        puts(s)
+        __puts(s)
     }
 
     func printByte(self: *SerialReal, c: u8) {
-        putc(c)
+        __putc(c)
     }
 
     func readByte(self: *SerialReal) -> u8 | None {

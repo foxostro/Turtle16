@@ -7,7 +7,7 @@ struct Point2 {
 
 impl Point2 {
 	func clone(self: *Point2) -> *Point2 {
-		let point = malloc@[Point2]()
+		let point: *Point2 = malloc()
 		point.x = self.x
 		point.y = self.y
 		return point

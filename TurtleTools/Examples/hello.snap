@@ -1,2 +1,2 @@
-puts("Hello, World!\n")
+__puts("Hello, World!\n")
 

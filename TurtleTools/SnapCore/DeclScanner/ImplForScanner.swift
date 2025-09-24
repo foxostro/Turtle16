@@ -25,12 +25,12 @@ public struct ImplForScanner {
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols
-        
+
         implScanner = ImplScanner(
             memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols
         )
-        
+
         typeChecker = RvalueExpressionTypeChecker(
             symbols: symbols,
             staticStorageFrame: staticStorageFrame,

@@ -69,7 +69,7 @@ public struct FunctionScanner {
         )
         symbols.bind(identifier: name, symbol: symbol)
     }
-    
+
     private var typeChecker: RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(symbols: symbols)
     }

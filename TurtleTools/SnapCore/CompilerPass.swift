@@ -10,7 +10,7 @@ import TurtleCore
 
 public class CompilerPass {
     var shouldTypeCheckIdentifiers = true
-    
+
     /// There are a number of cases where an identifier should not be type checked while iterating
     /// the AST because it is not meant to refer to a symbol or type in the environment.
     /// For one concrete example, the identifier in a variable declaration will not refer to a
@@ -150,7 +150,7 @@ public class CompilerPass {
         let node1 = try VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
-            explicitType: try node0.explicitType.flatMap {
+            explicitType: node0.explicitType.flatMap {
                 try visit(expr: $0)
             },
             expression: node0.expression.flatMap {
@@ -187,11 +187,11 @@ public class CompilerPass {
         try ForIn(
             sourceAnchor: node.sourceAnchor,
             identifier:
-                // The identifier must be unchecked because it definitely should not refer to a
-                // symbol until after the compiler has lowered the ForIn node.
-                disableIdentifierTypeChecking {
-                    try visit(identifier: node.identifier)
-                } as! Identifier,
+            // The identifier must be unchecked because it definitely should not refer to a
+            // symbol until after the compiler has lowered the ForIn node.
+            disableIdentifierTypeChecking {
+                try visit(identifier: node.identifier)
+            } as! Identifier,
             sequenceExpr: visit(expr: node.sequenceExpr)!,
             body: visit(node.body) as! Block,
             id: node.id
@@ -243,12 +243,12 @@ public class CompilerPass {
         try FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
             identifier:
-                // The identifier must be unchecked because it definitely should not refer to a
-                // symbol until after the compiler has visited and accepted the FunctionDeclaration
-                // node.
-                disableIdentifierTypeChecking {
-                    try visit(identifier: node.identifier)
-                } as! Identifier,
+            // The identifier must be unchecked because it definitely should not refer to a
+            // symbol until after the compiler has visited and accepted the FunctionDeclaration
+            // node.
+            disableIdentifierTypeChecking {
+                try visit(identifier: node.identifier)
+            } as! Identifier,
             functionType: {
                 let expr = try visit(expr: node.functionType)
                 guard let expr = expr as? FunctionType else {
@@ -265,7 +265,7 @@ public class CompilerPass {
                 return expr
             }(),
             argumentNames: node.argumentNames,
-            typeArguments: try node.typeArguments.compactMap {
+            typeArguments: node.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             body: visit(node.body) as! Block,
@@ -318,10 +318,10 @@ public class CompilerPass {
     public func visit(impl node: Impl) throws -> AbstractSyntaxTreeNode? {
         try Impl(
             sourceAnchor: node.sourceAnchor,
-            typeArguments: try node.typeArguments.compactMap {
+            typeArguments: node.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
-            structTypeExpr: try visit(expr: node.structTypeExpr)!,
+            structTypeExpr: visit(expr: node.structTypeExpr)!,
             children: visit(children: node.children).compactMap {
                 $0 as? FunctionDeclaration
             },
@@ -332,11 +332,11 @@ public class CompilerPass {
     public func visit(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
         try ImplFor(
             sourceAnchor: node.sourceAnchor,
-            typeArguments: try node.typeArguments.compactMap {
+            typeArguments: node.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
-            traitTypeExpr: try visit(expr: node.traitTypeExpr)!,
-            structTypeExpr: try visit(expr: node.structTypeExpr)!,
+            traitTypeExpr: visit(expr: node.traitTypeExpr)!,
+            structTypeExpr: visit(expr: node.structTypeExpr)!,
             children: visit(children: node.children).compactMap {
                 $0 as? FunctionDeclaration
             },
@@ -352,12 +352,12 @@ public class CompilerPass {
                 try Match.Clause(
                     sourceAnchor: clause.sourceAnchor,
                     valueIdentifier:
-                        // The identifier should be unchecked because it does not refer to a symbol
-                        // in the environment until after the compiler has lowered the Match node.
-                        disableIdentifierTypeChecking {
-                            try visit(identifier: clause.valueIdentifier)
-                        } as! Identifier,
-                    valueType: try visit(expr: clause.valueType)!,
+                    // The identifier should be unchecked because it does not refer to a symbol
+                    // in the environment until after the compiler has lowered the Match node.
+                    disableIdentifierTypeChecking {
+                        try visit(identifier: clause.valueIdentifier)
+                    } as! Identifier,
+                    valueType: visit(expr: clause.valueType)!,
                     block: visit(clause: clause, in: node)
                 )
             },
@@ -392,12 +392,12 @@ public class CompilerPass {
         try TraitDeclaration(
             sourceAnchor: node.sourceAnchor,
             identifier:
-                // The identifier must be unchecked because it definitely should not refer to a
-                // type until after the compiler has visited and accepted the TraitDeclaration
-                // node.
-                disableIdentifierTypeChecking {
-                    try visit(identifier: node.identifier) as! Identifier
-                },
+            // The identifier must be unchecked because it definitely should not refer to a
+            // type until after the compiler has visited and accepted the TraitDeclaration
+            // node.
+            disableIdentifierTypeChecking {
+                try visit(identifier: node.identifier) as! Identifier
+            },
             typeArguments: node.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
@@ -421,12 +421,12 @@ public class CompilerPass {
         try Typealias(
             sourceAnchor: node.sourceAnchor,
             lexpr:
-                // The identifier must be unchecked because it definitely should not refer to a
-                // type until after the compiler has visited and accepted the Typealias node.
-                disableIdentifierTypeChecking {
-                    try visit(identifier: node.lexpr) as! Identifier
-                },
-            rexpr: try visit(expr: node.rexpr)!,
+            // The identifier must be unchecked because it definitely should not refer to a
+            // type until after the compiler has visited and accepted the Typealias node.
+            disableIdentifierTypeChecking {
+                try visit(identifier: node.lexpr) as! Identifier
+            },
+            rexpr: visit(expr: node.rexpr)!,
             visibility: node.visibility,
             id: node.id
         )
@@ -552,7 +552,7 @@ public class CompilerPass {
     public func visit(literalArray expr: LiteralArray) throws -> Expression? {
         try LiteralArray(
             sourceAnchor: expr.sourceAnchor,
-            arrayType: try visit(expr: expr.arrayType)!,
+            arrayType: visit(expr: expr.arrayType)!,
             elements: expr.elements.compactMap {
                 try visit(expr: $0)
             },
@@ -572,7 +572,7 @@ public class CompilerPass {
         try As(
             sourceAnchor: expr.sourceAnchor,
             expr: visit(expr: expr.expr)!,
-            targetType: try visit(expr: expr.targetType)!,
+            targetType: visit(expr: expr.targetType)!,
             id: expr.id
         )
     }
@@ -581,7 +581,7 @@ public class CompilerPass {
         try Bitcast(
             sourceAnchor: node.sourceAnchor,
             expr: visit(expr: node.expr)!,
-            targetType: try visit(expr: node.targetType)!,
+            targetType: visit(expr: node.targetType)!,
             id: node.id
         )
     }
@@ -604,7 +604,7 @@ public class CompilerPass {
         try Is(
             sourceAnchor: node.sourceAnchor,
             expr: visit(expr: node.expr)!,
-            testType: try visit(expr: node.testType)!,
+            testType: visit(expr: node.testType)!,
             id: node.id
         )
     }
@@ -637,7 +637,7 @@ public class CompilerPass {
                 try disableIdentifierTypeChecking {
                     try visit(identifier: member)
                 }
-                
+
             default:
                 try visit(expr: node.member)
             }
@@ -649,7 +649,7 @@ public class CompilerPass {
     public func visit(structInitializer node: StructInitializer) throws -> Expression? {
         try StructInitializer(
             sourceAnchor: node.sourceAnchor,
-            expr: try visit(expr: node.expr)!,
+            expr: visit(expr: node.expr)!,
             arguments: node.arguments.compactMap {
                 try StructInitializer.Argument(
                     name: $0.name,

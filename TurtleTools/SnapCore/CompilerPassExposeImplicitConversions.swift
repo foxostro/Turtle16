@@ -210,11 +210,13 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
     }
 
     public override func visit(binary node0: Binary) throws -> Expression? {
-        let rightType = try rvalueContext.check(expression: node0.right)
-        let leftType = try rvalueContext.check(expression: node0.left)
+        let visitedNode = try super.visit(binary: node0) as! Binary
 
-        guard leftType != rightType else { return node0 }
-        guard leftType.isArithmeticType, rightType.isArithmeticType else { return node0 }
+        let rightType = try rvalueContext.check(expression: visitedNode.right)
+        let leftType = try rvalueContext.check(expression: visitedNode.left)
+
+        guard leftType != rightType else { return visitedNode }
+        guard leftType.isArithmeticType, rightType.isArithmeticType else { return visitedNode }
 
         let leftTypeInfo = leftType.unwrapArithmeticType()
         let rightTypeInfo = rightType.unwrapArithmeticType()
@@ -226,16 +228,16 @@ public final class CompilerPassExposeImplicitConversions: CompilerPassWithDeclSc
             )!
         )
 
-        let node1 = try node0
+        let node1 = try visitedNode
             .withLeft(
                 conversion(
-                    expr: visit(expr: node0.left)!,
+                    expr: visitedNode.left,
                     to: targetType
                 )
             )
             .withRight(
                 conversion(
-                    expr: visit(expr: node0.right)!,
+                    expr: visitedNode.right,
                     to: targetType
                 )
             )

@@ -7595,8 +7595,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         // Variables are assignable
         XCTAssertTrue(try typeChecker.isAssignable(expression: Identifier("variable")))
 
-        // Functions are assignable in Phase 1 for compatibility with LvalueExpressionTypeChecker
-        // TODO: In Phase 2+, this should be false for correct behavior
+        // Functions are assignable for compatibility with legacy behavior
+        // TODO: In future phases, consider making this false for correct behavior
         XCTAssertTrue(try typeChecker.isAssignable(expression: Identifier("function")))
     }
 
@@ -7711,87 +7711,4 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertTrue(try typeChecker.isAssignable(expression: eseqAssignable))
     }
 
-    // MARK: - Compatibility with existing LvalueExpressionTypeChecker behavior
-
-    func testMatchesLvalueTypeCheckerBehavior() throws {
-        let structType = StructTypeInfo(
-            name: "TestStruct",
-            fields: Env(tuples: [("field", Symbol(type: .u8))])
-        )
-
-        let symbols = Env(tuples: [
-            ("variable", Symbol(type: .u16)),
-            ("array", Symbol(type: .array(count: 5, elementType: .u8))),
-            ("struct", Symbol(type: .structType(structType))),
-            (
-                "function",
-                Symbol(type: .function(FunctionTypeInfo(returnType: .void, arguments: [])))
-            )
-        ])
-
-        let lvalueChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        let newTypeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-
-        let testCases: [Expression] = [
-            Identifier("variable"),
-            Identifier("function"),
-            Identifier("array"),
-            Subscript(subscriptable: Identifier("array"), argument: LiteralInt(0)),
-            Get(expr: Identifier("struct"), member: Identifier("field")),
-            Get(expr: Identifier("array"), member: Identifier("count")),
-            LiteralInt(42),
-            LiteralBool(true),
-            Binary(op: .plus, left: Identifier("variable"), right: LiteralInt(1)),
-            Call(callee: Identifier("function"), arguments: [])
-        ]
-
-        for expr in testCases {
-            let oldResult = (try? lvalueChecker.check(expression: expr)) != nil
-            let newResult = try newTypeChecker.isAssignable(expression: expr)
-
-            XCTAssertEqual(
-                oldResult,
-                newResult,
-                "Assignability mismatch for expression: \(expr)"
-            )
-        }
-    }
-
-    func testEdgeCasesMatchLvalueTypeChecker() throws {
-        let symbols = Env(
-            tuples: [
-                ("dynamicArray", Symbol(type: .dynamicArray(elementType: .u8))),
-                (
-                    "constArray",
-                    Symbol(type: .array(count: 3, elementType: .constU16))
-                )
-            ]
-        )
-
-        let lvalueChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        let newTypeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-
-        let edgeCases: [Expression] = [
-            // Dynamic array count should not be assignable
-            Get(expr: Identifier("dynamicArray"), member: Identifier("count")),
-            // Const array elements should still be assignable (per existing tests)
-            Subscript(subscriptable: Identifier("constArray"), argument: LiteralInt(1)),
-            // Generic type applications
-            GenericTypeApplication(
-                identifier: Identifier("variable"),
-                arguments: [PrimitiveType(.u16)]
-            )
-        ]
-
-        for expr in edgeCases {
-            let oldResult = (try? lvalueChecker.check(expression: expr)) != nil
-            let newResult = try newTypeChecker.isAssignable(expression: expr)
-
-            XCTAssertEqual(
-                oldResult,
-                newResult,
-                "Edge case assignability mismatch for expression: \(expr)"
-            )
-        }
-    }
 }

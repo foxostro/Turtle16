@@ -55,14 +55,6 @@ public class RvalueExpressionTypeChecker {
         )
     }
 
-    func lvalueContext() -> LvalueExpressionTypeChecker {
-        LvalueExpressionTypeChecker(
-            symbols: symbols,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy,
-            options: options
-        )
-    }
 
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
         switch expression {
@@ -2057,22 +2049,22 @@ public extension RvalueExpressionTypeChecker {
     }
 
     private func isAssignableIdentifier(_ identifier: Identifier) throws -> Bool {
-        // For Phase 1 compatibility: match LvalueExpressionTypeChecker behavior
-        // LvalueExpressionTypeChecker accepts ALL identifiers as assignable (including functions)
-        // by delegating to rvalueContext().check(identifier:) which returns the type
+        // First try the normal symbol table lookup
+        if symbols.maybeResolve(identifier: identifier.identifier) != nil {
+            return true
+        }
+
+        // If not found, check if this might be a module by trying to type-check it
+        // Modules might not be in the normal symbol table but could still be valid
         do {
-            _ = try symbols.resolveTypeOfIdentifier(
-                sourceAnchor: identifier.sourceAnchor,
-                identifier: identifier.identifier
-            )
-            return true // If symbol exists, it's considered assignable for compatibility
+            _ = try check(expression: identifier)
+            return true // If we can type-check it, it's valid and should be assignable
         } catch {
-            return false // If symbol doesn't exist, not assignable
+            return false // If type-checking fails, it's truly not assignable
         }
     }
 
     private func isAssignableGenericTypeApplication(_ expr: GenericTypeApplication) throws -> Bool {
-        // For Phase 1 compatibility: match LvalueExpressionTypeChecker behavior
         symbols.maybeResolve(identifier: expr.identifier.identifier) != nil
     }
 

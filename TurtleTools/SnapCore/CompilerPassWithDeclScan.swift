@@ -26,14 +26,6 @@ public class CompilerPassWithDeclScan: CompilerPass {
         )
     }
 
-    public var lvalueContext: LvalueExpressionTypeChecker {
-        LvalueExpressionTypeChecker(
-            symbols: symbols!,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy,
-            options: typeCheckerOptions
-        )
-    }
 
     public init(
         symbols: Env? = nil,

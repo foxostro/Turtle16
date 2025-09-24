@@ -11,17 +11,6 @@ import TurtleCore
 import TurtleSimulatorCore
 
 class SnapBenchmarkDriver: NSObject {
-    let kFibonacciProgram = """
-        func fib(n: u8) -> u8 {
-            if n <= 1 {
-                return n
-            } else {
-                return fib(n-1) + fib(n-2)
-            }
-        }
-        let result = fib(13)
-        """
-
     struct SnapBenchmarkDriverError: Error {
         let message: String
 
@@ -48,9 +37,26 @@ class SnapBenchmarkDriver: NSObject {
     var stdout: TextOutputStream = String()
     var stderr: TextOutputStream = String()
     let arguments: [String]
+    var benchmarkFilePath: String?
 
     required init(arguments: [String]) {
         self.arguments = arguments
+    }
+
+    func getProgramText() throws -> String {
+        guard let filePath = benchmarkFilePath else {
+            throw SnapBenchmarkDriverError(
+                format: "No benchmark file specified. Usage: SnapBenchmark <file.snap>"
+            )
+        }
+
+        do {
+            return try String(contentsOfFile: filePath, encoding: .utf8)
+        } catch {
+            throw SnapBenchmarkDriverError(
+                format: "Failed to read file '\(filePath)': \(error.localizedDescription)"
+            )
+        }
     }
 
     func run() {
@@ -79,25 +85,60 @@ class SnapBenchmarkDriver: NSObject {
     }
 
     func parseArguments() throws {
-        if arguments.count != 1 {
+        var argIndex = 1
+        var benchmarkFilePath: String?
+
+        // Parse benchmark file path
+        while argIndex < arguments.count {
+            let arg = arguments[argIndex]
+
+            if arg.hasPrefix("--") {
+                throw SnapBenchmarkDriverError(
+                    format: "unknown option '\(arg)'"
+                )
+            } else {
+                // This is the benchmark file path
+                benchmarkFilePath = arg
+                argIndex += 1
+                break
+            }
+        }
+
+        // Check for extra arguments
+        if argIndex < arguments.count {
             throw SnapBenchmarkDriverError(
-                format: "usage: SnapBenchmark\nUnexpectedly got \(arguments.count - 1) arguments: \(arguments.debugDescription)"
+                format: "unexpected argument '\(arguments[argIndex])'"
             )
         }
+
+        // Require benchmark file path
+        guard let filePath = benchmarkFilePath else {
+            throw SnapBenchmarkDriverError(
+                format: """
+                    usage: SnapBenchmark <benchmark_file.snap>
+
+                    Examples:
+                      SnapBenchmark Examples/benchmarks/fibonacci.snap
+                      SnapBenchmark Examples/benchmarks/micro.snap
+                    """
+            )
+        }
+
+        self.benchmarkFilePath = filePath
+        stdout.write("Running benchmark from file: \(filePath)...\n")
     }
 
     func runProgramRuntimeBenchmark() throws {
+
         let logger = isVerboseLogging ? ConsoleLogger(output: stdout) : nil
         let compiler = SnapToTurtle16Compiler()
-        compiler.compile(program: kFibonacciProgram)
-        if compiler.hasError {
-            let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
-            throw error
-        }
+        let programText = try getProgramText()
+        let options = SnapToTurtle16Compiler.Options(runtimeSupport: "runtime_Turtle16")
+        let program = try compiler.compile(program: programText, options: options)
 
         if isVerboseLogging {
-            try logger?.append(AssemblerListingMaker().makeListing(compiler.assembly.get()))
-            try logger?.append(compiler.tack.get().listing)
+            logger?.append(AssemblerListingMaker().makeListing(program.assembly))
+            logger?.append(program.tackProgram.listing)
         }
 
         let computer = TurtleComputer(SchematicLevelCPUModel())
@@ -114,32 +155,19 @@ class SnapBenchmarkDriver: NSObject {
             return computer.ram[addr.value]
         }
 
-        computer.instructions = try generateFibonacciProgram()
+        computer.instructions = try generateBenchmarkProgram()
         computer.reset()
 
         let debugger = SnapDebugConsole(computer: computer)
-        debugger.symbols = compiler.symbolsOfTopLevelScope
+        debugger.symbols = program.symbolsOfTopLevelScope
         if let logger {
             debugger.logger = logger
         }
 
-        stdout.write("Running fibonacci program now...\n")
+        let fileName = benchmarkFilePath?.split(separator: "/").last.map(String.init) ?? "program"
+        stdout.write("Running \(fileName) program now...\n")
         let elapsedTime = try measure {
             computer.run()
-        }
-        let expectedResult: UInt8 = 233
-        let actualResult = debugger.loadSymbolU8("result")
-        if actualResult != expectedResult {
-            let str =
-                if let actualResult {
-                    "\(actualResult)"
-                }
-                else {
-                    "nil"
-                }
-            throw SnapBenchmarkDriverError(
-                format: "Program runtime benchmark finished with an incorrect result: \(str)"
-            )
         }
         stdout.write(
             String(
@@ -164,20 +192,27 @@ class SnapBenchmarkDriver: NSObject {
         return elapsedTime
     }
 
-    func generateFibonacciProgram() throws -> [UInt16] {
+    func generateBenchmarkProgram() throws -> [UInt16] {
+
         var instructions: [UInt16]! = nil
         var elapsedTime: TimeInterval = 0
         let n = 1000
-        stdout.write(String(format: "Compiling the benchmark program %d times now...\n", n))
+        let programText =
+            try getProgramText() // Use the updated method that supports external files
+
+        let benchmarkName = benchmarkFilePath?.split(separator: "/").last.map(String.init) ?? "program"
+        stdout.write(String(
+            format: "Compiling the %@ benchmark program %d times now...\n",
+            benchmarkName,
+            n
+        ))
         for _ in 0..<n {
             let compiler = SnapToTurtle16Compiler()
             elapsedTime += try measure {
-                compiler.compile(program: kFibonacciProgram, base: 0)
+                let options = SnapToTurtle16Compiler.Options(runtimeSupport: "runtime_Turtle16")
+                let program = try compiler.compile(program: programText, base: 0, options: options)
+                instructions = program.instructions
             }
-            if compiler.hasError {
-                throw CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
-            }
-            instructions = compiler.instructions
         }
         elapsedTime = elapsedTime / Double(n)
         stdout.write(String(format: "Compile took an average of %g seconds\n", elapsedTime))

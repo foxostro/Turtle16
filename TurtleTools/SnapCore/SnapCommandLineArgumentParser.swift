@@ -26,6 +26,7 @@ public final class SnapCommandLineArgumentParser {
         case unoptimized
         case run
         case platform(String)
+        case noRuntime
     }
 
     private var args: [String]
@@ -108,6 +109,10 @@ public final class SnapCommandLineArgumentParser {
                 let platformName = try peek()
                 try advance()
                 options.append(.platform(platformName))
+            }
+            else if option == "--no-runtime" {
+                try advance()
+                options.append(.noRuntime)
             }
             else {
                 throw SnapCommandLineParserError.unknownOption(option)

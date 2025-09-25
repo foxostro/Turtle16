@@ -49,6 +49,7 @@ public final class SnapCommandLineDriver {
     public var shouldListTests = false
     public var verb: Verb = .compile
     public var platform: Platform = .turtle16
+    public var shouldIncludeRuntime = true
     public var chooseSpecificTest: String?
     public var shouldBeQuiet = false
     public var shouldEnableOptimizations = true
@@ -156,7 +157,7 @@ public final class SnapCommandLineDriver {
                 options: SnapToTurtle16Compiler.Options(
                     isBoundsCheckEnabled: true,
                     isUsingStandardLibrary: false,
-                    runtimeSupport: platform.runtimeSupport
+                    runtimeSupport: shouldIncludeRuntime ? platform.runtimeSupport : nil
                 )
             )
         }
@@ -255,7 +256,7 @@ public final class SnapCommandLineDriver {
                 options: SnapToTurtle16Compiler.Options(
                     isBoundsCheckEnabled: true,
                     isUsingStandardLibrary: false,
-                    runtimeSupport: platform.runtimeSupport,
+                    runtimeSupport: shouldIncludeRuntime ? platform.runtimeSupport : nil,
                     shouldRunSpecificTest: testName
                 )
             )
@@ -414,6 +415,9 @@ public final class SnapCommandLineDriver {
                 default:
                     throw SnapCommandLineDriverError("unknown platform '\(platformName)'. Valid platforms: turtle16, tack")
                 }
+
+            case .noRuntime:
+                shouldIncludeRuntime = false
             }
         }
 
@@ -448,6 +452,7 @@ public final class SnapCommandLineDriver {
         \ttest       Compile the program for testing and run immediately in a VM.
         \t-t <test>  The test suite only runs the specified test
         \t--platform <platform>  Target platform (turtle16, tack). Default: turtle16
+        \t--no-runtime           Compile without including runtime support
         \t-h         Display available options
         \t-o <file>  Specify the output filename
         \t-S         Output assembly code

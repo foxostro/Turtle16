@@ -1380,6 +1380,7 @@ public class SnapParser: Parser {
             )
         }
         else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
+            try validateMultilineStringLiteralSyntax(literalString)
             return LiteralString(
                 sourceAnchor: literalString.sourceAnchor,
                 value: literalString.literal
@@ -2000,5 +2001,40 @@ public class SnapParser: Parser {
         )
         let sourceAnchor = tokenAsm.sourceAnchor?.union(rightParen.sourceAnchor)
         return [Asm(sourceAnchor: sourceAnchor, assemblyCode: code.literal)]
+    }
+
+    private func validateMultilineStringLiteralSyntax(_ token: TokenLiteralString) throws {
+        let lexeme = token.lexeme
+
+        // Check if this is a multiline string literal (starts and ends with """)
+        guard lexeme.hasPrefix("\"\"\"") && lexeme.hasSuffix("\"\"\"") else {
+            // Single-line string literal, no validation needed
+            return
+        }
+
+        // For multiline strings, validate syntax rules
+        let lines = lexeme.split(separator: "\n", omittingEmptySubsequences: false)
+
+        // Check if content begins on the same line as opening """
+        if lines.count > 0 {
+            let firstLine = String(lines[0])
+            if firstLine.count > 3 { // More than just """
+                throw CompilerError(
+                    sourceAnchor: token.sourceAnchor,
+                    message: "Multi-line string literal content must begin on a new line"
+                )
+            }
+        }
+
+        // Check if closing delimiter begins on a new line
+        if lines.count > 1 {
+            let lastLine = String(lines[lines.count - 1])
+            if !lastLine.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("\"\"\"") {
+                throw CompilerError(
+                    sourceAnchor: token.sourceAnchor,
+                    message: "Multi-line string literal closing delimiter must begin on a new line"
+                )
+            }
+        }
     }
 }

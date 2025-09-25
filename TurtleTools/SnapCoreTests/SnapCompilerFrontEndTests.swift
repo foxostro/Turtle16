@@ -4117,4 +4117,75 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
+    
+    func test_EndToEndIntegration_Array_MultiLineStringHandling_ValidSyntax() throws {
+        // Ensure that the compiler handles a vlaid multiline string correctly
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(
+            options: opts,
+            program: """
+                let str = \"\"\"
+                    Hello, World!
+                    \"\"\"
+                assert(str[0] == 72)    // 'H' ASCII
+                assert(str[7] == 87)    // 'W' ASCII
+                assert(str.count == 13)
+                """
+        )
+        try debugger.vm.run()
+    }
+
+    func test_EndToEndIntegration_Array_MultiLineStringHandling_InvalidBeginning() throws {
+        let result = Result {
+            try compile(program: """
+                \"\"\"Line 1
+                Line 2
+                Line 3
+                \"\"\"
+                """)
+        }
+        expectError(result) { error in
+            XCTAssertEqual( // TODO: The error should only point to the first line of the string
+                error.sourceAnchor?.text,
+                """
+                \"\"\"Line 1
+                Line 2
+                Line 3
+                \"\"\"
+                """
+            )
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<4)
+            XCTAssertEqual(
+                error.message,
+                "Multi-line string literal content must begin on a new line"
+            )
+        }
+    }
+
+    func test_EndToEndIntegration_Array_MultiLineStringHandling_InvalidEnding() throws {
+        let result = Result {
+            try compile(program: """
+                \"\"\"
+                Line 1
+                Line 2
+                Line 3\"\"\"
+                """)
+        }
+        expectError(result) { error in
+            XCTAssertEqual( // TODO: The error should only point to the final line of the string
+                error.sourceAnchor?.text,
+                """
+                \"\"\"
+                Line 1
+                Line 2
+                Line 3\"\"\"
+                """
+            )
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<4)
+            XCTAssertEqual(
+                error.message,
+                "Multi-line string literal closing delimiter must begin on a new line"
+            )
+        }
+    }
 }

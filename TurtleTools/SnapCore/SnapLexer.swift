@@ -308,9 +308,14 @@ public class SnapLexer: Lexer {
             return str1
         }
 
-        guard lines[0] == "\"\"\"" else {
+        let firstLineContent: String
+        if lines[0] == "\"\"\"" {
+            firstLineContent = ""
+        } else if lines[0].hasPrefix("\"\"\"") {
+            firstLineContent = String(lines[0].dropFirst(3))
+        } else {
             fatalError(
-                "invalid multiline string and lexer interface has no way to raise a proper error here: a multiline string must begin with a newline"
+                "invalid multiline string and lexer interface has no way to raise a proper error here: multiline string must start with \"\"\""
             )
         }
 
@@ -330,14 +335,21 @@ public class SnapLexer: Lexer {
             leadingWhitespace = ""
         }
 
-        let str0 = lines[1..<lines.count - 1]
+        var contentLines: [String] = []
+
+        if !firstLineContent.isEmpty {
+            contentLines.append(firstLineContent)
+        }
+
+        contentLines.append(contentsOf: lines[1..<lines.count - 1]
             .map { line in
                 guard line.hasPrefix(leadingWhitespace) else {
-                    return line
+                    return String(line)
                 }
-                return line.dropFirst(leadingWhitespace.count)
-            }
-            .joined(separator: "\n")
+                return String(line.dropFirst(leadingWhitespace.count))
+            })
+
+        let str0 = contentLines.joined(separator: "\n")
 
         let str1 = mapEntities(str0)
         return str1

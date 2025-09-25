@@ -25,6 +25,7 @@ public final class SnapCommandLineArgumentParser {
         case quiet
         case unoptimized
         case run
+        case platform(String)
     }
 
     private var args: [String]
@@ -101,6 +102,12 @@ public final class SnapCommandLineArgumentParser {
             else if option == "-O0" {
                 try advance()
                 options.append(.unoptimized)
+            }
+            else if option == "--platform" {
+                try advance()
+                let platformName = try peek()
+                try advance()
+                options.append(.platform(platformName))
             }
             else {
                 throw SnapCommandLineParserError.unknownOption(option)

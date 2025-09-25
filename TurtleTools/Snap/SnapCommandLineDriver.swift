@@ -24,6 +24,17 @@ public final class SnapCommandLineDriver {
         case run, test, compile
     }
 
+    public enum Platform {
+        case turtle16, tack
+
+        var runtimeSupport: String {
+            switch self {
+            case .turtle16: return "runtime_Turtle16"
+            case .tack: return "runtime_TackVM"
+            }
+        }
+    }
+
     public var status: Int32 = 1
     public var stdout: TextOutputStream = String()
     public var stderr: TextOutputStream = String()
@@ -37,10 +48,10 @@ public final class SnapCommandLineDriver {
     public var shouldDoASTDump = false
     public var shouldListTests = false
     public var verb: Verb = .compile
+    public var platform: Platform = .turtle16
     public var chooseSpecificTest: String?
     public var shouldBeQuiet = false
     public var shouldEnableOptimizations = true
-    let kRuntime = "runtime_Turtle16"
     let kMemoryMappedSerialOutputPort = MemoryAddress(0x0001)
 
     public required init(withArguments arguments: [String]) {
@@ -145,7 +156,7 @@ public final class SnapCommandLineDriver {
                 options: SnapToTurtle16Compiler.Options(
                     isBoundsCheckEnabled: true,
                     isUsingStandardLibrary: false,
-                    runtimeSupport: kRuntime
+                    runtimeSupport: platform.runtimeSupport
                 )
             )
         }
@@ -170,47 +181,7 @@ public final class SnapCommandLineDriver {
             try writeAssemblyToFile(assembly: program.assembly)
         }
 
-        var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
-            let oldStr = String(bytes: serialOutput, encoding: .utf8)
-            serialOutput.append(UInt8(value & 0x00ff))
-            let newStr = String(bytes: serialOutput, encoding: .utf8)
-            let delta: String =
-                if let n = oldStr?.count {
-                    if let newDelta = newStr?.dropFirst(n) {
-                        String(newDelta)
-                    }
-                    else {
-                        oldStr!
-                    }
-                }
-                else {
-                    ""
-                }
-            if delta.count > 0 {
-                self.stdout.write(String(delta))
-            }
-        }
-        let computer = TurtleComputer(SchematicLevelCPUModel())
-        computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
-            if addr == self.kMemoryMappedSerialOutputPort {
-                onSerialOutput(value)
-            }
-            else {
-                computer.ram[addr.value] = value
-            }
-        }
-        computer.cpu.load = { (addr: MemoryAddress) in
-            computer.ram[addr.value]
-        }
-        computer.instructions = program.instructions
-        computer.reset()
-
-        let debugger = SnapDebugConsole(computer: computer)
-        debugger.logger = PrintLogger()
-        debugger.symbols = program.symbolsOfTopLevelScope
-        debugger.interpreter.runOne(instruction: .run)
-
+        try runProgram(program)
         reportInfoMessage("\n\n")
     }
 
@@ -236,46 +207,7 @@ public final class SnapCommandLineDriver {
             try writeAssemblyToFile(assembly: program.assembly)
         }
 
-        var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
-            let oldStr = String(bytes: serialOutput, encoding: .utf8)
-            serialOutput.append(UInt8(value & 0x00ff))
-            let newStr = String(bytes: serialOutput, encoding: .utf8)
-            let delta: String =
-                if let n = oldStr?.count {
-                    if let newDelta = newStr?.dropFirst(n) {
-                        String(newDelta)
-                    }
-                    else {
-                        oldStr!
-                    }
-                }
-                else {
-                    ""
-                }
-            if delta.count > 0 {
-                self.stdout.write(String(delta))
-            }
-        }
-        let computer = TurtleComputer(SchematicLevelCPUModel())
-        computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
-            if addr == self.kMemoryMappedSerialOutputPort {
-                onSerialOutput(value)
-            }
-            else {
-                computer.ram[addr.value] = value
-            }
-        }
-        computer.cpu.load = { (addr: MemoryAddress) in
-            computer.ram[addr.value]
-        }
-        computer.instructions = program.instructions
-        computer.reset()
-
-        let debugger = SnapDebugConsole(computer: computer)
-        debugger.logger = PrintLogger()
-        debugger.symbols = program.symbolsOfTopLevelScope
-        debugger.interpreter.runOne(instruction: .run)
+        try runProgram(program)
 
         reportInfoMessage("\n\n")
 
@@ -323,7 +255,7 @@ public final class SnapCommandLineDriver {
                 options: SnapToTurtle16Compiler.Options(
                     isBoundsCheckEnabled: true,
                     isUsingStandardLibrary: false,
-                    runtimeSupport: kRuntime,
+                    runtimeSupport: platform.runtimeSupport,
                     shouldRunSpecificTest: testName
                 )
             )
@@ -333,6 +265,66 @@ public final class SnapCommandLineDriver {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: [error])
         }
         return program
+    }
+
+    private func runProgram(_ program: TurtleProgram) throws {
+        switch platform {
+        case .turtle16:
+            try runOnTurtle16(program)
+        case .tack:
+            try runOnTack(program)
+        }
+    }
+
+    private func runOnTurtle16(_ program: TurtleProgram) throws {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            let oldStr = String(bytes: serialOutput, encoding: .utf8)
+            serialOutput.append(UInt8(value & 0x00ff))
+            let newStr = String(bytes: serialOutput, encoding: .utf8)
+            let delta: String =
+                if let n = oldStr?.count {
+                    if let newDelta = newStr?.dropFirst(n) {
+                        String(newDelta)
+                    }
+                    else {
+                        oldStr!
+                    }
+                }
+                else {
+                    ""
+                }
+            if delta.count > 0 {
+                self.stdout.write(String(delta))
+            }
+        }
+        let computer = TurtleComputer(SchematicLevelCPUModel())
+        computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
+            if addr == self.kMemoryMappedSerialOutputPort {
+                onSerialOutput(value)
+            }
+            else {
+                computer.ram[addr.value] = value
+            }
+        }
+        computer.cpu.load = { (addr: MemoryAddress) in
+            computer.ram[addr.value]
+        }
+        computer.instructions = program.instructions
+        computer.reset()
+
+        let debugger = SnapDebugConsole(computer: computer)
+        debugger.logger = PrintLogger()
+        debugger.symbols = program.symbolsOfTopLevelScope
+        debugger.interpreter.runOne(instruction: .run)
+    }
+
+    private func runOnTack(_ program: TurtleProgram) throws {
+        let vm = TackVirtualMachine(program.tackProgram)
+        vm.onSerialOutput = { value in
+            self.stdout.write(String(Character(UnicodeScalar(value))))
+        }
+        try vm.run()
     }
 
     func writeToFile(ir: TackProgram) throws {
@@ -412,6 +404,16 @@ public final class SnapCommandLineDriver {
 
             case .unoptimized:
                 shouldEnableOptimizations = false
+
+            case let .platform(platformName):
+                switch platformName.lowercased() {
+                case "turtle16":
+                    platform = .turtle16
+                case "tack":
+                    platform = .tack
+                default:
+                    throw SnapCommandLineDriverError("unknown platform '\(platformName)'. Valid platforms: turtle16, tack")
+                }
             }
         }
 
@@ -445,6 +447,7 @@ public final class SnapCommandLineDriver {
         \trun        Compile the program and run immediately in a VM.
         \ttest       Compile the program for testing and run immediately in a VM.
         \t-t <test>  The test suite only runs the specified test
+        \t--platform <platform>  Target platform (turtle16, tack). Default: turtle16
         \t-h         Display available options
         \t-o <file>  Specify the output filename
         \t-S         Output assembly code

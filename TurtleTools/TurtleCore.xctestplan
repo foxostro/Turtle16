@@ -1,0 +1,35 @@
+{
+  "configurations" : [
+    {
+      "id" : "default",
+      "name" : "Default",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "SWIFT_BACKTRACE",
+            "value" : "enable=no"
+          }
+        ]
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true,
+    "environmentVariableEntries" : [
+      {
+        "key" : "SWIFT_BACKTRACE",
+        "value" : "enable=no"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6FB0D29224710C26003B5D5C",
+        "name" : "TurtleCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

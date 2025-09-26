@@ -1,0 +1,35 @@
+{
+  "configurations" : [
+    {
+      "id" : "2F9497EA-82C4-49A7-973D-36C9CA53BEB5",
+      "name" : "Configuration 1",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "SWIFT_BACKTRACE",
+            "value" : "enable=no"
+          }
+        ]
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true,
+    "environmentVariableEntries" : [
+      {
+        "key" : "SWIFT_BACKTRACE",
+        "value" : "enable=no"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F9201EC2471DAC7009E1410",
+        "name" : "SnapCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -791,6 +791,12 @@
 		6F924E7B248B42E100F43741 /* TypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeCheckerTests.swift; sourceTree = "<group>"; };
 		6F924E7D248B4CCA00F43741 /* ExprUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExprUtils.swift; sourceTree = "<group>"; };
 		6F982BDF265EB6BE0029ED5F /* AssemblerCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCompilerTests.swift; sourceTree = "<group>"; };
+		6F986F9B2E86CF8A008880C0 /* SnapCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SnapCore.xctestplan; sourceTree = "<group>"; };
+		6F986F9C2E86CFB4008880C0 /* Snap.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = Snap.xctestplan; path = ../../Snap.xctestplan; sourceTree = "<group>"; };
+		6F986F9D2E86CFC5008880C0 /* SnapBenchmark.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = SnapBenchmark.xctestplan; path = ../../SnapBenchmark.xctestplan; sourceTree = "<group>"; };
+		6F986F9E2E86CFD4008880C0 /* TurtleCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = TurtleCore.xctestplan; path = ../../TurtleCore.xctestplan; sourceTree = "<group>"; };
+		6F986F9F2E86CFED008880C0 /* TurtleAssembler.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = TurtleAssembler.xctestplan; path = ../../TurtleAssembler.xctestplan; sourceTree = "<group>"; };
+		6F986FA02E86CFFB008880C0 /* TurtleSimulatorCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = TurtleSimulatorCore.xctestplan; path = ../../TurtleSimulatorCore.xctestplan; sourceTree = "<group>"; };
 		6F9E8F7E26B9A90F00FE25E4 /* TypealiasScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypealiasScanner.swift; sourceTree = "<group>"; };
 		6F9E8F8026B9A91900FE25E4 /* TypealiasScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypealiasScannerTests.swift; sourceTree = "<group>"; };
 		6FA1A712249A816200D2DB57 /* TopLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevel.swift; sourceTree = "<group>"; };
@@ -997,6 +1003,7 @@
 			children = (
 				6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */,
 				6F300DC2266A906F00BFBAC4 /* main.swift */,
+				6F986F9F2E86CFED008880C0 /* TurtleAssembler.xctestplan */,
 			);
 			path = TurtleAssembler;
 			sourceTree = "<group>";
@@ -1136,6 +1143,7 @@
 				6F39876B281517E400C601AE /* InstructionDecoder2.pld */,
 				6F39876D281517F700C601AE /* InstructionDecoder3.pld */,
 				6F734334259327D400B7E43F /* Info.plist */,
+				6F986FA02E86CFFB008880C0 /* TurtleSimulatorCore.xctestplan */,
 			);
 			path = TurtleSimulatorCore;
 			sourceTree = "<group>";
@@ -1211,6 +1219,7 @@
 			children = (
 				6F9201DB2471DA22009E1410 /* main.swift */,
 				6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */,
+				6F986F9C2E86CFB4008880C0 /* Snap.xctestplan */,
 			);
 			path = Snap;
 			sourceTree = "<group>";
@@ -1294,6 +1303,7 @@
 				6F565901293D641100AC1679 /* runtime_TackVM.snap */,
 				6F7E16D327F3A3660067D059 /* runtime_Turtle16.snap */,
 				6F7F356924D2323F00BA8E37 /* stdlib.snap */,
+				6F986F9B2E86CF8A008880C0 /* SnapCore.xctestplan */,
 			);
 			path = SnapCore;
 			sourceTree = "<group>";
@@ -1396,6 +1406,7 @@
 				6F6956FA24F965B3006D66FC /* UInt8Extension.swift */,
 				6FB0D28D24710C26003B5D5C /* TurtleCore.h */,
 				6FB0D28E24710C26003B5D5C /* Info.plist */,
+				6F986F9E2E86CFD4008880C0 /* TurtleCore.xctestplan */,
 			);
 			path = TurtleCore;
 			sourceTree = "<group>";
@@ -1419,6 +1430,7 @@
 			children = (
 				6FB28F672512C50B001F5D12 /* main.swift */,
 				6FB28F6C2512C539001F5D12 /* SnapBenchmarkDriver.swift */,
+				6F986F9D2E86CFC5008880C0 /* SnapBenchmark.xctestplan */,
 			);
 			path = SnapBenchmark;
 			sourceTree = "<group>";

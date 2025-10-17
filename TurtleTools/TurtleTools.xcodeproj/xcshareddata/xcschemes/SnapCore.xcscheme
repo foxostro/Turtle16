@@ -30,7 +30,7 @@
       codeCoverageEnabled = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:SnapCore.xctestplan"
+            reference = "container:Test Plans/SnapCore.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

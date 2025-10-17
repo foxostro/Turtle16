@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "4CE203C7-26D9-4CE4-8C13-71E7EBD98DC7",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F734338259327D400B7E43F",
+        "name" : "TurtleSimulatorCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6FB0D29224710C26003B5D5C",
+        "name" : "TurtleCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

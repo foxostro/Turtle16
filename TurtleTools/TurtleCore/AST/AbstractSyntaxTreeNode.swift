@@ -28,13 +28,13 @@ open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible 
     public let sourceAnchor: SourceAnchor?
 
     public struct CountingID: Hashable, CustomStringConvertible, Sendable {
+        private static let lock = NSLock()
         private static var counter: Int = 0
         private static func next() -> Int {
-            let result: Int
-            objc_sync_enter(ID.self)
-            result = CountingID.counter
-            CountingID.counter += 1
-            objc_sync_exit(ID.self)
+            lock.lock()
+            defer { lock.unlock() }
+            let result = counter
+            counter += 1
             return result
         }
 

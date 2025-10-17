@@ -30,7 +30,7 @@
       codeCoverageEnabled = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:TurtleSimulatorCore.xctestplan"
+            reference = "container:Test Plans/TurtleSimulatorCore.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

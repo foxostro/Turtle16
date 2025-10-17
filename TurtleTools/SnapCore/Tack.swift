@@ -83,7 +83,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         }
     }
 
-    public enum RegisterPointer: Hashable, CustomStringConvertible {
+    public enum RegisterPointer: Sendable, Hashable, CustomStringConvertible {
         case sp, fp, ra, p(Int)
 
         public var description: String {
@@ -96,7 +96,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         }
     }
 
-    public enum Register16: Hashable, CustomStringConvertible {
+    public enum Register16: Sendable, Hashable, CustomStringConvertible {
         case w(Int)
 
         public var description: String {
@@ -106,7 +106,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         }
     }
 
-    public enum RegisterBoolean: Hashable, CustomStringConvertible {
+    public enum RegisterBoolean: Sendable, Hashable, CustomStringConvertible {
         case o(Int)
 
         public var description: String {
@@ -116,7 +116,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         }
     }
 
-    public enum Register8: Hashable, CustomStringConvertible {
+    public enum Register8: Sendable, Hashable, CustomStringConvertible {
         case b(Int)
 
         public var description: String {

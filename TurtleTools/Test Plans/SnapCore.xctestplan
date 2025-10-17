@@ -1,0 +1,107 @@
+{
+  "configurations" : [
+    {
+      "id" : "2F9497EA-82C4-49A7-973D-36C9CA53BEB5",
+      "name" : "Configuration 1",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "SWIFT_BACKTRACE",
+            "value" : "enable=no"
+          }
+        ]
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "SWIFT_BACKTRACE",
+        "value" : "enable=no"
+      }
+    ],
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "skippedTags" : {
+        "tags" : [
+          ".extensive"
+        ]
+      },
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F734338259327D400B7E43F",
+        "name" : "TurtleSimulatorCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "skippedTags" : {
+        "tags" : [
+          ".extensive"
+        ]
+      },
+      "skippedTests" : [
+        "TestCaseGeneratorTests",
+        "TestCaseGeneratorTests\/testBit8VsBit16ValueRanges()",
+        "TestCaseGeneratorTests\/testConfigurationFromEnvironment()",
+        "TestCaseGeneratorTests\/testDefaultConfiguration()",
+        "TestCaseGeneratorTests\/testEdgeCases16Bit()",
+        "TestCaseGeneratorTests\/testEdgeCases8Bit()",
+        "TestCaseGeneratorTests\/testEdgeCasesAllCombinations()",
+        "TestCaseGeneratorTests\/testEdgeCasesPerformance()",
+        "TestCaseGeneratorTests\/testExhaustive8Bit()",
+        "TestCaseGeneratorTests\/testInitializationWithAllStrategies()",
+        "TestCaseGeneratorTests\/testProgressive8BitShuffling()",
+        "TestCaseGeneratorTests\/testProgressiveReproducibilitySmallSample()",
+        "TestCaseGeneratorTests\/testProgressiveShufflePerformance()",
+        "TestCaseGeneratorTests\/testSamplingBounds()",
+        "TestCaseGeneratorTests\/testSamplingDifferentSeeds()",
+        "TestCaseGeneratorTests\/testSamplingPerformance()",
+        "TestCaseGeneratorTests\/testSamplingReproducibility()",
+        "TestCaseGeneratorTests\/testSamplingSmallCount()",
+        "TestCaseGeneratorTests\/testSamplingWithEdges()",
+        "TestCaseGeneratorTests\/testSeededRandomGeneratorConsistency()",
+        "TestCaseGeneratorTests\/testStrategyDescriptions()",
+        "TestCaseGeneratorTests\/testZeroSamplingCount()",
+        "TestProgressReporterTests",
+        "TestProgressReporterTests\/testBasicProgressReporting()",
+        "TestProgressReporterTests\/testCompletionReporting()",
+        "TestProgressReporterTests\/testDifferentStrategies()",
+        "TestProgressReporterTests\/testExecutionStatistics()",
+        "TestProgressReporterTests\/testInitialization()",
+        "TestProgressReporterTests\/testNoTimeoutWhenNotConfigured()",
+        "TestProgressReporterTests\/testProgressCalculations()",
+        "TestProgressReporterTests\/testProgressIntervalReporting()",
+        "TestProgressReporterTests\/testProgressReportingPerformance()",
+        "TestProgressReporterTests\/testSingleCase()",
+        "TestProgressReporterTests\/testStatisticsWithZeroProgress()",
+        "TestProgressReporterTests\/testTimeoutDetection()",
+        "TestProgressReporterTests\/testVerboseLogging()",
+        "TestProgressReporterTests\/testXCTestIntegration()",
+        "TestProgressReporterTests\/testZeroCases()"
+      ],
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F9201EC2471DAC7009E1410",
+        "name" : "SnapCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "skippedTags" : {
+        "tags" : [
+          ".extensive"
+        ]
+      },
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6FB0D29224710C26003B5D5C",
+        "name" : "TurtleCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

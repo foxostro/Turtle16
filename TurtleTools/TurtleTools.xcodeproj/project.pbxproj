@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		67A5B4F6120154783D246881 /* TestRunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB108331E7DFAFE214D6DA2F /* TestRunnerTests.swift */; };
+		69A3C58BD5700DB6E2FE76A5 /* BatchOrchestrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0437284503BCA8F1F28DD2 /* BatchOrchestrationTests.swift */; };
 		6F00093F262659B300C5DFDE /* SandboxAccessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F00093D262659B300C5DFDE /* SandboxAccessManager.swift */; };
 		6F000940262659B300C5DFDE /* StringLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F00093E262659B300C5DFDE /* StringLogger.swift */; };
 		6F00097126265A9400C5DFDE /* AudioRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC9262025045F5E006FAE8C /* AudioRenderer.swift */; };
@@ -36,6 +38,9 @@
 		6F037C642E736D2200BE5AD5 /* CompilerPassEraseCompileTimeExpressionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F037C632E736D2200BE5AD5 /* CompilerPassEraseCompileTimeExpressionsTests.swift */; };
 		6F058A312C59837E00B3FA82 /* CompilerPassGenerics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */; };
 		6F058A332C59839000B3FA82 /* CompilerPassGenericsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F058A322C59839000B3FA82 /* CompilerPassGenericsTests.swift */; };
+		6F0912722EAEE9A200A27473 /* TackCompilerValidationSuiteCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F26F7072EA582DF0009007E /* TackCompilerValidationSuiteCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F0912732EAEE9AC00A27473 /* TackCompilerValidationSuite in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F26F6CF2EA1DDA40009007E /* TackCompilerValidationSuite */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6F0912782EAEECA800A27473 /* SnapBenchmark in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6FB28F652512C50B001F5D12 /* SnapBenchmark */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6F0943EF2C8FDC1D00A24FAC /* CompilerPassVtables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0943EE2C8FDC1D00A24FAC /* CompilerPassVtables.swift */; };
 		6F0943F12C8FDE9B00A24FAC /* CompilerPassVtablesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0943F02C8FDE9B00A24FAC /* CompilerPassVtablesTests.swift */; };
 		6F0943F32C8FDFAB00A24FAC /* TraitScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0943F22C8FDFAB00A24FAC /* TraitScanner.swift */; };
@@ -72,6 +77,32 @@
 		6F24AC8B24A07CAF005193BB /* StatementTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24AC8A24A07CAF005193BB /* StatementTracer.swift */; };
 		6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */; };
 		6F24B629254E3C4E00295D49 /* SnapCompilerMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24B628254E3C4E00295D49 /* SnapCompilerMetrics.swift */; };
+		6F26F6D82EA1DDB40009007E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F6D62EA1DDB40009007E /* main.swift */; };
+		6F26F6DB2EA1E7190009007E /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 6F26F6DA2EA1E7190009007E /* ArgumentParser */; };
+		6F26F6E22EA467490009007E /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 1879DCAA1B23C6BED4D1C079 /* Logging */; };
+		6F26F7122EA582DF0009007E /* TackCompilerValidationSuiteCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F26F7072EA582DF0009007E /* TackCompilerValidationSuiteCore.framework */; };
+		6F26F7212EA582E40009007E /* TackCompilerValidationSuiteCore.docc in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F71E2EA582E40009007E /* TackCompilerValidationSuiteCore.docc */; };
+		6F26F7222EA582E40009007E /* TackCompilerValidationSuiteCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F71F2EA582E40009007E /* TackCompilerValidationSuiteCore.swift */; };
+		6F26F7262EA582F90009007E /* TackCompilerValidationSuiteCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F26F7072EA582DF0009007E /* TackCompilerValidationSuiteCore.framework */; };
+		6F26F7272EA582F90009007E /* TackCompilerValidationSuiteCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F26F7072EA582DF0009007E /* TackCompilerValidationSuiteCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F26F72B2EA583100009007E /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
+		6F26F72C2EA583100009007E /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F26F7302EA583140009007E /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* TurtleSimulatorCore.framework */; };
+		6F26F7312EA583140009007E /* TurtleSimulatorCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F26F7342EA583170009007E /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
+		6F26F7352EA583170009007E /* SnapCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F26F7432EA583400009007E /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F7422EA583400009007E /* Utilities.swift */; };
+		6F26F7442EA583400009007E /* BatchOrchestration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F7382EA583400009007E /* BatchOrchestration.swift */; };
+		6F26F7452EA583400009007E /* TackRegisterConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F73B2EA583400009007E /* TackRegisterConfiguration.swift */; };
+		6F26F7472EA583400009007E /* TestFailure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F73C2EA583400009007E /* TestFailure.swift */; };
+		6F26F7482EA583400009007E /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F73D2EA583400009007E /* TestHelpers.swift */; };
+		6F26F74A2EA583400009007E /* TestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F73F2EA583400009007E /* TestRunner.swift */; };
+		6F26F74B2EA583400009007E /* ProgressSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F73A2EA583400009007E /* ProgressSpinner.swift */; };
+		6F26F74C2EA583400009007E /* Tests8Bit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F7402EA583400009007E /* Tests8Bit.swift */; };
+		6F26F74D2EA583400009007E /* Tests16Bit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F7412EA583400009007E /* Tests16Bit.swift */; };
+		6F26F7512EA583570009007E /* FormatTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F74F2EA583570009007E /* FormatTimeTests.swift */; };
+		6F26F7532EA584B10009007E /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 6F26F7522EA584B10009007E /* ArgumentParser */; };
+		6F26F7552EA584B50009007E /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6F26F7542EA584B50009007E /* Logging */; };
 		6F2940A9248306EC00C50ABA /* While.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940A8248306EC00C50ABA /* While.swift */; };
 		6F2940AB2483070C00C50ABA /* WhileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940AA2483070C00C50ABA /* WhileTests.swift */; };
 		6F2940BF2483995500C50ABA /* EnvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F50DB0D247F5F9500643DAC /* EnvTests.swift */; };
@@ -179,6 +210,9 @@
 		6F5462F3253C0560005DDAB6 /* TraitDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */; };
 		6F546311253D3B5F005DDAB6 /* ImplFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F546310253D3B5F005DDAB6 /* ImplFor.swift */; };
 		6F565902293D641200AC1679 /* runtime_TackVM.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F565901293D641100AC1679 /* runtime_TackVM.snap */; };
+		6F5B662C2EA5883600A6A33D /* TestLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F73E2EA583400009007E /* TestLogger.swift */; };
+		6F5B662D2EA5885C00A6A33D /* TackCompilerValidationSuiteDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F26F7392EA583400009007E /* TackCompilerValidationSuiteDriver.swift */; };
+		6F5B662F2EA5A90400A6A33D /* ClosedRangeExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5B662E2EA5A90400A6A33D /* ClosedRangeExtensionsTests.swift */; };
 		6F603CB02515BB7900B2C54E /* ForIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F603CAF2515BB7900B2C54E /* ForIn.swift */; };
 		6F6956FB24F965B3006D66FC /* UInt8Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6956FA24F965B3006D66FC /* UInt8Extension.swift */; };
 		6F6A2EEE2C5C5C6C004A25F5 /* CompilerPassClearSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A2EED2C5C5C6C004A25F5 /* CompilerPassClearSymbols.swift */; };
@@ -278,6 +312,12 @@
 		6FBCFA5E26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */; };
 		6FBD0F052C657E80000FEE84 /* GenericsPartialEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBD0F042C657E80000FEE84 /* GenericsPartialEvaluator.swift */; };
 		6FBD0F072C657EBC000FEE84 /* GenericFunctionPartialEvaluatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBD0F062C657EBC000FEE84 /* GenericFunctionPartialEvaluatorTests.swift */; };
+		6FBF612B2E8A504000AB87B0 /* SnapCore.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 6FBF612A2E8A504000AB87B0 /* SnapCore.xctestplan */; };
+		6FBF61342E8A51E200AB87B0 /* SnapBenchmark.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 6FBF61332E8A51E200AB87B0 /* SnapBenchmark.xctestplan */; };
+		6FBF61362E8A51F100AB87B0 /* TurtleCore.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 6FBF61352E8A51F100AB87B0 /* TurtleCore.xctestplan */; };
+		6FBF61382E8A51FE00AB87B0 /* TurtleAssembler.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 6FBF61372E8A51FE00AB87B0 /* TurtleAssembler.xctestplan */; };
+		6FBF613A2E8A520F00AB87B0 /* TurtleSimulatorCore.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 6FBF61392E8A520F00AB87B0 /* TurtleSimulatorCore.xctestplan */; };
+		6FBF613C2E8A521A00AB87B0 /* TurtleSimulator.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 6FBF613B2E8A521A00AB87B0 /* TurtleSimulator.xctestplan */; };
 		6FC4E6ED28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */; };
 		6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */; };
 		6FC87B682D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC87B672D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift */; };
@@ -328,6 +368,8 @@
 		6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */; };
 		6FFD48C12DD27E410003287C /* CompilerPassEraseUnions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FFD48C02DD27E410003287C /* CompilerPassEraseUnions.swift */; };
 		6FFD48C32DD2CD200003287C /* CompilerPassEraseUnionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FFD48C22DD2CD200003287C /* CompilerPassEraseUnionsTests.swift */; };
+		89D79E0B5C2B3189F56C240A /* PatternMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A490C47904275693CCCAB11 /* PatternMatcher.swift */; };
+		FD905E522CD1893885FEFD3B /* PatternMatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A2DC3EFD5FCBA72D95C387 /* PatternMatcherTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -353,6 +395,62 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
+		};
+		6F0912702EAEE98000A27473 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F26F6CE2EA1DDA40009007E;
+			remoteInfo = TackCompilerValidationSuite;
+		};
+		6F0912742EAEEC7600A27473 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB28F642512C50B001F5D12;
+			remoteInfo = SnapBenchmark;
+		};
+		6F0912762EAEEC7E00A27473 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F26F7062EA582DF0009007E;
+			remoteInfo = TackCompilerValidationSuiteCore;
+		};
+		6F26F7132EA582DF0009007E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F26F7062EA582DF0009007E;
+			remoteInfo = ExhaustiveTackTestsCore;
+		};
+		6F26F7282EA582F90009007E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F26F7062EA582DF0009007E;
+			remoteInfo = ExhaustiveTackTestsCore;
+		};
+		6F26F72D2EA583100009007E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
+			remoteInfo = TurtleCore;
+		};
+		6F26F7322EA583140009007E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F734330259327D400B7E43F;
+			remoteInfo = TurtleSimulatorCore;
+		};
+		6F26F7362EA583170009007E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
+			remoteInfo = SnapCore;
 		};
 		6F300DC9266A90CC00BFBAC4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -452,6 +550,13 @@
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
 		};
+		6FB279642EB1DA4C0094C10F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FDA16592B1FAC9700FD1FC0;
+			remoteInfo = TurtleSimulator;
+		};
 		6FB28F722512C9E0001F5D12 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -460,6 +565,13 @@
 			remoteInfo = TurtleCore;
 		};
 		6FB28F742512C9E4001F5D12 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
+			remoteInfo = SnapCore;
+		};
+		6FBF613D2E8A56EC00AB87B0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
@@ -480,13 +592,6 @@
 			remoteGlobalIDString = 6F734330259327D400B7E43F;
 			remoteInfo = TurtleSimulatorCore;
 		};
-		6FDA166E2B1FAC9A00FD1FC0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FDA16592B1FAC9700FD1FC0;
-			remoteInfo = TurtleSimulator;
-		};
 		6FDA16782B1FAC9C00FD1FC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -504,6 +609,39 @@
 			dstSubfolderSpec = 7;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F26F6CD2EA1DDA40009007E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		6F26F72A2EA582F90009007E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6F26F7272EA582F90009007E /* TackCompilerValidationSuiteCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F26F72F2EA583100009007E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6F26F7352EA583170009007E /* SnapCore.framework in Embed Frameworks */,
+				6F26F7312EA583140009007E /* TurtleSimulatorCore.framework in Embed Frameworks */,
+				6F26F72C2EA583100009007E /* TurtleCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6F300DBE266A906F00BFBAC4 /* CopyFiles */ = {
@@ -533,6 +671,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				6F0912722EAEE9A200A27473 /* TackCompilerValidationSuiteCore.framework in CopyFiles */,
 				6F3B82EC2B212BB10001EDE5 /* TurtleSimulatorCore.framework in CopyFiles */,
 				6F3B82EB2B212BA90001EDE5 /* TurtleCore.framework in CopyFiles */,
 				6F3B82EA2B212BA50001EDE5 /* SnapCore.framework in CopyFiles */,
@@ -543,8 +682,10 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 6;
 			files = (
+				6F0912782EAEECA800A27473 /* SnapBenchmark in CopyFiles */,
+				6F0912732EAEE9AC00A27473 /* TackCompilerValidationSuite in CopyFiles */,
 				6F3B82EF2B212BDF0001EDE5 /* TurtleAssembler in CopyFiles */,
 				6F3B82EE2B212BD90001EDE5 /* Snap in CopyFiles */,
 			);
@@ -571,6 +712,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1F0437284503BCA8F1F28DD2 /* BatchOrchestrationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatchOrchestrationTests.swift; sourceTree = "<group>"; };
+		3A490C47904275693CCCAB11 /* PatternMatcher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PatternMatcher.swift; sourceTree = "<group>"; };
+		3DE5E8EE2B454A1FFEC58531 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		6F00093D262659B300C5DFDE /* SandboxAccessManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxAccessManager.swift; sourceTree = "<group>"; };
 		6F00093E262659B300C5DFDE /* StringLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringLogger.swift; sourceTree = "<group>"; };
 		6F01449F24D4941900071EC0 /* ParameterIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterIdentifier.swift; sourceTree = "<group>"; };
@@ -620,6 +764,25 @@
 		6F24AC8A24A07CAF005193BB /* StatementTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementTracer.swift; sourceTree = "<group>"; };
 		6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementTracerTests.swift; sourceTree = "<group>"; };
 		6F24B628254E3C4E00295D49 /* SnapCompilerMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerMetrics.swift; sourceTree = "<group>"; };
+		6F26F6CF2EA1DDA40009007E /* TackCompilerValidationSuite */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TackCompilerValidationSuite; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F26F6D62EA1DDB40009007E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		6F26F6FF2EA56A8B0009007E /* TackCompilerValidationSuite.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TackCompilerValidationSuite.xctestplan; sourceTree = "<group>"; };
+		6F26F7072EA582DF0009007E /* TackCompilerValidationSuiteCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TackCompilerValidationSuiteCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F26F7112EA582DF0009007E /* TackCompilerValidationSuiteCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TackCompilerValidationSuiteCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F26F71E2EA582E40009007E /* TackCompilerValidationSuiteCore.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TackCompilerValidationSuiteCore.docc; sourceTree = "<group>"; };
+		6F26F71F2EA582E40009007E /* TackCompilerValidationSuiteCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackCompilerValidationSuiteCore.swift; sourceTree = "<group>"; };
+		6F26F7382EA583400009007E /* BatchOrchestration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchOrchestration.swift; sourceTree = "<group>"; };
+		6F26F7392EA583400009007E /* TackCompilerValidationSuiteDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackCompilerValidationSuiteDriver.swift; sourceTree = "<group>"; };
+		6F26F73A2EA583400009007E /* ProgressSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressSpinner.swift; sourceTree = "<group>"; };
+		6F26F73B2EA583400009007E /* TackRegisterConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackRegisterConfiguration.swift; sourceTree = "<group>"; };
+		6F26F73C2EA583400009007E /* TestFailure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFailure.swift; sourceTree = "<group>"; };
+		6F26F73D2EA583400009007E /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		6F26F73E2EA583400009007E /* TestLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestLogger.swift; sourceTree = "<group>"; };
+		6F26F73F2EA583400009007E /* TestRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRunner.swift; sourceTree = "<group>"; };
+		6F26F7402EA583400009007E /* Tests8Bit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests8Bit.swift; sourceTree = "<group>"; };
+		6F26F7412EA583400009007E /* Tests16Bit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests16Bit.swift; sourceTree = "<group>"; };
+		6F26F7422EA583400009007E /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		6F26F74F2EA583570009007E /* FormatTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatTimeTests.swift; sourceTree = "<group>"; };
 		6F2940A8248306EC00C50ABA /* While.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = While.swift; sourceTree = "<group>"; };
 		6F2940AA2483070C00C50ABA /* WhileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhileTests.swift; sourceTree = "<group>"; };
 		6F2940CD2483A0DB00C50ABA /* TokenMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMisc.swift; sourceTree = "<group>"; };
@@ -726,6 +889,7 @@
 		6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNumberTests.swift; sourceTree = "<group>"; };
 		6F5A013B231F7DCC003E7C7F /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandleTextOutputStream.swift; sourceTree = "<group>"; };
+		6F5B662E2EA5A90400A6A33D /* ClosedRangeExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosedRangeExtensionsTests.swift; sourceTree = "<group>"; };
 		6F603CAF2515BB7900B2C54E /* ForIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForIn.swift; sourceTree = "<group>"; };
 		6F615176230CB54200282B12 /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		6F615178230CB56E00282B12 /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
@@ -793,12 +957,6 @@
 		6F924E7B248B42E100F43741 /* TypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeCheckerTests.swift; sourceTree = "<group>"; };
 		6F924E7D248B4CCA00F43741 /* ExprUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExprUtils.swift; sourceTree = "<group>"; };
 		6F982BDF265EB6BE0029ED5F /* AssemblerCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCompilerTests.swift; sourceTree = "<group>"; };
-		6F986F9B2E86CF8A008880C0 /* SnapCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SnapCore.xctestplan; sourceTree = "<group>"; };
-		6F986F9C2E86CFB4008880C0 /* Snap.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = Snap.xctestplan; path = ../../Snap.xctestplan; sourceTree = "<group>"; };
-		6F986F9D2E86CFC5008880C0 /* SnapBenchmark.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = SnapBenchmark.xctestplan; path = ../../SnapBenchmark.xctestplan; sourceTree = "<group>"; };
-		6F986F9E2E86CFD4008880C0 /* TurtleCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = TurtleCore.xctestplan; path = ../../TurtleCore.xctestplan; sourceTree = "<group>"; };
-		6F986F9F2E86CFED008880C0 /* TurtleAssembler.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = TurtleAssembler.xctestplan; path = ../../TurtleAssembler.xctestplan; sourceTree = "<group>"; };
-		6F986FA02E86CFFB008880C0 /* TurtleSimulatorCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = TurtleSimulatorCore.xctestplan; path = ../../TurtleSimulatorCore.xctestplan; sourceTree = "<group>"; };
 		6F9E8F7E26B9A90F00FE25E4 /* TypealiasScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypealiasScanner.swift; sourceTree = "<group>"; };
 		6F9E8F8026B9A91900FE25E4 /* TypealiasScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypealiasScannerTests.swift; sourceTree = "<group>"; };
 		6FA1A712249A816200D2DB57 /* TopLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevel.swift; sourceTree = "<group>"; };
@@ -844,6 +1002,13 @@
 		6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackToTurtle16CompilerTests.swift; sourceTree = "<group>"; };
 		6FBD0F042C657E80000FEE84 /* GenericsPartialEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericsPartialEvaluator.swift; sourceTree = "<group>"; };
 		6FBD0F062C657EBC000FEE84 /* GenericFunctionPartialEvaluatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionPartialEvaluatorTests.swift; sourceTree = "<group>"; };
+		6FBF612A2E8A504000AB87B0 /* SnapCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SnapCore.xctestplan; sourceTree = "<group>"; };
+		6FBF61322E8A51C400AB87B0 /* Snap.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Snap.xctestplan; sourceTree = "<group>"; };
+		6FBF61332E8A51E200AB87B0 /* SnapBenchmark.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SnapBenchmark.xctestplan; sourceTree = "<group>"; };
+		6FBF61352E8A51F100AB87B0 /* TurtleCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TurtleCore.xctestplan; sourceTree = "<group>"; };
+		6FBF61372E8A51FE00AB87B0 /* TurtleAssembler.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TurtleAssembler.xctestplan; sourceTree = "<group>"; };
+		6FBF61392E8A520F00AB87B0 /* TurtleSimulatorCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TurtleSimulatorCore.xctestplan; sourceTree = "<group>"; };
+		6FBF613B2E8A521A00AB87B0 /* TurtleSimulator.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TurtleSimulator.xctestplan; sourceTree = "<group>"; };
 		6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolver.swift; sourceTree = "<group>"; };
 		6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolverTests.swift; sourceTree = "<group>"; };
 		6FC87B672D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitObjectDeclarationsBuilder.swift; sourceTree = "<group>"; };
@@ -852,7 +1017,6 @@
 		6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsoleViewController.swift; sourceTree = "<group>"; };
 		6FCA0B862B22A49C000BB22C /* DebugConsoleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DebugConsoleViewController.xib; sourceTree = "<group>"; };
 		6FCA0B892B22F60A000BB22C /* DebugStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugStatusBar.swift; sourceTree = "<group>"; };
-		6FCA0B8C2B231868000BB22C /* TurtleSimulatorApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TurtleSimulatorApp.xctestplan; sourceTree = "<group>"; };
 		6FCA942425264C61000C2A2D /* Assert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
 		6FCB6818247204F900798905 /* SnapLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLexer.swift; sourceTree = "<group>"; };
 		6FCB681B2472051200798905 /* SnapLexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLexerTests.swift; sourceTree = "<group>"; };
@@ -905,9 +1069,41 @@
 		6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCommandLineArgumentParserTests.swift; sourceTree = "<group>"; };
 		6FFD48C02DD27E410003287C /* CompilerPassEraseUnions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEraseUnions.swift; sourceTree = "<group>"; };
 		6FFD48C22DD2CD200003287C /* CompilerPassEraseUnionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEraseUnionsTests.swift; sourceTree = "<group>"; };
+		76A2DC3EFD5FCBA72D95C387 /* PatternMatcherTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PatternMatcherTests.swift; sourceTree = "<group>"; };
+		CB108331E7DFAFE214D6DA2F /* TestRunnerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TestRunnerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6F26F6CC2EA1DDA40009007E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F26F7262EA582F90009007E /* TackCompilerValidationSuiteCore.framework in Frameworks */,
+				6F26F6E22EA467490009007E /* Logging in Frameworks */,
+				6F26F6DB2EA1E7190009007E /* ArgumentParser in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F26F7042EA582DF0009007E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F26F7342EA583170009007E /* SnapCore.framework in Frameworks */,
+				6F26F7302EA583140009007E /* TurtleSimulatorCore.framework in Frameworks */,
+				6F26F7532EA584B10009007E /* ArgumentParser in Frameworks */,
+				6F26F72B2EA583100009007E /* TurtleCore.framework in Frameworks */,
+				6F26F7552EA584B50009007E /* Logging in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F26F70E2EA582DF0009007E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F26F7122EA582DF0009007E /* TackCompilerValidationSuiteCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6F300DBD266A906F00BFBAC4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1002,12 +1198,60 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		46C4120EFC45E3F424F0D6EE /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				3DE5E8EE2B454A1FFEC58531 /* Cocoa.framework */,
+			);
+			name = "OS X";
+			sourceTree = "<group>";
+		};
+		6F26F6D72EA1DDB40009007E /* TackCompilerValidationSuite */ = {
+			isa = PBXGroup;
+			children = (
+				6F26F6D62EA1DDB40009007E /* main.swift */,
+			);
+			path = TackCompilerValidationSuite;
+			sourceTree = "<group>";
+		};
+		6F26F7202EA582E40009007E /* TackCompilerValidationSuiteCore */ = {
+			isa = PBXGroup;
+			children = (
+				6F26F7382EA583400009007E /* BatchOrchestration.swift */,
+				6F26F71F2EA582E40009007E /* TackCompilerValidationSuiteCore.swift */,
+				6F26F7392EA583400009007E /* TackCompilerValidationSuiteDriver.swift */,
+				6F26F73A2EA583400009007E /* ProgressSpinner.swift */,
+				6F26F73B2EA583400009007E /* TackRegisterConfiguration.swift */,
+				6F26F73C2EA583400009007E /* TestFailure.swift */,
+				6F26F73E2EA583400009007E /* TestLogger.swift */,
+				6F26F73D2EA583400009007E /* TestHelpers.swift */,
+				6F26F73F2EA583400009007E /* TestRunner.swift */,
+				6F26F7402EA583400009007E /* Tests8Bit.swift */,
+				6F26F7412EA583400009007E /* Tests16Bit.swift */,
+				6F26F7422EA583400009007E /* Utilities.swift */,
+				6F26F71E2EA582E40009007E /* TackCompilerValidationSuiteCore.docc */,
+				3A490C47904275693CCCAB11 /* PatternMatcher.swift */,
+			);
+			path = TackCompilerValidationSuiteCore;
+			sourceTree = "<group>";
+		};
+		6F26F7242EA582E70009007E /* TackCompilerValidationSuiteCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				6F5B662E2EA5A90400A6A33D /* ClosedRangeExtensionsTests.swift */,
+				6F26F74F2EA583570009007E /* FormatTimeTests.swift */,
+				1F0437284503BCA8F1F28DD2 /* BatchOrchestrationTests.swift */,
+				CB108331E7DFAFE214D6DA2F /* TestRunnerTests.swift */,
+				76A2DC3EFD5FCBA72D95C387 /* PatternMatcherTests.swift */,
+			);
+			path = TackCompilerValidationSuiteCoreTests;
+			sourceTree = "<group>";
+		};
 		6F300DC1266A906F00BFBAC4 /* TurtleAssembler */ = {
 			isa = PBXGroup;
 			children = (
 				6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */,
 				6F300DC2266A906F00BFBAC4 /* main.swift */,
-				6F986F9F2E86CFED008880C0 /* TurtleAssembler.xctestplan */,
 			);
 			path = TurtleAssembler;
 			sourceTree = "<group>";
@@ -1025,6 +1269,7 @@
 		6F5036F822F50DBA00761737 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				46C4120EFC45E3F424F0D6EE /* OS X */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1146,7 +1391,6 @@
 				6F39876B281517E400C601AE /* InstructionDecoder2.pld */,
 				6F39876D281517F700C601AE /* InstructionDecoder3.pld */,
 				6F734334259327D400B7E43F /* Info.plist */,
-				6F986FA02E86CFFB008880C0 /* TurtleSimulatorCore.xctestplan */,
 			);
 			path = TurtleSimulatorCore;
 			sourceTree = "<group>";
@@ -1223,7 +1467,6 @@
 			children = (
 				6F9201DB2471DA22009E1410 /* main.swift */,
 				6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */,
-				6F986F9C2E86CFB4008880C0 /* Snap.xctestplan */,
 			);
 			path = Snap;
 			sourceTree = "<group>";
@@ -1307,7 +1550,6 @@
 				6F565901293D641100AC1679 /* runtime_TackVM.snap */,
 				6F7E16D327F3A3660067D059 /* runtime_Turtle16.snap */,
 				6F7F356924D2323F00BA8E37 /* stdlib.snap */,
-				6F986F9B2E86CF8A008880C0 /* SnapCore.xctestplan */,
 			);
 			path = SnapCore;
 			sourceTree = "<group>";
@@ -1410,7 +1652,6 @@
 				6F6956FA24F965B3006D66FC /* UInt8Extension.swift */,
 				6FB0D28D24710C26003B5D5C /* TurtleCore.h */,
 				6FB0D28E24710C26003B5D5C /* Info.plist */,
-				6F986F9E2E86CFD4008880C0 /* TurtleCore.xctestplan */,
 			);
 			path = TurtleCore;
 			sourceTree = "<group>";
@@ -1434,9 +1675,23 @@
 			children = (
 				6FB28F672512C50B001F5D12 /* main.swift */,
 				6FB28F6C2512C539001F5D12 /* SnapBenchmarkDriver.swift */,
-				6F986F9D2E86CFC5008880C0 /* SnapBenchmark.xctestplan */,
 			);
 			path = SnapBenchmark;
+			sourceTree = "<group>";
+		};
+		6FBF61282E8A4F2700AB87B0 /* Test Plans */ = {
+			isa = PBXGroup;
+			children = (
+				6F26F6FF2EA56A8B0009007E /* TackCompilerValidationSuite.xctestplan */,
+				6FBF61322E8A51C400AB87B0 /* Snap.xctestplan */,
+				6FBF61332E8A51E200AB87B0 /* SnapBenchmark.xctestplan */,
+				6FBF612A2E8A504000AB87B0 /* SnapCore.xctestplan */,
+				6FBF61372E8A51FE00AB87B0 /* TurtleAssembler.xctestplan */,
+				6FBF61352E8A51F100AB87B0 /* TurtleCore.xctestplan */,
+				6FBF613B2E8A521A00AB87B0 /* TurtleSimulator.xctestplan */,
+				6FBF61392E8A520F00AB87B0 /* TurtleSimulatorCore.xctestplan */,
+			);
+			path = "Test Plans";
 			sourceTree = "<group>";
 		};
 		6FDA165B2B1FAC9800FD1FC0 /* TurtleSimulatorApp */ = {
@@ -1457,7 +1712,6 @@
 				6FDA16682B1FAC9900FD1FC0 /* TurtleSimulator.entitlements */,
 				6FDA16672B1FAC9900FD1FC0 /* Info.plist */,
 				6FDA16622B1FAC9900FD1FC0 /* Assets.xcassets */,
-				6FCA0B8C2B231868000BB22C /* TurtleSimulatorApp.xctestplan */,
 				6FCA0B862B22A49C000BB22C /* DebugConsoleViewController.xib */,
 			);
 			path = TurtleSimulatorApp;
@@ -1526,6 +1780,10 @@
 				6FDA165B2B1FAC9800FD1FC0 /* TurtleSimulatorApp */,
 				6FDA16702B1FAC9B00FD1FC0 /* TurtleSimulatorAppTests */,
 				6FDA167A2B1FAC9D00FD1FC0 /* TurtleSimulatorAppUITests */,
+				6F26F6D72EA1DDB40009007E /* TackCompilerValidationSuite */,
+				6F26F7202EA582E40009007E /* TackCompilerValidationSuiteCore */,
+				6F26F7242EA582E70009007E /* TackCompilerValidationSuiteCoreTests */,
+				6FBF61282E8A4F2700AB87B0 /* Test Plans */,
 				6FF1995422ECB36F00C255A2 /* Products */,
 				6F5036F822F50DBA00761737 /* Frameworks */,
 			);
@@ -1546,6 +1804,9 @@
 				6FDA165A2B1FAC9700FD1FC0 /* TurtleSimulator.app */,
 				6FDA166D2B1FAC9900FD1FC0 /* TurtleSimulatorAppTests.xctest */,
 				6FDA16772B1FAC9B00FD1FC0 /* TurtleSimulatorAppUITests.xctest */,
+				6F26F6CF2EA1DDA40009007E /* TackCompilerValidationSuite */,
+				6F26F7072EA582DF0009007E /* TackCompilerValidationSuiteCore.framework */,
+				6F26F7112EA582DF0009007E /* TackCompilerValidationSuiteCoreTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1553,6 +1814,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		6F26F7022EA582DF0009007E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6F73432C259327D400B7E43F /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1580,6 +1848,73 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		6F26F6CE2EA1DDA40009007E /* TackCompilerValidationSuite */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F26F6D32EA1DDA40009007E /* Build configuration list for PBXNativeTarget "TackCompilerValidationSuite" */;
+			buildPhases = (
+				6F26F6CB2EA1DDA40009007E /* Sources */,
+				6F26F6CC2EA1DDA40009007E /* Frameworks */,
+				6F26F6CD2EA1DDA40009007E /* CopyFiles */,
+				6F26F72A2EA582F90009007E /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6F26F7292EA582F90009007E /* PBXTargetDependency */,
+			);
+			name = TackCompilerValidationSuite;
+			packageProductDependencies = (
+				6F26F6DA2EA1E7190009007E /* ArgumentParser */,
+				1879DCAA1B23C6BED4D1C079 /* Logging */,
+			);
+			productName = ExhaustiveTackTests;
+			productReference = 6F26F6CF2EA1DDA40009007E /* TackCompilerValidationSuite */;
+			productType = "com.apple.product-type.tool";
+		};
+		6F26F7062EA582DF0009007E /* TackCompilerValidationSuiteCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F26F7182EA582DF0009007E /* Build configuration list for PBXNativeTarget "TackCompilerValidationSuiteCore" */;
+			buildPhases = (
+				6F26F7022EA582DF0009007E /* Headers */,
+				6F26F7032EA582DF0009007E /* Sources */,
+				6F26F7042EA582DF0009007E /* Frameworks */,
+				6F26F7052EA582DF0009007E /* Resources */,
+				6F26F72F2EA583100009007E /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6F26F72E2EA583100009007E /* PBXTargetDependency */,
+				6F26F7332EA583140009007E /* PBXTargetDependency */,
+				6F26F7372EA583170009007E /* PBXTargetDependency */,
+			);
+			name = TackCompilerValidationSuiteCore;
+			packageProductDependencies = (
+				6F26F7522EA584B10009007E /* ArgumentParser */,
+				6F26F7542EA584B50009007E /* Logging */,
+			);
+			productName = ExhaustiveTackTestsCore;
+			productReference = 6F26F7072EA582DF0009007E /* TackCompilerValidationSuiteCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		6F26F7102EA582DF0009007E /* TackCompilerValidationSuiteCoreTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F26F71B2EA582DF0009007E /* Build configuration list for PBXNativeTarget "TackCompilerValidationSuiteCoreTests" */;
+			buildPhases = (
+				6F26F70D2EA582DF0009007E /* Sources */,
+				6F26F70E2EA582DF0009007E /* Frameworks */,
+				6F26F70F2EA582DF0009007E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6F26F7142EA582DF0009007E /* PBXTargetDependency */,
+			);
+			name = TackCompilerValidationSuiteCoreTests;
+			productName = ExhaustiveTackTestsCoreTests;
+			productReference = 6F26F7112EA582DF0009007E /* TackCompilerValidationSuiteCoreTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6F300DBF266A906F00BFBAC4 /* TurtleAssembler */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6F300DC4266A906F00BFBAC4 /* Build configuration list for PBXNativeTarget "TurtleAssembler" */;
@@ -1631,6 +1966,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FBF613E2E8A56EC00AB87B0 /* PBXTargetDependency */,
 				6F73433C259327D400B7E43F /* PBXTargetDependency */,
 			);
 			name = TurtleSimulatorCoreTests;
@@ -1766,6 +2102,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				6F0912772EAEEC7E00A27473 /* PBXTargetDependency */,
+				6F0912752EAEEC7600A27473 /* PBXTargetDependency */,
+				6F0912712EAEE98000A27473 /* PBXTargetDependency */,
 				6F3B82DE2B212AA70001EDE5 /* PBXTargetDependency */,
 				6F3B82E02B212AAB0001EDE5 /* PBXTargetDependency */,
 				6F3B82E22B212AB50001EDE5 /* PBXTargetDependency */,
@@ -1788,7 +2127,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				6FDA166F2B1FAC9A00FD1FC0 /* PBXTargetDependency */,
+				6FB279652EB1DA4C0094C10F /* PBXTargetDependency */,
 			);
 			name = TurtleSimulatorAppTests;
 			productName = TurtleSimulatorTests;
@@ -1820,10 +2159,19 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = "Andrew Fox";
 				TargetAttributes = {
+					6F26F6CE2EA1DDA40009007E = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					6F26F7062EA582DF0009007E = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					6F26F7102EA582DF0009007E = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
 					6F300DBF266A906F00BFBAC4 = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -1877,6 +2225,10 @@
 				Base,
 			);
 			mainGroup = 6FF1994A22ECB36F00C255A2;
+			packageReferences = (
+				6F26F6D92EA1E68F0009007E /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+				7FAF704B61B8EFBD1F71B89B /* XCRemoteSwiftPackageReference "swift-log" */,
+			);
 			productRefGroup = 6FF1995422ECB36F00C255A2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1890,6 +2242,9 @@
 				6F734330259327D400B7E43F /* TurtleSimulatorCore */,
 				6F734338259327D400B7E43F /* TurtleSimulatorCoreTests */,
 				6F300DBF266A906F00BFBAC4 /* TurtleAssembler */,
+				6F26F6CE2EA1DDA40009007E /* TackCompilerValidationSuite */,
+				6F26F7062EA582DF0009007E /* TackCompilerValidationSuiteCore */,
+				6F26F7102EA582DF0009007E /* TackCompilerValidationSuiteCoreTests */,
 				6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */,
 				6FDA166C2B1FAC9900FD1FC0 /* TurtleSimulatorAppTests */,
 				6FDA16762B1FAC9B00FD1FC0 /* TurtleSimulatorAppUITests */,
@@ -1898,6 +2253,20 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6F26F7052EA582DF0009007E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F26F70F2EA582DF0009007E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6F73432F259327D400B7E43F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1922,8 +2291,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FBF61342E8A51E200AB87B0 /* SnapBenchmark.xctestplan in Resources */,
 				6F7E16D427F3A3660067D059 /* runtime_Turtle16.snap in Resources */,
+				6FBF61362E8A51F100AB87B0 /* TurtleCore.xctestplan in Resources */,
+				6FBF61382E8A51FE00AB87B0 /* TurtleAssembler.xctestplan in Resources */,
 				6F565902293D641200AC1679 /* runtime_TackVM.snap in Resources */,
+				6FBF613A2E8A520F00AB87B0 /* TurtleSimulatorCore.xctestplan in Resources */,
+				6FBF612B2E8A504000AB87B0 /* SnapCore.xctestplan in Resources */,
+				6FBF613C2E8A521A00AB87B0 /* TurtleSimulator.xctestplan in Resources */,
 				6F7F356A24D2323F00BA8E37 /* stdlib.snap in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1977,6 +2352,47 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6F26F6CB2EA1DDA40009007E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F26F6D82EA1DDB40009007E /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F26F7032EA582DF0009007E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F26F7442EA583400009007E /* BatchOrchestration.swift in Sources */,
+				6F26F7222EA582E40009007E /* TackCompilerValidationSuiteCore.swift in Sources */,
+				6F5B662D2EA5885C00A6A33D /* TackCompilerValidationSuiteDriver.swift in Sources */,
+				6F26F74B2EA583400009007E /* ProgressSpinner.swift in Sources */,
+				6F26F74C2EA583400009007E /* Tests8Bit.swift in Sources */,
+				6F26F74D2EA583400009007E /* Tests16Bit.swift in Sources */,
+				6F26F7472EA583400009007E /* TestFailure.swift in Sources */,
+				6F26F7482EA583400009007E /* TestHelpers.swift in Sources */,
+				6F5B662C2EA5883600A6A33D /* TestLogger.swift in Sources */,
+				6F26F7452EA583400009007E /* TackRegisterConfiguration.swift in Sources */,
+				6F26F74A2EA583400009007E /* TestRunner.swift in Sources */,
+				6F26F7432EA583400009007E /* Utilities.swift in Sources */,
+				6F26F7212EA582E40009007E /* TackCompilerValidationSuiteCore.docc in Sources */,
+				89D79E0B5C2B3189F56C240A /* PatternMatcher.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F26F70D2EA582DF0009007E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F5B662F2EA5A90400A6A33D /* ClosedRangeExtensionsTests.swift in Sources */,
+				6F26F7512EA583570009007E /* FormatTimeTests.swift in Sources */,
+				69A3C58BD5700DB6E2FE76A5 /* BatchOrchestrationTests.swift in Sources */,
+				67A5B4F6120154783D246881 /* TestRunnerTests.swift in Sources */,
+				FD905E522CD1893885FEFD3B /* PatternMatcherTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6F300DBC266A906F00BFBAC4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2360,6 +2776,46 @@
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6F0009822626606B00C5DFDE /* PBXContainerItemProxy */;
 		};
+		6F0912712EAEE98000A27473 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F26F6CE2EA1DDA40009007E /* TackCompilerValidationSuite */;
+			targetProxy = 6F0912702EAEE98000A27473 /* PBXContainerItemProxy */;
+		};
+		6F0912752EAEEC7600A27473 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB28F642512C50B001F5D12 /* SnapBenchmark */;
+			targetProxy = 6F0912742EAEEC7600A27473 /* PBXContainerItemProxy */;
+		};
+		6F0912772EAEEC7E00A27473 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F26F7062EA582DF0009007E /* TackCompilerValidationSuiteCore */;
+			targetProxy = 6F0912762EAEEC7E00A27473 /* PBXContainerItemProxy */;
+		};
+		6F26F7142EA582DF0009007E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F26F7062EA582DF0009007E /* TackCompilerValidationSuiteCore */;
+			targetProxy = 6F26F7132EA582DF0009007E /* PBXContainerItemProxy */;
+		};
+		6F26F7292EA582F90009007E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F26F7062EA582DF0009007E /* TackCompilerValidationSuiteCore */;
+			targetProxy = 6F26F7282EA582F90009007E /* PBXContainerItemProxy */;
+		};
+		6F26F72E2EA583100009007E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
+			targetProxy = 6F26F72D2EA583100009007E /* PBXContainerItemProxy */;
+		};
+		6F26F7332EA583140009007E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F734330259327D400B7E43F /* TurtleSimulatorCore */;
+			targetProxy = 6F26F7322EA583140009007E /* PBXContainerItemProxy */;
+		};
+		6F26F7372EA583170009007E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
+			targetProxy = 6F26F7362EA583170009007E /* PBXContainerItemProxy */;
+		};
 		6F300DCA266A90CC00BFBAC4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6F734330259327D400B7E43F /* TurtleSimulatorCore */;
@@ -2430,6 +2886,11 @@
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */;
 		};
+		6FB279652EB1DA4C0094C10F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */;
+			targetProxy = 6FB279642EB1DA4C0094C10F /* PBXContainerItemProxy */;
+		};
 		6FB28F732512C9E0001F5D12 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
@@ -2439,6 +2900,11 @@
 			isa = PBXTargetDependency;
 			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
 			targetProxy = 6FB28F742512C9E4001F5D12 /* PBXContainerItemProxy */;
+		};
+		6FBF613E2E8A56EC00AB87B0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
+			targetProxy = 6FBF613D2E8A56EC00AB87B0 /* PBXContainerItemProxy */;
 		};
 		6FD2736E26CA1BB800749CDA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2450,11 +2916,6 @@
 			target = 6F734330259327D400B7E43F /* TurtleSimulatorCore */;
 			targetProxy = 6FD2736F26CA1BC900749CDA /* PBXContainerItemProxy */;
 		};
-		6FDA166F2B1FAC9A00FD1FC0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */;
-			targetProxy = 6FDA166E2B1FAC9A00FD1FC0 /* PBXContainerItemProxy */;
-		};
 		6FDA16792B1FAC9C00FD1FC0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */;
@@ -2463,6 +2924,213 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		6F26F6D42EA1DDA40009007E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				OTHER_SWIFT_FLAGS = "-parse-as-library";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TackCompilerValidationSuite;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6F26F6D52EA1DDA40009007E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				OTHER_SWIFT_FLAGS = "-parse-as-library";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TackCompilerValidationSuite;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6F26F7192EA582DF0009007E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Andrew Fox. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TackCompilerValidationSuiteCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		6F26F71A2EA582DF0009007E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Andrew Fox. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TackCompilerValidationSuiteCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6F26F71C2EA582DF0009007E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TackCompilerValidationSuiteCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6F26F71D2EA582DF0009007E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TackCompilerValidationSuiteCoreTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		6F300DC5266A906F00BFBAC4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2473,7 +3141,10 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssembler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2492,7 +3163,10 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleAssembler;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2632,7 +3306,10 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Snap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2651,7 +3328,10 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Snap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2913,6 +3593,10 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.SnapBenchmark;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2931,6 +3615,10 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
 				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path",
+					"@executable_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.SnapBenchmark;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2998,6 +3686,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -3255,6 +3944,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6F26F6D32EA1DDA40009007E /* Build configuration list for PBXNativeTarget "TackCompilerValidationSuite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F26F6D42EA1DDA40009007E /* Debug */,
+				6F26F6D52EA1DDA40009007E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F26F7182EA582DF0009007E /* Build configuration list for PBXNativeTarget "TackCompilerValidationSuiteCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F26F7192EA582DF0009007E /* Debug */,
+				6F26F71A2EA582DF0009007E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F26F71B2EA582DF0009007E /* Build configuration list for PBXNativeTarget "TackCompilerValidationSuiteCoreTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F26F71C2EA582DF0009007E /* Debug */,
+				6F26F71D2EA582DF0009007E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6F300DC4266A906F00BFBAC4 /* Build configuration list for PBXNativeTarget "TurtleAssembler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3373,6 +4089,48 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6F26F6D92EA1E68F0009007E /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.2;
+			};
+		};
+		7FAF704B61B8EFBD1F71B89B /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1879DCAA1B23C6BED4D1C079 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7FAF704B61B8EFBD1F71B89B /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+		6F26F6DA2EA1E7190009007E /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F26F6D92EA1E68F0009007E /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+		6F26F7522EA584B10009007E /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F26F6D92EA1E68F0009007E /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+		6F26F7542EA584B50009007E /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7FAF704B61B8EFBD1F71B89B /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6FF1994B22ECB36F00C255A2 /* Project object */;
 }

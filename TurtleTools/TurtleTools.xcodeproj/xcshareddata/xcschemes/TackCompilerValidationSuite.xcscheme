@@ -4,7 +4,8 @@
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,49 +15,53 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FDA16592B1FAC9700FD1FC0"
-               BuildableName = "TurtleSimulator.app"
-               BlueprintName = "TurtleSimulator"
+               BlueprintIdentifier = "6F26F6CE2EA1DDA40009007E"
+               BuildableName = "TackCompilerValidationSuite"
+               BlueprintName = "TackCompilerValidationSuite"
+               ReferencedContainer = "container:TurtleTools.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6F26F7062EA582DF0009007E"
+               BuildableName = "TackCompilerValidationSuiteCore.framework"
+               BlueprintName = "TackCompilerValidationSuiteCore"
+               ReferencedContainer = "container:TurtleTools.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6F26F7102EA582DF0009007E"
+               BuildableName = "TackCompilerValidationSuiteCoreTests.xctest"
+               BlueprintName = "TackCompilerValidationSuiteCoreTests"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:Test Plans/TurtleSimulator.xctestplan"
+            reference = "container:Test Plans/TackCompilerValidationSuite.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
-      <Testables>
-         <TestableReference
-            skipped = "YES"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FDA16762B1FAC9B00FD1FC0"
-               BuildableName = "TurtleSimulatorAppUITests.xctest"
-               BlueprintName = "TurtleSimulatorAppUITests"
-               ReferencedContainer = "container:TurtleTools.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FDA166C2B1FAC9900FD1FC0"
-               BuildableName = "TurtleSimulatorAppTests.xctest"
-               BlueprintName = "TurtleSimulatorAppTests"
-               ReferencedContainer = "container:TurtleTools.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -67,17 +72,24 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "NO">
+      allowLocationSimulation = "NO"
+      viewDebuggingEnabled = "No">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6FDA16592B1FAC9700FD1FC0"
-            BuildableName = "TurtleSimulator.app"
-            BlueprintName = "TurtleSimulator"
+            BlueprintIdentifier = "6F26F6CE2EA1DDA40009007E"
+            BuildableName = "TackCompilerValidationSuite"
+            BlueprintName = "TackCompilerValidationSuite"
             ReferencedContainer = "container:TurtleTools.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "--help"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -89,9 +101,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6FDA16592B1FAC9700FD1FC0"
-            BuildableName = "TurtleSimulator.app"
-            BlueprintName = "TurtleSimulator"
+            BlueprintIdentifier = "6F26F6CE2EA1DDA40009007E"
+            BuildableName = "TackCompilerValidationSuite"
+            BlueprintName = "TackCompilerValidationSuite"
             ReferencedContainer = "container:TurtleTools.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

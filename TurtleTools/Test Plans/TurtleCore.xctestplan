@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "0362C76A-C323-479C-B19B-AB0EEF7CA46B",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6FB0D29224710C26003B5D5C",
+        "name" : "TurtleCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

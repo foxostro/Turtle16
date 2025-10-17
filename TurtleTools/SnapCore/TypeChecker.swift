@@ -222,6 +222,8 @@ public class TypeChecker {
         case .leftDoubleAngle: "<<"
         case .rightDoubleAngle: ">>"
         case .tilde: "~"
+        @unknown default:
+            fatalError("unknown operator: \(op)")
         }
     }
 

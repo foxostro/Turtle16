@@ -1,0 +1,49 @@
+{
+  "configurations" : [
+    {
+      "id" : "31632196-222A-4E66-8BA8-140BA086AC65",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6FB0D29224710C26003B5D5C",
+        "name" : "TurtleCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F734338259327D400B7E43F",
+        "name" : "TurtleSimulatorCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F9201EC2471DAC7009E1410",
+        "name" : "SnapCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6FDA166C2B1FAC9900FD1FC0",
+        "name" : "TurtleSimulatorAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}

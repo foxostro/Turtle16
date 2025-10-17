@@ -62,8 +62,9 @@ find_build_products() {
 # Set up DYLD framework path
 setup_dyld_path() {
     local products_dir="$1"
-    export DYLD_FRAMEWORK_PATH="$products_dir"
-    info "Set DYLD_FRAMEWORK_PATH=$products_dir"
+    # Include both the products directory and PackageFrameworks subdirectory
+    export DYLD_FRAMEWORK_PATH="$products_dir:$products_dir/PackageFrameworks"
+    info "Set DYLD_FRAMEWORK_PATH=$products_dir:$products_dir/PackageFrameworks"
 }
 
 # Check if xcbeautify is available

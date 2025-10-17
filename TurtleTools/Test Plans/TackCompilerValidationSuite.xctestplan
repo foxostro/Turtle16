@@ -1,0 +1,43 @@
+{
+  "configurations" : [
+    {
+      "id" : "EF1B5342-79B9-4E24-B067-EACFE33462C6",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "--log-level"
+      },
+      {
+        "argument" : "trace"
+      },
+      {
+        "argument" : "--test"
+      },
+      {
+        "argument" : "tackADDW"
+      }
+    ],
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:TurtleTools.xcodeproj",
+      "identifier" : "6F26F6CE2EA1DDA40009007E",
+      "name" : "ExhaustiveTackTests"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F26F7102EA582DF0009007E",
+        "name" : "ExhaustiveTackTestsCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -614,8 +614,8 @@
 		6F26F6CD2EA1DDA40009007E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			dstPath = usr/share/man/man1;
+			dstSubfolderSpec = 10;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
@@ -2112,6 +2112,10 @@
 				6F3B82E42B212AB90001EDE5 /* PBXTargetDependency */,
 			);
 			name = TurtleSimulator;
+			packageProductDependencies = (
+				6F26F6DA2EA1E7190009007E /* ArgumentParser */,
+				1879DCAA1B23C6BED4D1C079 /* Logging */,
+			);
 			productName = TurtleSimulator;
 			productReference = 6FDA165A2B1FAC9700FD1FC0 /* TurtleSimulator.app */;
 			productType = "com.apple.product-type.application";

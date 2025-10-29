@@ -191,6 +191,8 @@
 		6F7343DD25932FD100B7E43F /* MEM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343DC25932FD100B7E43F /* MEM.swift */; };
 		6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343EE25932FEE00B7E43F /* MEMTests.swift */; };
 		6F79E13C2EB2AF0700722D18 /* Subroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F00F3274F651C00875339 /* Subroutine.swift */; };
+		6F79E13A2EB2665D00722D18 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 6F26F6DA2EA1E7190009007E /* ArgumentParser */; };
+		6F79E13B2EB2665D00722D18 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 1879DCAA1B23C6BED4D1C079 /* Logging */; };
 		6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14E9259A94C30034C7D0 /* EX.swift */; };
 		6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14FB259A94E40034C7D0 /* EXTests.swift */; };
 		6F7CCE6A2C67FA9D00F435F1 /* CompilerPassForIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7CCE692C67FA9D00F435F1 /* CompilerPassForIn.swift */; };
@@ -978,6 +980,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F79E13B2EB2665D00722D18 /* Logging in Frameworks */,
+				6F79E13A2EB2665D00722D18 /* ArgumentParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2958,6 +2962,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TurtleSimulatorApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Andrew Fox. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2998,6 +3003,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TurtleSimulatorApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Andrew Fox. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

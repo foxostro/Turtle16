@@ -450,7 +450,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 // Upper bound
                 let tempUpperBound = nextRegister(type: .w)
                 switch subscriptableType {
-                case .array(count: let n?, elementType: _):
+                case .array(count: let n?, elementType: _),
+                     .pointer(.array(count: let n?, elementType: _)):
                     // The upper bound is known at compile time
                     children += [
                         TackInstructionNode(.liw(tempUpperBound.unwrap16!, n))
@@ -471,7 +472,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     ]
 
                 default:
-                    fatalError("unimplemented")
+                    throw CompilerError(
+                        sourceAnchor: expr.sourceAnchor,
+                        message: "internal compiler error: unsupported subscriptable type for bounds checking: \(subscriptableType)"
+                    )
                 }
 
                 let tempComparison2 = nextRegister(type: .o)

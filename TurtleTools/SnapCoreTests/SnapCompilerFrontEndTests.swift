@@ -4117,7 +4117,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             )
         }
     }
-    
+
     func test_EndToEndIntegration_Array_MultiLineStringHandling_ValidSyntax() throws {
         // Ensure that the compiler handles a vlaid multiline string correctly
         let opts = Options(runtimeSupport: kRuntime)
@@ -4187,5 +4187,23 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                 "Multi-line string literal closing delimiter must begin on a new line"
             )
         }
+    }
+
+    func test_EndToEndIntegration_StructMemberAccessParsingBug() throws {
+       // Regression test for array-of-struct member access parsing bug
+       let opts = Options(runtimeSupport: kRuntime)
+       let debugger = try run(
+           options: opts,
+           program: """
+               struct Point { x: u8, y: u8 }
+               let points = [_]Point{
+                   Point { .x = 1, .y = 2 },
+                   Point { .x = 3, .y = 4 },
+                   Point { .x = 5, .y = 6 }
+               }
+               assert(points[0].x == 1)
+               """
+       )
+       try debugger.vm.run()
     }
 }

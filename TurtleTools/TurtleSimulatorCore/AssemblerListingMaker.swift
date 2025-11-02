@@ -25,6 +25,9 @@ public struct AssemblerListingMaker {
         case let node as CommentNode:
             makeListing(comment: node)
 
+        case let node as Subroutine:
+            makeListing(subroutine: node)
+
         default:
             fatalError("unimplemented node: \(node)")
         }
@@ -65,5 +68,11 @@ public struct AssemblerListingMaker {
 
     public func makeListing(comment node: CommentNode) -> String {
         node.string.split(separator: "\n").map { "# \($0)" }.joined(separator: "\n")
+    }
+
+    public func makeListing(subroutine node: Subroutine) -> String {
+        let label = "\(node.identifier):"
+        let body = node.children.map { makeListing($0) }.joined(separator: "\n")
+        return body.isEmpty ? label : "\(label)\n\(body)"
     }
 }

@@ -76,4 +76,16 @@ final class AssemblerListingMakerTests: XCTestCase {
         let actual = AssemblerListingMaker().makeListing(ast)
         XCTAssertEqual(actual, "# first line\n# second line")
     }
+
+    func testSubroutine() throws {
+        let subroutine = Subroutine(
+            identifier: "__syscall",
+            children: [
+                InstructionNode(instruction: "NOP", parameters: []),
+                InstructionNode(instruction: "RET", parameters: [])
+            ]
+        )
+        let actual = AssemblerListingMaker().makeListing(subroutine)
+        XCTAssertEqual(actual, "__syscall:\nNOP\nRET")
+    }
 }

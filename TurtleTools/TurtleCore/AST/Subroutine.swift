@@ -1,12 +1,10 @@
 //
 //  Subroutine.swift
-//  SnapCore
+//  TurtleCore
 //
 //  Created by Andrew Fox on 11/24/21.
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
-
-import TurtleCore
 
 /// A subroutine is a low-level procedure abstraction, lower than the function
 /// abstraction. A function is lowered to a subroutine.

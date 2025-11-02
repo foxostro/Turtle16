@@ -1,0 +1,57 @@
+// Test program for all shift operations
+// Testing both 8-bit and 16-bit shifts, left and right
+
+test "lsr8" {
+    // Logical shift right 8-bit
+    let value: u8 = 0xAB  // 10101011
+    let shift: u8 = 4
+    let result: u8 = value >> shift
+    assert(result == 0x0A)  // 00001010
+}
+
+test "lsl8" {
+    // Logical shift left 8-bit
+    let value: u8 = 0x0A  // 00001010
+    let shift: u8 = 4
+    let result: u8 = value << shift
+    assert(result == 0xA0)  // 10100000
+}
+
+test "lsrw" {
+    // Logical shift right 16-bit
+    let value: u16 = 0xABCD  // 1010101111001101
+    let shift: u16 = 8
+    let result: u16 = value >> shift
+    assert(result == 0x00AB)  // 0000000010101011
+}
+
+test "lslw" {
+    // Logical shift left 16-bit
+    let value: u16 = 0x00AB  // 0000000010101011
+    let shift: u16 = 8
+    let result: u16 = value << shift
+    assert(result == 0xAB00)  // 1010101100000000
+}
+
+test "shift_edge_cases" {
+    // Test edge cases
+
+    // Shift by 0 (no change)
+    let v1: u8 = 0xFF
+    assert((v1 >> 0) == 0xFF)
+    assert((v1 << 0) == 0xFF)
+
+    // Shift by maximum (all zeros)
+    let v2: u8 = 0xFF
+    assert((v2 >> 8) == 0x00)
+
+    // Left shift overflow (bits lost)
+    let v3: u8 = 0xFF
+    assert((v3 << 1) == 0xFE)  // MSB is lost
+
+    // Chain shifts
+    let v4: u8 = 0xA5  // 10100101
+    let temp: u8 = v4 >> 2  // 00101001 = 0x29
+    let final: u8 = temp << 2  // 10100100 = 0xA4
+    assert(final == 0xA4)  // Lost 2 LSBs
+}

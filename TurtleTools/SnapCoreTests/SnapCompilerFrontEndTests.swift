@@ -4254,4 +4254,38 @@ final class SnapCompilerFrontEndTests: XCTestCase {
        )
        try debugger.vm.run()
     }
+
+    func test_BUG_ImplBlockMethodResolutionBugFix() throws {
+        // Regression test: Variable declarations with method calls in impl blocks
+        // Previously failed with: "use of unresolved identifier: `Foo::getValue'"
+        let debugger = try run(
+            options: Options(runtimeSupport: kRuntime),
+            program: """
+                struct Foo {
+                    value: u8
+                }
+
+                impl Foo {
+                    func getValue(self: *const Foo) -> u8 {
+                        return self.value
+                    }
+
+                    func process(self: *const Foo) -> u8 {
+                        let result = self.getValue()  // This line caused the bug
+                        return result
+                    }
+                }
+
+                func main() {
+                    var foo: Foo = undefined
+                    foo.value = 42
+                    let result = foo.process()
+                    assert(result == 42)
+                    asm("BREAK")
+                }
+                main()
+                """
+        )
+        try debugger.vm.run()
+    }
 }

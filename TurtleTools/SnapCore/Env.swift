@@ -1658,6 +1658,11 @@ public final class Env: Hashable {
             identifier: identifier
         )
         guard let resolution else {
+            // Try to handle mangled method identifiers like "StructName::methodName"
+            if let fallbackSymbol = tryResolveMethodFromMangledName(identifier: identifier) {
+                return fallbackSymbol
+            }
+
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
                 message: "use of unresolved identifier: `\(identifier)'"
@@ -1675,12 +1680,17 @@ public final class Env: Hashable {
         identifier: String
     ) throws -> SymbolType {
         if let resolution = maybeResolve(identifier: identifier) {
-            resolution.type
+            return resolution.type
         }
         else if let resolution = maybeResolveType(identifier: identifier) {
-            resolution
+            return resolution
         }
         else {
+            // Try to handle mangled method identifiers like "StructName::methodName"
+            if let fallbackSymbol = tryResolveMethodFromMangledName(identifier: identifier) {
+                return fallbackSymbol.type
+            }
+
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
                 message: "use of unresolved identifier: `\(identifier)'"
@@ -1756,6 +1766,26 @@ public final class Env: Hashable {
         else {
             nil
         }
+    }
+
+    /// Try to resolve a mangled method identifier like "StructName::methodName"
+    /// by looking up the method in the struct's symbol table
+    private func tryResolveMethodFromMangledName(identifier: String) -> Symbol? {
+        // Check if this looks like a mangled name (contains "::")
+        guard let separatorRange = identifier.range(of: "::") else {
+            return nil
+        }
+
+        let structName = String(identifier[..<separatorRange.lowerBound])
+        let methodName = String(identifier[separatorRange.upperBound...])
+
+        // Try to find the struct type
+        if let structType = maybeResolveType(identifier: structName)?.maybeUnwrapStructType() {
+            // Try to find the method in the struct's symbol table
+            return structType.symbols.maybeResolve(identifier: methodName)
+        }
+
+        return nil
     }
 
     /// The UUID of the AST node associated with this scope, if any

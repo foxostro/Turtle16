@@ -36,7 +36,7 @@ struct RegistersView: View {
                 .contextMenu {
                     Picker("Display Value As", selection: $displayValueAs) {
                         ForEach(DisplayValueAs.allCases) { mode in
-                            Text("\(mode)")
+                            Text(mode.description)
                         }
                     }
                 }

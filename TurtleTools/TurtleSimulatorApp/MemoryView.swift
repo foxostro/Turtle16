@@ -181,7 +181,7 @@ struct MemoryView: View {
                     selection: $viewModel.selectedAddressSpace
                 ) {
                     ForEach(viewModel.addressSpaces) {
-                        Text("\($0)")
+                        Text($0.description)
                     }
                 }
                 Spacer()

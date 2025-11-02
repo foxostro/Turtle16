@@ -320,8 +320,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         // Can we determine the index at compile time?
         let maybeStaticIndex: Int? =
-            if case let .arithmeticType(.compTimeInt(index)) =
-            argumentType {
+            if case let .arithmeticType(.compTimeInt(index)) = argumentType {
                 index
             }
             else {
@@ -378,7 +377,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         // another load to extract the base address.
         let sliceAddr: Register!
         switch subscriptableType {
-        case .dynamicArray:
+        case .dynamicArray, .pointer(.dynamicArray(elementType: _)):
             sliceAddr = popRegister()
             let baseAddr = nextRegister(type: .p)
             pushRegister(baseAddr)
@@ -457,7 +456,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         TackInstructionNode(.liw(tempUpperBound.unwrap16!, n))
                     ]
 
-                case .dynamicArray:
+                case .dynamicArray, .pointer(.dynamicArray(elementType: _)):
                     // The upper bound is embedded in the slice object
                     children += [
                         TackInstructionNode(
@@ -2625,8 +2624,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             return result
 
         default:
-            var children: [AbstractSyntaxTreeNode] = try [
-                lvalue(subscript: expr)
+            var children: [AbstractSyntaxTreeNode] = [
+                try lvalue(subscript: expr)
             ]
 
             let elementType = try typeCheck(rexpr: expr)

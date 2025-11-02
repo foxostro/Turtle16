@@ -333,6 +333,37 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(a, UInt16(0x1000))
     }
 
+    func test_EndToEndIntegration_SubscriptSliceThroughPointer() throws {
+        let debugger = try run(
+            program: """
+                let arr = [_]u16{0x1000}
+                let slice: []u16 = arr
+                let ptr = &slice
+                let a: u16 = slice[0]
+                """
+        )
+        let a = debugger.loadSymbolU16("a")
+        XCTAssertEqual(a, UInt16(0x1000))
+    }
+
+    func test_EndToEndIntegration_SubscriptSliceThroughPointer_WithRuntimeBoundsChecking() throws {
+        let debugger = try run(
+            options: Options(isBoundsCheckEnabled: true, runtimeSupport: kRuntime),
+            program: """
+                func dynamicIndex() -> u16 {
+                    return 0
+                }
+                let index = dynamicIndex()
+                let arr = [_]u16{0x1000}
+                let slice: []u16 = arr
+                let ptr = &slice
+                let a: u16 = ptr[index]
+                """
+        )
+        let a = debugger.loadSymbolU16("a")
+        XCTAssertEqual(a, UInt16(0x1000))
+    }
+
     func test_EndToEndIntegration_ForIn_DynamicArray_1() throws {
         let debugger = try run(
             program: """
